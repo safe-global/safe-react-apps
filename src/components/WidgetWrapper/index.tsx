@@ -2,13 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Card = styled.div`
-  font-family: 'Averta, monospace';
+  font-family: 'Averta';
   min-width: 150px;
   min-height: 300px;
   border-radius: 5px;
   box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.08);
   background-color: #ffffff;
   padding: 5px;
+  display: flex;
+  justify-content: center;
 `;
 
 const Title = styled.div`
@@ -56,13 +58,13 @@ const WidgetWrapper: React.FC<Props> = ({
   description
 }) => (
   <Card>
-    <Title>
-      <img src={icon} alt={name}/>
+    {/* <Title>
+       <img src={icon} alt={name}/> 
       <TitleText>
         <label>{name}</label>
         <label>{description}</label>
       </TitleText>
-    </Title>
+    </Title> */}
     <Body>{children}</Body>
   </Card>
 );

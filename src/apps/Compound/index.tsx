@@ -5,7 +5,13 @@ import { BigNumber } from "ethers/utils";
 import styled from "styled-components";
 import Web3 from "web3";
 
-import { Button, WidgetWrapper, RadioButtons } from "../../components";
+import {
+  Button,
+  WidgetWrapper,
+  RadioButtons,
+  TextField,
+  Select
+} from "../../components";
 import cERC20Abi from "./abis/CErc20";
 import compoundMark from "./images/compound-mark.svg";
 import {
@@ -15,7 +21,62 @@ import {
   TransactionUpdate
 } from "../safeConnector";
 
+const StyledHeading = styled.h4`
+  font-family: "Averta";
+  font-size: 24px;
+  font-weight: 900;
+  color: #001428;
+  text-align: center;
+`;
+
+const SelectContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  justify-content: center;
+`;
+
+const StyledLabel = styled.label`
+  font: 19px "Averta";
+  color: #001428;
+  margin: 15px 0 0 15px;
+`;
+
 const DaiSectionInfo = styled.div`
+  margin-bottom: 15px;
+  border: 1px solid #e8e7e6;
+  border-radius: 5px;
+  padding: 10px;
+`;
+
+const Row = styled.div`
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+`;
+
+const Value = styled.p`
+  font-size: 16px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+`;
+
+const StyledTextField = styled(TextField)`
+  background-color: #e8e7e6;
+  border-radius: 5px;
+  padding: 15px;
+  width: 378px;
+  margin-bottom: 15px;
+`;
+
+const StyledBigNumberInput = styled(BigNumberInput)`
+  background-color: #e8e7e6;
+  border-radius: 5px;
+  padding: 15px;
+  width: 378px;
   margin-bottom: 15px;
 `;
 
@@ -50,7 +111,7 @@ const CompoundWidget = () => {
   };
 
   useEffect(() => {
-    console.log('iframe: add listeners')
+    console.log("iframe: add listeners");
     addListeners({ onSafeInfo: setSafeInfo, onTransactionUpdate });
   }, []);
 
@@ -158,32 +219,49 @@ const CompoundWidget = () => {
       name="Compound"
       description={`Get up to ${cDaiSupplyAPR}% APR on your DAI`}
     >
-      <DaiSectionInfo>        
-        <div>Your DAI balance is: {bNumberToHumanFormat(daiBalance)}</div>
-        <div>Your Invested DAI is: {bNumberToHumanFormat(cDaiLocked)}</div>
+      <StyledHeading>Your Compound balance</StyledHeading>
+
+      <SelectContainer>
+        <Select />
+        <StyledLabel>{bNumberToHumanFormat(daiBalance)}</StyledLabel>
+      </SelectContainer>
+
+      <DaiSectionInfo>
+        <Row>
+          <p>Interest earned</p>
+          <Value>0.05 OMG</Value>
+        </Row>
+        <Row>
+          <p>Current interest rate</p>
+          <Value>7.76% APR</Value>
+        </Row>
+        {/* <div>Your Invested DAI is: {bNumberToHumanFormat(cDaiLocked)}</div> */}
       </DaiSectionInfo>
-      <div>
-        <div>
-          <RadioButtons
+
+      <StyledHeading>Withdraw or top up your balance</StyledHeading>
+      {/*  <RadioButtons
             name="userOperation"
             value={userOperation}
             onRadioChange={onRadioChange}
             options={userOperationOptions}
             row
-          />
-        </div>
+          /> */}
 
-        <BigNumberInput
-          min={new BigNumber(0)}
-          max={getMaxValueInput()}
-          decimals={18}
-          onChange={setCDaiLockInput}
-          value={cDaiLockInput}
-        />
-        <Button onClick={() => onOperationClick()}>
+      <StyledBigNumberInput
+        min={new BigNumber(0)}
+        max={getMaxValueInput()}
+        decimals={18}
+        onChange={setCDaiLockInput}
+        value={cDaiLockInput}
+      />
+      {/* <Button onClick={() => onOperationClick()}>
           {userOperation === WithdrawOpearion ? "Withdraw" : "Invest"}
-        </Button>
-      </div>
+        </Button> */}
+      <StyledTextField />
+      <ButtonContainer>
+        <Button variant="contained">Withdraw</Button>
+        <Button variant="contained">Top up</Button>
+      </ButtonContainer>
     </WidgetWrapper>
   );
 };
