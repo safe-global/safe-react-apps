@@ -10,10 +10,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     button: {
       display: "block",
-      marginTop: theme.spacing(2)
     },
     formControl: {
-      margin: theme.spacing(1),
       minWidth: 120
     }
   })
@@ -23,7 +21,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const StyledSelect = styled(Select)`
   background-color: #E8E7E6;
   border-radius: 5px;
-  padding:15px;
+  height:56px;
+  width:132px;
 `;
 
 export default function ControlledOpenSelect() {
