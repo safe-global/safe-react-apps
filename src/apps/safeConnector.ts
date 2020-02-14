@@ -14,7 +14,8 @@ export interface SafeListeners {
   onTransactionUpdate?: (txId: TransactionUpdate) => any;
 }
 
-const parentUrl = "http://localhost:3000";
+// const parentUrl = process.env.REACT_APP_PARENT_URL || "http://localhost:3000";
+const parentUrl = "*"; //process.env.REACT_APP_PARENT_URL || "http://localhost:3000";
 let listeners: SafeListeners;
 let connectionId: string;
 
@@ -30,10 +31,10 @@ const onParentMessage = async ({ origin, data, ...rest }: MessageEvent) => {
     return;
   }
 
-  if (origin !== parentUrl) {
-    console.error(`Message from unknown origin: ${origin}`);
-    return;
-  }
+  // if (origin !== parentUrl) {
+  //   console.error(`Message from unknown origin: ${origin}`);
+  //   return;
+  // }
 
   if (!data || !data.messageId) {
     console.error("No message id provided");
