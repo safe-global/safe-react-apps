@@ -14,8 +14,9 @@ export interface SafeListeners {
   onTransactionUpdate?: (txId: TransactionUpdate) => any;
 }
 
-// const parentUrl = process.env.REACT_APP_PARENT_URL || "http://localhost:3000";
-const parentUrl = "*"; //process.env.REACT_APP_PARENT_URL || "http://localhost:3000";
+const parentUrl = process.env.REACT_APP_PARENT_URL
+  ? process.env.REACT_APP_PARENT_URL
+  : "*";
 let listeners: SafeListeners;
 let connectionId: string;
 
