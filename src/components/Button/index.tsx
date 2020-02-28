@@ -1,8 +1,8 @@
 import React from "react";
-import MaterialButton from "@material-ui/core/Button";
+import ButtonMUI from "@material-ui/core/Button";
 import styled from "styled-components";
 
-const StyledButton = styled(MaterialButton)`
+const StyledButton = styled(ButtonMUI)`
   && {
     background-color: #008c73;
     width: 106px;
@@ -10,12 +10,11 @@ const StyledButton = styled(MaterialButton)`
     border-radius: 4px;
     color: white;
     font-family: "Averta";
-    
-    ${styled(MaterialButton)}:hover & {
-    background-color: #001428;
+
+    :hover {
+      background-color: #001428;
+    }
   }
-  }
-  
 `;
 
 const Button = ({ children, ...rest }: any) => (
