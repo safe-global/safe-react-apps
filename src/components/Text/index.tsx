@@ -6,6 +6,7 @@ type TextSize = "md" | "lg";
 type Props = {
   strong?: boolean;
   size?: TextSize;
+  centerText?: boolean;
   children: any;
 };
 
@@ -18,10 +19,12 @@ const getFontSize = (size?: TextSize) => {
   }
 };
 
-const StyledText = styled.p`  
+const StyledText = styled.p`
+  margin: 10px 0;
   font-size: 14px;
   font-weight: ${({ strong }: Props) => (strong ? "bold" : "normal")};
   font-size: ${({ size }: Props) => getFontSize(size)};
+  text-align: ${({ centerText }: Props) => (centerText ? "center" : "strat")};
 `;
 
 const Text = ({ children, ...rest }: Props) => (

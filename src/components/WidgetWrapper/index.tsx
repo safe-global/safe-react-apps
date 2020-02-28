@@ -5,10 +5,6 @@ const Card = styled.div`
   font-family: 'Averta';
   min-width: 150px;
   min-height: 300px;
-  border-radius: 5px;
-  box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.08);
-  background-color: #ffffff;
-  padding: 5px;
   display: flex;
   justify-content: center;
 `;
@@ -41,9 +37,7 @@ const TitleText = styled.div`
   }
 `;
 
-const Body = styled.div`
-  padding: 15px;
-`;
+const Body = styled.div``;
 
 type Props = {
   icon: string;

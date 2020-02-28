@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import Big from "big.js";
 import { BigNumberInput } from "big-number-input";
 import { BigNumber } from "ethers/utils";
-import styled from "styled-components";
 import Web3 from "web3";
 
+import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
 import {
   Button,
   WidgetWrapper,
-  RadioButtons,
   TextField,
   Select,
   Title,
@@ -23,53 +22,6 @@ import {
   SafeInfo,
   TransactionUpdate
 } from "../safeConnector";
-
-const SelectContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  margin-bottom: 15px;
-
-  *:first-child {
-    margin-right: 5px;
-  }
-`;
-
-const DaiInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 350px;
-
-  > * {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-  }
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-around;
-  margin-top: 15px;
-`;
-
-/* const StyledTextField = styled(TextField)`
-  background-color: #e8e7e6;
-  border-radius: 5px;
-  padding: 15px;
-  width: 378px;
-  margin-bottom: 15px;
-`;
- 
-const StyledBigNumberInput = styled(BigNumberInput)`
-  background-color: #e8e7e6;
-  border-radius: 5px;
-  padding: 15px;
-  width: 378px;
-  margin-bottom: 15px;
-`;*/
 
 const web3: any = new Web3(
   "https://rinkeby.infura.io/v3/7aacdc1534804ea3b4fd2c7490009ee1"
@@ -139,7 +91,7 @@ const CompoundWidget = () => {
   const bNumberToHumanFormat = (value: number) =>
     new Big(value).div(decimals18).toFixed(4);
 
-  const lockDai = () => {
+  const lock = () => {
     if (!cDaiLockInput) {
       return;
     }
@@ -165,7 +117,7 @@ const CompoundWidget = () => {
     setCDaiLockInput(new BigNumber(0));
   };
 
-  const withdrawDai = () => {
+  const withdraw = () => {
     if (!cDaiLockInput || cDaiLockInput.toString() === "0") {
       return;
     }
@@ -186,15 +138,6 @@ const CompoundWidget = () => {
     setCDaiLockInput(new BigNumber(0));
   };
 
-  const onOperationClick = () => {
-    userOperation === WithdrawOpearion ? withdrawDai() : lockDai();
-  };
-
-  const userOperationOptions = [
-    { label: "Invest", value: InvestOpearion },
-    { label: "Withdraw", value: WithdrawOpearion }
-  ];
-
   const getMaxValueInput = () =>
     new BigNumber(userOperation === WithdrawOpearion ? cDaiLocked : daiBalance);
 
@@ -214,7 +157,7 @@ const CompoundWidget = () => {
       <SelectContainer>
         <Select />
         <Text strong size="lg">
-          {bNumberToHumanFormat(daiBalance)}
+          {bNumberToHumanFormat(cDaiLocked)}
         </Text>
       </SelectContainer>
 
@@ -229,17 +172,10 @@ const CompoundWidget = () => {
             <Text>7.76% APR</Text>
           </div>
         </DaiInfo>
-        {/* <div>Your Invested DAI is: {bNumberToHumanFormat(cDaiLocked)}</div> */}
       </Section>
 
       <Title>Withdraw or top up your balance</Title>
-      {/*  <RadioButtons
-            name="userOperation"
-            value={userOperation}
-            onRadioChange={onRadioChange}
-            options={userOperationOptions}
-            row
-          /> */}
+      <Text centerText>DAI Balance: {bNumberToHumanFormat(daiBalance)}</Text>
 
       {/* <StyledBigNumberInput
         min={new BigNumber(0)}
@@ -253,8 +189,12 @@ const CompoundWidget = () => {
         </Button> */}
       <TextField />
       <ButtonContainer>
-        <Button variant="contained">Withdraw</Button>
-        <Button variant="contained">Top up</Button>
+        <Button variant="contained" onClick={lock}>
+          Withdraw
+        </Button>
+        <Button variant="contained" onClick={withdraw}>
+          Top up
+        </Button>
       </ButtonContainer>
     </WidgetWrapper>
   );
