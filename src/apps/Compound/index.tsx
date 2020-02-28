@@ -10,7 +10,10 @@ import {
   WidgetWrapper,
   RadioButtons,
   TextField,
-  Select
+  Select,
+  Title,
+  Section,
+  Text
 } from "../../components";
 import cERC20Abi from "./abis/CErc20";
 import compoundMark from "./images/compound-mark.svg";
@@ -21,53 +24,35 @@ import {
   TransactionUpdate
 } from "../safeConnector";
 
-const StyledHeading = styled.h6`
-  font-family: "Averta";
-  font-size: 16px;
-  font-weight: 900;
-  color: #001428;
-  text-align: center;
-  margin:5px;
-`;
-
 const SelectContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
   justify-content: center;
+
+  margin-bottom: 15px;
+
+  *:first-child {
+    margin-right: 5px;
+  }
 `;
 
-const StyledLabel = styled.label`
-  font: 19px "Averta";
-  color: #001428;
-  margin: 15px 0 0 15px;
-`;
-
-const DaiSectionInfo = styled.div`
-  margin-bottom: 20px;
-  border: 1px solid #e8e7e6;
-  border-radius: 5px;
-`;
-
-const Row = styled.div`
+const DaiInfo = styled.div`
   display: flex;
-  flex-flow: row;
-  justify-content: space-between;
-  padding: 0px 20px;
-`;
+  flex-direction: column;
+  align-items: center;
+  width: 350px;
 
-const Text = styled.p`
-  font-size: 14px;
-`;
-
-const Value = styled.p`
-  font-size: 14px;
+  > * {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-around;
-  margin-top:15px;
+  margin-top: 15px;
 `;
 
 /* const StyledTextField = styled(TextField)`
@@ -117,7 +102,6 @@ const CompoundWidget = () => {
   };
 
   useEffect(() => {
-    console.log("iframe: add listeners");
     addListeners({ onSafeInfo: setSafeInfo, onTransactionUpdate });
   }, []);
 
@@ -225,26 +209,30 @@ const CompoundWidget = () => {
       name="Compound"
       description={`Get up to ${cDaiSupplyAPR}% APR on your DAI`}
     >
-      <StyledHeading>Your Compound balance</StyledHeading>
+      <Title>Your Compound balance</Title>
 
       <SelectContainer>
         <Select />
-        <StyledLabel>{bNumberToHumanFormat(daiBalance)}</StyledLabel>
+        <Text strong size="lg">
+          {bNumberToHumanFormat(daiBalance)}
+        </Text>
       </SelectContainer>
 
-      <DaiSectionInfo>
-        <Row>
-          <Text>Interest earned</Text>
-          <Value>0.05 OMG</Value>
-        </Row>
-        <Row>
-          <Text>Current interest rate</Text>
-          <Value>7.76% APR</Value>
-        </Row>
+      <Section>
+        <DaiInfo>
+          <div>
+            <Text>Interest earned</Text>
+            <Text>0.05 OMG</Text>
+          </div>
+          <div>
+            <Text>Current interest rate</Text>
+            <Text>7.76% APR</Text>
+          </div>
+        </DaiInfo>
         {/* <div>Your Invested DAI is: {bNumberToHumanFormat(cDaiLocked)}</div> */}
-      </DaiSectionInfo>
+      </Section>
 
-      <StyledHeading>Withdraw or top up your balance</StyledHeading>
+      <Title>Withdraw or top up your balance</Title>
       {/*  <RadioButtons
             name="userOperation"
             value={userOperation}

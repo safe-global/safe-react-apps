@@ -45,7 +45,6 @@ export default function ControlledOpenSelect() {
   return (
     <div>
       <FormControl className={classes.formControl}>
-        <InputLabel id="demo-controlled-open-select-label"></InputLabel>
         <StyledSelect
           labelId="demo-controlled-open-select-label"
           id="demo-controlled-open-select"
