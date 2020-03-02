@@ -135,14 +135,10 @@ const CompoundWidget = () => {
   };
 
   // const getMaxValueInput = () =>
-  //   new BigNumber(userOperation === WithdrawOpearion ? cDaiLocked : daiBalance);  
+  //   new BigNumber(userOperation === WithdrawOpearion ? cDaiLocked : daiBalance);
 
   return (
-    <WidgetWrapper
-      icon={compoundMark}
-      name="Compound"
-      description={`Get up to ${cDaiSupplyAPR}% APR on your DAI`}
-    >
+    <WidgetWrapper>
       <Title>Your Compound balance</Title>
 
       <SelectContainer>
@@ -155,18 +151,21 @@ const CompoundWidget = () => {
       <Section>
         <DaiInfo>
           <div>
+            <Text>Locked DAI</Text>
+            <Text>{bNumberToHumanFormat(daiBalance)}</Text>
+          </div>
+          <div>
             <Text>Interest earned</Text>
             <Text>0.05 OMG</Text>
           </div>
           <div>
             <Text>Current interest rate</Text>
-            <Text>7.76% APR</Text>
+            <Text>{cDaiSupplyAPR}% APR</Text>
           </div>
         </DaiInfo>
       </Section>
 
       <Title>Withdraw or top up your balance</Title>
-      <Text centerText>DAI Balance: {bNumberToHumanFormat(daiBalance)}</Text>
 
       <BigNumberInput
         min={new BigNumber(0)}
