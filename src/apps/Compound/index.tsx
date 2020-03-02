@@ -8,7 +8,7 @@ import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
 import {
   Button,
   WidgetWrapper,
-  TextField,
+  // TextField,
   Select,
   Title,
   Section,
@@ -37,11 +37,7 @@ const CompoundWidget = () => {
   const cDai = new web3.eth.Contract(cERC20Abi, cDaiAddress);
   const dai = new web3.eth.Contract(cERC20Abi, daiAddress);
 
-  const InvestOpearion = "invest";
-  const WithdrawOpearion = "withdraw";
-
   const [safeInfo, setSafeInfo] = useState<SafeInfo>();
-  const [userOperation, setUserOperation] = useState(InvestOpearion);
   const [cDaiSupplyAPR, setCDaiSupplyAPR] = useState("0");
   const [daiBalance, setDaiBalance] = useState<number>(0);
   const [cDaiLocked, setCDaiLocked] = useState<number>(0);
@@ -138,13 +134,8 @@ const CompoundWidget = () => {
     setCDaiLockInput(new BigNumber(0));
   };
 
-  const getMaxValueInput = () =>
-    new BigNumber(userOperation === WithdrawOpearion ? cDaiLocked : daiBalance);
-
-  const onRadioChange = (val: string) => {
-    setUserOperation(val);
-    setCDaiLockInput(new BigNumber(0));
-  };
+  // const getMaxValueInput = () =>
+  //   new BigNumber(userOperation === WithdrawOpearion ? cDaiLocked : daiBalance);  
 
   return (
     <WidgetWrapper
@@ -177,17 +168,15 @@ const CompoundWidget = () => {
       <Title>Withdraw or top up your balance</Title>
       <Text centerText>DAI Balance: {bNumberToHumanFormat(daiBalance)}</Text>
 
-      {/* <StyledBigNumberInput
+      <BigNumberInput
         min={new BigNumber(0)}
-        max={getMaxValueInput()}
+        /* max={getMaxValueInput()} */
         decimals={18}
         onChange={setCDaiLockInput}
         value={cDaiLockInput}
-      /> */}
-      {/* <Button onClick={() => onOperationClick()}>
-          {userOperation === WithdrawOpearion ? "Withdraw" : "Invest"}
-        </Button> */}
-      <TextField />
+      />
+
+      {/* <TextField /> */}
       <ButtonContainer>
         <Button variant="contained" onClick={lock}>
           Withdraw
