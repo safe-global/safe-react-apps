@@ -156,7 +156,7 @@ const CompoundWidget = () => {
           </div>
           <div>
             <Text>Interest earned</Text>
-            <Text>0.05 OMG</Text>
+            <Text>?.?? OMG</Text>
           </div>
           <div>
             <Text>Current interest rate</Text>
