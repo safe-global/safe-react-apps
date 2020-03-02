@@ -8,14 +8,13 @@ import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
 import {
   Button,
   WidgetWrapper,
-  // TextField,
   Select,
   Title,
   Section,
   Text
 } from "../../components";
 import cERC20Abi from "./abis/CErc20";
-import compoundMark from "./images/compound-mark.svg";
+
 import {
   addListeners,
   sendTransactions,
@@ -38,10 +37,11 @@ const CompoundWidget = () => {
   const dai = new web3.eth.Contract(cERC20Abi, daiAddress);
 
   const [safeInfo, setSafeInfo] = useState<SafeInfo>();
-  const [cDaiSupplyAPR, setCDaiSupplyAPR] = useState("0");
-  const [daiBalance, setDaiBalance] = useState<number>(0);
-  const [cDaiLocked, setCDaiLocked] = useState<number>(0);
-  const [cDaiLockInput, setCDaiLockInput] = useState<BigNumber | null>(
+  const [cTokenSupplyAPR, setCTokenSupplyAPR] = useState("0");
+  //const [cDaiInteresEarn, setCDaiInteresEarn] = useState("0");
+  const [tokenBalance, setTokenBalance] = useState<number>(0);
+  const [cTokenLocked, setCTokenLocked] = useState<number>(0);
+  const [cTokenInput, setCTokenInput] = useState<BigNumber | null>(
     new BigNumber(0)
   );
 
@@ -66,19 +66,19 @@ const CompoundWidget = () => {
         .div(decimals18)
         .mul(100)
         .toFixed(2);
-      setCDaiSupplyAPR(res);
+      setCTokenSupplyAPR(res);
 
       // dai Balance
       const daiBalance = await dai.methods
         .balanceOf(safeInfo.safeAddress)
         .call();
-      setDaiBalance(daiBalance);
+      setTokenBalance(daiBalance);
 
       // dai Locked
       const daiLocked = await cDai.methods
         .balanceOfUnderlying(safeInfo.safeAddress)
         .call();
-      setCDaiLocked(daiLocked);
+      setCTokenLocked(daiLocked);
     };
 
     getData();
@@ -88,13 +88,13 @@ const CompoundWidget = () => {
     new Big(value).div(decimals18).toFixed(4);
 
   const lock = () => {
-    if (!cDaiLockInput) {
+    if (!cTokenInput) {
       return;
     }
 
     const supplyParameter = web3.eth.abi.encodeParameter(
       "uint256",
-      cDaiLockInput.toString()
+      cTokenInput.toString()
     );
     const txs = [
       {
@@ -110,17 +110,17 @@ const CompoundWidget = () => {
     ];
     sendTransactions(txs);
 
-    setCDaiLockInput(new BigNumber(0));
+    setCTokenInput(new BigNumber(0));
   };
 
   const withdraw = () => {
-    if (!cDaiLockInput || cDaiLockInput.toString() === "0") {
+    if (!cTokenInput || cTokenInput.toString() === "0") {
       return;
     }
 
     const supplyParameter = web3.eth.abi.encodeParameter(
       "uint256",
-      cDaiLockInput.toString()
+      cTokenInput.toString()
     );
     const txs = [
       {
@@ -131,7 +131,7 @@ const CompoundWidget = () => {
     ];
     sendTransactions(txs);
 
-    setCDaiLockInput(new BigNumber(0));
+    setCTokenInput(new BigNumber(0));
   };
 
   // const getMaxValueInput = () =>
@@ -144,7 +144,7 @@ const CompoundWidget = () => {
       <SelectContainer>
         <Select />
         <Text strong size="lg">
-          {bNumberToHumanFormat(cDaiLocked)}
+          {bNumberToHumanFormat(cTokenLocked)}
         </Text>
       </SelectContainer>
 
@@ -152,7 +152,7 @@ const CompoundWidget = () => {
         <DaiInfo>
           <div>
             <Text>Locked DAI</Text>
-            <Text>{bNumberToHumanFormat(daiBalance)}</Text>
+            <Text>{bNumberToHumanFormat(tokenBalance)}</Text>
           </div>
           <div>
             <Text>Interest earned</Text>
@@ -160,7 +160,7 @@ const CompoundWidget = () => {
           </div>
           <div>
             <Text>Current interest rate</Text>
-            <Text>{cDaiSupplyAPR}% APR</Text>
+            <Text>{cTokenSupplyAPR}% APR</Text>
           </div>
         </DaiInfo>
       </Section>
@@ -171,8 +171,8 @@ const CompoundWidget = () => {
         min={new BigNumber(0)}
         /* max={getMaxValueInput()} */
         decimals={18}
-        onChange={setCDaiLockInput}
-        value={cDaiLockInput}
+        onChange={setCTokenInput}
+        value={cTokenInput}
       />
 
       {/* <TextField /> */}
