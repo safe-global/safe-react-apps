@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import theme from "./theme";
 import Compound from "./apps/Compound";
 import ENS from "./apps/ENS";
+import Uniswap from "./apps/Uniswap";
 import GlobalStyles from "./global";
 
 import * as serviceWorker from "./serviceWorker";
@@ -21,6 +22,9 @@ ReactDOM.render(
         <Route path="/ens">
           <ENS />
         </Route>
+        <Route path="/uniswap">
+          <Uniswap />
+        </Route>
         <Route
           path="/"
           render={() => {
@@ -31,6 +35,9 @@ ReactDOM.render(
                 </div>
                 <div>
                   <Link to="/ens">ENS</Link>
+                </div>
+                <div>
+                  <Link to="/uniswap">Uniswap</Link>
                 </div>
               </>
             );
