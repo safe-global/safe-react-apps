@@ -1,36 +1,39 @@
 import React from "react";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
+import SelectMUI from "@material-ui/core/Select";
 import styled from "styled-components";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    button: {
-      display: "block",
-    },
-    formControl: {
-      minWidth: 120
-    }
-  })
-);
-
-
-const StyledSelect = styled(Select)`
-  background-color: #E8E7E6;
-  border-radius: 5px;
-  height:56px;
-  width:132px;
+const IconImg = styled.img`
+  width: 20px;
+  margin-right: 10px;
 `;
 
-export default function ControlledOpenSelect() {
-  const classes = useStyles();
-  const [age, setAge] = React.useState<string | number>("");
+const StyledSelect = styled(SelectMUI)`
+  background-color: #e8e7e6;
+  border-radius: 5px;
+  height: 56px;
+  width: 140px;
+
+  .MuiSelect-select {
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+  }
+`;
+
+type Props = {
+  items: Array<{ id: string; label: string; iconUrl?: string }>;
+  activeItemId: string;
+  onItemClick: (id: string) => void;
+  id?: string;
+};
+
+function Select({ items, activeItemId, onItemClick, id }: Props) {
   const [open, setOpen] = React.useState(false);
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setAge(event.target.value as number);
+    onItemClick(event.target.value as string);
   };
 
   const handleClose = () => {
@@ -43,21 +46,28 @@ export default function ControlledOpenSelect() {
 
   return (
     <div>
-      <FormControl className={classes.formControl}>
+      <FormControl>
         <StyledSelect
-          labelId="demo-controlled-open-select-label"
-          id="demo-controlled-open-select"
+          labelId={id ? id : "generic-select"}
+          id={id ? id : "generic-select"}
           open={open}
           onClose={handleClose}
           onOpen={handleOpen}
-          value={age}
+          value={activeItemId}
           onChange={handleChange}
         >
-          <MenuItem value={10}>DAI</MenuItem>
-          <MenuItem value={20}>ETH</MenuItem>
-          <MenuItem value={30}>CARDANO</MenuItem>
+          {items.map(i => {
+            return (
+              <MenuItem value={i.id}>
+                {i.iconUrl && <IconImg alt={i.label} src={i.iconUrl} />}
+                <span>{i.label}</span>
+              </MenuItem>
+            );
+          })}
         </StyledSelect>
       </FormControl>
     </div>
   );
 }
+
+export default Select;
