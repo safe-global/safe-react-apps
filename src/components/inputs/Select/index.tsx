@@ -58,7 +58,7 @@ function Select({ items, activeItemId, onItemClick, id }: Props) {
         >
           {items.map(i => {
             return (
-              <MenuItem value={i.id}>
+              <MenuItem value={i.id} key={i.id}>
                 {i.iconUrl && <IconImg alt={i.label} src={i.iconUrl} />}
                 <span>{i.label}</span>
               </MenuItem>

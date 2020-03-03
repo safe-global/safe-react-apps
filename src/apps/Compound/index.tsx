@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Big from "big.js";
 import { BigNumberInput } from "big-number-input";
-import { BigNumber } from "ethers/utils";
+//import { BigNumber } from "ethers/utils";
 import Web3 from "web3";
 
 import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
@@ -11,7 +11,8 @@ import {
   Select,
   Title,
   Section,
-  Text
+  Text,
+  TextField
 } from "../../components";
 import daiIcon from "./images/asset_DAI.svg";
 import batIcon from "./images/asset_BAT.svg";
@@ -47,11 +48,9 @@ const CompoundWidget = () => {
   const [safeInfo, setSafeInfo] = useState<SafeInfo>();
   const [cTokenSupplyAPR, setCTokenSupplyAPR] = useState("0");
   //const [cDaiInteresEarn, setCDaiInteresEarn] = useState("0");
-  const [tokenBalance, setTokenBalance] = useState<number>(0);
-  const [cTokenLocked, setCTokenLocked] = useState<number>(0);
-  const [cTokenInput, setCTokenInput] = useState<BigNumber | null>(
-    new BigNumber(0)
-  );
+  const [tokenBalance, setTokenBalance] = useState<string>("0");
+  const [cTokenLocked, setCTokenLocked] = useState<string>("0");
+  const [cTokenInput, setCTokenInput] = useState<string>("");
 
   const onTransactionUpdate = ({ txHash, status }: TransactionUpdate) => {
     alert(`txHash: ${txHash}, status: ${status}`);
@@ -92,11 +91,11 @@ const CompoundWidget = () => {
     getData();
   });
 
-  const bNumberToHumanFormat = (value: number) =>
+  const bNumberToHumanFormat = (value: string) =>
     new Big(value).div(decimals18).toFixed(4);
 
   const lock = () => {
-    if (!cTokenInput) {
+    if (!cTokenInput || cTokenInput.toString() === "0") {
       return;
     }
 
@@ -118,7 +117,7 @@ const CompoundWidget = () => {
     ];
     sendTransactions(txs);
 
-    setCTokenInput(new BigNumber(0));
+    setCTokenInput("");
   };
 
   const withdraw = () => {
@@ -139,7 +138,7 @@ const CompoundWidget = () => {
     ];
     sendTransactions(txs);
 
-    setCTokenInput(new BigNumber(0));
+    setCTokenInput("");
   };
 
   const tokenList = [
@@ -178,7 +177,7 @@ const CompoundWidget = () => {
           </div>
           <div>
             <Text>Interest earned</Text>
-            <Text>?.?? OMG</Text>
+            <Text>?.?? DAI</Text>
           </div>
           <div>
             <Text>Current interest rate</Text>
@@ -190,19 +189,18 @@ const CompoundWidget = () => {
       <Title>Withdraw or top up your balance</Title>
 
       <BigNumberInput
-        min={new BigNumber(0)}
-        /* max={getMaxValueInput()} */
         decimals={18}
         onChange={setCTokenInput}
         value={cTokenInput}
+        max={tokenBalance}
+        renderInput={(props: any) => <TextField {...props} />}
       />
 
-      {/* <TextField /> */}
       <ButtonContainer>
-        <Button variant="contained" onClick={lock}>
+        <Button variant="contained" onClick={withdraw}>
           Withdraw
         </Button>
-        <Button variant="contained" onClick={withdraw}>
+        <Button variant="contained" onClick={lock}>
           Top up
         </Button>
       </ButtonContainer>

@@ -7,10 +7,10 @@ const StyledForm = styled.form`
   justify-content: center;
 `;
 
-export default function BasicTextFields() {
+export default function BasicTextFields(props: any) {
   return (
     <StyledForm noValidate autoComplete="off">
-      <TextField label="Amount" variant="filled" />
+      <TextField label="Amount" variant="filled" {...props}/>
     </StyledForm>
   );
 }
