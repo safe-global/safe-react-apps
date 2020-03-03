@@ -13,6 +13,13 @@ import {
   Section,
   Text
 } from "../../components";
+import daiIcon from "./images/asset_DAI.svg";
+import batIcon from "./images/asset_BAT.svg";
+import wbtcIcon from "./images/asset_BTC.svg";
+import ethIcon from "./images/asset_ETH.svg";
+import repIcon from "./images/asset_REP.svg";
+import usdcIcon from "./images/asset_USDC.svg";
+import zrxIcon from "./images/asset_ZRX.svg";
 import cERC20Abi from "./abis/CErc20";
 
 import {
@@ -36,6 +43,7 @@ const CompoundWidget = () => {
   const cDai = new web3.eth.Contract(cERC20Abi, cDaiAddress);
   const dai = new web3.eth.Contract(cERC20Abi, daiAddress);
 
+  const [selectedToken, setSelectedToken] = useState("DAI");
   const [safeInfo, setSafeInfo] = useState<SafeInfo>();
   const [cTokenSupplyAPR, setCTokenSupplyAPR] = useState("0");
   //const [cDaiInteresEarn, setCDaiInteresEarn] = useState("0");
@@ -134,6 +142,16 @@ const CompoundWidget = () => {
     setCTokenInput(new BigNumber(0));
   };
 
+  const tokenList = [
+    { id: "DAI", label: "Dai", iconUrl: daiIcon },
+    { id: "BAT", label: "BAT", iconUrl: batIcon },
+    { id: "ETH", label: "ETH", iconUrl: ethIcon },
+    { id: "REP", label: "REP", iconUrl: repIcon },
+    { id: "USDC", label: "USDC", iconUrl: usdcIcon },
+    { id: "WBTC", label: "WBTC", iconUrl: wbtcIcon },
+    { id: "ZRX", label: "ZXR", iconUrl: zrxIcon }
+  ];
+
   // const getMaxValueInput = () =>
   //   new BigNumber(userOperation === WithdrawOpearion ? cDaiLocked : daiBalance);
 
@@ -142,7 +160,11 @@ const CompoundWidget = () => {
       <Title>Your Compound balance</Title>
 
       <SelectContainer>
-        <Select />
+        <Select
+          items={tokenList}
+          activeItemId={selectedToken}
+          onItemClick={setSelectedToken}
+        />
         <Text strong size="lg">
           {bNumberToHumanFormat(cTokenLocked)}
         </Text>
