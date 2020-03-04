@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Big from "big.js";
 import { BigNumberInput } from "big-number-input";
-//import { BigNumber } from "ethers/utils";
 import Web3 from "web3";
 
+import { web3Provider, daiAddress, cDaiAddress, tokenList } from "./config";
 import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
 import {
   Button,
@@ -14,13 +14,6 @@ import {
   Text,
   TextField
 } from "../../components";
-import daiIcon from "./images/asset_DAI.svg";
-import batIcon from "./images/asset_BAT.svg";
-import wbtcIcon from "./images/asset_BTC.svg";
-import ethIcon from "./images/asset_ETH.svg";
-import repIcon from "./images/asset_REP.svg";
-import usdcIcon from "./images/asset_USDC.svg";
-import zrxIcon from "./images/asset_ZRX.svg";
 import cERC20Abi from "./abis/CErc20";
 
 import {
@@ -30,22 +23,7 @@ import {
   TransactionUpdate
 } from "../safeConnector";
 
-const web3: any = new Web3(
-  "https://rinkeby.infura.io/v3/7aacdc1534804ea3b4fd2c7490009ee1"
-);
-
-const daiAddress = "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa";
-const cDaiAddress = "0x6D7F0754FFeb405d23C51CE938289d4835bE3b14";
-
-const tokenList = [
-  { id: "DAI", label: "Dai", iconUrl: daiIcon },
-  { id: "BAT", label: "BAT", iconUrl: batIcon },
-  { id: "ETH", label: "ETH", iconUrl: ethIcon },
-  { id: "REP", label: "REP", iconUrl: repIcon },
-  { id: "USDC", label: "USDC", iconUrl: usdcIcon },
-  { id: "WBTC", label: "WBTC", iconUrl: wbtcIcon },
-  { id: "ZRX", label: "ZXR", iconUrl: zrxIcon }
-];
+const web3: any = new Web3(web3Provider);
 
 const blocksPerYear = (365.25 * 24 * 3600) / 15;
 const decimals18 = 10 ** 18;
