@@ -37,6 +37,16 @@ const web3: any = new Web3(
 const daiAddress = "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa";
 const cDaiAddress = "0x6D7F0754FFeb405d23C51CE938289d4835bE3b14";
 
+const tokenList = [
+  { id: "DAI", label: "Dai", iconUrl: daiIcon },
+  { id: "BAT", label: "BAT", iconUrl: batIcon },
+  { id: "ETH", label: "ETH", iconUrl: ethIcon },
+  { id: "REP", label: "REP", iconUrl: repIcon },
+  { id: "USDC", label: "USDC", iconUrl: usdcIcon },
+  { id: "WBTC", label: "WBTC", iconUrl: wbtcIcon },
+  { id: "ZRX", label: "ZXR", iconUrl: zrxIcon }
+];
+
 const blocksPerYear = (365.25 * 24 * 3600) / 15;
 const decimals18 = 10 ** 18;
 
@@ -51,6 +61,7 @@ const CompoundWidget = () => {
   const [tokenBalance, setTokenBalance] = useState<string>("0");
   const [cTokenLocked, setCTokenLocked] = useState<string>("0");
   const [cTokenInput, setCTokenInput] = useState<string>("");
+  const [inputError, setInputError] = useState();
 
   const onTransactionUpdate = ({ txHash, status }: TransactionUpdate) => {
     alert(`txHash: ${txHash}, status: ${status}`);
@@ -141,18 +152,23 @@ const CompoundWidget = () => {
     setCTokenInput("");
   };
 
-  const tokenList = [
-    { id: "DAI", label: "Dai", iconUrl: daiIcon },
-    { id: "BAT", label: "BAT", iconUrl: batIcon },
-    { id: "ETH", label: "ETH", iconUrl: ethIcon },
-    { id: "REP", label: "REP", iconUrl: repIcon },
-    { id: "USDC", label: "USDC", iconUrl: usdcIcon },
-    { id: "WBTC", label: "WBTC", iconUrl: wbtcIcon },
-    { id: "ZRX", label: "ZXR", iconUrl: zrxIcon }
-  ];
+  const onInputChange = (value: string) => {
+    setCTokenInput(value);
+    setInputError(undefined);
 
-  // const getMaxValueInput = () =>
-  //   new BigNumber(userOperation === WithdrawOpearion ? cDaiLocked : daiBalance);
+    if (!value || !value.length) {
+      return;
+    }
+
+    const currentValue = new Big(value);
+    const maxValue = new Big(tokenBalance);
+
+    if (currentValue.gt(maxValue)) {
+      setInputError(`Max value is ${bNumberToHumanFormat(tokenBalance)}`);
+    }
+  };
+
+  const isButtonDisabled = () => Boolean(!cTokenInput.length || inputError);
 
   return (
     <WidgetWrapper>
@@ -172,12 +188,12 @@ const CompoundWidget = () => {
       <Section>
         <DaiInfo>
           <div>
-            <Text>Locked DAI</Text>
+            <Text>Locked {selectedToken}</Text>
             <Text>{bNumberToHumanFormat(tokenBalance)}</Text>
           </div>
           <div>
             <Text>Interest earned</Text>
-            <Text>?.?? DAI</Text>
+            <Text>?.?? {selectedToken}</Text>
           </div>
           <div>
             <Text>Current interest rate</Text>
@@ -190,17 +206,26 @@ const CompoundWidget = () => {
 
       <BigNumberInput
         decimals={18}
-        onChange={setCTokenInput}
+        onChange={onInputChange}
         value={cTokenInput}
-        max={tokenBalance}
-        renderInput={(props: any) => <TextField {...props} />}
+        renderInput={(props: any) => (
+          <TextField label="Amount" errorMsg={inputError} {...props} />
+        )}
       />
 
       <ButtonContainer>
-        <Button variant="contained" onClick={withdraw}>
+        <Button
+          variant="contained"
+          onClick={withdraw}
+          disabled={isButtonDisabled()}
+        >
           Withdraw
         </Button>
-        <Button variant="contained" onClick={lock}>
+        <Button
+          variant="contained"
+          onClick={lock}
+          disabled={isButtonDisabled()}
+        >
           Top up
         </Button>
       </ButtonContainer>
