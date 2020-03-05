@@ -3,7 +3,7 @@ import Big from "big.js";
 import { BigNumberInput } from "big-number-input";
 import Web3 from "web3";
 
-import { web3Provider, tokenList, TokenItem } from "./config";
+import { web3Provider, getTokenList, TokenItem } from "./config";
 import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
 import {
   Button,
@@ -28,22 +28,13 @@ const web3: any = new Web3(web3Provider);
 
 const blocksPerYear = 2102400;
 
-const findDaiRes = tokenList.find(t => t.id === "DAI");
-const daiToken = findDaiRes || {
-  id: "",
-  label: "",
-  iconUrl: "",
-  decimals: 0,
-  tokenAddr: "",
-  cTokenAddr: ""
-};
-
 type Operation = "lock" | "withdraw";
 
 const CompoundWidget = () => {
   const [safeInfo, setSafeInfo] = useState<SafeInfo>();
+  const [tokenList, setTokenList] = useState<Array<TokenItem>>();
 
-  const [selectedToken, setSelectedToken] = useState<TokenItem>(daiToken);
+  const [selectedToken, setSelectedToken] = useState<TokenItem>();
   const [cTokenInstance, setCTokenInstance] = useState();
   const [tokenInstance, setTokenInstance] = useState();
 
@@ -60,25 +51,50 @@ const CompoundWidget = () => {
   // };
 
   // -- Uncomment for debug purposes with local provider
-  // useEffect(() => {
-  //   const w: any = window;
+  useEffect(() => {
+    const w: any = window;
 
-  //   w.web3 = new Web3(w.ethereum);
-  //   w.ethereum.enable();
-  //   w.web3.eth.getAccounts().then((addresses: Array<string>) => {
-  //     setSafeInfo({
-  //       safeAddress: addresses[0],
-  //       network: "rinkeby",
-  //       ethBalance: "0.99"
-  //     });
-  //   });
-  // }, []);
+    w.web3 = new Web3(w.ethereum);
+    w.ethereum.enable();
+    w.web3.eth.getAccounts().then((addresses: Array<string>) => {
+      setSafeInfo({
+        safeAddress: addresses[0],
+        network: "rinkeby",
+        ethBalance: "0.99"
+      });
+    });
+  }, []);
 
   useEffect(() => {
     addListeners({ onSafeInfo: setSafeInfo /* , onTransactionUpdate */ });
   }, []);
 
   useEffect(() => {
+    if (!safeInfo) {
+      return;
+    }
+
+    const tokenListRes = getTokenList(safeInfo.network);
+
+    setTokenList(tokenListRes);
+
+    const findDaiRes = tokenListRes.find(t => t.id === "DAI");
+    setSelectedToken(findDaiRes);
+    // const daiToken = findDaiRes || {
+    //   id: "",
+    //   label: "",
+    //   iconUrl: "",
+    //   decimals: 0,
+    //   tokenAddr: "",
+    //   cTokenAddr: ""
+    // };
+  }, [safeInfo]);
+
+  useEffect(() => {
+    if (!selectedToken) {
+      return;
+    }
+
     setCTokenSupplyAPR("0");
     // setCDaiInteresEarn("0");
     setTokenBalance("0");
@@ -102,6 +118,9 @@ const CompoundWidget = () => {
     const getData = async () => {
       if (
         !safeInfo ||
+        !selectedToken ||
+        !cTokenInstance ||
+        !tokenInstance ||
         selectedToken.cTokenAddr.toLocaleLowerCase() !==
           cTokenInstance._address.toLocaleLowerCase() ||
         selectedToken.tokenAddr.toLocaleLowerCase() !==
@@ -118,7 +137,6 @@ const CompoundWidget = () => {
       // token Balance
       let tokenBalance;
       if (selectedToken.id === "ETH") {
-        console.log("ethBalance", safeInfo.ethBalance);
         tokenBalance = new Big(safeInfo.ethBalance).times(10 ** 18).toString();
       } else {
         tokenBalance = await tokenInstance.methods
@@ -147,6 +165,9 @@ const CompoundWidget = () => {
   }, [safeInfo, selectedToken, cTokenInstance, tokenInstance]);
 
   const bNumberToHumanFormat = (value: string) => {
+    if (!selectedToken) {
+      return "";
+    }
     return new Big(value).div(10 ** selectedToken.decimals).toFixed(4);
   };
 
@@ -166,7 +187,7 @@ const CompoundWidget = () => {
   };
 
   const lock = () => {
-    if (!validateInputValue("lock")) {
+    if (!selectedToken || !validateInputValue("lock")) {
       return;
     }
 
@@ -208,7 +229,7 @@ const CompoundWidget = () => {
   };
 
   const withdraw = () => {
-    if (!validateInputValue("withdraw")) {
+    if (!selectedToken || !validateInputValue("withdraw")) {
       return;
     }
 
@@ -233,6 +254,9 @@ const CompoundWidget = () => {
   const isButtonDisabled = () => Boolean(!inputValue.length || inputError);
 
   const onSelectItem = (id: string) => {
+    if (!tokenList) {
+      return;
+    }
     const selectedToken = tokenList.find(t => t.id === id);
     if (!selectedToken) {
       return;
@@ -255,7 +279,7 @@ const CompoundWidget = () => {
 
       <SelectContainer>
         <Select
-          items={tokenList}
+          items={tokenList || []}
           activeItemId={selectedToken.id}
           onItemClick={onSelectItem}
         />

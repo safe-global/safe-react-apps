@@ -1,6 +1,7 @@
+export type Networks = "rinkeby" | "mainnet"
 export interface SafeInfo {
   safeAddress: string;
-  network: string;
+  network: Networks;
   ethBalance: string;
 }
 
@@ -37,22 +38,22 @@ const onParentMessage = async ({ origin, data, ...rest }: MessageEvent) => {
   // }
 
   if (!data || !data.messageId) {
-    console.error("No message id provided");
+    console.error("From Safe > No message id provided");
     return;
   }
 
   switch (data.messageId) {
     case operations.ON_SAFE_INFO: {
-      console.info("Safe:onSafeInfo");
+      console.info("From Safe > onSafeInfo");
       listeners.onSafeInfo({
         safeAddress: data.data.safeAddress,
-        network: data.data.network,
+        network: data.data.network.toLowerCase(),
         ethBalance: data.data.ethBalance
       });
       break;
     }
     case operations.ON_TX_UPDATE: {
-      console.info("Safe:onTransactionUpdate");
+      console.info("From Safe > onTransactionUpdate");
       if (listeners.onTransactionUpdate) {
         listeners.onTransactionUpdate({
           txHash: data.data.txHash,
@@ -62,7 +63,7 @@ const onParentMessage = async ({ origin, data, ...rest }: MessageEvent) => {
       break;
     }
     default: {
-      console.warn(`Safe:${data.messageId} unkown`);
+      console.warn(`From Safe > ERROR message unkown: ${data.messageId}`);
       break;
     }
   }
