@@ -3,7 +3,7 @@ import Big from "big.js";
 import { BigNumberInput } from "big-number-input";
 import Web3 from "web3";
 
-import { web3Provider, daiAddress, cDaiAddress, tokenList } from "./config";
+import { web3Provider, tokenList, TokenItem } from "./config";
 import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
 import {
   Button,
@@ -12,141 +12,227 @@ import {
   Title,
   Section,
   Text,
-  TextField
+  TextField,
+  Loader
 } from "../../components";
 import cERC20Abi from "./abis/CErc20";
-
 import {
   addListeners,
   sendTransactions,
-  SafeInfo,
-  TransactionUpdate
+  SafeInfo
+  // TransactionUpdate
 } from "../safeConnector";
 
 const web3: any = new Web3(web3Provider);
 
-const blocksPerYear = (365.25 * 24 * 3600) / 15;
-const decimals18 = 10 ** 18;
+const blocksPerYear = 2102400;
+
+const findDaiRes = tokenList.find(t => t.id === "DAI");
+const daiToken = findDaiRes || {
+  id: "",
+  label: "",
+  iconUrl: "",
+  decimals: 0,
+  tokenAddr: "",
+  cTokenAddr: ""
+};
+
+type Operation = "lock" | "withdraw";
 
 const CompoundWidget = () => {
-  const cDai = new web3.eth.Contract(cERC20Abi, cDaiAddress);
-  const dai = new web3.eth.Contract(cERC20Abi, daiAddress);
-
-  const [selectedToken, setSelectedToken] = useState("DAI");
   const [safeInfo, setSafeInfo] = useState<SafeInfo>();
+
+  const [selectedToken, setSelectedToken] = useState<TokenItem>(daiToken);
+  const [cTokenInstance, setCTokenInstance] = useState();
+  const [tokenInstance, setTokenInstance] = useState();
+
   const [cTokenSupplyAPR, setCTokenSupplyAPR] = useState("0");
   //const [cDaiInteresEarn, setCDaiInteresEarn] = useState("0");
   const [tokenBalance, setTokenBalance] = useState<string>("0");
   const [cTokenLocked, setCTokenLocked] = useState<string>("0");
-  const [cTokenInput, setCTokenInput] = useState<string>("");
+
+  const [inputValue, setInputValue] = useState<string>("");
   const [inputError, setInputError] = useState();
 
-  const onTransactionUpdate = ({ txHash, status }: TransactionUpdate) => {
-    alert(`txHash: ${txHash}, status: ${status}`);
-  };
+  // const onTransactionUpdate = ({ txHash, status }: TransactionUpdate) => {
+  //   alert(`txHash: ${txHash}, status: ${status}`);
+  // };
 
   useEffect(() => {
-    addListeners({ onSafeInfo: setSafeInfo, onTransactionUpdate });
+    const w: any = window;
+
+    w.web3 = new Web3(w.ethereum);
+    w.ethereum.enable();
+    w.web3.eth.getAccounts().then((addresses: Array<string>) => {
+      setSafeInfo({
+        safeAddress: addresses[0],
+        network: ""
+      });
+    });
   }, []);
 
   useEffect(() => {
+    addListeners({ onSafeInfo: setSafeInfo /* , onTransactionUpdate */ });
+  }, []);
+
+  useEffect(() => {
+    setCTokenSupplyAPR("0");
+    // setCDaiInteresEarn("0");
+    setTokenBalance("0");
+    setCTokenLocked("0");
+    setInputValue("");
+    setInputError(undefined);
+
+    setTokenInstance(new web3.eth.Contract(cERC20Abi, selectedToken.tokenAddr));
+    setCTokenInstance(
+      new web3.eth.Contract(cERC20Abi, selectedToken.cTokenAddr)
+    );
+  }, [selectedToken]);
+
+  useEffect(() => {
     const getData = async () => {
-      if (!safeInfo) {
+      if (
+        !safeInfo ||
+        selectedToken.cTokenAddr.toLocaleLowerCase() !==
+          cTokenInstance._address.toLocaleLowerCase() ||
+        selectedToken.tokenAddr.toLocaleLowerCase() !==
+          tokenInstance._address.toLocaleLowerCase()
+      ) {
         return;
       }
 
       // supplyRate
-      const cDaiSupplyRate = await cDai.methods.supplyRatePerBlock().call();
-      const res = new Big(cDaiSupplyRate)
+      const cTokenSupplyRate = await cTokenInstance.methods
+        .supplyRatePerBlock()
+        .call();
+
+      // dai Balance
+      const tokenBalance = await tokenInstance.methods
+        .balanceOf(safeInfo.safeAddress)
+        .call();
+
+      // dai Locked
+      const tokenLocked = await cTokenInstance.methods
+        .balanceOfUnderlying(safeInfo.safeAddress)
+        .call();
+
+      const res = new Big(cTokenSupplyRate)
         .times(blocksPerYear)
-        .div(decimals18)
+        .div(10 ** 18)
         .mul(100)
         .toFixed(2);
       setCTokenSupplyAPR(res);
 
-      // dai Balance
-      const daiBalance = await dai.methods
-        .balanceOf(safeInfo.safeAddress)
-        .call();
-      setTokenBalance(daiBalance);
+      setTokenBalance(tokenBalance);
 
-      // dai Locked
-      const daiLocked = await cDai.methods
-        .balanceOfUnderlying(safeInfo.safeAddress)
-        .call();
-      setCTokenLocked(daiLocked);
+      setCTokenLocked(tokenLocked);
     };
 
     getData();
-  });
+  }, [safeInfo, selectedToken, cTokenInstance, tokenInstance]);
 
-  const bNumberToHumanFormat = (value: string) =>
-    new Big(value).div(decimals18).toFixed(4);
+  const bNumberToHumanFormat = (value: string) => {
+    return new Big(value).div(10 ** selectedToken.decimals).toFixed(4);
+  };
+
+  const validateInputValue = (operation: Operation): boolean => {
+    setInputError(undefined);    
+
+    const currentValueBN = new Big(inputValue);
+    const comparisonValueBN =
+      operation === "lock" ? new Big(tokenBalance) : new Big(cTokenLocked);
+
+    if (currentValueBN.gt(comparisonValueBN)) {
+      setInputError(`Max value is ${bNumberToHumanFormat(tokenBalance)}`);
+      return false;
+    }
+
+    return true;
+  };
 
   const lock = () => {
-    if (!cTokenInput || cTokenInput.toString() === "0") {
+    if (!validateInputValue("lock")) {
       return;
     }
 
     const supplyParameter = web3.eth.abi.encodeParameter(
       "uint256",
-      cTokenInput.toString()
+      inputValue.toString()
     );
-    const txs = [
-      {
-        to: daiAddress,
-        value: 0,
-        data: dai.methods.approve(cDaiAddress, supplyParameter).encodeABI()
-      },
-      {
-        to: cDaiAddress,
-        value: 0,
-        data: cDai.methods.mint(supplyParameter).encodeABI()
-      }
-    ];
+
+    let txs;
+
+    if (selectedToken.id === "ETH") {
+      txs = [
+        {
+          to: selectedToken.cTokenAddr,
+          value: supplyParameter,
+          data: cTokenInstance.methods.mint().encodeABI()
+        }
+      ];
+    } else {
+      txs = [
+        {
+          to: selectedToken.tokenAddr,
+          value: 0,
+          data: tokenInstance.methods
+            .approve(selectedToken.cTokenAddr, supplyParameter)
+            .encodeABI()
+        },
+        {
+          to: selectedToken.cTokenAddr,
+          value: 0,
+          data: cTokenInstance.methods.mint(supplyParameter).encodeABI()
+        }
+      ];
+    }
+
     sendTransactions(txs);
 
-    setCTokenInput("");
+    setInputValue("");
   };
 
   const withdraw = () => {
-    if (!cTokenInput || cTokenInput.toString() === "0") {
+    if (!validateInputValue("withdraw")) {
       return;
     }
 
     const supplyParameter = web3.eth.abi.encodeParameter(
       "uint256",
-      cTokenInput.toString()
+      inputValue.toString()
     );
     const txs = [
       {
-        to: cDaiAddress,
+        to: selectedToken.cTokenAddr,
         value: 0,
-        data: cDai.methods.redeemUnderlying(supplyParameter).encodeABI()
+        data: cTokenInstance.methods
+          .redeemUnderlying(supplyParameter)
+          .encodeABI()
       }
     ];
     sendTransactions(txs);
 
-    setCTokenInput("");
+    setInputValue("");
+  };
+
+  const isButtonDisabled = () => Boolean(!inputValue.length || inputError);
+
+  const onSelectItem = (id: string) => {
+    const selectedToken = tokenList.find(t => t.id === id);
+    if (!selectedToken) {
+      return;
+    }
+    setSelectedToken(selectedToken);
   };
 
   const onInputChange = (value: string) => {
-    setCTokenInput(value);
     setInputError(undefined);
+    setInputValue(value);
+  }
 
-    if (!value || !value.length) {
-      return;
-    }
-
-    const currentValue = new Big(value);
-    const maxValue = new Big(tokenBalance);
-
-    if (currentValue.gt(maxValue)) {
-      setInputError(`Max value is ${bNumberToHumanFormat(tokenBalance)}`);
-    }
-  };
-
-  const isButtonDisabled = () => Boolean(!cTokenInput.length || inputError);
+  if (!selectedToken) {
+    return <Loader />;
+  }
 
   return (
     <WidgetWrapper>
@@ -155,23 +241,23 @@ const CompoundWidget = () => {
       <SelectContainer>
         <Select
           items={tokenList}
-          activeItemId={selectedToken}
-          onItemClick={setSelectedToken}
+          activeItemId={selectedToken.id}
+          onItemClick={onSelectItem}
         />
         <Text strong size="lg">
-          {bNumberToHumanFormat(cTokenLocked)}
+          {bNumberToHumanFormat(tokenBalance)}
         </Text>
       </SelectContainer>
 
       <Section>
         <DaiInfo>
           <div>
-            <Text>Locked {selectedToken}</Text>
-            <Text>{bNumberToHumanFormat(tokenBalance)}</Text>
+            <Text>Locked {selectedToken.label}</Text>
+            <Text>{bNumberToHumanFormat(cTokenLocked)}</Text>
           </div>
           <div>
             <Text>Interest earned</Text>
-            <Text>?.?? {selectedToken}</Text>
+            <Text>?.?? {selectedToken.label}</Text>
           </div>
           <div>
             <Text>Current interest rate</Text>
@@ -185,7 +271,7 @@ const CompoundWidget = () => {
       <BigNumberInput
         decimals={18}
         onChange={onInputChange}
-        value={cTokenInput}
+        value={inputValue}
         renderInput={(props: any) => (
           <TextField label="Amount" errorMsg={inputError} {...props} />
         )}

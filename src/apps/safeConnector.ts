@@ -1,7 +1,6 @@
 export interface SafeInfo {
   safeAddress: string;
   network: string;
-  connectionId: string;
 }
 
 export interface TransactionUpdate {
@@ -18,7 +17,6 @@ const parentUrl = process.env.REACT_APP_PARENT_URL
   ? process.env.REACT_APP_PARENT_URL
   : "*";
 let listeners: SafeListeners;
-let connectionId: string;
 
 const operations = {
   SEND_TRANSACTIONS: "sendTransactions",
@@ -45,11 +43,9 @@ const onParentMessage = async ({ origin, data, ...rest }: MessageEvent) => {
   switch (data.messageId) {
     case operations.ON_SAFE_INFO: {
       console.info("Safe:onSafeInfo");
-      connectionId = data.data.connectionId;
       listeners.onSafeInfo({
         safeAddress: data.data.safeAddress,
-        network: data.data.network,
-        connectionId: data.data.connectionId
+        network: data.data.network
       });
       break;
     }
@@ -71,7 +67,7 @@ const onParentMessage = async ({ origin, data, ...rest }: MessageEvent) => {
 };
 
 const sendMessageToParent = (messageId: string, data: any) => {
-  window.parent.postMessage({ connectionId, messageId, data }, parentUrl);
+  window.parent.postMessage({ messageId, data }, parentUrl);
 };
 
 export function sendTransactions(txs: Array<any>) {
