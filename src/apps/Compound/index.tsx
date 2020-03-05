@@ -16,6 +16,7 @@ import {
   Loader
 } from "../../components";
 import cERC20Abi from "./abis/CErc20";
+import cWEthAbi from "./abis/CWEth";
 import {
   addListeners,
   sendTransactions,
@@ -58,18 +59,20 @@ const CompoundWidget = () => {
   //   alert(`txHash: ${txHash}, status: ${status}`);
   // };
 
-  useEffect(() => {
-    const w: any = window;
+  // -- Uncomment for debug purposes with local provider
+  // useEffect(() => {
+  //   const w: any = window;
 
-    w.web3 = new Web3(w.ethereum);
-    w.ethereum.enable();
-    w.web3.eth.getAccounts().then((addresses: Array<string>) => {
-      setSafeInfo({
-        safeAddress: addresses[0],
-        network: ""
-      });
-    });
-  }, []);
+  //   w.web3 = new Web3(w.ethereum);
+  //   w.ethereum.enable();
+  //   w.web3.eth.getAccounts().then((addresses: Array<string>) => {
+  //     setSafeInfo({
+  //       safeAddress: addresses[0],
+  //       network: "rinkeby",
+  //       ethBalance: "0.99"
+  //     });
+  //   });
+  // }, []);
 
   useEffect(() => {
     addListeners({ onSafeInfo: setSafeInfo /* , onTransactionUpdate */ });
@@ -84,9 +87,15 @@ const CompoundWidget = () => {
     setInputError(undefined);
 
     setTokenInstance(new web3.eth.Contract(cERC20Abi, selectedToken.tokenAddr));
-    setCTokenInstance(
-      new web3.eth.Contract(cERC20Abi, selectedToken.cTokenAddr)
-    );
+    if (selectedToken.id === "ETH") {
+      setCTokenInstance(
+        new web3.eth.Contract(cWEthAbi, selectedToken.cTokenAddr)
+      );
+    } else {
+      setCTokenInstance(
+        new web3.eth.Contract(cERC20Abi, selectedToken.cTokenAddr)
+      );
+    }
   }, [selectedToken]);
 
   useEffect(() => {
@@ -106,12 +115,18 @@ const CompoundWidget = () => {
         .supplyRatePerBlock()
         .call();
 
-      // dai Balance
-      const tokenBalance = await tokenInstance.methods
-        .balanceOf(safeInfo.safeAddress)
-        .call();
+      // token Balance
+      let tokenBalance;
+      if (selectedToken.id === "ETH") {
+        console.log("ethBalance", safeInfo.ethBalance);
+        tokenBalance = new Big(safeInfo.ethBalance).times(10 ** 18).toString();
+      } else {
+        tokenBalance = await tokenInstance.methods
+          .balanceOf(safeInfo.safeAddress)
+          .call();
+      }
 
-      // dai Locked
+      // token Locked
       const tokenLocked = await cTokenInstance.methods
         .balanceOfUnderlying(safeInfo.safeAddress)
         .call();
@@ -136,7 +151,7 @@ const CompoundWidget = () => {
   };
 
   const validateInputValue = (operation: Operation): boolean => {
-    setInputError(undefined);    
+    setInputError(undefined);
 
     const currentValueBN = new Big(inputValue);
     const comparisonValueBN =
@@ -228,7 +243,7 @@ const CompoundWidget = () => {
   const onInputChange = (value: string) => {
     setInputError(undefined);
     setInputValue(value);
-  }
+  };
 
   if (!selectedToken) {
     return <Loader />;

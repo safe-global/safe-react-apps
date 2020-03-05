@@ -1,6 +1,7 @@
 export interface SafeInfo {
   safeAddress: string;
   network: string;
+  ethBalance: string;
 }
 
 export interface TransactionUpdate {
@@ -45,7 +46,8 @@ const onParentMessage = async ({ origin, data, ...rest }: MessageEvent) => {
       console.info("Safe:onSafeInfo");
       listeners.onSafeInfo({
         safeAddress: data.data.safeAddress,
-        network: data.data.network
+        network: data.data.network,
+        ethBalance: data.data.ethBalance
       });
       break;
     }

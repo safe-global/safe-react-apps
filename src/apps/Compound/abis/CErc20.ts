@@ -251,7 +251,7 @@ export default [
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
-  },
+  },  
   {
     "constant": false,
     "inputs": [],
