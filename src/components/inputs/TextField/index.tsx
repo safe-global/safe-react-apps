@@ -1,5 +1,5 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
+import TextFieldMui from "@material-ui/core/TextField";
 import styled from "styled-components";
 
 const StyledForm = styled.form`
@@ -12,10 +12,12 @@ type Props = {
   errorMsg?: string;
 };
 
-export default function BasicTextFields({ errorMsg, label, ...rest }: Props) {
+function TextField({ errorMsg, label, ...rest }: Props) {
+  const onSubmit = (e: React.FormEvent) => e.preventDefault();
+
   return (
-    <StyledForm noValidate autoComplete="off">
-      <TextField
+    <StyledForm noValidate autoComplete="off" onSubmit={onSubmit}>
+      <TextFieldMui
         error={errorMsg && errorMsg.length ? true : false}
         label={errorMsg || label}
         variant="filled"
@@ -24,3 +26,5 @@ export default function BasicTextFields({ errorMsg, label, ...rest }: Props) {
     </StyledForm>
   );
 }
+
+export default TextField;
