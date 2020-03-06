@@ -80,14 +80,6 @@ const CompoundWidget = () => {
 
     const findDaiRes = tokenListRes.find(t => t.id === "DAI");
     setSelectedToken(findDaiRes);
-    // const daiToken = findDaiRes || {
-    //   id: "",
-    //   label: "",
-    //   iconUrl: "",
-    //   decimals: 0,
-    //   tokenAddr: "",
-    //   cTokenAddr: ""
-    // };
   }, [safeInfo]);
 
   useEffect(() => {
@@ -179,7 +171,8 @@ const CompoundWidget = () => {
       operation === "lock" ? new Big(tokenBalance) : new Big(cTokenLocked);
 
     if (currentValueBN.gt(comparisonValueBN)) {
-      setInputError(`Max value is ${bNumberToHumanFormat(tokenBalance)}`);
+      const value = operation === "lock" ? tokenBalance : cTokenLocked;
+      setInputError(`Max value is ${bNumberToHumanFormat(value)}`);
       return false;
     }
 
