@@ -10,6 +10,7 @@ const StyledButton = styled(ButtonMUI)`
     border-radius: 4px;
     color: white;
     font-family: "Averta";
+    text-transform: none;
 
     :hover {
       background-color: #001428;
@@ -18,7 +19,7 @@ const StyledButton = styled(ButtonMUI)`
 `;
 
 const Button = ({ children, ...rest }: any) => (
-  <StyledButton variant="contained" {...rest}>
+  <StyledButton {...rest}>
     {children}
   </StyledButton>
 );

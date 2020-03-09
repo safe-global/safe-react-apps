@@ -270,7 +270,7 @@ const CompoundWidget = () => {
 
   return (
     <WidgetWrapper>
-      <Title>Your Compound balance</Title>
+      <Title>Safe balance</Title>
 
       <SelectContainer>
         <Select
@@ -300,7 +300,7 @@ const CompoundWidget = () => {
         </DaiInfo>
       </Section>
 
-      <Title>Withdraw or top up your balance</Title>
+      <Title>Withdraw or top up</Title>
 
       <BigNumberInput
         decimals={18}
