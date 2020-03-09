@@ -244,7 +244,9 @@ const CompoundWidget = () => {
     setInputValue("");
   };
 
-  const isButtonDisabled = () => Boolean(!inputValue.length || inputError);
+  const isButtonDisabled = () => {
+    return !inputValue.length || inputValue === "0" || inputError;
+  };
 
   const onSelectItem = (id: string) => {
     if (!tokenList) {
