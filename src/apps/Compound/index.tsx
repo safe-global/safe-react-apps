@@ -26,7 +26,7 @@ import {
 
 const web3: any = new Web3(web3Provider);
 
-const blocksPerYear = 2102400;
+const blocksPerDay = 5760;
 
 type Operation = "lock" | "withdraw";
 
@@ -38,7 +38,7 @@ const CompoundWidget = () => {
   const [cTokenInstance, setCTokenInstance] = useState();
   const [tokenInstance, setTokenInstance] = useState();
 
-  const [cTokenSupplyAPR, setCTokenSupplyAPR] = useState("0");
+  const [cTokenSupplyAPY, setCTokenSupplyAPY] = useState("0");
   //const [cDaiInteresEarn, setCDaiInteresEarn] = useState("0");
   const [tokenBalance, setTokenBalance] = useState<string>("0");
   const [cTokenLocked, setCTokenLocked] = useState<string>("0");
@@ -87,7 +87,7 @@ const CompoundWidget = () => {
       return;
     }
 
-    setCTokenSupplyAPR("0");
+    setCTokenSupplyAPY("0");
     // setCDaiInteresEarn("0");
     setTokenBalance("0");
     setCTokenLocked("0");
@@ -141,12 +141,16 @@ const CompoundWidget = () => {
         .balanceOfUnderlying(safeInfo.safeAddress)
         .call();
 
-      const res = new Big(cTokenSupplyRate)
-        .times(blocksPerYear)
-        .div(10 ** 18)
-        .mul(100)
+      const dailyRate = new Big(cTokenSupplyRate)
+        .times(blocksPerDay)
+        .div(10 ** 18);
+      const apy = dailyRate
+        .plus(1)
+        .pow(365)
+        .minus(1)
+        .times(100)
         .toFixed(2);
-      setCTokenSupplyAPR(res);
+      setCTokenSupplyAPY(apy.toString());
 
       setTokenBalance(tokenBalance);
 
@@ -295,7 +299,7 @@ const CompoundWidget = () => {
           </div>
           <div>
             <Text>Current interest rate</Text>
-            <Text>{cTokenSupplyAPR}% APR</Text>
+            <Text>{cTokenSupplyAPY}% APR</Text>
           </div>
         </DaiInfo>
       </Section>
