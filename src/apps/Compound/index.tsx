@@ -307,7 +307,7 @@ const CompoundWidget = () => {
       <Title>Withdraw or top up</Title>
 
       <BigNumberInput
-        decimals={18}
+        decimals={selectedToken.decimals}
         onChange={onInputChange}
         value={inputValue}
         renderInput={(props: any) => (
