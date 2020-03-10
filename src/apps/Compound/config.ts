@@ -24,7 +24,7 @@ export const web3Provider = process.env.REACT_APP_INFURA_PROVIDER || "";
 export const getTokenList = (network: Networks): Array<TokenItem> => {
   const tokensByNetwork = tokens[network];
   if (!tokensByNetwork) {
-    throw Error("No token configuration for selected network");
+    throw Error(`No token configuration for ${network}`);
   }
 
   return [
