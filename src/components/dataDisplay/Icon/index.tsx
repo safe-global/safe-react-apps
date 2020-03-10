@@ -24,19 +24,19 @@ const icons = {
 type Props = {
   alt: string;
   type?: IconType;
-  custom?: string;
+  customUrl?: string;
 };
 
-function getSrc(type?: IconType, custom?: string) {
+function getSrc(type?: IconType, customUrl?: string) {
   if (type) {
     return icons[type];
   }
 
-  return custom;
+  return customUrl;
 }
 
-function Icon({ alt, type, custom }: Props) {
-  return <Img alt={alt} src={getSrc(type, custom)} />;
+function Icon({ alt, type, customUrl }: Props) {
+  return <Img alt={alt} src={getSrc(type, customUrl)} />;
 }
 
 export default Icon;
