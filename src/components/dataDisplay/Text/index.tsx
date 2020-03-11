@@ -1,30 +1,21 @@
 import React from "react";
 import styled from "styled-components";
 
-type TextSize = "md" | "lg";
+import { Size } from "../../types";
 
 type Props = {
-  strong?: boolean;
-  size?: TextSize;
-  centerText?: boolean;
   children: any;
+  size: Size;
+  strong?: boolean;
+  center?: boolean;
 };
 
-const getFontSize = (size?: TextSize) => {
-  switch (size) {
-    case "lg":
-      return "19px";
-    default:
-      return "14px";
-  }
-};
-
-const StyledText = styled.p`
+const StyledText = styled.p<Props>`
   margin: 10px 0;
-  font-size: 14px;
-  font-weight: ${({ strong }: Props) => (strong ? "bold" : "normal")};
-  font-size: ${({ size }: Props) => getFontSize(size)};
-  text-align: ${({ centerText }: Props) => (centerText ? "center" : "strat")};
+  font-weight: ${({ strong }) => (strong ? "bold" : "normal")};  
+  font-size: ${({ size, theme }) => theme.text.size[size].fontSize};  
+  line-height: ${({ size, theme }) => theme.text.size[size].lineHeight};    
+  text-align: ${({ center }) => (center ? "center" : "strat")};
 `;
 
 const Text = ({ children, ...rest }: Props) => (

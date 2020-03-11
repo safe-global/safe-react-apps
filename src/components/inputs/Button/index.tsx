@@ -2,7 +2,10 @@ import React from "react";
 import ButtonMUI from "@material-ui/core/Button";
 import styled from "styled-components";
 
-const StyledButton = styled(ButtonMUI)`
+import { Size, Color } from "../../types";
+//import { getSize } from "../../utils";
+
+const StyledButton = styled(ButtonMUI)<any>`
   && {
     background-color: #008c73;
     width: 106px;
@@ -18,7 +21,13 @@ const StyledButton = styled(ButtonMUI)`
   }
 `;
 
-const Button = ({ children, ...rest }: any) => (
+type Props = {
+  children: any;
+  size: Size;
+  color: Color
+};
+
+const Button = ({ children, ...rest }: Props) => (
   <StyledButton {...rest}>
     {children}
   </StyledButton>

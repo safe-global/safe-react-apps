@@ -12,6 +12,9 @@ type Props = {
   children: any;
 };
 
+/**
+ * Use `Section` to highlight/group content.
+ */
 const Section = ({ children }: Props) => (
   <StyledSection>{children}</StyledSection>
 );
