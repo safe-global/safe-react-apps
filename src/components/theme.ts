@@ -18,36 +18,42 @@ const theme = {
       xs: "50px",
       sm: "70px",
       md: "90px",
-      lg: "90px"
+      lg: "90px",
+      xl: undefined
     }
   },
   text: {
     size: {
       xs: {
-        fontSize: '11px',
-        lineHeight: '14px'
+        fontSize: "11px",
+        lineHeight: "14px"
       },
       sm: {
-        fontSize: '12px',
-        lineHeight: '16px'
+        fontSize: "12px",
+        lineHeight: "16px"
       },
       md: {
-        fontSize: '14px',
-        lineHeight: '20px'
+        fontSize: "14px",
+        lineHeight: "20px"
       },
       lg: {
-        fontSize: '16px',
-        lineHeight: '22px'
+        fontSize: "16px",
+        lineHeight: "22px"
       },
       xl: {
-        fontSize: '20px',
-        lineHeight: '26px'
+        fontSize: "20px",
+        lineHeight: "26px"
       }
     }
   },
   icons: {
-    xs: "16px",
-    md: "24px"
+    size: {
+      xs: "16px",
+      sm: "24px",
+      md: undefined,
+      lg: undefined,
+      xl: undefined
+    }
   }
 };
 

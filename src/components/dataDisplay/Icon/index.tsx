@@ -7,16 +7,8 @@ import error from "./images/error.svg";
 import info from "./images/info.svg";
 
 import { Size } from "../../types";
-import { getSize } from "../../utils";
 
 export type IconType = "alert" | "check" | "error" | "info";
-
-const sizeScales = {
-  xs: "15px",
-  sm: "20px",
-  md: "25px",
-  lg: "30px"
-};
 
 function getSrc(type?: IconType, customUrl?: string) {
   if (type) {
@@ -26,9 +18,9 @@ function getSrc(type?: IconType, customUrl?: string) {
   return customUrl;
 }
 
-const Img = styled.img`
-  width: ${({ size }: Props) => getSize(size, sizeScales)};
-  height: ${({ size }: Props) => getSize(size, sizeScales)};
+const Img = styled.img<Props>`
+  width: ${({ size, theme }) => theme.icons.size[size] || theme.icons.size.xs};
+  height: ${({ size, theme }) => theme.icons.size[size] || theme.icons.size.xs};
   margin-right: 5px;
 `;
 

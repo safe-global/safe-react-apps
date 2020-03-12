@@ -33,7 +33,5 @@ export const customSize = () => (
   <>
     <Icon alt="icon" size="xs" type="info" />
     <Icon alt="icon" size="sm" type="info" />
-    <Icon alt="icon" size="md" type="info" />
-    <Icon alt="icon" size="lg" type="info" />
   </>
 );
