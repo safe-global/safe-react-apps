@@ -1,8 +1,6 @@
 import { addons } from "@storybook/addons";
-// import theme from './theme';
 
 addons.setConfig({
   enableShortcuts: false,
-  showNav: true,
-  // theme,
+  showNav: true
 });

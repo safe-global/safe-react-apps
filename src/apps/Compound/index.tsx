@@ -2,9 +2,6 @@ import React, { useEffect, useState } from "react";
 import Big from "big.js";
 import { BigNumberInput } from "big-number-input";
 import Web3 from "web3";
-
-import { web3Provider, getTokenList, TokenItem } from "./config";
-import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
 import {
   Button,
   WidgetWrapper,
@@ -14,7 +11,11 @@ import {
   Text,
   TextField,
   Loader
-} from "../../components";
+} from "@gnosis/safe-react-components";
+
+import { web3Provider, getTokenList, TokenItem } from "./config";
+import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
+
 import cERC20Abi from "./abis/CErc20";
 import cWEthAbi from "./abis/CWEth";
 import {
@@ -269,7 +270,7 @@ const CompoundWidget = () => {
   };
 
   if (!selectedToken) {
-    return <Loader />;
+    return <Loader size="md" />;
   }
 
   return (
@@ -290,16 +291,16 @@ const CompoundWidget = () => {
       <Section>
         <DaiInfo>
           <div>
-            <Text>Locked {selectedToken.label}</Text>
-            <Text>{bNumberToHumanFormat(cTokenLocked)}</Text>
+            <Text size="lg">Locked {selectedToken.label}</Text>
+            <Text size="lg">{bNumberToHumanFormat(cTokenLocked)}</Text>
           </div>
           <div>
-            <Text>Interest earned</Text>
-            <Text>?.?? {selectedToken.label}</Text>
+            <Text size="lg">Interest earned</Text>
+            <Text size="lg">?.?? {selectedToken.label}</Text>
           </div>
           <div>
-            <Text>Current interest rate</Text>
-            <Text>{cTokenSupplyAPY}% APR</Text>
+            <Text size="lg">Current interest rate</Text>
+            <Text size="lg">{cTokenSupplyAPY}% APR</Text>
           </div>
         </DaiInfo>
       </Section>
