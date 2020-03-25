@@ -6,8 +6,6 @@ import check from "./images/check.svg";
 import error from "./images/error.svg";
 import info from "./images/info.svg";
 
-import { Size } from "../../types";
-
 export type IconType = "alert" | "check" | "error" | "info";
 
 function getSrc(type?: IconType, customUrl?: string) {
@@ -21,7 +19,6 @@ function getSrc(type?: IconType, customUrl?: string) {
 const Img = styled.img<Props>`
   width: ${({ size, theme }) => theme.icons.size[size] || theme.icons.size.xs};
   height: ${({ size, theme }) => theme.icons.size[size] || theme.icons.size.xs};
-  margin-right: 5px;
 `;
 
 const icons = {
@@ -33,7 +30,7 @@ const icons = {
 
 type Props = {
   alt: string;
-  size: Size;
+  size: "xxs" | "xs";
   type?: IconType;
   customUrl?: string;
 };

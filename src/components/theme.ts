@@ -4,14 +4,20 @@ const theme = {
     fontFamilyCode: `source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace`
   },
   colors: {
-    activeListItemBackground: "#fafafa",
-    primary: "#00be95",
-    primarySoft: "#A3F7E5",
-    secondary: "#ff7848",
-    secondarySoft: "#FFB59B",
-    tertiary: "#f5f5f5",
-    textColor: "#333",
-    textColorLight: "#888"
+    // semantic colors
+    primary: "#008C73",
+    primarySoft: "#A1D2CA",
+    secondary: "#001428",
+    secondarySoft: "#5D6D74",    
+    error: "#DB3A3D",
+    disabled: "#B2B5B2",
+
+    // named colors
+    white: "#F7F5F5",
+    whiteSmokeSoft: "#F0EFEE",
+    whiteSmoke: "#E8E7E6",
+    mediumGrey: "#B2B5B2",
+    lightGrey: "#D4D5D3"    
   },
   buttons: {
     size: {
@@ -48,11 +54,8 @@ const theme = {
   },
   icons: {
     size: {
-      xs: "16px",
-      sm: "24px",
-      md: undefined,
-      lg: undefined,
-      xl: undefined
+      xxs: "16px",
+      xs: "24px",
     }
   }
 };

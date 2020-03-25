@@ -19,7 +19,7 @@ const StyledText = styled.p<Props>`
 `;
 
 const Text = ({ children, ...rest }: Props) => (
-  <StyledText {...rest}>{children}</StyledText>
+  <StyledText {...rest}>{children}</StyledText>  
 );
 
 export default Text;
