@@ -4,8 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+yalc.lock
 .yalc
-.yalc.lock
 
 # testing
 /coverage
