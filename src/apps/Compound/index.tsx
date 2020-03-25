@@ -52,19 +52,19 @@ const CompoundWidget = () => {
   // };
 
   // -- Uncomment for debug purposes with local provider
-  // useEffect(() => {
-  //   const w: any = window;
+  useEffect(() => {
+    const w: any = window;
 
-  //   w.web3 = new Web3(w.ethereum);
-  //   w.ethereum.enable();
-  //   w.web3.eth.getAccounts().then((addresses: Array<string>) => {
-  //     setSafeInfo({
-  //       safeAddress: addresses[0],
-  //       network: "rinkeby",
-  //       ethBalance: "0.99"
-  //     });
-  //   });
-  // }, []);
+    w.web3 = new Web3(w.ethereum);
+    w.ethereum.enable();
+    w.web3.eth.getAccounts().then((addresses: Array<string>) => {
+      setSafeInfo({
+        safeAddress: addresses[0],
+        network: "rinkeby",
+        ethBalance: "0.99"
+      });
+    });
+  }, []);
 
   useEffect(() => {
     addListeners({ onSafeInfo: setSafeInfo /* , onTransactionUpdate */ });
@@ -275,7 +275,7 @@ const CompoundWidget = () => {
 
   return (
     <WidgetWrapper>
-      <Title>Safe balance</Title>
+      <Title size="md">Safe balance</Title>
 
       <SelectContainer>
         <Select
@@ -305,7 +305,7 @@ const CompoundWidget = () => {
         </DaiInfo>
       </Section>
 
-      <Title>Withdraw or top up</Title>
+      <Title size="md">Withdraw or top up</Title>
 
       <BigNumberInput
         decimals={selectedToken.decimals}
@@ -318,6 +318,8 @@ const CompoundWidget = () => {
 
       <ButtonContainer>
         <Button
+          size="md"
+          color="secondary"
           variant="contained"
           onClick={withdraw}
           disabled={isButtonDisabled()}
@@ -325,6 +327,8 @@ const CompoundWidget = () => {
           Withdraw
         </Button>
         <Button
+          size="md"
+          color="primary"
           variant="contained"
           onClick={lock}
           disabled={isButtonDisabled()}

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { ThemeProvider } from "styled-components";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-import theme from "./theme";
+import { theme } from "@gnosis/safe-react-components";
 import Compound from "./apps/Compound";
 import ENS from "./apps/ENS";
 import Uniswap from "./apps/Uniswap";
