@@ -10,6 +10,7 @@ import {
   Section,
   Text,
   TextField,
+  Divider,
   Loader
 } from "@gnosis/safe-react-components";
 
@@ -52,19 +53,19 @@ const CompoundWidget = () => {
   // };
 
   // -- Uncomment for debug purposes with local provider
-  // useEffect(() => {
-  //   const w: any = window;
+  /* useEffect(() => {
+    const w: any = window;
 
-  //   w.web3 = new Web3(w.ethereum);
-  //   w.ethereum.enable();
-  //   w.web3.eth.getAccounts().then((addresses: Array<string>) => {
-  //     setSafeInfo({
-  //       safeAddress: addresses[0],
-  //       network: "rinkeby",
-  //       ethBalance: "0.99"
-  //     });
-  //   });
-  // }, []);
+    w.web3 = new Web3(w.ethereum);
+    w.ethereum.enable();
+    w.web3.eth.getAccounts().then((addresses: Array<string>) => {
+      setSafeInfo({
+        safeAddress: addresses[0],
+        network: "rinkeby",
+        ethBalance: "0.99"
+      });
+    });
+  }, []); */
 
   useEffect(() => {
     addListeners({ onSafeInfo: setSafeInfo /* , onTransactionUpdate */ });
@@ -275,7 +276,7 @@ const CompoundWidget = () => {
 
   return (
     <WidgetWrapper>
-      <Title size="md">Safe balance</Title>
+      <Title size="xs">Your Compound balance</Title>
 
       <SelectContainer>
         <Select
@@ -290,22 +291,26 @@ const CompoundWidget = () => {
 
       <Section>
         <DaiInfo>
-          <div>
+         {/*  <div>
             <Text size="lg">Locked {selectedToken.label}</Text>
             <Text size="lg">{bNumberToHumanFormat(cTokenLocked)}</Text>
-          </div>
+          </div> */}
+          <Divider> </Divider>
           <div>
             <Text size="lg">Interest earned</Text>
             <Text size="lg">?.?? {selectedToken.label}</Text>
           </div>
+          <Divider> </Divider>
           <div>
             <Text size="lg">Current interest rate</Text>
             <Text size="lg">{cTokenSupplyAPY}% APR</Text>
           </div>
+          <Divider> </Divider>
+
         </DaiInfo>
       </Section>
 
-      <Title size="md">Withdraw or top up</Title>
+      <Title size="xs">Withdraw or top up balance</Title>
 
       <BigNumberInput
         decimals={selectedToken.decimals}

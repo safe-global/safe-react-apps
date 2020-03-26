@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const SelectContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
 
   margin-bottom: 15px;
 
@@ -15,8 +15,8 @@ export const SelectContainer = styled.div`
 export const DaiInfo = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 350px;
+  align-items: left;
+  width: 100%;
 
   > * {
     display: flex;
