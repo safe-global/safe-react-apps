@@ -1,4 +1,4 @@
-// reference 
+// reference
 // https://github.com/compound-finance/compound-protocol/tree/f33865017e15bd3e5b49d5cb34affcc572eebea3/networks
 
 export default {
@@ -25,8 +25,8 @@ export default {
     cZRX: "0x52201ff1720134bBbBB2f6BC97Bf3715490EC19B"
   },
   mainnet: {
-    DAI: "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
-    cDAI: "0xF5DCe57282A584D2746FaF1593d3121Fcac444dC",
+    DAI: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+    cDAI: "0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643",
 
     BAT: "0x0D8775F648430679A709E98d2b0Cb6250d2887EF",
     cBAT: "0x6C8c6b02E7b2BE14d4fA6022Dfd6d75921D90E4E",

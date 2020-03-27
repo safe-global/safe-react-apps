@@ -15,6 +15,7 @@ import {
 
 import { web3Provider, getTokenList, TokenItem } from "./config";
 import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
+import { getTokenTransferEvents, parseTransferEvents } from "./tokensTransfers";
 
 import cERC20Abi from "./abis/CErc20";
 import cWEthAbi from "./abis/CWEth";
@@ -36,16 +37,16 @@ const CompoundWidget = () => {
   const [tokenList, setTokenList] = useState<Array<TokenItem>>();
 
   const [selectedToken, setSelectedToken] = useState<TokenItem>();
-  const [cTokenInstance, setCTokenInstance] = useState();
-  const [tokenInstance, setTokenInstance] = useState();
+  const [cTokenInstance, setCTokenInstance] = useState<any>();
+  const [tokenInstance, setTokenInstance] = useState<any>();
 
   const [cTokenSupplyAPY, setCTokenSupplyAPY] = useState("0");
-  //const [cDaiInteresEarn, setCDaiInteresEarn] = useState("0");
+  const [interestEarn, setInterestEarn] = useState("0");
   const [tokenBalance, setTokenBalance] = useState<string>("0");
-  const [cTokenLocked, setCTokenLocked] = useState<string>("0");
+  const [underlyingBalance, setUnderlyingBalance] = useState<string>("0");
 
   const [inputValue, setInputValue] = useState<string>("");
-  const [inputError, setInputError] = useState();
+  const [inputError, setInputError] = useState<string | undefined>();
 
   // const onTransactionUpdate = ({ txHash, status }: TransactionUpdate) => {
   //   alert(`txHash: ${txHash}, status: ${status}`);
@@ -66,10 +67,12 @@ const CompoundWidget = () => {
   //   });
   // }, []);
 
+  // register safe listeners
   useEffect(() => {
     addListeners({ onSafeInfo: setSafeInfo /* , onTransactionUpdate */ });
   }, []);
 
+  // load tokens list and initialize with DAI
   useEffect(() => {
     if (!safeInfo) {
       return;
@@ -83,15 +86,16 @@ const CompoundWidget = () => {
     setSelectedToken(findDaiRes);
   }, [safeInfo]);
 
+  // on selectedToken
   useEffect(() => {
     if (!selectedToken) {
       return;
     }
 
     setCTokenSupplyAPY("0");
-    // setCDaiInteresEarn("0");
+    setInterestEarn("0");
     setTokenBalance("0");
-    setCTokenLocked("0");
+    setUnderlyingBalance("0");
     setInputValue("");
     setInputError(undefined);
 
@@ -109,25 +113,32 @@ const CompoundWidget = () => {
 
   useEffect(() => {
     const getData = async () => {
+      if (!safeInfo || !selectedToken || !cTokenInstance || !tokenInstance) {
+        return;
+      }
+
+      // wait until cToken is correctly updated
       if (
-        !safeInfo ||
-        !selectedToken ||
-        !cTokenInstance ||
-        !tokenInstance ||
         selectedToken.cTokenAddr.toLocaleLowerCase() !==
-          cTokenInstance._address.toLocaleLowerCase() ||
-        selectedToken.tokenAddr.toLocaleLowerCase() !==
-          tokenInstance._address.toLocaleLowerCase()
+        cTokenInstance?._address.toLocaleLowerCase()
       ) {
         return;
       }
 
-      // supplyRate
+      // wait until token is correctly updated
+      if (
+        selectedToken.tokenAddr.toLocaleLowerCase() !==
+        tokenInstance?._address.toLocaleLowerCase()
+      ) {
+        return;
+      }
+
+      // get supplyRate
       const cTokenSupplyRate = await cTokenInstance.methods
         .supplyRatePerBlock()
         .call();
 
-      // token Balance
+      // get token Balance
       let tokenBalance;
       if (selectedToken.id === "ETH") {
         tokenBalance = new Big(safeInfo.ethBalance).times(10 ** 18).toString();
@@ -137,11 +148,12 @@ const CompoundWidget = () => {
           .call();
       }
 
-      // token Locked
-      const tokenLocked = await cTokenInstance.methods
-        .balanceOfUnderlying(safeInfo.safeAddress)
+      // get token Locked amount
+      const underlyingBalance = await cTokenInstance.methods
+        .balanceOfUnderlying(safeInfo.safeAddress)        
         .call();
 
+      // get APR
       const dailyRate = new Big(cTokenSupplyRate)
         .times(blocksPerDay)
         .div(10 ** 18);
@@ -151,11 +163,30 @@ const CompoundWidget = () => {
         .minus(1)
         .times(100)
         .toFixed(2);
+
+      // get interest earned
+      const tokenTransferEvents = await getTokenTransferEvents(
+        safeInfo.network,        
+        safeInfo.safeAddress,        
+        selectedToken.tokenAddr,        
+        selectedToken.cTokenAddr
+        
+      );
+      const { deposits, withdrawals } = parseTransferEvents(
+        safeInfo.safeAddress,        
+        tokenTransferEvents
+      );
+      const underlyingEarned = new Big(underlyingBalance)
+        .div(10 ** selectedToken.decimals)
+        .plus(withdrawals)
+        .minus(deposits)
+        .toFixed(4);
+
+      // update all the values in a row to avoid UI flickers
+      setInterestEarn(underlyingEarned);
       setCTokenSupplyAPY(apy.toString());
-
       setTokenBalance(tokenBalance);
-
-      setCTokenLocked(tokenLocked);
+      setUnderlyingBalance(underlyingBalance);
     };
 
     getData();
@@ -173,10 +204,10 @@ const CompoundWidget = () => {
 
     const currentValueBN = new Big(inputValue);
     const comparisonValueBN =
-      operation === "lock" ? new Big(tokenBalance) : new Big(cTokenLocked);
+      operation === "lock" ? new Big(tokenBalance) : new Big(underlyingBalance);
 
     if (currentValueBN.gt(comparisonValueBN)) {
-      const value = operation === "lock" ? tokenBalance : cTokenLocked;
+      const value = operation === "lock" ? tokenBalance : underlyingBalance;
       setInputError(`Max value is ${bNumberToHumanFormat(value)}`);
       return false;
     }
@@ -292,11 +323,13 @@ const CompoundWidget = () => {
         <DaiInfo>
           <div>
             <Text size="lg">Locked {selectedToken.label}</Text>
-            <Text size="lg">{bNumberToHumanFormat(cTokenLocked)}</Text>
+            <Text size="lg">{bNumberToHumanFormat(underlyingBalance)}</Text>
           </div>
           <div>
             <Text size="lg">Interest earned</Text>
-            <Text size="lg">?.?? {selectedToken.label}</Text>
+            <Text size="lg">
+              {interestEarn} {selectedToken.label}
+            </Text>
           </div>
           <div>
             <Text size="lg">Current interest rate</Text>
@@ -322,7 +355,7 @@ const CompoundWidget = () => {
           color="secondary"
           variant="contained"
           onClick={withdraw}
-          disabled={isButtonDisabled()}
+          disabled={isButtonDisabled() as any}
         >
           Withdraw
         </Button>
@@ -331,7 +364,7 @@ const CompoundWidget = () => {
           color="primary"
           variant="contained"
           onClick={lock}
-          disabled={isButtonDisabled()}
+          disabled={isButtonDisabled() as any}
         >
           Top up
         </Button>
