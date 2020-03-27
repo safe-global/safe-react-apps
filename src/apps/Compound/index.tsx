@@ -10,6 +10,7 @@ import {
   Section,
   Text,
   TextField,
+  Divider,
   Loader
 } from "@gnosis/safe-react-components";
 
@@ -53,19 +54,19 @@ const CompoundWidget = () => {
   // };
 
   // -- Uncomment for debug purposes with local provider
-  // useEffect(() => {
-  //   const w: any = window;
+  /* useEffect(() => {
+    const w: any = window;
 
-  //   w.web3 = new Web3(w.ethereum);
-  //   w.ethereum.enable();
-  //   w.web3.eth.getAccounts().then((addresses: Array<string>) => {
-  //     setSafeInfo({
-  //       safeAddress: addresses[0],
-  //       network: "rinkeby",
-  //       ethBalance: "0.99"
-  //     });
-  //   });
-  // }, []);
+    w.web3 = new Web3(w.ethereum);
+    w.ethereum.enable();
+    w.web3.eth.getAccounts().then((addresses: Array<string>) => {
+      setSafeInfo({
+        safeAddress: addresses[0],
+        network: "rinkeby",
+        ethBalance: "0.99"
+      });
+    });
+  }, []); */
 
   // register safe listeners
   useEffect(() => {
@@ -150,7 +151,7 @@ const CompoundWidget = () => {
 
       // get token Locked amount
       const underlyingBalance = await cTokenInstance.methods
-        .balanceOfUnderlying(safeInfo.safeAddress)        
+        .balanceOfUnderlying(safeInfo.safeAddress)
         .call();
 
       // get APR
@@ -166,14 +167,13 @@ const CompoundWidget = () => {
 
       // get interest earned
       const tokenTransferEvents = await getTokenTransferEvents(
-        safeInfo.network,        
-        safeInfo.safeAddress,        
-        selectedToken.tokenAddr,        
+        safeInfo.network,
+        safeInfo.safeAddress,
+        selectedToken.tokenAddr,
         selectedToken.cTokenAddr
-        
       );
       const { deposits, withdrawals } = parseTransferEvents(
-        safeInfo.safeAddress,        
+        safeInfo.safeAddress,
         tokenTransferEvents
       );
       const underlyingEarned = new Big(underlyingBalance)
@@ -306,7 +306,7 @@ const CompoundWidget = () => {
 
   return (
     <WidgetWrapper>
-      <Title size="md">Safe balance</Title>
+      <Title size="xs">Your Compound balance</Title>
 
       <SelectContainer>
         <Select
@@ -325,20 +325,23 @@ const CompoundWidget = () => {
             <Text size="lg">Locked {selectedToken.label}</Text>
             <Text size="lg">{bNumberToHumanFormat(underlyingBalance)}</Text>
           </div>
+          <Divider />
           <div>
             <Text size="lg">Interest earned</Text>
             <Text size="lg">
               {interestEarn} {selectedToken.label}
             </Text>
           </div>
+          <Divider />
           <div>
             <Text size="lg">Current interest rate</Text>
             <Text size="lg">{cTokenSupplyAPY}% APR</Text>
           </div>
+          <Divider />
         </DaiInfo>
       </Section>
 
-      <Title size="md">Withdraw or top up</Title>
+      <Title size="xs">Withdraw or top up balance</Title>
 
       <BigNumberInput
         decimals={selectedToken.decimals}
