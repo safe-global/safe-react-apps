@@ -54,7 +54,7 @@ const CompoundWidget = () => {
   // };
 
   // -- Uncomment for debug purposes with local provider
-  useEffect(() => {
+  /* useEffect(() => {
     const w: any = window;
 
     w.web3 = new Web3(w.ethereum);
@@ -66,7 +66,7 @@ const CompoundWidget = () => {
         ethBalance: "0.99"
       });
     });
-  }, []);
+  }, []); */
 
   // register safe listeners
   useEffect(() => {
