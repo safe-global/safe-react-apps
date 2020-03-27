@@ -1703,12 +1703,9 @@
     "@ethersproject/constants" ">=5.0.0-beta.128"
     "@ethersproject/logger" ">=5.0.0-beta.129"
 
-"@gnosis/safe-react-components@https://github.com/gnosis/safe-react-components.git#master":
+"@gnosis/safe-react-components@https://github.com/gnosis/safe-react-components.git#b985922":
   version "0.1.1"
-  resolved "https://github.com/gnosis/safe-react-components.git#5bb2bc9e0e31a645f60bf064e0791c95dd68261d"
-  dependencies:
-    big-number-input "^1.0.1"
-    big.js "^5.2.2"
+  resolved "https://github.com/gnosis/safe-react-components.git#b9859222328c5f358d34613d423b124f93cea954"
 
 "@hapi/address@2.x.x":
   version "2.1.4"
@@ -4303,7 +4300,7 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-big-number-input@^1.0.1, big-number-input@^1.0.2:
+big-number-input@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/big-number-input/-/big-number-input-1.0.2.tgz#dcea0caf764ed49e2ef18caeabc12722c85048bf"
   integrity sha512-eeIFLcNQosyPs5J3bpdBtWqhupIaHtrBUyRr1+C40SZhttTV9KhOhL2xI5ZtXjyzM21qqBDOWVPGbeicYBFgGw==
