@@ -1,0 +1,23 @@
+[[redirects]]
+  from = "/compound/manifest.json"
+  to = "/compound/manifest.json"
+  status = 200
+ 
+[[redirects]]
+  from = "/compound/icon"
+  to = "/compound/icon.svg"
+  status = 200 
+ 
+
+# The following redirect is intended for use with most SPAs that handle
+# routing internally.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  # Define which paths this specific [[headers]] block will cover.
+  for = "/*"
+    [headers.values]
+    Access-Control-Allow-Origin = "*"
