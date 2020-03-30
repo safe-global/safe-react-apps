@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import { theme } from "@gnosis/safe-react-components";
 import Compound from "./apps/Compound";
-import ENS from "./apps/ENS";
 import Uniswap from "./apps/Uniswap";
 import GlobalStyles from "./global";
 
@@ -18,10 +17,7 @@ ReactDOM.render(
       <Switch>
         <Route path="/compound">
           <Compound />
-        </Route>
-        <Route path="/ens">
-          <ENS />
-        </Route>
+        </Route>        
         <Route path="/uniswap">
           <Uniswap />
         </Route>
@@ -32,10 +28,7 @@ ReactDOM.render(
               <>
                 <div>
                   <Link to="/compound">Compound</Link>
-                </div>
-                <div>
-                  <Link to="/ens">ENS</Link>
-                </div>
+                </div>                
                 <div>
                   <Link to="/uniswap">Uniswap</Link>
                 </div>

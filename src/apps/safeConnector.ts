@@ -63,7 +63,7 @@ const onParentMessage = async ({ origin, data, ...rest }: MessageEvent) => {
       break;
     }
     default: {
-      console.warn(`From Safe > ERROR message unkown: ${data.messageId}`);
+      console.warn(`From Safe > ERROR message unknown: ${data.messageId}`);
       break;
     }
   }

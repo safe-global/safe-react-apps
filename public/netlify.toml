@@ -1,3 +1,4 @@
+# Compound
 [[redirects]]
   from = "/compound/manifest.json"
   to = "/compound/manifest.json"
@@ -8,6 +9,16 @@
   to = "/compound/icon.svg"
   status = 200 
  
+# Uniswap
+[[redirects]]
+  from = "/uniswap/manifest.json"
+  to = "/uniswap/manifest.json"
+  status = 200
+ 
+[[redirects]]
+  from = "/uniswap/icon"
+  to = "/uniswap/icon.png"
+  status = 200 
 
 # The following redirect is intended for use with most SPAs that handle
 # routing internally.

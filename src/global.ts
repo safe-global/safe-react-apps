@@ -1,6 +1,4 @@
 import { createGlobalStyle } from "styled-components";
-//import Averta from './assets/fonts/Averta-normal.woff2';
-//import AvertaBold from './assets/fonts/Averta-ExtraBold.woff2';
 import avertaFont from "@gnosis/safe-react-components/dist/fonts/averta-normal.woff2";
 import avertaBoldFont from "@gnosis/safe-react-components/dist/fonts/averta-bold.woff2";
 
