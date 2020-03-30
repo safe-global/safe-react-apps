@@ -1,4 +1,5 @@
 {  
+  "name": "Compound",
   "description": "Some description for Compound",
   "providedBy": { "name": "Gnosis", "url": "https://gnosis.io/" }
 }
