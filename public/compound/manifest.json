@@ -1,5 +1,6 @@
 {  
   "name": "Compound",
   "description": "Some description for Compound",
+  "iconPath": "/icon.svg",
   "providedBy": { "name": "Gnosis", "url": "https://gnosis.io/" }
 }

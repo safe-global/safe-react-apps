@@ -3,6 +3,11 @@ import avertaFont from "@gnosis/safe-react-components/dist/fonts/averta-normal.w
 import avertaBoldFont from "@gnosis/safe-react-components/dist/fonts/averta-bold.woff2";
 
 const GlobalStyle = createGlobalStyle`
+   body {
+       margin: 0px;
+       padding: 0px;
+   }
+
    @font-face {
         font-family: 'Averta';
         src: local('Averta'), local('Averta Bold'),
