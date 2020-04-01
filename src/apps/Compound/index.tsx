@@ -183,7 +183,7 @@ const CompoundWidget = () => {
 
       // update all the values in a row to avoid UI flickers
       selectedToken.id === "ETH"
-        ? setInterestEarn("0")
+        ? setInterestEarn("TBD")
         : setInterestEarn(underlyingEarned);
       setCTokenSupplyAPY(apy.toString());
       setTokenBalance(tokenBalance);
