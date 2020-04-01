@@ -182,7 +182,9 @@ const CompoundWidget = () => {
         .toFixed(4);
 
       // update all the values in a row to avoid UI flickers
-      setInterestEarn(underlyingEarned);
+      selectedToken.id === "ETH"
+        ? setInterestEarn("0")
+        : setInterestEarn(underlyingEarned);
       setCTokenSupplyAPY(apy.toString());
       setTokenBalance(tokenBalance);
       setUnderlyingBalance(underlyingBalance);
