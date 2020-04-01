@@ -95,12 +95,13 @@ export function parseTransferEvents(
 ) {
   let deposits = 0;
   let withdrawals = 0;
+  
   transferEvents.forEach(event => {
     const parsedAmount = Number(event.amount);
     if (!Number.isNaN(parsedAmount)) {
       event.sender.toLowerCase() === senderAddress.toLowerCase()
         ? (deposits += parsedAmount)
-        : (withdrawals += withdrawals);
+        : (withdrawals += parsedAmount);
     }
   });
   return {

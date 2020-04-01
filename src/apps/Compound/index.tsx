@@ -56,7 +56,6 @@ const CompoundWidget = () => {
   // -- Uncomment for debug purposes with local provider
   // useEffect(() => {
   //   const w: any = window;
-
   //   w.web3 = new Web3(w.ethereum);
   //   w.ethereum.enable();
   //   w.web3.eth.getAccounts().then((addresses: Array<string>) => {
