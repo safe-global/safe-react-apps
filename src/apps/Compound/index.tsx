@@ -4,7 +4,6 @@ import { BigNumberInput } from "big-number-input";
 import Web3 from "web3";
 import {
   Button,
-  WidgetWrapper,
   Select,
   Title,
   Section,
@@ -14,6 +13,7 @@ import {
   Loader
 } from "@gnosis/safe-react-components";
 
+import { WidgetWrapper } from "../components";
 import { web3Provider, getTokenList, TokenItem } from "./config";
 import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
 import { getTokenTransferEvents, parseTransferEvents } from "./tokensTransfers";
