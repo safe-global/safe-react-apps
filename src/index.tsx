@@ -1,9 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { ThemeProvider } from "styled-components";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-import { theme } from "@gnosis/safe-react-components";
 import Compound from "./apps/Compound";
 import Uniswap from "./apps/Uniswap";
 import GlobalStyles from "./global";
@@ -11,13 +9,13 @@ import GlobalStyles from "./global";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
+  <>
     <GlobalStyles />
     <Router>
       <Switch>
         <Route path="/compound">
           <Compound />
-        </Route>        
+        </Route>
         <Route path="/uniswap">
           <Uniswap />
         </Route>
@@ -28,7 +26,7 @@ ReactDOM.render(
               <>
                 <div>
                   <Link to="/compound">Compound</Link>
-                </div>                
+                </div>
                 <div>
                   <Link to="/uniswap">Uniswap</Link>
                 </div>
@@ -38,7 +36,7 @@ ReactDOM.render(
         />
       </Switch>
     </Router>
-  </ThemeProvider>,
+  </>,
   document.getElementById("root")
 );
 

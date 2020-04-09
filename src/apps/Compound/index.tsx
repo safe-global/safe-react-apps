@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Big from "big.js";
 import { BigNumberInput } from "big-number-input";
 import Web3 from "web3";
+import { ThemeProvider } from "styled-components";
 import {
   Button,
   Select,
@@ -10,22 +11,18 @@ import {
   Text,
   TextField,
   Divider,
-  Loader
+  Loader,
 } from "@gnosis/safe-react-components";
 
 import { WidgetWrapper } from "../components";
 import { web3Provider, getTokenList, TokenItem } from "./config";
 import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
 import { getTokenTransferEvents, parseTransferEvents } from "./tokensTransfers";
+import theme from "./customTheme";
 
 import cERC20Abi from "./abis/CErc20";
 import cWEthAbi from "./abis/CWEth";
-import {
-  addListeners,
-  sendTransactions,
-  SafeInfo
-  // TransactionUpdate
-} from "../safeConnector";
+import { addListeners, sendTransactions, SafeInfo } from "../safeConnector";
 
 const web3: any = new Web3(web3Provider);
 
@@ -82,7 +79,7 @@ const CompoundWidget = () => {
 
     setTokenList(tokenListRes);
 
-    const findDaiRes = tokenListRes.find(t => t.id === "DAI");
+    const findDaiRes = tokenListRes.find((t) => t.id === "DAI");
     setSelectedToken(findDaiRes);
   }, [safeInfo]);
 
@@ -233,8 +230,8 @@ const CompoundWidget = () => {
         {
           to: selectedToken.cTokenAddr,
           value: supplyParameter,
-          data: cTokenInstance.methods.mint().encodeABI()
-        }
+          data: cTokenInstance.methods.mint().encodeABI(),
+        },
       ];
     } else {
       txs = [
@@ -243,13 +240,13 @@ const CompoundWidget = () => {
           value: 0,
           data: tokenInstance.methods
             .approve(selectedToken.cTokenAddr, supplyParameter)
-            .encodeABI()
+            .encodeABI(),
         },
         {
           to: selectedToken.cTokenAddr,
           value: 0,
-          data: cTokenInstance.methods.mint(supplyParameter).encodeABI()
-        }
+          data: cTokenInstance.methods.mint(supplyParameter).encodeABI(),
+        },
       ];
     }
 
@@ -273,8 +270,8 @@ const CompoundWidget = () => {
         value: 0,
         data: cTokenInstance.methods
           .redeemUnderlying(supplyParameter)
-          .encodeABI()
-      }
+          .encodeABI(),
+      },
     ];
     sendTransactions(txs);
 
@@ -289,7 +286,7 @@ const CompoundWidget = () => {
     if (!tokenList) {
       return;
     }
-    const selectedToken = tokenList.find(t => t.id === id);
+    const selectedToken = tokenList.find((t) => t.id === id);
     if (!selectedToken) {
       return;
     }
@@ -306,74 +303,76 @@ const CompoundWidget = () => {
   }
 
   return (
-    <WidgetWrapper>
-      <Title size="xs">Your Compound balance</Title>
+    <ThemeProvider theme={theme}>
+      <WidgetWrapper>
+        <Title size="xs">Your Compound balance</Title>
 
-      <SelectContainer>
-        <Select
-          items={tokenList || []}
-          activeItemId={selectedToken.id}
-          onItemClick={onSelectItem}
+        <SelectContainer>
+          <Select
+            items={tokenList || []}
+            activeItemId={selectedToken.id}
+            onItemClick={onSelectItem}
+          />
+          <Text strong size="lg">
+            {bNumberToHumanFormat(tokenBalance)}
+          </Text>
+        </SelectContainer>
+
+        <Section>
+          <DaiInfo>
+            <div>
+              <Text size="lg">Locked {selectedToken.label}</Text>
+              <Text size="lg">{bNumberToHumanFormat(underlyingBalance)}</Text>
+            </div>
+            <Divider />
+            <div>
+              <Text size="lg">Interest earned</Text>
+              <Text size="lg">
+                {interestEarn} {selectedToken.label}
+              </Text>
+            </div>
+            <Divider />
+            <div>
+              <Text size="lg">Current interest rate</Text>
+              <Text size="lg">{cTokenSupplyAPY}% APR</Text>
+            </div>
+            <Divider />
+          </DaiInfo>
+        </Section>
+
+        <Title size="xs">Withdraw or top up balance</Title>
+
+        <BigNumberInput
+          decimals={selectedToken.decimals}
+          onChange={onInputChange}
+          value={inputValue}
+          renderInput={(props: any) => (
+            <TextField label="Amount" errorMsg={inputError} {...props} />
+          )}
         />
-        <Text strong size="lg">
-          {bNumberToHumanFormat(tokenBalance)}
-        </Text>
-      </SelectContainer>
 
-      <Section>
-        <DaiInfo>
-          <div>
-            <Text size="lg">Locked {selectedToken.label}</Text>
-            <Text size="lg">{bNumberToHumanFormat(underlyingBalance)}</Text>
-          </div>
-          <Divider />
-          <div>
-            <Text size="lg">Interest earned</Text>
-            <Text size="lg">
-              {interestEarn} {selectedToken.label}
-            </Text>
-          </div>
-          <Divider />
-          <div>
-            <Text size="lg">Current interest rate</Text>
-            <Text size="lg">{cTokenSupplyAPY}% APR</Text>
-          </div>
-          <Divider />
-        </DaiInfo>
-      </Section>
-
-      <Title size="xs">Withdraw or top up balance</Title>
-
-      <BigNumberInput
-        decimals={selectedToken.decimals}
-        onChange={onInputChange}
-        value={inputValue}
-        renderInput={(props: any) => (
-          <TextField label="Amount" errorMsg={inputError} {...props} />
-        )}
-      />
-
-      <ButtonContainer>
-        <Button
-          size="md"
-          color="secondary"
-          variant="contained"
-          onClick={withdraw}
-          disabled={isButtonDisabled() as any}
-        >
-          Withdraw
-        </Button>
-        <Button
-          size="md"
-          color="primary"
-          variant="contained"
-          onClick={lock}
-          disabled={isButtonDisabled() as any}
-        >
-          Top up
-        </Button>
-      </ButtonContainer>
-    </WidgetWrapper>
+        <ButtonContainer>
+          <Button
+            size="md"
+            color="secondary"
+            variant="contained"
+            onClick={withdraw}
+            disabled={isButtonDisabled() as any}
+          >
+            Withdraw
+          </Button>
+          <Button
+            size="md"
+            color="primary"
+            variant="contained"
+            onClick={lock}
+            disabled={isButtonDisabled() as any}
+          >
+            Top up
+          </Button>
+        </ButtonContainer>
+      </WidgetWrapper>
+    </ThemeProvider>
   );
 };
 
