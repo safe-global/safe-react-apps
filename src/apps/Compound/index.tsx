@@ -353,7 +353,7 @@ const CompoundWidget = () => {
 
         <ButtonContainer>
           <Button
-            size="md"
+            size="lg"
             color="secondary"
             variant="contained"
             onClick={withdraw}
@@ -362,7 +362,7 @@ const CompoundWidget = () => {
             Withdraw
           </Button>
           <Button
-            size="md"
+            size="lg"
             color="primary"
             variant="contained"
             onClick={lock}
