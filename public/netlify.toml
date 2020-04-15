@@ -28,6 +28,6 @@
   status = 200
 
 [[headers]]
-  for = "/*"
+  for = "/compound/*"
     [headers.values]
     Access-Control-Allow-Origin = "*"
