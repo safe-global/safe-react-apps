@@ -1412,7 +1412,7 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@babel/runtime@^7.4.5":
+"@babel/runtime@^7.4.5", "@babel/runtime@^7.8.7":
   version "7.9.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.9.2.tgz#d90df0583a3a252f09aaa619665367bae518db06"
   integrity sha512-NE2DtOdufG7R5vnfQUTehdTfNycfUANEtCa9PssN9O/xmTzP4E08UI797ixaei6hBEVL9BI/PsdJS5x7mWoB9Q==
@@ -1703,9 +1703,13 @@
     "@ethersproject/constants" ">=5.0.0-beta.128"
     "@ethersproject/logger" ">=5.0.0-beta.129"
 
-"@gnosis/safe-react-components@https://github.com/gnosis/safe-react-components.git#b985922":
+"@gnosis/safe-react-components@https://github.com/gnosis/safe-react-components.git#eb0ac7d":
   version "0.1.1"
-  resolved "https://github.com/gnosis/safe-react-components.git#b9859222328c5f358d34613d423b124f93cea954"
+  resolved "https://github.com/gnosis/safe-react-components.git#eb0ac7d38a3b5dc867f194b14aa7b2dafa564335"
+  dependencies:
+    classnames "^2.2.6"
+    polished "^3.5.1"
+    url-loader "^4.1.0"
 
 "@hapi/address@2.x.x":
   version "2.1.4"
@@ -4961,7 +4965,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.5:
+classnames@^2.2.5, classnames@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -9839,6 +9843,15 @@ loader-utils@^1.4.0:
     emojis-list "^3.0.0"
     json5 "^1.0.1"
 
+loader-utils@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-2.0.0.tgz#e4cace5b816d425a166b5f097e10cd12b36064b0"
+  integrity sha512-rP4F0h2RaWSvPEkD7BLDFQnvSf+nK+wr3ESUjNTyAGobqrijmW92zc+SO6d4p4B1wh7+B/Jg1mkQe5NYUEHtHQ==
+  dependencies:
+    big.js "^5.2.2"
+    emojis-list "^3.0.0"
+    json5 "^2.1.2"
+
 locate-path@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-2.0.0.tgz#2b568b265eec944c6d9c0de9c3dbbbca0354cd8e"
@@ -10224,7 +10237,7 @@ mime-db@1.43.0, "mime-db@>= 1.43.0 < 2":
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.43.0.tgz#0a12e0502650e473d735535050e7c8f4eb4fae58"
   integrity sha512-+5dsGEEovYbT8UY9yD7eE4XTc4UwJ1jBYlgaQQF38ENsKR3wj/8q8RFZrF9WIZpB2V1ArTVFUva8sAul1NzRzQ==
 
-mime-types@^2.1.12, mime-types@^2.1.16, mime-types@~2.1.17, mime-types@~2.1.19, mime-types@~2.1.24:
+mime-types@^2.1.12, mime-types@^2.1.16, mime-types@^2.1.26, mime-types@~2.1.17, mime-types@~2.1.19, mime-types@~2.1.24:
   version "2.1.26"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.26.tgz#9c921fc09b7e149a65dfdc0da4d20997200b0a06"
   integrity sha512-01paPWYgLrkqAyrlDorC1uDwl2p3qZT7yl806vW7DvDoxwXi46jsjFbg+WdwotBIk6/MbEhO/dh5aZ5sNj/dWQ==
@@ -11387,6 +11400,13 @@ polished@^3.3.1:
   integrity sha512-x9PKeExyI9AhWrJP3Q57I1k7GInujjiVBJMPFmycj9hX1yCOo/X9eu9eZwxgOziiXge3WbFQ5XOmkzunOntBSA==
   dependencies:
     "@babel/runtime" "^7.6.3"
+
+polished@^3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/polished/-/polished-3.5.1.tgz#657b6faf4c2308f3e0b1951196803a5e5d67b122"
+  integrity sha512-GVbvskpBiDV5TknurGL6OyFfLHsCknxbU8w5iMppT8rW0tLEoQHrIRfrPNPqGXNj3HGhkjRvhmg59Fy7HSnCAw==
+  dependencies:
+    "@babel/runtime" "^7.8.7"
 
 popper.js@^1.14.1, popper.js@^1.14.4, popper.js@^1.14.7:
   version "1.16.1"
@@ -15271,6 +15291,15 @@ url-loader@2.3.0, url-loader@^2.0.1:
     loader-utils "^1.2.3"
     mime "^2.4.4"
     schema-utils "^2.5.0"
+
+url-loader@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/url-loader/-/url-loader-4.1.0.tgz#c7d6b0d6b0fccd51ab3ffc58a78d32b8d89a7be2"
+  integrity sha512-IzgAAIC8wRrg6NYkFIJY09vtktQcsvU8V6HhtQj9PTefbYImzLB1hufqo4m+RyM5N3mLx5BqJKccgxJS+W3kqw==
+  dependencies:
+    loader-utils "^2.0.0"
+    mime-types "^2.1.26"
+    schema-utils "^2.6.5"
 
 url-parse-lax@^1.0.0:
   version "1.0.0"

@@ -1,6 +1,6 @@
 {  
   "name": "Compound",
-  "description": "Some description for Compound",
-  "iconPath": "/icon.svg",
+  "description": "Money markets on the Ethereum blockchain",
+  "iconPath": "icon.svg",
   "providedBy": { "name": "Gnosis", "url": "https://gnosis.io/" }
 }

@@ -279,7 +279,7 @@ const CompoundWidget = () => {
   };
 
   const isButtonDisabled = () => {
-    return !inputValue.length || inputValue === "0" || inputError;
+    return !!(!inputValue.length || inputValue === "0" || inputError);
   };
 
   const onSelectItem = (id: string) => {
@@ -347,7 +347,7 @@ const CompoundWidget = () => {
           onChange={onInputChange}
           value={inputValue}
           renderInput={(props: any) => (
-            <TextField label="Amount" errorMsg={inputError} {...props} />
+            <TextField label="Amount" meta={{ error: inputError }} {...props} />
           )}
         />
 
@@ -357,7 +357,7 @@ const CompoundWidget = () => {
             color="secondary"
             variant="contained"
             onClick={withdraw}
-            disabled={isButtonDisabled() as any}
+            disabled={isButtonDisabled()}
           >
             Withdraw
           </Button>
@@ -366,7 +366,7 @@ const CompoundWidget = () => {
             color="primary"
             variant="contained"
             onClick={lock}
-            disabled={isButtonDisabled() as any}
+            disabled={isButtonDisabled()}
           >
             Top up
           </Button>
