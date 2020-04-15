@@ -3,13 +3,11 @@
   from = "/compound/manifest.json"
   to = "/compound/manifest.json"
   status = 200
-  headers = {Access-Control-Allow-Origin="*"}
  
 [[redirects]]
   from = "/compound/icon"
   to = "/compound/icon.svg"
   status = 200 
-  headers = {Access-Control-Allow-Origin="*"}
  
 # Uniswap
 [[redirects]]
@@ -30,6 +28,6 @@
   status = 200    
 
 [[headers]]
-  for = "*"
+  for = "/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
