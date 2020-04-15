@@ -1,8 +1,8 @@
 # Define which paths this specific [[headers]] block will cover.
 [[headers]]
   for = "/*"
-    [headers.values]
-    Access-Control-Allow-Origin = *
+  [headers.values]
+    Access-Control-Allow-Origin = "*"    
 
 # Compound
 [[redirects]]
