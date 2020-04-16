@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const Card = styled.div`
   font-family: "Averta";
-  width: 100%;
+  width: 682px;
   min-height: 300px;
   display: flex;
   justify-content: left;
@@ -14,7 +14,7 @@ const Body = styled.div`
 margin:0;
 
 h5:first-child {
-    margin-top: 8px;
+    margin-top: 24px;
   }
   
 h5 {
