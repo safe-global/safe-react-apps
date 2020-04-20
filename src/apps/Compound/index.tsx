@@ -12,7 +12,8 @@ import {
   TextField,
   Divider,
   Loader,
-} from "@gnosis/safe-react-components";
+} from "@gnosis.pm/safe-react-components";
+import initSdk, { SafeInfo } from "@gnosis.pm/safe-apps-sdk";
 
 import { WidgetWrapper } from "../components";
 import { web3Provider, getTokenList, TokenItem } from "./config";
@@ -22,10 +23,8 @@ import theme from "./customTheme";
 
 import cERC20Abi from "./abis/CErc20";
 import cWEthAbi from "./abis/CWEth";
-import { addListeners, sendTransactions, SafeInfo } from "../safeConnector";
 
 const web3: any = new Web3(web3Provider);
-
 const blocksPerDay = 5760;
 
 type Operation = "lock" | "withdraw";
@@ -46,9 +45,7 @@ const CompoundWidget = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [inputError, setInputError] = useState<string | undefined>();
 
-  // const onTransactionUpdate = ({ txHash, status }: TransactionUpdate) => {
-  //   alert(`txHash: ${txHash}, status: ${status}`);
-  // };
+  const [appsSdk] = useState(initSdk(process.env.REACT_APP_SAFE_APP_URL || ""));
 
   // -- Uncomment for debug purposes with local provider
   // useEffect(() => {
@@ -64,10 +61,14 @@ const CompoundWidget = () => {
   //   });
   // }, []);
 
-  // register safe listeners
+  // config safe connector
   useEffect(() => {
-    addListeners({ onSafeInfo: setSafeInfo /* , onTransactionUpdate */ });
-  }, []);
+    appsSdk.addListeners({
+      onSafeInfo: setSafeInfo /* , onTransactionUpdate */,
+    });
+
+    return () => appsSdk.removeListeners();
+  }, [appsSdk]);
 
   // load tokens list and initialize with DAI
   useEffect(() => {
@@ -250,7 +251,7 @@ const CompoundWidget = () => {
       ];
     }
 
-    sendTransactions(txs);
+    appsSdk.sendTransactions(txs);
 
     setInputValue("");
   };
@@ -273,7 +274,7 @@ const CompoundWidget = () => {
           .encodeABI(),
       },
     ];
-    sendTransactions(txs);
+    appsSdk.sendTransactions(txs);
 
     setInputValue("");
   };

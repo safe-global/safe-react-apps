@@ -1,4 +1,4 @@
-import { theme } from "@gnosis/safe-react-components";
+import { theme } from "@gnosis.pm/safe-react-components";
 
 const copyTheme = { ...theme };
 
