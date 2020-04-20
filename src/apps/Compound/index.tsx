@@ -45,7 +45,12 @@ const CompoundWidget = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [inputError, setInputError] = useState<string | undefined>();
 
-  const [appsSdk] = useState(initSdk(process.env.REACT_APP_SAFE_APP_URL || ""));
+  let safeMultisigUrl = [];
+  if (process.env.REACT_APP_SAFE_APP_URL) {
+    safeMultisigUrl.push(process.env.REACT_APP_SAFE_APP_URL);
+  }
+
+  const [appsSdk] = useState(initSdk(safeMultisigUrl));
 
   // -- Uncomment for debug purposes with local provider
   // useEffect(() => {
