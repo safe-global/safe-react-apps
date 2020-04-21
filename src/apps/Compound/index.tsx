@@ -13,7 +13,8 @@ import {
   Divider,
   Loader,
 } from "@gnosis.pm/safe-react-components";
-import initSdk, { SafeInfo } from "@gnosis.pm/safe-apps-sdk";
+
+import initSdk, { SafeInfo } from "./sdk";
 
 import { WidgetWrapper } from "../components";
 import { web3Provider, getTokenList, TokenItem } from "./config";
