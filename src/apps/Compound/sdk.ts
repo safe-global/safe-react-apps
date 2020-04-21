@@ -1,4 +1,4 @@
-export type Networks = 'rinkeby' | 'mainnet';
+export type Networks = "rinkeby" | "mainnet";
 
 export interface SdkInstance {
   addListeners: (listeners: SafeListeners) => void;
@@ -17,11 +17,11 @@ export interface SafeListeners {
 }
 
 export enum FromSafeMessages {
-  ON_SAFE_INFO = 'ON_SAFE_INFO',
+  ON_SAFE_INFO = "ON_SAFE_INFO",
 }
 
 export enum ToSafeMessages {
-  SEND_TRANSACTIONS = 'SEND_TRANSACTIONS',
+  SEND_TRANSACTIONS = "SEND_TRANSACTIONS",
 }
 
 const config: {
@@ -29,15 +29,17 @@ const config: {
   listeners?: SafeListeners;
 } = {
   safeAppUrls: [
-    'https://gnosis-safe.io/',
-    'https://safe-team.staging.gnosisdev.com/',
-    'https://rinkeby.gnosis-safe.io/',
-    'https://safe-team-rinkeby.staging.gnosisdev.com/',
+    "https://gnosis-safe.io/",
+    "https://safe-team.staging.gnosisdev.com/",
+    "https://rinkeby.gnosis-safe.io/",
+    "https://safe-team-rinkeby.staging.gnosisdev.com/",
   ],
 };
 
 const _logMessageFromSafe = (origin: string, message: FromSafeMessages) => {
-  console.info(`SafeConnector: A message with id ${message} was received from origin ${origin}.`);
+  console.info(
+    `SafeConnector: A message with id ${message} was received from origin ${origin}.`
+  );
 };
 
 const _onParentMessage = async ({ origin, data }: MessageEvent) => {
@@ -45,18 +47,27 @@ const _onParentMessage = async ({ origin, data }: MessageEvent) => {
     return;
   }
 
-  if (!config.safeAppUrls.includes(origin)) {
-    console.error(`SafeConnector: A message was received from an unknown origin: ${origin}.`);
+  if (
+    !config.safeAppUrls.includes(origin) ||
+    !/https:\/\/pr[0-9]+--safereact.review.gnosisdev.com/gm.test(origin)
+  ) {
+    console.error(
+      `SafeConnector: A message was received from an unknown origin: ${origin}.`
+    );
     return;
   }
 
   if (!data || !data.messageId) {
-    console.error(`SafeConnector: A message was received from origin ${origin} with NO message id provided.`);
+    console.error(
+      `SafeConnector: A message was received from origin ${origin} with NO message id provided.`
+    );
     return;
   }
 
   if (!config.listeners) {
-    console.error(`SafeConnector: A message was received from origin ${origin} but no listeners were registered.`);
+    console.error(
+      `SafeConnector: A message was received from origin ${origin} but no listeners were registered.`
+    );
     return;
   }
 
@@ -75,7 +86,7 @@ const _onParentMessage = async ({ origin, data }: MessageEvent) => {
 
     default: {
       console.warn(
-        `SafeConnector: A message was received from origin ${origin} with an unknown message id: ${data.messageId}`,
+        `SafeConnector: A message was received from origin ${origin} with an unknown message id: ${data.messageId}`
       );
       break;
     }
@@ -83,7 +94,7 @@ const _onParentMessage = async ({ origin, data }: MessageEvent) => {
 };
 
 const _sendMessageToParent = (messageId: string, data: any) => {
-  window.parent.postMessage({ messageId, data }, '*');
+  window.parent.postMessage({ messageId, data }, "*");
 };
 
 /**
@@ -93,14 +104,14 @@ const _sendMessageToParent = (messageId: string, data: any) => {
  */
 function addListeners({ ...allListeners }: SafeListeners) {
   config.listeners = { ...allListeners };
-  window.addEventListener('message', _onParentMessage);
+  window.addEventListener("message", _onParentMessage);
 }
 
 /**
  * Unregister all the listeners previously set by addListeners.
  */
 function removeListeners() {
-  window.removeEventListener('message', _onParentMessage);
+  window.removeEventListener("message", _onParentMessage);
 }
 
 /**
@@ -120,11 +131,15 @@ function sendTransactions(txs: any[]) {
  */
 function initSdk(safeAppUrls: string[] = []) {
   safeAppUrls.forEach((url) => {
-    if (!/(?:^|[ \t])((https?:\/\/)?(?:localhost|[\w-]+(?:\.[\w-]+)+)(:\d+)?(\/\S*)?)/gm.test(url)) {
-      throw Error('Please provide a valid urls.');
+    if (
+      !/(?:^|[ \t])((https?:\/\/)?(?:localhost|[\w-]+(?:\.[\w-]+)+)(:\d+)?(\/\S*)?)/gm.test(
+        url
+      )
+    ) {
+      throw Error("Please provide a valid urls.");
     }
 
-    if (url.substr(-1) !== '/') {
+    if (url.substr(-1) !== "/") {
       url = `${url}/`;
     }
   });
