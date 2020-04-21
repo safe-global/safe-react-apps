@@ -49,7 +49,7 @@ const _onParentMessage = async ({ origin, data }: MessageEvent) => {
 
   if (
     !config.safeAppUrls.includes(origin) ||
-    !/https:\/\/pr[0-9]+--safereact.review.gnosisdev.com/gm.test(origin)
+    !/https:\/\/pr[0-9]+--safereact.review.gnosisdev.com\/?/gm.test(origin)
   ) {
     console.error(
       `SafeConnector: A message was received from an unknown origin: ${origin}.`
