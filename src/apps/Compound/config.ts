@@ -8,7 +8,7 @@ import zrxIcon from "./images/asset_ZRX.svg";
 
 import tokens from "./tokens";
 
-import { Networks } from "@gnosis.pm/safe-apps-sdk";
+import { Networks } from "./sdk";
 
 export type TokenItem = {
   id: string;

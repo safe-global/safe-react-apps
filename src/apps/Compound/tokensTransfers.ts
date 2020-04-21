@@ -1,7 +1,7 @@
 import ApolloClient from "apollo-boost";
 import { gql } from "apollo-boost";
 
-import { Networks } from "@gnosis.pm/safe-apps-sdk";
+import { Networks } from "./sdk";
 
 const subgraphUri: { [key in Networks]: string } = {
   rinkeby:
