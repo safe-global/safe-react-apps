@@ -30,9 +30,11 @@ const config: {
 } = {
   safeAppUrls: [
     "https://gnosis-safe.io/",
-    "https://safe-team.staging.gnosisdev.com/",
     "https://rinkeby.gnosis-safe.io/",
+    
+    "https://safe-team.staging.gnosisdev.com/",
     "https://safe-team-rinkeby.staging.gnosisdev.com/",
+    "https://safe-team.dev.gnosisdev.com/"
   ],
 };
 
