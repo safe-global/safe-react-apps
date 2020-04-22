@@ -29,17 +29,17 @@ const config: {
   listeners?: SafeListeners;
 } = {
   safeAppUrls: [
-    "https://gnosis-safe.io/",
-    "https://rinkeby.gnosis-safe.io/",
+    "https://gnosis-safe.io",
+    "https://rinkeby.gnosis-safe.io",
 
-    "https://safe-team.staging.gnosisdev.com/",
-    "https://safe-team-rinkeby.staging.gnosisdev.com/",
-    "https://safe-team.dev.gnosisdev.com/",
+    "https://safe-team.staging.gnosisdev.com",
+    "https://safe-team-rinkeby.staging.gnosisdev.com",
+    "https://safe-team.dev.gnosisdev.com",
   ],
 };
 
-const _addSlash = (url: string): string =>
-  url.substr(-1) !== "/" ? `${url}/` : url;
+// const _addSlash = (url: string): string =>
+//   url.substr(-1) !== "/" ? `${url}/` : url;
 
 const _logMessageFromSafe = (origin: string, message: FromSafeMessages) => {
   console.info(
@@ -53,10 +53,8 @@ const _onParentMessage = async ({ origin, data }: MessageEvent) => {
   }
 
   if (
-    !config.safeAppUrls.includes(_addSlash(origin)) &&
-    !/https:\/\/pr[0-9]+--safereact.review.gnosisdev.com\//gm.test(
-      _addSlash(origin)
-    )
+    !config.safeAppUrls.includes(origin) &&
+    !/https:\/\/pr[0-9]+--safereact.review.gnosisdev.com\//gm.test(origin)
   ) {
     console.error(
       `SafeConnector: A message was received from an unknown origin: ${origin}.`
@@ -146,7 +144,7 @@ function initSdk(safeAppUrls: string[] = []) {
       throw Error("Please provide a valid urls.");
     }
 
-    url = _addSlash(url);
+    //url = _addSlash(url);
   });
 
   config.safeAppUrls = [...config.safeAppUrls, ...safeAppUrls];
