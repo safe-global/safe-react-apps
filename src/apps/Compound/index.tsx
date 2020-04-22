@@ -47,25 +47,27 @@ const CompoundWidget = () => {
   const [inputError, setInputError] = useState<string | undefined>();
 
   let safeMultisigUrl = [];
-  if (process.env.REACT_APP_SAFE_APP_URL) {
-    safeMultisigUrl.push(process.env.REACT_APP_SAFE_APP_URL);
+  if (process.env.REACT_APP_LOCAL_SAFE_APP_URL) {
+    safeMultisigUrl.push(/http:\/\/localhost:3000/);
   }
 
   const [appsSdk] = useState(initSdk(safeMultisigUrl));
 
-  // -- Uncomment for debug purposes with local provider
-  // useEffect(() => {
-  //   const w: any = window;
-  //   w.web3 = new Web3(w.ethereum);
-  //   w.ethereum.enable();
-  //   w.web3.eth.getAccounts().then((addresses: Array<string>) => {
-  //     setSafeInfo({
-  //       safeAddress: addresses[0],
-  //       network: "rinkeby",
-  //       ethBalance: "0.99"
-  //     });
-  //   });
-  // }, []);
+  // -- for development purposes with local provider
+  useEffect(() => {
+    if (process.env.REACT_APP_LOCAL_WEB3_PROVIDER) {
+      const w: any = window;
+      w.web3 = new Web3(w.ethereum);
+      w.ethereum.enable();
+      w.web3.eth.getAccounts().then((addresses: Array<string>) => {
+        setSafeInfo({
+          safeAddress: addresses[0],
+          network: "rinkeby",
+          ethBalance: "0.99",
+        });
+      });
+    }
+  }, []);
 
   // config safe connector
   useEffect(() => {

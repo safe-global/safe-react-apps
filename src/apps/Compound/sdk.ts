@@ -25,21 +25,9 @@ export enum ToSafeMessages {
 }
 
 const config: {
-  safeAppUrls: string[];
+  safeAppUrlsRegExp?: RegExp[];
   listeners?: SafeListeners;
-} = {
-  safeAppUrls: [
-    "https://gnosis-safe.io",
-    "https://rinkeby.gnosis-safe.io",
-
-    "https://safe-team.staging.gnosisdev.com",
-    "https://safe-team-rinkeby.staging.gnosisdev.com",
-    "https://safe-team.dev.gnosisdev.com",
-  ],
-};
-
-// const _addSlash = (url: string): string =>
-//   url.substr(-1) !== "/" ? `${url}/` : url;
+} = {};
 
 const _logMessageFromSafe = (origin: string, message: FromSafeMessages) => {
   console.info(
@@ -53,8 +41,7 @@ const _onParentMessage = async ({ origin, data }: MessageEvent) => {
   }
 
   if (
-    !config.safeAppUrls.includes(origin) &&
-    !/https:\/\/pr[0-9]+--safereact.review.gnosisdev.com\//gm.test(origin)
+    config.safeAppUrlsRegExp?.find((regExp) => regExp.test(origin)) === undefined
   ) {
     console.error(
       `SafeConnector: A message was received from an unknown origin: ${origin}.`
@@ -134,20 +121,11 @@ function sendTransactions(txs: any[]) {
  * Sets Safe-app url that will render the third-party app.
  * @param parentUrl
  */
-function initSdk(safeAppUrls: string[] = []) {
-  safeAppUrls.forEach((url) => {
-    if (
-      !/(?:^|[ \t])((https?:\/\/)?(?:localhost|[\w-]+(?:\.[\w-]+)+)(:\d+)?(\/\S*)?)/gm.test(
-        url
-      )
-    ) {
-      throw Error("Please provide a valid urls.");
-    }
-
-    //url = _addSlash(url);
-  });
-
-  config.safeAppUrls = [...config.safeAppUrls, ...safeAppUrls];
+function initSdk(safeAppUrlsRegExp: RegExp[] = []) {
+  config.safeAppUrlsRegExp = [
+    /https:\/\/.*(gnosis-safe\.io|gnosisdev.com)/,
+    ...safeAppUrlsRegExp,
+  ];
 
   return { addListeners, removeListeners, sendTransactions };
 }
