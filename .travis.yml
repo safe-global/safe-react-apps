@@ -1,0 +1,58 @@
+
+if: (branch = master) OR (branch = development) OR (tag IS present)
+language: node_js
+node_js: '12'
+before_install:
+  - yarn install --network-concurrency 1 # workaround https://github.com/yarnpkg/yarn/issues/6312
+  # Needed to deploy pull request and releases
+  - pip install awscli --upgrade --user
+cache:
+  yarn: true
+
+before_script:
+- cp .env.example .env
+- yarn build
+script:
+  - echo "Skip tests" # no test cases for the project
+
+deploy:
+  # DEVELOPMENT env deployment
+  - provider: s3
+    bucket: $DEV_BUCKET_NAME
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    skip_cleanup: true
+    local_dir: build
+    upload-dir: current
+    region: eu-central-1
+    on:
+      branch: development
+
+  # STAGING env deployment
+  - provider: s3
+    bucket: $STAGING_BUCKET_NAME
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    skip_cleanup: true
+    local_dir: build
+    upload-dir: current
+    region: eu-central-1
+    on:
+      branch: master
+
+
+  # Prepare production env deployment
+  - provider: s3
+    bucket: $STAGING_BUCKET_NAME
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    skip_cleanup: true
+    local_dir: build
+    upload-dir: releases/$TRAVIS_TAG
+    region: eu-central-1
+    on:
+      tags: true
+  - provider: script
+    script: bash travis/prepare_production_deployment.sh
+    on:
+      tags: true
