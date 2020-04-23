@@ -1,5 +1,5 @@
 
-if: (branch = master) OR (tag IS present)  # Add (branch = development) if needed
+if: (branch = master) OR (branch = development) OR (tag IS present)
 language: node_js
 node_js: '12'
 before_install:
@@ -16,7 +16,19 @@ script:
   - echo "Skip tests" # no test cases for the project
 
 deploy:
-  # STAGING deployment
+  # DEVELOPMENT env deployment
+  - provider: s3
+    bucket: $DEV_BUCKET_NAME
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    skip_cleanup: true
+    local_dir: build
+    upload-dir: current
+    region: eu-central-1
+    on:
+      branch: development
+
+  # STAGING env deployment
   - provider: s3
     bucket: $STAGING_BUCKET_NAME
     access_key_id: $AWS_ACCESS_KEY_ID
@@ -29,7 +41,7 @@ deploy:
       branch: master
 
 
-  # Prepare production deployment
+  # Prepare production env deployment
   - provider: s3
     bucket: $STAGING_BUCKET_NAME
     access_key_id: $AWS_ACCESS_KEY_ID
