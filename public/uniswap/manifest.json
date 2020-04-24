@@ -1,6 +1,5 @@
 {  
-  "name": "Uniswap",
-  "description": "Some description for Uniswap",
-  "iconPath": "icon.png",
-  "providedBy": { "name": "Gnosis", "url": "https://gnosis.io/" }
+  "name": "Uniswap (soon)",
+  "description": "Uniswap",
+  "iconPath": "icon.png"  
 }

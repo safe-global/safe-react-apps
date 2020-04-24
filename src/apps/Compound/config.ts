@@ -1,3 +1,5 @@
+import { Networks } from "@gnosis.pm/safe-apps-sdk";
+
 import daiIcon from "./images/asset_DAI.svg";
 import batIcon from "./images/asset_BAT.svg";
 import wbtcIcon from "./images/asset_BTC.svg";
@@ -5,10 +7,7 @@ import ethIcon from "./images/asset_ETH.svg";
 import repIcon from "./images/asset_REP.svg";
 import usdcIcon from "./images/asset_USDC.svg";
 import zrxIcon from "./images/asset_ZRX.svg";
-
 import tokens from "./tokens";
-
-import { Networks } from "./sdk";
 
 export type TokenItem = {
   id: string;

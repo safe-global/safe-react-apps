@@ -13,10 +13,10 @@ import {
   Divider,
   Loader,
 } from "@gnosis.pm/safe-react-components";
+import initSdk, { SafeInfo } from "@gnosis.pm/safe-apps-sdk";
+import styled from "styled-components";
 
-import initSdk, { SafeInfo } from "./sdk";
-
-import { WidgetWrapper } from "../components";
+import WidgetWrapper from "../../components/WidgetWrapper";
 import { web3Provider, getTokenList, TokenItem } from "./config";
 import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
 import { getTokenTransferEvents, parseTransferEvents } from "./tokensTransfers";
@@ -29,6 +29,10 @@ const web3: any = new Web3(web3Provider);
 const blocksPerDay = 5760;
 
 type Operation = "lock" | "withdraw";
+
+const StyledTitle = styled(Title)`
+  margin-top: 0px;
+`;
 
 const CompoundWidget = () => {
   const [safeInfo, setSafeInfo] = useState<SafeInfo>();
@@ -314,7 +318,7 @@ const CompoundWidget = () => {
   return (
     <ThemeProvider theme={theme}>
       <WidgetWrapper>
-        <Title size="xs">Your Compound balance</Title>
+        <StyledTitle size="xs">Your Compound balance</StyledTitle>
 
         <SelectContainer>
           <Select
