@@ -8,9 +8,13 @@ before_install:
   - pip install awscli --upgrade --user
 cache:
   yarn: true
-
+env:
+  - PORT=3002
+  - BROWSER=none
+  - REACT_APP_LOCAL_SAFE_APP_URL=true
+  - REACT_APP_LOCAL_WEB3_PROVIDER=true
+  # REACT_APP_INFURA_PROVIDER is set on CI admin panel
 before_script:
-- cp .env.example .env
 - yarn build
 script:
   - echo "Skip tests" # no test cases for the project
