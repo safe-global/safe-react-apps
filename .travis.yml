@@ -8,9 +8,8 @@ before_install:
   - pip install awscli --upgrade --user
 cache:
   yarn: true
-
+# env var REACT_APP_INFURA_PROVIDER is set on CI admin panel
 before_script:
-- cp .env.example .env
 - yarn build
 script:
   - echo "Skip tests" # no test cases for the project
@@ -23,7 +22,6 @@ deploy:
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     skip_cleanup: true
     local_dir: build
-    upload-dir: current
     region: eu-central-1
     on:
       branch: development
