@@ -8,11 +8,7 @@ before_install:
   - pip install awscli --upgrade --user
 cache:
   yarn: true
-env:
-  global:
-    - PORT=3002
-    - BROWSER=none
-    # REACT_APP_INFURA_PROVIDER is set on CI admin panel
+# env var REACT_APP_INFURA_PROVIDER is set on CI admin panel
 before_script:
 - yarn build
 script:
