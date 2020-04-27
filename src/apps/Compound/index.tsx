@@ -60,6 +60,7 @@ const CompoundWidget = () => {
   //-- for development purposes with local provider
   useEffect(() => {
     if (process.env.REACT_APP_LOCAL_WEB3_PROVIDER) {
+      console.warn("COMPOUND APP: you are using a local web3 provider")
       const w: any = window;
       w.web3 = new Web3(w.ethereum);
       w.ethereum.enable();
