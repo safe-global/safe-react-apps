@@ -9,11 +9,12 @@ before_install:
 cache:
   yarn: true
 env:
-  - PORT=3002
-  - BROWSER=none
-  - REACT_APP_LOCAL_SAFE_APP_URL=true
-  - REACT_APP_LOCAL_WEB3_PROVIDER=true
-  # REACT_APP_INFURA_PROVIDER is set on CI admin panel
+  global:
+    - PORT=3002
+    - BROWSER=none
+    - REACT_APP_LOCAL_SAFE_APP_URL=true
+    - REACT_APP_LOCAL_WEB3_PROVIDER=true
+    # REACT_APP_INFURA_PROVIDER is set on CI admin panel
 before_script:
 - yarn build
 script:
