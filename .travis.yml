@@ -12,8 +12,6 @@ env:
   global:
     - PORT=3002
     - BROWSER=none
-    - REACT_APP_LOCAL_SAFE_APP_URL=true
-    - REACT_APP_LOCAL_WEB3_PROVIDER=true
     # REACT_APP_INFURA_PROVIDER is set on CI admin panel
 before_script:
 - yarn build
@@ -28,7 +26,6 @@ deploy:
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     skip_cleanup: true
     local_dir: build
-    upload-dir: current
     region: eu-central-1
     on:
       branch: development
