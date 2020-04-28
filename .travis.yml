@@ -20,9 +20,9 @@ deploy:
     bucket: $DEV_BUCKET_NAME
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
-    skip_cleanup: true
     local_dir: build
-    region: eu-central-1
+    skip_cleanup: true
+    region: $AWS_REGION
     on:
       branch: development
 
@@ -32,9 +32,9 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     skip_cleanup: true
-    local_dir: build
     upload-dir: current
-    region: eu-central-1
+    local_dir: build
+    region: $AWS_REGION
     on:
       branch: master
 
@@ -45,11 +45,12 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     skip_cleanup: true
-    local_dir: build
     upload-dir: releases/$TRAVIS_TAG
-    region: eu-central-1
+    local_dir: build
+    region: $AWS_REGION
     on:
       tags: true
+
   - provider: script
     script: bash travis/prepare_production_deployment.sh
     on:
