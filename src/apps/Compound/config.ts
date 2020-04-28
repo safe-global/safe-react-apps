@@ -18,7 +18,7 @@ export type TokenItem = {
   cTokenAddr: string;
 };
 
-export const web3Provider = process.env.REACT_APP_INFURA_PROVIDER || "";
+export const web3Provider = process.env.REACT_APP_WEB3_PROVIDER_URL || "";
 
 export const getTokenList = (network: Networks): Array<TokenItem> => {
   const tokensByNetwork = tokens[network];
