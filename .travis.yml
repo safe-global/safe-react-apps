@@ -20,18 +20,8 @@ deploy:
     bucket: $DEV_BUCKET_NAME
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
-    glob: "build/*.html"
+    local_dir: build
     cache_control: "max-age=0,no-cache,no-store,must-revalidate"
-    skip_cleanup: true
-    region: $AWS_REGION
-    on:
-      branch: development
-
-  - provider: s3
-    bucket: $DEV_BUCKET_NAME
-    access_key_id: $AWS_ACCESS_KEY_ID
-    secret_access_key: $AWS_SECRET_ACCESS_KEY
-    glob: "!(build/*.html)"
     skip_cleanup: true
     region: $AWS_REGION
     on:
@@ -43,9 +33,10 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     skip_cleanup: true
-    local_dir: build
     upload-dir: current
-    region: eu-central-1
+    local_dir: build
+    cache_control: "max-age=0,no-cache,no-store,must-revalidate"
+    region: $AWS_REGION
     on:
       branch: master
 
@@ -56,11 +47,13 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     skip_cleanup: true
-    local_dir: build
     upload-dir: releases/$TRAVIS_TAG
-    region: eu-central-1
+    local_dir: build
+    cache_control: "max-age=0,no-cache,no-store,must-revalidate"
+    region: $AWS_REGION
     on:
       tags: true
+
   - provider: script
     script: bash travis/prepare_production_deployment.sh
     on:
