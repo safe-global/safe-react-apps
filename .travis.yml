@@ -20,9 +20,22 @@ deploy:
     bucket: $DEV_BUCKET_NAME
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
-    skip_cleanup: true
+    glob: "*.html"
+    cache_control: "max-age=0,no-cache,no-store,must-revalidate"
     local_dir: build
-    region: eu-central-1
+    skip_cleanup: true
+    region: $AWS_REGION
+    on:
+      branch: development
+
+  - provider: s3
+    bucket: $DEV_BUCKET_NAME
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    glob: "!(*.html)"
+    local_dir: build
+    skip_cleanup: true
+    region: $AWS_REGION
     on:
       branch: development
 
