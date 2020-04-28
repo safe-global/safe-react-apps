@@ -1,5 +1,5 @@
 
-if: (branch = master) OR (branch = development) OR (tag IS present)
+if: (branch = master) OR (branch = development) OR (tag IS present) OR (branch = feature/improve-s3-deploy) # TODO edit me
 language: node_js
 node_js: '12'
 before_install:
@@ -15,12 +15,34 @@ script:
   - echo "Skip tests" # no test cases for the project
 
 deploy:
+  # TODO for testing, remove me
+  - provider: s3
+    bucket: $DEV_BUCKET_NAME
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    glob: "/build/**/*.html"
+    cache_control: "max-age=0,no-cache,no-store,must-revalidate"
+    skip_cleanup: true
+    region: $AWS_REGION
+    on:
+      branch: feature/improve-s3-deploy
+
+  - provider: s3
+    bucket: $DEV_BUCKET_NAME
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    glob: "/build/**/!*.html"
+    skip_cleanup: true
+    region: $AWS_REGION
+    on:
+      branch: feature/improve-s3-deploy
+
   # DEVELOPMENT env deployment
   - provider: s3
     bucket: $DEV_BUCKET_NAME
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
-    glob: "build/*.html"
+    glob: "/build/**/*.html"
     cache_control: "max-age=0,no-cache,no-store,must-revalidate"
     skip_cleanup: true
     region: $AWS_REGION
@@ -31,7 +53,7 @@ deploy:
     bucket: $DEV_BUCKET_NAME
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
-    glob: "!(build/*.html)"
+    glob: "/build/**/!*.html"
     skip_cleanup: true
     region: $AWS_REGION
     on:
