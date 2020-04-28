@@ -1254,9 +1254,9 @@
     "@ethersproject/constants" ">=5.0.0-beta.128"
     "@ethersproject/logger" ">=5.0.0-beta.129"
 
-"@gnosis.pm/safe-apps-sdk@https://github.com/gnosis/safe-apps-sdk.git#dfaa31b":
+"@gnosis.pm/safe-apps-sdk@https://github.com/gnosis/safe-apps-sdk.git#523191b":
   version "0.1.0"
-  resolved "https://github.com/gnosis/safe-apps-sdk.git#dfaa31b45b0a65a12aa59fd50e95c918d41a191e"
+  resolved "https://github.com/gnosis/safe-apps-sdk.git#523191b258bff07f2c81f46114255f79b2d3e718"
 
 "@gnosis.pm/safe-react-components@https://github.com/gnosis/safe-react-components.git#71e6fed":
   version "0.1.1"
