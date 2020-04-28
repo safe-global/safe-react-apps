@@ -8,7 +8,15 @@ before_install:
   - pip install awscli --upgrade --user
 cache:
   yarn: true
-# env var REACT_APP_INFURA_PROVIDER is set on CI admin panel
+matrix:
+  include:
+  - env:
+    # Use mainnet provider when building a tagged version
+    - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_MAINNET
+    if: tag IS present
+  - env:
+    # Use rinkeby for development and staging builds
+    - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_RINKEBY
 before_script:
 - yarn build
 script:
