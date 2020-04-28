@@ -2,10 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
+import Aave from "./apps/Aave";
 import Compound from "./apps/Compound";
-import Uniswap from "./apps/Uniswap";
-import Ens from "./apps/Ens";
-import NexusMutual from "./apps/NexusMutual";
+import PoolTogether from "./apps/PoolTogether";
+import Request from "./apps/Request";
+import Synthetix from "./apps/Synthetix";
+import Testing from "./apps/Testing";
+import OpenZeppelin from "./apps/OpenZeppelin";
 import GlobalStyles from "./global";
 
 import * as serviceWorker from "./serviceWorker";
@@ -15,17 +18,26 @@ ReactDOM.render(
     <GlobalStyles />
     <Router>
       <Switch>
+        <Route path="/aave">
+          <Aave />
+        </Route>
         <Route path="/compound">
           <Compound />
         </Route>
-        <Route path="/uniswap">
-          <Uniswap />
+        <Route path="/pool-together">
+          <PoolTogether />
         </Route>
-        <Route path="/nexus-mutual">
-          <NexusMutual />
+        <Route path="/open-zeppelin">
+          <OpenZeppelin />
         </Route>
-        <Route path="/ens">
-          <Ens />
+        <Route path="/request">
+          <Request />
+        </Route>
+        <Route path="/synthetix">
+          <Synthetix />
+        </Route>
+        <Route path="/testing">
+          <Testing />
         </Route>
         <Route
           path="/"
@@ -33,16 +45,25 @@ ReactDOM.render(
             return (
               <>
                 <div>
+                  <Link to="/aave">Aave</Link>
+                </div>
+                <div>
                   <Link to="/compound">Compound</Link>
                 </div>
                 <div>
-                  <Link to="/uniswap">Uniswap</Link>
+                  <Link to="/open-zeppelin">OpenZeppelin</Link>
                 </div>
                 <div>
-                  <Link to="/nexus-mutual">Nexus-Mutual</Link>
+                  <Link to="/pool-together">PoolTogether</Link>
                 </div>
                 <div>
-                  <Link to="/ens">Ens</Link>
+                  <Link to="/request">Request</Link>
+                </div>
+                <div>
+                  <Link to="/synthetix">Synthetix</Link>
+                </div>
+                <div>
+                  <Link to="/testing">Testing</Link>
                 </div>
               </>
             );
