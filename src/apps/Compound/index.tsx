@@ -17,7 +17,7 @@ import initSdk, { SafeInfo } from "@gnosis.pm/safe-apps-sdk";
 import styled from "styled-components";
 
 import WidgetWrapper from "../../components/WidgetWrapper";
-import { web3Provider, getTokenList, TokenItem } from "./config";
+import { getTokenList, TokenItem } from "./config";
 import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
 import { getTokenTransferEvents, parseTransferEvents } from "./tokensTransfers";
 import theme from "./customTheme";
@@ -25,7 +25,6 @@ import theme from "./customTheme";
 import cERC20Abi from "./abis/CErc20";
 import cWEthAbi from "./abis/CWEth";
 
-const web3: any = new Web3(web3Provider);
 const blocksPerDay = 5760;
 
 type Operation = "lock" | "withdraw";
@@ -35,6 +34,8 @@ const StyledTitle = styled(Title)`
 `;
 
 const CompoundWidget = () => {
+  const [web3, setWeb3] = useState<any>();
+
   const [safeInfo, setSafeInfo] = useState<SafeInfo>();
   const [tokenList, setTokenList] = useState<Array<TokenItem>>();
 
@@ -60,7 +61,7 @@ const CompoundWidget = () => {
   //-- for development purposes with local provider
   useEffect(() => {
     if (process.env.REACT_APP_LOCAL_WEB3_PROVIDER) {
-      console.warn("COMPOUND APP: you are using a local web3 provider")
+      console.warn("COMPOUND APP: you are using a local web3 provider");
       const w: any = window;
       w.web3 = new Web3(w.ethereum);
       w.ethereum.enable();
@@ -89,6 +90,12 @@ const CompoundWidget = () => {
       return;
     }
 
+    const web3: any = new Web3(
+      `https://${safeInfo.network}.infura.io/v3/${process.env
+        .REACT_APP_INFURA_TOKEN || ""}`
+    );
+    setWeb3(web3);
+
     const tokenListRes = getTokenList(safeInfo.network);
 
     setTokenList(tokenListRes);
@@ -99,7 +106,7 @@ const CompoundWidget = () => {
 
   // on selectedToken
   useEffect(() => {
-    if (!selectedToken) {
+    if (!selectedToken || !web3) {
       return;
     }
 
@@ -110,7 +117,9 @@ const CompoundWidget = () => {
     setInputValue("");
     setInputError(undefined);
 
-    setTokenInstance(new web3.eth.Contract(cERC20Abi, selectedToken.tokenAddr));
+    setTokenInstance(
+      new web3!.eth.Contract(cERC20Abi, selectedToken.tokenAddr)
+    );
     if (selectedToken.id === "ETH") {
       setCTokenInstance(
         new web3.eth.Contract(cWEthAbi, selectedToken.cTokenAddr)
@@ -120,7 +129,7 @@ const CompoundWidget = () => {
         new web3.eth.Contract(cERC20Abi, selectedToken.cTokenAddr)
       );
     }
-  }, [selectedToken]);
+  }, [selectedToken, web3]);
 
   useEffect(() => {
     const getData = async () => {

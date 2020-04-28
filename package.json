@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",    
-    "@gnosis.pm/safe-apps-sdk": "https://github.com/gnosis/safe-apps-sdk.git#5366b46",
+    "@gnosis.pm/safe-apps-sdk": "https://github.com/gnosis/safe-apps-sdk.git#dfaa31b",
     "@gnosis.pm/safe-react-components": "https://github.com/gnosis/safe-react-components.git#71e6fed",
     "@material-ui/core": "^4.9.0",
     "apollo-boost": "^0.4.7",
