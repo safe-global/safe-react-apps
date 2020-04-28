@@ -21,7 +21,6 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     local_dir: build
-    cache_control: "max-age=0,no-cache,no-store,must-revalidate"
     skip_cleanup: true
     region: $AWS_REGION
     on:
@@ -35,7 +34,6 @@ deploy:
     skip_cleanup: true
     upload-dir: current
     local_dir: build
-    cache_control: "max-age=0,no-cache,no-store,must-revalidate"
     region: $AWS_REGION
     on:
       branch: master
@@ -49,7 +47,6 @@ deploy:
     skip_cleanup: true
     upload-dir: releases/$TRAVIS_TAG
     local_dir: build
-    cache_control: "max-age=0,no-cache,no-store,must-revalidate"
     region: $AWS_REGION
     on:
       tags: true
