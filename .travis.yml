@@ -17,6 +17,7 @@ matrix:
   - env:
     # Use rinkeby for development and staging builds
     - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_RINKEBY
+    if: NOT tag IS present
 before_script:
 - yarn build
 script:
