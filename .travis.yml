@@ -3,7 +3,7 @@ if: (branch = master) OR (branch = development) OR (tag IS present)
 language: node_js
 node_js: '12'
 before_install:
-  - yarn install --network-concurrency 1 # workaround https://github.com/yarnpkg/yarn/issues/6312
+  - yarn install
   # Needed to deploy pull request and releases
   - pip install awscli --upgrade --user
 cache:
