@@ -50,17 +50,12 @@ const CompoundWidget = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [inputError, setInputError] = useState<string | undefined>();
 
-  let safeMultisigUrl = [];
-  if (process.env.REACT_APP_LOCAL_SAFE_APP_URL) {
-    safeMultisigUrl.push(/http:\/\/localhost:3000/);
-  }
-
-  const [appsSdk] = useState(initSdk(safeMultisigUrl));
+  const [appsSdk] = useState(initSdk());
 
   //-- for development purposes with local provider
   useEffect(() => {
     if (process.env.REACT_APP_LOCAL_WEB3_PROVIDER) {
-      console.warn("COMPOUND APP: you are using a local web3 provider")
+      console.warn("COMPOUND APP: you are using a local web3 provider");
       const w: any = window;
       w.web3 = new Web3(w.ethereum);
       w.ethereum.enable();
