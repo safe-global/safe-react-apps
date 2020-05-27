@@ -29,7 +29,7 @@ export const getTokenList = (network: Networks): Array<TokenItem> => {
   return [
     {
       id: "DAI",
-      label: "Dai",
+      label: "DAI",
       iconUrl: daiIcon,
       decimals: 18,
       tokenAddr: tokensByNetwork.DAI,
