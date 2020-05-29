@@ -2,77 +2,66 @@ import ApolloClient from "apollo-boost";
 import { gql } from "apollo-boost";
 import { Networks } from "@gnosis.pm/safe-apps-sdk";
 
-const subgraphUri: { [key in Networks]: string } = {
-  rinkeby:
-    "https://api.thegraph.com/subgraphs/name/protofire/token-registry-rinkeby",
-  mainnet: "https://api.thegraph.com/subgraphs/name/protofire/token-registry"
+export type TokenInteractionData = {
+  amount: string;
+  destination: string;
+  sender?: string;
 };
 
-async function getPaginatedTransferEvents(
-  client: any,
-  first: number,
-  skip: number,
-  safeAddress: string,
-  tokenAddr: string,
-  cTokenAddr: string
-) {
-  return client.query({
-    query: gql`
-      query TransferEvents(
-        $first: Int!
-        $skip: Int!
-        $token: String!
-        $addresses: [String!]!
-      ) {
-        transferEvents(
-          first: $first
-          skip: $skip
-          where: {
-            token: $token
-            destination_in: $addresses
-            sender_in: $addresses
-          }
-        ) {
-          amount
-          sender
-          destination
-        }
+const rinkeby =
+  "https://api.thegraph.com/subgraphs/name/protofire/token-registry-rinkeby";
+const mainnet =
+  "https://api.thegraph.com/subgraphs/name/protofire/token-registry";
+const subgraphUri: { [key in Networks]: string } = {
+  rinkeby,
+  mainnet,
+};
+
+const TRANSFER_EVENTS = gql`
+  query TransferEvents(
+    $first: Int!
+    $skip: Int!
+    $token: String!
+    $addresses: [String!]!
+  ) {
+    transferEvents(
+      first: $first
+      skip: $skip
+      where: {
+        token: $token
+        destination_in: $addresses
+        sender_in: $addresses
       }
-    `,
-    variables: {
-      first: first,
-      skip: skip,
-      token: tokenAddr.toLocaleLowerCase(),
-      addresses: [cTokenAddr, safeAddress]
+    ) {
+      amount
+      sender
+      destination
     }
-  });
-}
+  }
+`;
 
-export async function getTokenTransferEvents(
-  network: Networks,
+async function getTransferEvents(
+  client: any,
   safeAddress: string,
   tokenAddr: string,
   cTokenAddr: string
-) {
-  const client = new ApolloClient({
-    uri: subgraphUri[network]
-  });
-
+): Promise<Array<TokenInteractionData>> {
   let ended = false;
-  let first = 1000;
+  let first = 100;
   let skip = 0;
-  let transferEvents: any = [];
+  let transferEvents: Array<TokenInteractionData> = [];
 
   while (!ended) {
     try {
-      const res: any = await getPaginatedTransferEvents(
-        client,
-        first,
-        skip,
-        safeAddress,
-        tokenAddr,
-        cTokenAddr
-      );
+      const res = await client.query({
+        query: TRANSFER_EVENTS,
+        variables: {
+          first: first,
+          skip: skip,
+          token: tokenAddr.toLocaleLowerCase(),
+          addresses: [cTokenAddr, safeAddress],
+        },
+      });
       skip += first;
 
       transferEvents = [...transferEvents, ...res.data.transferEvents];
@@ -88,23 +77,95 @@ export async function getTokenTransferEvents(
   return transferEvents;
 }
 
-export function parseTransferEvents(
-  senderAddress: string,
-  transferEvents: Array<any>
+const MINT_EVENTS = gql`
+  query MintEvents(
+    $first: Int!
+    $skip: Int!
+    $token: String!
+    $safeAddress: String!
+  ) {
+    mintEvents(
+      first: $first
+      skip: $skip
+      where: { token: $token, destination: $safeAddress }
+    ) {
+      amount
+      destination
+    }
+  }
+`;
+
+async function getMintEvents(
+  client: any,
+  safeAddress: string,
+  tokenAddr: string
+): Promise<Array<TokenInteractionData>> {
+  let ended = false;
+  let first = 100;
+  let skip = 0;
+  let mintEvents: Array<TokenInteractionData> = [];
+
+  while (!ended) {
+    try {
+      const res = await client.query({
+        query: MINT_EVENTS,
+        variables: {
+          first: first,
+          skip: skip,
+          token: tokenAddr.toLocaleLowerCase(),
+          safeAddress: safeAddress,
+        },
+      });
+      skip += first;
+
+      mintEvents = [...mintEvents, ...res.data.mintEvents];
+      if (res.data.mintEvents.length < first) {
+        ended = true;
+      }
+    } catch (error) {
+      ended = true;
+      throw error;
+    }
+  }
+
+  return mintEvents;
+}
+
+export async function getTokenInteractions(
+  network: Networks,
+  safeAddress: string,
+  tokenAddr: string,
+  cTokenAddr: string
 ) {
+  const client = new ApolloClient({
+    uri: subgraphUri[network],
+  });
+
+  const mintEventsRes = await getMintEvents(client, safeAddress, tokenAddr);
+  const transferEventsRes = await getTransferEvents(
+    client,
+    safeAddress,
+    tokenAddr,
+    cTokenAddr
+  );
+    debugger
+  return [...mintEventsRes, ...transferEventsRes];
+}
+
+export function parseEvents(senderAddress: string, tokenEvents: Array<any>) {
   let deposits = 0;
   let withdrawals = 0;
-  
-  transferEvents.forEach(event => {
+
+  tokenEvents.forEach((event) => {
     const parsedAmount = Number(event.amount);
     if (!Number.isNaN(parsedAmount)) {
-      event.sender.toLowerCase() === senderAddress.toLowerCase()
+      event.sender && event.sender.toLowerCase() === senderAddress.toLowerCase()
         ? (deposits += parsedAmount)
         : (withdrawals += parsedAmount);
     }
   });
   return {
     deposits,
-    withdrawals
+    withdrawals,
   };
 }
