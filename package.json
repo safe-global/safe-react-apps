@@ -8,6 +8,7 @@
     "@gnosis.pm/safe-react-components": "^0.1.0",
     "@material-ui/core": "^4.9.0",
     "apollo-boost": "^0.4.7",
+    "axios": "^0.19.2",
     "big-number-input": "^1.0.2",
     "big.js": "^5.2.2",
     "graphql": "^14.6.0",
