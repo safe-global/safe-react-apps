@@ -1,6 +1,7 @@
 import axios from "axios";
-import { Safe } from "../../providers/SafeProvider/safeConnector";
+import memoize from "lodash/memoize";
 
+import { Safe } from "../../providers/SafeProvider/safeConnector";
 interface ContractMethod {
   inputs: any[];
   name: string;
@@ -11,6 +12,8 @@ export interface ContractInterface {
   payableFallback: boolean;
   methods: ContractMethod[];
 }
+
+const getContract = memoize(async (apiUrl: string) => axios.get(apiUrl));
 
 class InterfaceRepository {
   safe: Safe;
@@ -29,7 +32,7 @@ class InterfaceRepository {
 
     const apiUrl = `${host}/api?module=contract&action=getabi&address=${address}`;
 
-    const contractInfo = await axios.get(apiUrl);
+    const contractInfo = await getContract(apiUrl);
     if (contractInfo.data.status !== "1")
       throw Error(
         `Request not successful: ${contractInfo.data.message}; ${contractInfo.data.result}`

@@ -1259,13 +1259,13 @@
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-0.1.1.tgz#94011ba872853ee83c09652348c4a2e3699e3c0e"
   integrity sha512-nUirtYsXO9kGeO+CnZp3qwO51mxddDnJ1UtSYSFu23CM3xuKuHtM5OXytItvOmtiHtYq8eqEm6MVpIdgb6JHOg==
 
-"@gnosis.pm/safe-react-components@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.1.0.tgz#3ff7e3d974cf301ed6c1d898c442c081ff7da675"
-  integrity sha512-ehDBaAgNFqbXx/eqjLivTtHlXvy/4XPH05r0IZ/+9idDjY3eh9eOjAewS9DFtPqLicp/92tVQOzmcEbTNGJ8JQ==
+"@gnosis.pm/safe-react-components@https://github.com/gnosis/safe-react-components.git#bb8ecce":
+  version "0.1.2"
+  resolved "https://github.com/gnosis/safe-react-components.git#bb8ecce19ebc0b28f22e493896e2f8aff0e02a38"
   dependencies:
     classnames "^2.2.6"
-    polished "^3.5.1"
+    polished "3.6.3"
+    react-docgen-typescript-loader "^3.7.2"
     url-loader "^4.1.0"
 
 "@hapi/address@2.x.x":
@@ -11118,19 +11118,19 @@ pnp-webpack-plugin@1.6.4, pnp-webpack-plugin@^1.6.4:
   dependencies:
     ts-pnp "^1.1.6"
 
+polished@3.6.3:
+  version "3.6.3"
+  resolved "https://registry.yarnpkg.com/polished/-/polished-3.6.3.tgz#68f4fe7ffad46530733029b939dd12978200cb59"
+  integrity sha512-QJ0q0b6gX1+0OJtPMfgVJxV0vg5XTa4im+Rca989dAtmsd/fEky3X+0A+V+OUXq1nyiDGplJwqD853dTS0gkPg==
+  dependencies:
+    "@babel/runtime" "^7.9.2"
+
 polished@^3.3.1:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/polished/-/polished-3.5.2.tgz#ca132b8cd68f7ffa95ae9d423f03e7a14fda1062"
   integrity sha512-vWoRDg3gY5RQBtUfcj9MRN10VCIf4EkdUikGxyXItg2Hnwk+eIVtdBiLajN0ldFeT3Vq4r/QNbjrQdhqBKrTug==
   dependencies:
     "@babel/runtime" "^7.8.7"
-
-polished@^3.5.1:
-  version "3.6.2"
-  resolved "https://registry.yarnpkg.com/polished/-/polished-3.6.2.tgz#bae682806da6400596a851ea443178ff6eec1dd2"
-  integrity sha512-V0dyaVJUM5e5wIhLHvZyyE9PhXoI0AlGT6RDww1V/v+STsocLsVGWmi+9OKTL49oaQj85XFDvsWi/uHQJ0rpWg==
-  dependencies:
-    "@babel/runtime" "^7.9.2"
 
 popper.js@^1.14.4, popper.js@^1.14.7, popper.js@^1.16.1-lts:
   version "1.16.1"
@@ -12346,7 +12346,7 @@ react-dev-utils@^9.0.0:
     strip-ansi "5.2.0"
     text-table "0.2.0"
 
-react-docgen-typescript-loader@^3.7.1:
+react-docgen-typescript-loader@^3.7.1, react-docgen-typescript-loader@^3.7.2:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/react-docgen-typescript-loader/-/react-docgen-typescript-loader-3.7.2.tgz#45cb2305652c0602767242a8700ad1ebd66bbbbd"
   integrity sha512-fNzUayyUGzSyoOl7E89VaPKJk9dpvdSgyXg81cUkwy0u+NBvkzQG3FC5WBIlXda0k/iaxS+PWi+OC+tUiGxzPA==
