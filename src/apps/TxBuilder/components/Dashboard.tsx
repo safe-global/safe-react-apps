@@ -4,12 +4,11 @@ import {
   Title,
   TextField,
   GenericModal,
+  Select,
   ModalFooterConfirmation,
 } from "@gnosis.pm/safe-react-components";
 import React, { useState, useCallback } from "react";
 import Box from "@material-ui/core/Box";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
 
 import { ContractInterface } from "../hooks/useServices/interfaceRepository";
 import useServices from "../hooks/useServices";
@@ -74,6 +73,10 @@ const Dashboard = () => {
 
     const cleanInput = e.currentTarget?.value?.trim();
     setAddressOrAbi(cleanInput);
+
+    if (!cleanInput.length) {
+      return;
+    }
 
     if (toAddress.length === 0 && services.web3.utils.isAddress(cleanInput)) {
       setToAddress(cleanInput);
@@ -288,19 +291,17 @@ const Dashboard = () => {
               ) : (
                 <>
                   <Select
-                    style={{ marginTop: 10 }}
-                    value={selectedMethodIndex}
-                    onChange={(e) => {
+                    items={contract.methods.map((method, index) => ({
+                      id: index.toString(),
+                      label: method.name,
+                    }))}
+                    activeItemId={selectedMethodIndex.toString()}
+                    onItemClick={(id: string) => {
                       setAddTxError(false);
-                      handleMethod(e.target.value as number);
+                      handleMethod(Number(id));
                     }}
-                  >
-                    {contract.methods.map((method, index) => (
-                      <MenuItem key={index} value={index}>
-                        {method.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                  />
+
                   <br />
                 </>
               )}
