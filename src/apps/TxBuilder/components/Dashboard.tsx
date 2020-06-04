@@ -15,6 +15,17 @@ import useServices from "../hooks/useServices";
 import { ProposedTransaction } from "./models";
 import { useSafe } from "../hooks/useSafe";
 import WidgetWrapper from "../../../components/WidgetWrapper";
+import styled from "styled-components";
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 15px;
+`;
+
+const StyledSelect = styled(Select)`
+   && {width: 400px;}
+`; 
 
 const ModalBody = ({
   txs,
@@ -36,7 +47,7 @@ const ModalBody = ({
           <Button
             size="md"
             variant="outlined"
-            color="secondary"
+            color="error"
             onClick={() => deleteTx(index)}
           >
             Delete
@@ -219,17 +230,7 @@ const Dashboard = () => {
         alignItems="flex-end"
         width="100%"
       >
-        <Button
-          size="md"
-          disabled={!transactions.length}
-          variant="contained"
-          color="primary"
-          onClick={() => setReviewing(true)}
-        >
-          {`Send Transactions ${
-            transactions.length ? `(${transactions.length})` : ""
-          }`}
-        </Button>
+        
       </Box>
 
       {reviewing && transactions.length > 0 && (
@@ -247,13 +248,12 @@ const Dashboard = () => {
       )}
 
       <TextField
-        style={{ marginTop: 10 }}
         value={addressOrAbi}
         label="Enter Contract Address or ABI"
         onChange={handleAddressOrABI}
       />
       {loadAbiError && (
-        <Text color="error" size="sm">
+        <Text color="error" size="lg">
           There was a problem trying to load the ABI
         </Text>
       )}
@@ -269,28 +269,27 @@ const Dashboard = () => {
             onChange={(e) => setToAddress(e.target.value)}
           />
 
-          <br />
-
           {isValueInputVisible() && (
             <>
               <TextField
+                style={{ marginTop: 10, marginBottom: 10 }}
                 value={value}
                 label="ETH"
                 onChange={(e) => setValue(e.target.value)}
               />
-              <br />
+              
             </>
           )}
 
           {addressOrAbi && (
             <>
               {contract.methods.length === 0 ? (
-                <Text size="md">
+                <Text size="lg">
                   Contract ABI source Contract doesn't have any public methods
                 </Text>
               ) : (
                 <>
-                  <Select
+                  <StyledSelect
                     items={contract.methods.map((method, index) => ({
                       id: index.toString(),
                       label: method.name,
@@ -319,18 +318,30 @@ const Dashboard = () => {
                   />
                 ))}
               {addTxError && (
-                <Text size="sm" color="error">
+                <Text size="lg" color="error">
                   There was an error trying to add the TX.
                 </Text>
               )}
             </>
           )}
 
-          <br />
-
+          <ButtonContainer>
           <Button size="md" color="primary" onClick={() => addTransaction()}>
             Add transaction
           </Button>
+
+          <Button
+          size="md"
+          disabled={!transactions.length}
+          variant="contained"
+          color="primary"
+          onClick={() => setReviewing(true)}
+        >
+          {`Send Transactions ${
+            transactions.length ? `(${transactions.length})` : ""
+          }`}
+        </Button>
+        </ButtonContainer>
         </>
       )}
     </WidgetWrapper>
