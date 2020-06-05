@@ -19,13 +19,15 @@ import styled from "styled-components";
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   margin-top: 15px;
 `;
 
 const StyledSelect = styled(Select)`
-   && {width: 400px;}
-`; 
+  && {
+    width: 400px;
+  }
+`;
 
 const ModalBody = ({
   txs,
@@ -229,10 +231,9 @@ const Dashboard = () => {
         flexDirection="column"
         alignItems="flex-end"
         width="100%"
-      >
-        
-      </Box>
+      ></Box>
 
+      {/* TXs MODAL */}
       {reviewing && transactions.length > 0 && (
         <GenericModal
           body={<ModalBody txs={transactions} deleteTx={deleteTransaction} />}
@@ -247,6 +248,7 @@ const Dashboard = () => {
         />
       )}
 
+      {/* ABI Input */}
       <TextField
         value={addressOrAbi}
         label="Enter Contract Address or ABI"
@@ -258,19 +260,29 @@ const Dashboard = () => {
         </Text>
       )}
 
+      {/* ABI Loaded */}
       {contract && (
         <>
           <Title size="xs">Transaction information</Title>
 
-          <TextField
-            style={{ marginTop: 10 }}
-            value={toAddress}
-            label="To Address"
-            onChange={(e) => setToAddress(e.target.value)}
-          />
-          
-          <br />
+          {!contract?.methods.length && (
+            <Text size="lg">Contract ABI doesn't have any public methods.</Text>
+          )}
 
+          {/* Input To (destination) */}
+          {(isValueInputVisible() || contract.methods.length > 0) && (
+            <>
+              <TextField
+                style={{ marginTop: 10 }}
+                value={toAddress}
+                label="To Address"
+                onChange={(e) => setToAddress(e.target.value)}
+              />
+              <br />
+            </>
+          )}
+
+          {/* Input ETH value */}
           {isValueInputVisible() && (
             <>
               <TextField
@@ -281,73 +293,77 @@ const Dashboard = () => {
               />
 
               <br />
-              
             </>
           )}
 
-          {addressOrAbi && (
+          {
             <>
-              {contract.methods.length === 0 ? (
-                <Text size="lg">
-                  Contract ABI source Contract doesn't have any public methods
-                </Text>
-              ) : (
-                <>
-                  <StyledSelect
-                    items={contract.methods.map((method, index) => ({
-                      id: index.toString(),
-                      label: method.name,
-                    }))}
-                    activeItemId={selectedMethodIndex.toString()}
-                    onItemClick={(id: string) => {
-                      setAddTxError(false);
-                      handleMethod(Number(id));
-                    }}
-                  />
-
-                  <br />
-                </>
+              {contract.methods.length > 0 && (
+                <StyledSelect
+                  items={contract.methods.map((method, index) => ({
+                    id: index.toString(),
+                    label: method.name,
+                  }))}
+                  activeItemId={selectedMethodIndex.toString()}
+                  onItemClick={(id: string) => {
+                    setAddTxError(false);
+                    handleMethod(Number(id));
+                  }}
+                />
               )}
+
               {getContractMethod &&
                 getContractMethod()?.inputs.map((input, index) => (
-                  <TextField
-                    key={index}
-                    style={{ marginTop: 10 }}
-                    value={inputCache[index] || ""}
-                    label={`${input.name || ""}(${input.type})`}
-                    onChange={(e) => {
-                      setAddTxError(false);
-                      handleInput(index, e.target.value);
-                    }}
-                  />
+                  <>
+                    <TextField
+                      key={index}
+                      style={{ marginTop: 10 }}
+                      value={inputCache[index] || ""}
+                      label={`${input.name || ""}(${input.type})`}
+                      onChange={(e) => {
+                        setAddTxError(false);
+                        handleInput(index, e.target.value);
+                      }}
+                    />
+                    <br />
+                  </>
                 ))}
+
               {addTxError && (
                 <Text size="lg" color="error">
                   There was an error trying to add the TX.
                 </Text>
               )}
             </>
-          )}
-
+          }
           <br />
 
+          {/* Actions */}
           <ButtonContainer>
-          <Button size="md" color="primary" onClick={() => addTransaction()}>
-            Add transaction
-          </Button>
+            {isValueInputVisible() || contract.methods.length > 0 ? (
+              <Button
+                size="md"
+                color="primary"
+                onClick={() => addTransaction()}
+              >
+                Add transaction
+              </Button>
+            ) : (
+              <div></div>
+            )}
 
-          <Button
-          size="md"
-          disabled={!transactions.length}
-          variant="contained"
-          color="primary"
-          onClick={() => setReviewing(true)}
-        >
-          {`Send Transactions ${
-            transactions.length ? `(${transactions.length})` : ""
-          }`}
-        </Button>
-        </ButtonContainer>
+            <Button
+              size="md"
+              disabled={!transactions.length}
+              variant="contained"
+              color="primary"
+              onClick={() => setReviewing(true)}
+            >
+              {`Send Transactions ${
+                transactions.length ? `(${transactions.length})` : ""
+              }`}
+            </Button>
+          </ButtonContainer>
         </>
       )}
     </WidgetWrapper>
