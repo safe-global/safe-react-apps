@@ -49,10 +49,11 @@ const ModalBody = ({
           <Button
             size="md"
             variant="outlined"
+            iconType="delete"
             color="error"
             onClick={() => deleteTx(index)}
           >
-            Delete
+            {""}
           </Button>
           <Text size="md">{tx.description}</Text>
         </Box>
