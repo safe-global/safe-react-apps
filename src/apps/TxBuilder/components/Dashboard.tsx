@@ -55,7 +55,7 @@ const ModalBody = ({
           >
             {""}
           </Button>
-          <Text size="md">{tx.description}</Text>
+          <Text size="lg">{tx.description}</Text>
         </Box>
       ))}
     </>
