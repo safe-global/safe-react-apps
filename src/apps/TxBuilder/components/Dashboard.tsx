@@ -268,6 +268,8 @@ const Dashboard = () => {
             label="To Address"
             onChange={(e) => setToAddress(e.target.value)}
           />
+          
+          <br />
 
           {isValueInputVisible() && (
             <>
@@ -277,6 +279,8 @@ const Dashboard = () => {
                 label="ETH"
                 onChange={(e) => setValue(e.target.value)}
               />
+
+              <br />
               
             </>
           )}
@@ -324,6 +328,8 @@ const Dashboard = () => {
               )}
             </>
           )}
+
+          <br />
 
           <ButtonContainer>
           <Button size="md" color="primary" onClick={() => addTransaction()}>
