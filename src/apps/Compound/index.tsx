@@ -52,6 +52,8 @@ const CompoundWidget = () => {
 
   const [appsSdk] = useState(initSdk());
 
+  const theme = getTheme();
+
   //-- for development purposes with local provider
   useEffect(() => {
     if (process.env.REACT_APP_LOCAL_WEB3_PROVIDER) {
@@ -336,7 +338,7 @@ const CompoundWidget = () => {
   }
 
   return (
-    <ThemeProvider theme={getTheme()}>
+    <ThemeProvider theme={theme}>
       <WidgetWrapper>
         <StyledTitle size="xs">Your Compound balance</StyledTitle>
 

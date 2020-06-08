@@ -40,6 +40,7 @@ const ModalBody = ({
     <>
       {txs.map((tx, index) => (
         <Box
+          key={index}
           display="flex"
           flexDirection="row-reverse"
           alignItems="center"
@@ -205,7 +206,7 @@ const Dashboard = () => {
   );
 
   const sendTransactions = useCallback(async () => {
-    if (transactions.length) {
+    if (!transactions.length) {
       return;
     }
 
@@ -232,7 +233,7 @@ const Dashboard = () => {
         flexDirection="column"
         alignItems="flex-end"
         width="100%"
-      ></Box>
+      />
 
       {/* TXs MODAL */}
       {reviewing && transactions.length > 0 && (
@@ -315,9 +316,8 @@ const Dashboard = () => {
 
               {getContractMethod &&
                 getContractMethod()?.inputs.map((input, index) => (
-                  <>
+                  <div key={index}>
                     <TextField
-                      key={index}
                       style={{ marginTop: 10 }}
                       value={inputCache[index] || ""}
                       label={`${input.name || ""}(${input.type})`}
@@ -327,7 +327,7 @@ const Dashboard = () => {
                       }}
                     />
                     <br />
-                  </>
+                  </div>
                 ))}
 
               {addTxError && (
