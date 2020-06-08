@@ -24,9 +24,7 @@ const ButtonContainer = styled.div`
 `;
 
 const StyledSelect = styled(Select)`
-  && {
-    width: 400px;
-  }
+  width: 400px;
 `;
 
 const ModalBody = ({
