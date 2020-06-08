@@ -5,8 +5,6 @@ import { theme } from "@gnosis.pm/safe-react-components";
 import Dashboard from "./components/Dashboard";
 import SafeProvider from "./providers/SafeProvider";
 
-import "./App.css";
-
 export default () => (
   <ThemeProvider theme={theme}>
     <SafeProvider>
