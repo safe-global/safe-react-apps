@@ -19,7 +19,7 @@ import styled from "styled-components";
 import WidgetWrapper from "../../components/WidgetWrapper";
 import { web3Provider, getTokenList, TokenItem } from "./config";
 import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
-import { getTokenTransferEvents, parseTransferEvents } from "./tokensTransfers";
+import { getTokenInteractions, parseEvents } from "./tokensTransfers";
 import theme from "./customTheme";
 
 import cERC20Abi from "./abis/CErc20";
@@ -171,25 +171,25 @@ const CompoundWidget = () => {
         .toFixed(2);
 
       // get interest earned
-      const tokenTransferEvents = await getTokenTransferEvents(
+      const tokenEvents = await getTokenInteractions(
         safeInfo.network,
         safeInfo.safeAddress,
         selectedToken.tokenAddr,
         selectedToken.cTokenAddr
       );
-      const { deposits, withdrawals } = parseTransferEvents(
+      const { deposits, withdrawals } = parseEvents(
         safeInfo.safeAddress,
-        tokenTransferEvents
+        tokenEvents
       );
-      const underlyingEarned = new Big(underlyingBalance)
+      const earned = new Big(underlyingBalance)
         .div(10 ** selectedToken.decimals)
         .plus(withdrawals)
-        .minus(deposits)
-        .toFixed(4);
+        .minus(deposits);
+      const underlyingEarned = earned.lt("0") ? "0" : earned.toFixed(4);
 
       // update all the values in a row to avoid UI flickers
       selectedToken.id === "ETH"
-        ? setInterestEarn("TBD")
+        ? setInterestEarn("-")
         : setInterestEarn(underlyingEarned);
       setCTokenSupplyAPY(apy.toString());
       setTokenBalance(tokenBalance);
@@ -287,8 +287,32 @@ const CompoundWidget = () => {
     setInputValue("");
   };
 
-  const isButtonDisabled = () => {
-    return !!(!inputValue.length || inputValue === "0" || inputError);
+  const isWithdrawDisabled = () => {
+    if (!!inputError || !inputValue) {
+      return true;
+    }
+
+    const bigInput = new Big(inputValue);
+
+    if (bigInput.eq("0") || bigInput.gt(underlyingBalance)) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const isSupplyDisabled = () => {
+    if (!!inputError || !inputValue) {
+      return true;
+    }
+
+    const bigInput = new Big(inputValue);
+
+    if (bigInput.eq("0") || bigInput.gt(tokenBalance)) {
+      return true;
+    }
+
+    return false;
   };
 
   const onSelectItem = (id: string) => {
@@ -323,21 +347,21 @@ const CompoundWidget = () => {
             onItemClick={onSelectItem}
           />
           <Text strong size="lg">
-            {bNumberToHumanFormat(tokenBalance)}
+            ~ {bNumberToHumanFormat(tokenBalance)}
           </Text>
         </SelectContainer>
 
         <Section>
           <DaiInfo>
             <div>
-              <Text size="lg">Locked {selectedToken.label}</Text>
-              <Text size="lg">{bNumberToHumanFormat(underlyingBalance)}</Text>
+              <Text size="lg">Supply {selectedToken.label}</Text>
+              <Text size="lg">~ {bNumberToHumanFormat(underlyingBalance)}</Text>
             </div>
             <Divider />
             <div>
               <Text size="lg">Interest earned</Text>
               <Text size="lg">
-                {interestEarn} {selectedToken.label}
+                ~ {interestEarn} {selectedToken.label}
               </Text>
             </div>
             <Divider />
@@ -349,7 +373,7 @@ const CompoundWidget = () => {
           </DaiInfo>
         </Section>
 
-        <Title size="xs">Withdraw or top up balance</Title>
+        <Title size="xs">Withdraw or Supply balance</Title>
 
         <BigNumberInput
           decimals={selectedToken.decimals}
@@ -366,7 +390,7 @@ const CompoundWidget = () => {
             color="secondary"
             variant="contained"
             onClick={withdraw}
-            disabled={isButtonDisabled()}
+            disabled={isWithdrawDisabled()}
           >
             Withdraw
           </Button>
@@ -375,9 +399,9 @@ const CompoundWidget = () => {
             color="primary"
             variant="contained"
             onClick={lock}
-            disabled={isButtonDisabled()}
+            disabled={isSupplyDisabled()}
           >
-            Top up
+            Supply
           </Button>
         </ButtonContainer>
       </WidgetWrapper>
