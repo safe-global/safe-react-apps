@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Aave from "./apps/Aave";
 import Compound from "./apps/Compound";
 import PoolTogether from "./apps/PoolTogether";
-import Request from "./apps/Request";
 import Synthetix from "./apps/Synthetix";
 import Testing from "./apps/Testing";
 import OpenZeppelin from "./apps/OpenZeppelin";
@@ -30,10 +29,7 @@ ReactDOM.render(
         </Route>
         <Route path="/open-zeppelin">
           <OpenZeppelin />
-        </Route>
-        <Route path="/request">
-          <Request />
-        </Route>
+        </Route>        
         <Route path="/synthetix">
           <Synthetix />
         </Route>
@@ -59,9 +55,6 @@ ReactDOM.render(
                 </div>
                 <div>
                   <Link to="/pool-together">PoolTogether</Link>
-                </div>
-                <div>
-                  <Link to="/request">Request</Link>
                 </div>
                 <div>
                   <Link to="/synthetix">Synthetix</Link>
