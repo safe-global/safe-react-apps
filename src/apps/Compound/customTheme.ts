@@ -1,13 +1,17 @@
 import { theme } from "@gnosis.pm/safe-react-components";
+import merge from "lodash/merge";
 
-const copyTheme = { ...theme };
+const getCustomTheme = () =>
+  merge(theme, {
+    colors: {
+      primary: "#02d396",
+      primaryHover: "#00c58a",
+      primaryLight: "#d5f6ed",
 
-copyTheme.colors.primary = "#02d396";
-copyTheme.colors.primaryHover = "#00c58a";
-copyTheme.colors.primaryLight = "#d5f6ed";
+      secondary: "#966aed",
+      secondaryHover: "#8253dd",
+      secondaryLight: "ebe1fb",
+    },
+  });
 
-copyTheme.colors.secondary = "#966aed";
-copyTheme.colors.secondaryHover = "#8253dd";
-copyTheme.colors.secondaryLight = "ebe1fb";
-
-export default copyTheme;
+export default getCustomTheme;

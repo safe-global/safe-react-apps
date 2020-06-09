@@ -8,6 +8,7 @@ import PoolTogether from "./apps/PoolTogether";
 import Synthetix from "./apps/Synthetix";
 import Testing from "./apps/Testing";
 import OpenZeppelin from "./apps/OpenZeppelin";
+import TxBuilder from "./apps/TxBuilder";
 import GlobalStyles from "./global";
 
 import * as serviceWorker from "./serviceWorker";
@@ -32,6 +33,9 @@ ReactDOM.render(
         <Route path="/synthetix">
           <Synthetix />
         </Route>
+        <Route path="/tx-builder">
+          <TxBuilder />
+        </Route>
         <Route path="/testing">
           <Testing />
         </Route>
@@ -55,6 +59,9 @@ ReactDOM.render(
                 <div>
                   <Link to="/synthetix">Synthetix</Link>
                 </div>
+                <div>
+                  <Link to="/tx-builder">Tx Builder</Link>
+                </div>                
                 <div>
                   <Link to="/testing">Testing</Link>
                 </div>

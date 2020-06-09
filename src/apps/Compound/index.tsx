@@ -20,7 +20,7 @@ import WidgetWrapper from "../../components/WidgetWrapper";
 import { web3Provider, getTokenList, TokenItem } from "./config";
 import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
 import { getTokenInteractions, parseEvents } from "./tokensTransfers";
-import theme from "./customTheme";
+import getTheme from "./customTheme";
 
 import cERC20Abi from "./abis/CErc20";
 import cWEthAbi from "./abis/CWEth";
@@ -51,6 +51,8 @@ const CompoundWidget = () => {
   const [inputError, setInputError] = useState<string | undefined>();
 
   const [appsSdk] = useState(initSdk());
+
+  const theme = getTheme();
 
   //-- for development purposes with local provider
   useEffect(() => {

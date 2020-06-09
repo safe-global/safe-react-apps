@@ -148,7 +148,6 @@ export async function getTokenInteractions(
     tokenAddr,
     cTokenAddr
   );
-    debugger
   return [...mintEventsRes, ...transferEventsRes];
 }
 
