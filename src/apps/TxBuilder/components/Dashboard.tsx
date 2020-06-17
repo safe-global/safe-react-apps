@@ -27,6 +27,15 @@ const StyledSelect = styled(Select)`
   width: 400px;
 `;
 
+const StyledTitle = styled(Title)`
+  margin-top: 0px;
+  margin-bottom: 5px;
+`;
+
+const StyledText = styled(Text)`
+  margin-bottom: 15px;
+`;
+
 const ModalBody = ({
   txs,
   deleteTx,
@@ -226,12 +235,12 @@ const Dashboard = () => {
 
   return (
     <WidgetWrapper>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="flex-end"
-        width="100%"
-      />
+      <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
+      <StyledText size="sm">
+        This app allows you to build a custom multisend transaction. 
+        <br />
+        Enter a Ethereum contract address or ABI to get started.
+      </StyledText>
 
       {/* TXs MODAL */}
       {reviewing && transactions.length > 0 && (
