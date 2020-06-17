@@ -7,7 +7,7 @@ import ethIcon from "./images/asset_ETH.svg";
 import repIcon from "./images/asset_REP.svg";
 import usdcIcon from "./images/asset_USDC.svg";
 import usdtIcon from "./images/asset_USDT.svg";
-import zxrIcon from "./images/asset_ZXR.svg";
+import zrxIcon from "./images/asset_ZRX.svg";
 import tokens from "./tokens";
 
 export type TokenItem = {
@@ -85,12 +85,12 @@ export const getTokenList = (network: Networks): Array<TokenItem> => {
       cTokenAddr: tokensByNetwork.cWBTC
     },
     {
-      id: "ZXR",
-      label: "ZXR",
-      iconUrl: zxrIcon,
+      id: "ZRX",
+      label: "ZRX",
+      iconUrl: zrxIcon,
       decimals: 18,
-      tokenAddr: tokensByNetwork.ZXR,
-      cTokenAddr: tokensByNetwork.cZXR
+      tokenAddr: tokensByNetwork.ZRX,
+      cTokenAddr: tokensByNetwork.cZRX
     }
   ];
 };
