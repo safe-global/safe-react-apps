@@ -6,6 +6,7 @@ import wbtcIcon from "./images/asset_BTC.svg";
 import ethIcon from "./images/asset_ETH.svg";
 import repIcon from "./images/asset_REP.svg";
 import usdcIcon from "./images/asset_USDC.svg";
+import usdtIcon from "./images/asset_USDT.svg";
 import zxrIcon from "./images/asset_ZXR.svg";
 import tokens from "./tokens";
 
@@ -66,6 +67,14 @@ export const getTokenList = (network: Networks): Array<TokenItem> => {
       decimals: 6,
       tokenAddr: tokensByNetwork.USDC,
       cTokenAddr: tokensByNetwork.cUSDC
+    },
+    {
+      id: "USDT",
+      label: "USDT",
+      iconUrl: usdtIcon,
+      decimals: 6,
+      tokenAddr: tokensByNetwork.USDT,
+      cTokenAddr: tokensByNetwork.cUSDT
     },
     {
       id: "WBTC",
