@@ -3,10 +3,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Compound from "./apps/Compound";
-import PoolTogether from "./apps/PoolTogether";
-import Synthetix from "./apps/Synthetix";
 import Testing from "./apps/Testing";
-import OpenZeppelin from "./apps/OpenZeppelin";
 import TxBuilder from "./apps/TxBuilder";
 import GlobalStyles from "./global";
 
@@ -19,16 +16,7 @@ ReactDOM.render(
       <Switch>
         <Route path="/compound">
           <Compound />
-        </Route>
-        <Route path="/pool-together">
-          <PoolTogether />
-        </Route>
-        <Route path="/open-zeppelin">
-          <OpenZeppelin />
-        </Route>
-        <Route path="/synthetix">
-          <Synthetix />
-        </Route>
+        </Route>        
         <Route path="/tx-builder">
           <TxBuilder />
         </Route>
@@ -42,15 +30,6 @@ ReactDOM.render(
               <>
                 <div>
                   <Link to="/compound">Compound</Link>
-                </div>
-                <div>
-                  <Link to="/open-zeppelin">OpenZeppelin</Link>
-                </div>
-                <div>
-                  <Link to="/pool-together">PoolTogether</Link>
-                </div>
-                <div>
-                  <Link to="/synthetix">Synthetix</Link>
                 </div>
                 <div>
                   <Link to="/tx-builder">Tx Builder</Link>
