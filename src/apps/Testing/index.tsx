@@ -12,7 +12,7 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-function ComingSoon() {
+function Testing() {
   return (
     <ThemeProvider theme={theme}>
       <Wrapper>
@@ -25,4 +25,4 @@ function ComingSoon() {
   );
 }
 
-export default ComingSoon;
+export default Testing;
