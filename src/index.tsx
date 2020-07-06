@@ -38,7 +38,7 @@ ReactDOM.render(
                   <Link to="/compound">Compound</Link>
                 </div>
                 <div>
-                  <Link to="/find-my-safe">Compound</Link>
+                  <Link to="/find-my-safe">FindMySafe</Link>
                 </div>
                 <div>
                   <Link to="/tx-builder">Tx Builder</Link>
