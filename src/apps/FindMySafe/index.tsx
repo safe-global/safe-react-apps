@@ -1,22 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled, { ThemeProvider } from "styled-components";
-import debounce from "lodash/debounce";
+import memoize from "lodash/memoize";
 import Big from "big.js";
-
-import findMySafeImg from "./find-my-safe.png";
-import { textShortener } from "../../utils/string";
 import {
   Text,
   Title,
   Loader,
   theme,
   TextField,
-  FixedIcon,
+  ButtonLink,
 } from "@gnosis.pm/safe-react-components";
+import initSdk, { SafeInfo, Networks } from "@gnosis.pm/safe-apps-sdk";
 
-const apiNetwork = {
+import findMySafeImg from "./find-my-safe.png";
+import TokenPlaceholder from "./token-placeholder.svg";
+
+const apiNetwork: { [key in Networks]: string } = {
   rinkeby: "https://safe-transaction.staging.gnosisdev.com/api/v1",
+  mainnet: "https://safe-transaction.mainnet.gnosis.io/api/v1/",
 };
 
 const TitleContainer = styled.div`
@@ -50,12 +52,23 @@ const SafesList = styled.div`
   overflow-x: hidden;
 `;
 
-const SafeItem = styled.div`
+const BalanceItem = styled.div`
   padding: 15px;
-  cursor: pointer;
 
   display: flex;
   justify-content: space-between;
+  align-items: center;
+`;
+
+const SafeItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+
+  :hover {
+    background-color: ${theme.colors.primaryLight};
+  }
 `;
 
 const SafeBalances = styled.div`
@@ -70,6 +83,15 @@ const NoBalanceFound = styled.div`
   height: 100%;
 `;
 
+const IconImage = styled.div`
+  display: flex;
+  align-items: center;
+
+  img {
+    margin-right: 5px;
+  }
+`;
+
 type BalanceInfo = {
   tokenAddress: string;
   token: {
@@ -81,7 +103,36 @@ type BalanceInfo = {
   balance: string;
 };
 
+const getSafes = memoize(
+  async (address: string, network: Networks): Promise<string[]> => {
+    const res = await axios.get<{ safes: string[] }>(
+      `${apiNetwork[network]}/owners/${address}/`
+    );
+    return res.data.safes;
+  }
+);
+
+const getBalances = memoize(
+  async (safe: string, network: Networks): Promise<BalanceInfo[]> => {
+    const res = await axios.get<BalanceInfo[]>(
+      `${apiNetwork[network]}/safes/${safe}/balances/usd/`
+    );
+
+    return res.data.filter((b) => b.token !== null);
+  }
+);
+
+export const setImageToPlaceholder: React.ReactEventHandler<HTMLImageElement> = (
+  e
+) => {
+  (e.target as HTMLImageElement).onerror = null;
+  (e.target as HTMLImageElement).src = TokenPlaceholder;
+};
+
 const FindMySafe = () => {
+  const [appsSdk] = useState(initSdk());
+  const [safeInfo, setSafeInfo] = useState<SafeInfo>();
+
   const [address, setAddress] = useState("");
   const [safes, setSafes] = useState<string[]>([]);
   const [loadingSafes, setLoadingSafes] = useState(false);
@@ -89,46 +140,46 @@ const FindMySafe = () => {
   const [selectedSafe, setSelectedSafe] = useState<string | undefined>();
   const [balances, setBalances] = useState<BalanceInfo[] | undefined>([]);
 
-  const toShortAddress = textShortener({
-    charsEnd: 15,
-    charsStart: 15,
-    ellipsis: "...",
-  });
+  // config safe connector
+  useEffect(() => {
+    appsSdk.addListeners({
+      onSafeInfo: setSafeInfo,
+    });
 
-  const getSafes = debounce(async (address: string): Promise<void> => {
-    setLoadingSafes(true);
-    try {
-      const res = await axios.get<{ safes: string[] }>(
-        `${apiNetwork["rinkeby"]}/owners/${address}/`
-      );
-      setSafes(res.data.safes);
-      setLoadingSafes(false);
-    } catch (error) {
-      setLoadingSafes(false);
-    }
-  }, 500);
+    return () => appsSdk.removeListeners();
+  }, [appsSdk]);
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleSearch = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
     const address = event.target.value;
     setAddress(address);
+    setSelectedSafe(undefined);
+    setBalances(undefined);
+
     if (!address.length) {
       setSafes([]);
       setSelectedSafe(undefined);
       return;
     }
-    getSafes(address);
+
+    setLoadingSafes(true);
+    try {
+      const res = await getSafes(address, safeInfo!.network);
+      setSafes(res);
+      setLoadingSafes(false);
+    } catch (error) {
+      setLoadingSafes(false);
+    }
   };
 
   const handleSafeClick = async (safe: string): Promise<void> => {
-    setLoadingBalances(true);
     setSelectedSafe(safe);
-    try {
-      const res = await axios.get<BalanceInfo[]>(
-        `${apiNetwork["rinkeby"]}/safes/${safe}/balances`
-      );
+    setLoadingBalances(true);
 
-      const filteredBalances = res.data.filter((b) => b.token !== null);
-      setBalances(filteredBalances);
+    try {
+      const res = await getBalances(safe, safeInfo!.network);
+      setBalances(res);
       setLoadingBalances(false);
     } catch (error) {
       setLoadingBalances(false);
@@ -156,16 +207,24 @@ const FindMySafe = () => {
 
     return balances?.map((b) =>
       b.token ? (
-        <SafeItem key={b.token.name}>
-          <div>
-            <img src={b.token.logoUri} alt="Token logo" />
-            {b.token.name}
-          </div>
+        <BalanceItem key={b.token.name}>
+          <IconImage>
+            <img
+              src={b.token.logoUri}
+              onError={setImageToPlaceholder}
+              alt="Token logo"
+            />
+            {b.token.symbol}
+          </IconImage>
           <div>{new Big(b.balance).div(10 ** b.token.decimals).toFixed(4)}</div>
-        </SafeItem>
+        </BalanceItem>
       ) : null
     );
   };
+
+  if (!safeInfo) {
+    return <Loader size="lg" />;
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -190,15 +249,20 @@ const FindMySafe = () => {
               <Loader size="md" />
             ) : (
               safes.map((s) => (
-                <SafeItem key={s} onClick={() => handleSafeClick(s)}>
+                <SafeItem key={s}>
                   <Text
                     size="md"
                     color={selectedSafe === s ? "primary" : "text"}
                     strong={selectedSafe === s}
                   >
-                    {toShortAddress(s)}
+                    {s}
                   </Text>
-                  <FixedIcon type="chevronRight" />
+                  <ButtonLink
+                    color="primary"
+                    onClick={() => handleSafeClick(s)}
+                  >
+                    balances
+                  </ButtonLink>
                 </SafeItem>
               ))
             )}
