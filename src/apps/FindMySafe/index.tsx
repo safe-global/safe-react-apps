@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import styled, { ThemeProvider } from "styled-components";
-import memoize from "lodash/memoize";
-import Big from "big.js";
+
 import {
   Text,
   Title,
@@ -11,15 +9,11 @@ import {
   TextField,
   ButtonLink,
 } from "@gnosis.pm/safe-react-components";
-import initSdk, { SafeInfo, Networks } from "@gnosis.pm/safe-apps-sdk";
+import initSdk, { SafeInfo } from "@gnosis.pm/safe-apps-sdk";
 
+import { BalanceInfo, getSafes, getBalances } from "./api";
 import findMySafeImg from "./find-my-safe.png";
-import TokenPlaceholder from "./token-placeholder.svg";
-
-const apiNetwork: { [key in Networks]: string } = {
-  rinkeby: "https://safe-transaction.staging.gnosisdev.com/api/v1",
-  mainnet: "https://safe-transaction.mainnet.gnosis.io/api/v1/",
-};
+import Balances from "./components/Balances";
 
 const TitleContainer = styled.div`
   display: flex;
@@ -51,16 +45,9 @@ const LeftContent = styled.div`
 
 const SafesList = styled.div`
   margin-top: 10px;
-  height: 320px;
+  height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
-`;
-
-const BalanceItem = styled.div`
-  padding: 3px 9px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 `;
 
 const SafeItem = styled.div`
@@ -78,65 +65,6 @@ const SafeBalances = styled.div`
   margin-top: 55px;
   width: 100%;
 `;
-
-const NoBalanceFound = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-`;
-
-const IconImage = styled.div`
-  display: flex;
-  align-items: center;
-
-  img {
-    margin-right: 5px;
-  }
-`;
-
-const BalancesContainer = styled.div`
-  height: 230px;
-  width: 400px;
-  overflow-y: auto;
-`;
-
-type BalanceInfo = {
-  tokenAddress: string;
-  token: {
-    name: string;
-    symbol: string;
-    decimals: number;
-    logoUri: string;
-  };
-  balance: string;
-};
-
-const getSafes = memoize(
-  async (address: string, network: Networks): Promise<string[]> => {
-    const res = await axios.get<{ safes: string[] }>(
-      `${apiNetwork[network]}/owners/${address}/`
-    );
-    return res.data.safes;
-  }
-);
-
-const getBalances = memoize(
-  async (safe: string, network: Networks): Promise<BalanceInfo[]> => {
-    const res = await axios.get<BalanceInfo[]>(
-      `${apiNetwork[network]}/safes/${safe}/balances/usd/`
-    );
-
-    return res.data.filter((b) => b.token !== null);
-  }
-);
-
-export const setImageToPlaceholder: React.ReactEventHandler<HTMLImageElement> = (
-  e
-) => {
-  (e.target as HTMLImageElement).onerror = null;
-  (e.target as HTMLImageElement).src = TokenPlaceholder;
-};
 
 const FindMySafe = () => {
   const [appsSdk] = useState(initSdk());
@@ -195,55 +123,6 @@ const FindMySafe = () => {
     }
   };
 
-  const getBalancesContent = () => {
-    if (!selectedSafe) {
-      return null;
-    }
-
-    if (loadingBalances) {
-      return (
-        <BalancesContainer>
-          <Loader size="md" />
-        </BalancesContainer>
-      );
-    }
-
-    if (!balances?.length) {
-      return (
-        <BalancesContainer>
-          <NoBalanceFound>
-            <Text size="lg" strong>
-              Not balances found
-            </Text>
-          </NoBalanceFound>
-        </BalancesContainer>
-      );
-    }
-
-    return (
-      <BalancesContainer>
-        {balances?.map((b) =>
-          b.token ? (
-            <BalanceItem key={b.token.name}>
-              <IconImage>
-                <img
-                  height={28}
-                  src={b.token.logoUri}
-                  onError={setImageToPlaceholder}
-                  alt="Token logo"
-                />
-                {b.token.symbol}
-              </IconImage>
-              <div>
-                {new Big(b.balance).div(10 ** b.token.decimals).toFixed(4)}
-              </div>
-            </BalanceItem>
-          ) : null
-        )}
-      </BalancesContainer>
-    );
-  };
-
   if (!safeInfo) {
     return <Loader size="lg" />;
   }
@@ -255,7 +134,9 @@ const FindMySafe = () => {
         <StyledTitle size="md"> Find my safe</StyledTitle>
       </TitleContainer>
       <Text size="lg">
-        Enter an ethereum address to search for created safes
+        This app allows you to search for Safes that have a specific owner. <br />
+        Enter an Ethereum address to see if there are any Safes controlled by
+        it.
       </Text>
 
       <SearchContent>
@@ -290,7 +171,13 @@ const FindMySafe = () => {
             )}
           </SafesList>
         </LeftContent>
-        <SafeBalances>{getBalancesContent()}</SafeBalances>
+        <SafeBalances>
+          <Balances
+            selectedSafe={selectedSafe}
+            loadingBalances={loadingBalances}
+            balances={balances}
+          />
+        </SafeBalances>
       </SearchContent>
     </ThemeProvider>
   );
