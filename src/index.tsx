@@ -5,6 +5,8 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Compound from "./apps/Compound";
 import Testing from "./apps/Testing";
 import TxBuilder from "./apps/TxBuilder";
+import FindMySafe from "./apps/FindMySafe";
+
 import GlobalStyles from "./global";
 
 import * as serviceWorker from "./serviceWorker";
@@ -20,6 +22,10 @@ ReactDOM.render(
         <Route path="/tx-builder">
           <TxBuilder />
         </Route>
+        <Route path="/find-my-safe">
+          <FindMySafe />
+        </Route>
+        
         <Route path="/testing">
           <Testing />
         </Route>

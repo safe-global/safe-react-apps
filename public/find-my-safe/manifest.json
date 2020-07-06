@@ -1,0 +1,6 @@
+{
+  "short_name": "FindMySafe",
+  "name": "Find my safe",
+  "description": "A tool to list safes by providing an ethereum address",
+  "iconPath": "find-my-safe.png"
+}
