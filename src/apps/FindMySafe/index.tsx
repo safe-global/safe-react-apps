@@ -34,7 +34,7 @@ const StyledImage = styled.img`
 
 const StyledTitle = styled(Title)`
   margin: 0px;
-`
+`;
 
 const StyledTextField = styled(TextField)`
   width: 520px;
@@ -94,6 +94,12 @@ const IconImage = styled.div`
   img {
     margin-right: 5px;
   }
+`;
+
+const BalancesContainer = styled.div`
+  max-height: 230px;
+  overflow-y: auto;
+  max-width: 400px;
 `;
 
 type BalanceInfo = {
@@ -209,21 +215,27 @@ const FindMySafe = () => {
       );
     }
 
-    return balances?.map((b) =>
-      b.token ? (
-        <BalanceItem key={b.token.name}>
-          <IconImage>
-            <img
-              height={28}
-              src={b.token.logoUri}
-              onError={setImageToPlaceholder}
-              alt="Token logo"
-            />
-            {b.token.symbol}
-          </IconImage>
-          <div>{new Big(b.balance).div(10 ** b.token.decimals).toFixed(4)}</div>
-        </BalanceItem>
-      ) : null
+    return (
+      <BalancesContainer>
+        {balances?.map((b) =>
+          b.token ? (
+            <BalanceItem key={b.token.name}>
+              <IconImage>
+                <img
+                  height={28}
+                  src={b.token.logoUri}
+                  onError={setImageToPlaceholder}
+                  alt="Token logo"
+                />
+                {b.token.symbol}
+              </IconImage>
+              <div>
+                {new Big(b.balance).div(10 ** b.token.decimals).toFixed(4)}
+              </div>
+            </BalanceItem>
+          ) : null
+        )}
+      </BalancesContainer>
     );
   };
 
