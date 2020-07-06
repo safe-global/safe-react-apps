@@ -38,6 +38,9 @@ ReactDOM.render(
                   <Link to="/compound">Compound</Link>
                 </div>
                 <div>
+                  <Link to="/find-my-safe">Compound</Link>
+                </div>
+                <div>
                   <Link to="/tx-builder">Tx Builder</Link>
                 </div>
                 <div>
