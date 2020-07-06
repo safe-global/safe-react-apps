@@ -201,16 +201,22 @@ const FindMySafe = () => {
     }
 
     if (loadingBalances) {
-      return <Loader size="md" />;
+      return (
+        <BalancesContainer>
+          <Loader size="md" />
+        </BalancesContainer>
+      );
     }
 
     if (!balances?.length) {
       return (
-        <NoBalanceFound>
-          <Text size="lg" strong>
-            Not balances found
-          </Text>
-        </NoBalanceFound>
+        <BalancesContainer>
+          <NoBalanceFound>
+            <Text size="lg" strong>
+              Not balances found
+            </Text>
+          </NoBalanceFound>
+        </BalancesContainer>
       );
     }
 
