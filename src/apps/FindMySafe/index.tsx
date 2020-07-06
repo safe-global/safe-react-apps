@@ -57,8 +57,7 @@ const SafesList = styled.div`
 `;
 
 const BalanceItem = styled.div`
-  padding: 15px;
-
+  padding: 3px 9px;
   display: flex;
   justify-content: space-between;
   align-items: center;
