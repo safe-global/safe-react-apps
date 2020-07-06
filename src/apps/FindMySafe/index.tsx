@@ -96,9 +96,9 @@ const IconImage = styled.div`
 `;
 
 const BalancesContainer = styled.div`
-  max-height: 230px;
+  height: 230px;
+  width: 400px;
   overflow-y: auto;
-  max-width: 400px;
 `;
 
 type BalanceInfo = {
