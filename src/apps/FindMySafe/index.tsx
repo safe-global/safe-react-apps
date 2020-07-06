@@ -32,6 +32,10 @@ const StyledImage = styled.img`
   margin-right: 5px;
 `;
 
+const StyledTitle = styled(Title)`
+  margin: 0px;
+`
+
 const StyledTextField = styled(TextField)`
   width: 520px;
 `;
@@ -47,7 +51,7 @@ const LeftContent = styled.div`
 
 const SafesList = styled.div`
   margin-top: 10px;
-  height: 350px;
+  height: 320px;
   overflow-y: auto;
   overflow-x: hidden;
 `;
@@ -210,6 +214,7 @@ const FindMySafe = () => {
         <BalanceItem key={b.token.name}>
           <IconImage>
             <img
+              height={28}
               src={b.token.logoUri}
               onError={setImageToPlaceholder}
               alt="Token logo"
@@ -230,7 +235,7 @@ const FindMySafe = () => {
     <ThemeProvider theme={theme}>
       <TitleContainer>
         <StyledImage src={findMySafeImg} alt="findMySafeLogo" />
-        <Title size="md"> Find my safe</Title>
+        <StyledTitle size="md"> Find my safe</StyledTitle>
       </TitleContainer>
       <Text size="lg">
         Enter an ethereum address to search for created safes
