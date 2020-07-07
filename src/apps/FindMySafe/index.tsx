@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 
 import {
@@ -9,7 +9,6 @@ import {
   TextField,
   ButtonLink,
 } from "@gnosis.pm/safe-react-components";
-import initSdk, { SafeInfo } from "@gnosis.pm/safe-apps-sdk";
 
 import { BalanceInfo, getSafes, getBalances } from "./api";
 import findMySafeImg from "./find-my-safe.png";
@@ -18,11 +17,12 @@ import Balances from "./components/Balances";
 const TitleContainer = styled.div`
   display: flex;
   align-items: center;
+  margin-bottom: 5px;
 `;
 
 const StyledImage = styled.img`
-  max-height: 60px;
-  max-width: 60px;
+  max-height: 35px;
+  max-width: 35px;
   margin-right: 5px;
 `;
 
@@ -35,6 +35,7 @@ const StyledTextField = styled(TextField)`
 `;
 
 const SearchContent = styled.div`
+  margin-top: 5px;
   display: flex;
 `;
 
@@ -45,7 +46,7 @@ const LeftContent = styled.div`
 
 const SafesList = styled.div`
   margin-top: 10px;
-  height: 300px;
+  height: 310px;
   overflow-y: auto;
   overflow-x: hidden;
 `;
@@ -66,25 +67,17 @@ const SafeBalances = styled.div`
   width: 100%;
 `;
 
-const FindMySafe = () => {
-  const [appsSdk] = useState(initSdk());
-  const [safeInfo, setSafeInfo] = useState<SafeInfo>();
+const MainContainer = styled.div`
+  padding: 5px 0 0 10px;
+`;
 
+const FindMySafe = () => {
   const [address, setAddress] = useState("");
   const [safes, setSafes] = useState<string[]>([]);
   const [loadingSafes, setLoadingSafes] = useState(false);
   const [loadingBalances, setLoadingBalances] = useState(false);
   const [selectedSafe, setSelectedSafe] = useState<string | undefined>();
   const [balances, setBalances] = useState<BalanceInfo[] | undefined>([]);
-
-  // config safe connector
-  useEffect(() => {
-    appsSdk.addListeners({
-      onSafeInfo: setSafeInfo,
-    });
-
-    return () => appsSdk.removeListeners();
-  }, [appsSdk]);
 
   const handleSearch = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -102,7 +95,7 @@ const FindMySafe = () => {
 
     setLoadingSafes(true);
     try {
-      const res = await getSafes(address, safeInfo!.network);
+      const res = await getSafes(address);
       setSafes(res);
       setLoadingSafes(false);
     } catch (error) {
@@ -115,7 +108,7 @@ const FindMySafe = () => {
     setLoadingBalances(true);
 
     try {
-      const res = await getBalances(safe, safeInfo!.network);
+      const res = await getBalances(safe);
       setBalances(res);
       setLoadingBalances(false);
     } catch (error) {
@@ -123,62 +116,61 @@ const FindMySafe = () => {
     }
   };
 
-  if (!safeInfo) {
-    return <Loader size="lg" />;
-  }
-
   return (
     <ThemeProvider theme={theme}>
-      <TitleContainer>
-        <StyledImage src={findMySafeImg} alt="findMySafeLogo" />
-        <StyledTitle size="md"> Find my safe</StyledTitle>
-      </TitleContainer>
-      <Text size="lg">
-        This app allows you to search for Safes that have a specific owner. <br />
-        Enter an Ethereum address to see if there are any Safes controlled by
-        it.
-      </Text>
+      <MainContainer>
+        <TitleContainer>
+          <StyledImage src={findMySafeImg} alt="findMySafeLogo" />
+          <StyledTitle size="sm"> Find my safe</StyledTitle>
+        </TitleContainer>
+        <Text size="lg">
+          This app allows you to search for Safes that have a specific owner.{" "}
+          <br />
+          Enter an Ethereum address to see if there are any Safes controlled by
+          it.
+        </Text>
 
-      <SearchContent>
-        <LeftContent>
-          <StyledTextField
-            value={address}
-            label="Enter Address"
-            onChange={handleSearch}
-          />
+        <SearchContent>
+          <LeftContent>
+            <StyledTextField
+              value={address}
+              label="Enter Address"
+              onChange={handleSearch}
+            />
 
-          <SafesList>
-            {loadingSafes ? (
-              <Loader size="md" />
-            ) : (
-              safes.map((s) => (
-                <SafeItem key={s}>
-                  <Text
-                    size="md"
-                    color={selectedSafe === s ? "primary" : "text"}
-                    strong={selectedSafe === s}
-                  >
-                    {s}
-                  </Text>
-                  <ButtonLink
-                    color="primary"
-                    onClick={() => handleSafeClick(s)}
-                  >
-                    balances
-                  </ButtonLink>
-                </SafeItem>
-              ))
-            )}
-          </SafesList>
-        </LeftContent>
-        <SafeBalances>
-          <Balances
-            selectedSafe={selectedSafe}
-            loadingBalances={loadingBalances}
-            balances={balances}
-          />
-        </SafeBalances>
-      </SearchContent>
+            <SafesList>
+              {loadingSafes ? (
+                <Loader size="md" />
+              ) : (
+                safes.map((s) => (
+                  <SafeItem key={s}>
+                    <Text
+                      size="md"
+                      color={selectedSafe === s ? "primary" : "text"}
+                      strong={selectedSafe === s}
+                    >
+                      {s}
+                    </Text>
+                    <ButtonLink
+                      color="primary"
+                      onClick={() => handleSafeClick(s)}
+                    >
+                      balances
+                    </ButtonLink>
+                  </SafeItem>
+                ))
+              )}
+            </SafesList>
+          </LeftContent>
+          <SafeBalances>
+            <Balances
+              selectedSafe={selectedSafe}
+              loadingBalances={loadingBalances}
+              balances={balances}
+            />
+          </SafeBalances>
+        </SearchContent>
+      </MainContainer>
     </ThemeProvider>
   );
 };
