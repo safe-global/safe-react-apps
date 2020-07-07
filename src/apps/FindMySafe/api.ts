@@ -13,8 +13,8 @@ export type BalanceInfo = {
 };
 
 // rinkeby
-const apiUrl = "https://safe-transaction.staging.gnosisdev.com/api/v1";
-//const apiUrl = "https://safe-transaction.mainnet.gnosis.io/api/v1/";
+//const apiUrl = "https://safe-transaction.staging.gnosisdev.com/api/v1";
+const apiUrl = "https://safe-transaction.mainnet.gnosis.io/api/v1/";
 
 export const getSafes = memoize(
   async (address: string): Promise<string[]> => {
