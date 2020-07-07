@@ -17,7 +17,7 @@ import Balances from "./components/Balances";
 const TitleContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 `;
 
 const StyledImage = styled.img`
@@ -35,7 +35,7 @@ const StyledTextField = styled(TextField)`
 `;
 
 const SearchContent = styled.div`
-  margin-top: 5px;
+  margin-top: 10px;
   display: flex;
 `;
 
@@ -46,7 +46,7 @@ const LeftContent = styled.div`
 
 const SafesList = styled.div`
   margin-top: 10px;
-  height: 310px;
+  height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
 `;

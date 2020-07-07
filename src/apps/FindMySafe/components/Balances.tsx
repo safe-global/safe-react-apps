@@ -24,7 +24,7 @@ const IconImage = styled.div`
 `;
 
 const BalancesContainer = styled.div`
-  height: 320px;
+  height: 310px;
   width: 400px;
   overflow-y: auto;
 `;
