@@ -53,7 +53,7 @@ class InterfaceRepository {
           return false;
         }
 
-        return !!e.constant === false;
+        return !e.constant;
       })
       .map((m: any) => {
         return { inputs: m.inputs, name: m.name, payable: m.payable || false };
