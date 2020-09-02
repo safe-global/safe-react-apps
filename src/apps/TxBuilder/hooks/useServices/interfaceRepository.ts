@@ -48,7 +48,13 @@ class InterfaceRepository {
     const abi = JSON.parse(abiString);
 
     const methods = abi
-      .filter((e: any) => e.constant === false)
+      .filter((e: any) => {
+        if (["pure", "view"].includes(e.stateMutability)) {
+          return false;
+        }
+
+        return !!e.constant === false;
+      })
       .map((m: any) => {
         return { inputs: m.inputs, name: m.name, payable: m.payable || false };
       });
