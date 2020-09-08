@@ -6,6 +6,8 @@ import {
   GenericModal,
   Select,
   ModalFooterConfirmation,
+  Icon,
+  ButtonLink,
 } from "@gnosis.pm/safe-react-components";
 import React, { useState, useCallback } from "react";
 import Box from "@material-ui/core/Box";
@@ -34,6 +36,12 @@ const StyledTitle = styled(Title)`
 
 const StyledText = styled(Text)`
   margin-bottom: 15px;
+`;
+
+const StyledExamples = styled.div`
+  button {
+    padding: 0;
+  }
 `;
 
 const ModalBody = ({
@@ -76,6 +84,7 @@ const Dashboard = () => {
 
   const [addressOrAbi, setAddressOrAbi] = useState("");
   const [loadAbiError, setLoadAbiError] = useState(false);
+  const [showExamples, setShowExamples] = useState(false);
   const [toAddress, setToAddress] = useState("");
   const [contract, setContract] = useState<ContractInterface | undefined>(
     undefined
@@ -83,7 +92,7 @@ const Dashboard = () => {
   const [reviewing, setReviewing] = useState(false);
   const [selectedMethodIndex, setSelectedMethodIndex] = useState(0);
   const [inputCache, setInputCache] = useState<string[]>([]);
-  const [addTxError, setAddTxError] = useState(false);
+  const [addTxError, setAddTxError] = useState<string | undefined>();
   const [transactions, setTransactions] = useState<ProposedTransaction[]>([]);
   const [value, setValue] = useState("");
 
@@ -117,7 +126,6 @@ const Dashboard = () => {
     async (methodIndex: number) => {
       if (!contract || contract.methods.length <= methodIndex) return;
       setSelectedMethodIndex(methodIndex);
-      console.log(contract.methods[methodIndex]);
     },
     [contract]
   );
@@ -130,10 +138,7 @@ const Dashboard = () => {
     [inputCache]
   );
 
-  const getContractMethod = () =>
-    contract && contract.methods.length > selectedMethodIndex
-      ? contract.methods[selectedMethodIndex]
-      : undefined;
+  const getContractMethod = () => contract?.methods[selectedMethodIndex];
 
   const isValueInputVisible = () =>
     !(!contract?.payableFallback || getContractMethod()?.payable);
@@ -151,7 +156,9 @@ const Dashboard = () => {
       description = method.name + " (";
       for (let i = 0; i < method.inputs.length; i++) {
         const cleanValue = inputCache[i] || "";
-        cleanInputs[i] = cleanValue;
+        cleanInputs[i] =
+          // eslint-disable-next-line
+          cleanValue.charAt(0) === "[" ? eval(cleanValue) : cleanValue;
 
         if (i > 0) {
           description += ", ";
@@ -164,7 +171,7 @@ const Dashboard = () => {
       try {
         data = web3.eth.abi.encodeFunctionCall(method, cleanInputs);
       } catch (error) {
-        setAddTxError(true);
+        setAddTxError(error.message);
         return;
       }
     }
@@ -226,6 +233,7 @@ const Dashboard = () => {
 
   const handleSubmit = () => {
     sendTransactions();
+    setTransactions([]);
     setReviewing(false);
   };
 
@@ -233,148 +241,211 @@ const Dashboard = () => {
     setReviewing(false);
   };
 
+  const getInputInterface = (input: any) => {
+    if (input.type !== "tuple[]") {
+      return input.type;
+    } else {
+      return `tuple[${input.components
+        .map((c: any) => c.internalType)
+        .toString()}]`;
+    }
+  };
+
   return (
-    <WidgetWrapper>
-      <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
-      <StyledText size="sm">
-        This app allows you to build a custom multisend transaction. 
-        <br />
-        Enter a Ethereum contract address or ABI to get started.
-      </StyledText>
-
-      {/* TXs MODAL */}
-      {reviewing && transactions.length > 0 && (
-        <GenericModal
-          body={<ModalBody txs={transactions} deleteTx={deleteTransaction} />}
-          onClose={handleDismiss}
-          title="Send Transactions"
-          footer={
-            <ModalFooterConfirmation
-              handleOk={handleSubmit}
-              handleCancel={handleDismiss}
-            />
-          }
-        />
-      )}
-
-      {/* ABI Input */}
-      <TextField
-        value={addressOrAbi}
-        label="Enter Contract Address or ABI"
-        onChange={handleAddressOrABI}
-      />
-      {loadAbiError && (
-        <Text color="error" size="lg">
-          There was a problem trying to load the ABI
-        </Text>
-      )}
-
-      {/* ABI Loaded */}
-      {contract && (
-        <>
-          <Title size="xs">Transaction information</Title>
-
-          {!contract?.methods.length && (
-            <Text size="lg">Contract ABI doesn't have any public methods.</Text>
-          )}
-
-          {/* Input To (destination) */}
-          {(isValueInputVisible() || contract.methods.length > 0) && (
-            <>
-              <TextField
-                style={{ marginTop: 10 }}
-                value={toAddress}
-                label="To Address"
-                onChange={(e) => setToAddress(e.target.value)}
-              />
-              <br />
-            </>
-          )}
-
-          {/* Input ETH value */}
-          {isValueInputVisible() && (
-            <>
-              <TextField
-                style={{ marginTop: 10, marginBottom: 10 }}
-                value={value}
-                label="ETH"
-                onChange={(e) => setValue(e.target.value)}
-              />
-
-              <br />
-            </>
-          )}
-
-          {
-            <>
-              {contract.methods.length > 0 && (
-                <StyledSelect
-                  items={contract.methods.map((method, index) => ({
-                    id: index.toString(),
-                    label: method.name,
-                  }))}
-                  activeItemId={selectedMethodIndex.toString()}
-                  onItemClick={(id: string) => {
-                    setAddTxError(false);
-                    handleMethod(Number(id));
-                  }}
-                />
-              )}
-
-              {getContractMethod &&
-                getContractMethod()?.inputs.map((input, index) => (
-                  <div key={index}>
-                    <TextField
-                      style={{ marginTop: 10 }}
-                      value={inputCache[index] || ""}
-                      label={`${input.name || ""}(${input.type})`}
-                      onChange={(e) => {
-                        setAddTxError(false);
-                        handleInput(index, e.target.value);
-                      }}
-                    />
-                    <br />
-                  </div>
-                ))}
-
-              {addTxError && (
-                <Text size="lg" color="error">
-                  There was an error trying to add the TX.
-                </Text>
-              )}
-            </>
-          }
+    <>
+      <WidgetWrapper>
+        <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
+        <StyledText size="sm">
+          This app allows you to build a custom multisend transaction.
           <br />
+          Enter a Ethereum contract address or ABI to get started.
+        </StyledText>
 
-          {/* Actions */}
-          <ButtonContainer>
-            {isValueInputVisible() || contract.methods.length > 0 ? (
-              <Button
-                size="md"
-                color="primary"
-                onClick={() => addTransaction()}
-              >
-                Add transaction
-              </Button>
-            ) : (
-              <div></div>
+        {/* TXs MODAL */}
+        {reviewing && transactions.length > 0 && (
+          <GenericModal
+            body={<ModalBody txs={transactions} deleteTx={deleteTransaction} />}
+            onClose={handleDismiss}
+            title="Send Transactions"
+            footer={
+              <ModalFooterConfirmation
+                handleOk={handleSubmit}
+                handleCancel={handleDismiss}
+              />
+            }
+          />
+        )}
+
+        {/* ABI Input */}
+        <TextField
+          value={addressOrAbi}
+          label="Enter Contract Address or ABI"
+          onChange={handleAddressOrABI}
+        />
+        {loadAbiError && (
+          <Text color="error" size="lg">
+            There was a problem trying to load the ABI
+          </Text>
+        )}
+
+        {/* ABI Loaded */}
+        {contract && (
+          <>
+            <Title size="xs">Transaction information</Title>
+
+            {!contract?.methods.length && (
+              <Text size="lg">
+                Contract ABI doesn't have any public methods.
+              </Text>
             )}
 
-            <Button
-              size="md"
-              disabled={!transactions.length}
-              variant="contained"
-              color="primary"
-              onClick={() => setReviewing(true)}
-            >
-              {`Send Transactions ${
-                transactions.length ? `(${transactions.length})` : ""
-              }`}
-            </Button>
-          </ButtonContainer>
-        </>
-      )}
-    </WidgetWrapper>
+            {/* Input To (destination) */}
+            {(isValueInputVisible() || contract.methods.length > 0) && (
+              <>
+                <TextField
+                  style={{ marginTop: 10 }}
+                  value={toAddress}
+                  label="To Address"
+                  onChange={(e) => setToAddress(e.target.value)}
+                />
+                <br />
+              </>
+            )}
+
+            {/* Input ETH value */}
+            {isValueInputVisible() && (
+              <>
+                <TextField
+                  style={{ marginTop: 10, marginBottom: 10 }}
+                  value={value}
+                  label="ETH"
+                  onChange={(e) => setValue(e.target.value)}
+                />
+
+                <br />
+              </>
+            )}
+
+            {
+              <>
+                {contract.methods.length > 0 && (
+                  <>
+                    <br />
+                    <StyledSelect
+                      items={contract.methods.map((method, index) => ({
+                        id: index.toString(),
+                        label: method.name,
+                      }))}
+                      activeItemId={selectedMethodIndex.toString()}
+                      onItemClick={(id: string) => {
+                        setAddTxError(undefined);
+                        handleMethod(Number(id));
+                      }}
+                    />
+                    <StyledExamples>
+                      <ButtonLink
+                        color="primary"
+                        onClick={() => setShowExamples((prev) => !prev)}
+                      >
+                        {showExamples ? "Hide Examples" : "Show Examples"}
+                      </ButtonLink>
+
+                      {showExamples && (
+                        <>
+                          <Text size="sm" strong>
+                            string {'> '}
+                            <Text size="sm" as="span">
+                              some value
+                            </Text>
+                          </Text>
+                          <Text size="sm" strong>
+                            uint256 {'> '}
+                            <Text size="sm" as="span">
+                              123
+                            </Text>
+                          </Text>
+                          <Text size="sm" strong>
+                            address {'> '}
+                            <Text size="sm" as="span">
+                              0xDe75665F3BE46D696e5579628fA17b662e6fC04e
+                            </Text>
+                          </Text>
+                          <Text size="sm" strong>
+                            array {'> '}
+                            <Text size="sm" as="span">
+                              [1,2,3]
+                            </Text>
+                          </Text>
+                          <Text size="sm" strong>
+                            Tuple[uint256, string] {'> '}
+                            <Text size="sm" as="span">
+                              [[1, "someValue"]]
+                            </Text>
+                          </Text>
+                        </>
+                      )}
+                    </StyledExamples>
+                  </>
+                )}
+
+                {getContractMethod()?.inputs.map((input, index) => {
+                  return (
+                    <div key={index}>
+                      <TextField
+                        style={{ marginTop: 10 }}
+                        value={inputCache[index] || ""}
+                        label={`${input.name || ""}(${getInputInterface(
+                          input
+                        )})`}
+                        onChange={(e) => {
+                          setAddTxError(undefined);
+                          handleInput(index, e.target.value);
+                        }}
+                      />
+                      <br />
+                    </div>
+                  );
+                })}
+
+                {addTxError && (
+                  <Text size="lg" color="error">
+                    {addTxError}
+                  </Text>
+                )}
+              </>
+            }
+            <br />
+
+            {/* Actions */}
+            <ButtonContainer>
+              {isValueInputVisible() || contract.methods.length > 0 ? (
+                <Button
+                  size="md"
+                  color="primary"
+                  onClick={() => addTransaction()}
+                >
+                  Add transaction
+                </Button>
+              ) : (
+                <div></div>
+              )}
+
+              <Button
+                size="md"
+                disabled={!transactions.length}
+                variant="contained"
+                color="primary"
+                onClick={() => setReviewing(true)}
+              >
+                {`Send Transactions ${
+                  transactions.length ? `(${transactions.length})` : ""
+                }`}
+              </Button>
+            </ButtonContainer>
+          </>
+        )}
+      </WidgetWrapper>
+    </>
   );
 };
 
