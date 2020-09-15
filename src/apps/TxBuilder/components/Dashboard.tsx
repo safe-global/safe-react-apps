@@ -6,7 +6,6 @@ import {
   GenericModal,
   Select,
   ModalFooterConfirmation,
-  Icon,
   ButtonLink,
 } from "@gnosis.pm/safe-react-components";
 import React, { useState, useCallback } from "react";
