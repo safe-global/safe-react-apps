@@ -12,7 +12,8 @@ const rinkeby =
   "https://api.thegraph.com/subgraphs/name/protofire/token-registry-rinkeby";
 const mainnet =
   "https://api.thegraph.com/subgraphs/name/protofire/token-registry";
-const subgraphUri: { [key in Networks]: string } = {
+
+const subgraphUri: { [key in "mainnet" | "rinkeby"]: string } = {
   rinkeby,
   mainnet,
 };
@@ -137,6 +138,10 @@ export async function getTokenInteractions(
   tokenAddr: string,
   cTokenAddr: string
 ) {
+  if (network !== "rinkeby" && network !== "mainnet") {
+    return [];
+  }
+
   const client = new ApolloClient({
     uri: subgraphUri[network],
   });
