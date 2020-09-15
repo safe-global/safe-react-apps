@@ -23,7 +23,7 @@ export const web3Provider = process.env.REACT_APP_WEB3_PROVIDER_URL || "";
 
 export const getTokenList = (network: Networks): Array<TokenItem> => {
   if (network !== "rinkeby" && network !== "mainnet") {
-    return [];
+    throw Error(`Not supported Network ${network}`);
   }
 
   const tokensByNetwork = tokens[network];
