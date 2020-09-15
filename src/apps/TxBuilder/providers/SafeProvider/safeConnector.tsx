@@ -16,7 +16,7 @@ export default class SafeConnector {
       onUpdate({});
     };
 
-    this.sdk.addListeners({ onSafeInfo });
+    this.sdk.addListeners({ onSafeInfo, onTransactionConfirmation: () => {} });
   }
 
   deactivate() {

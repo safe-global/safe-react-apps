@@ -75,6 +75,7 @@ const CompoundWidget = () => {
   useEffect(() => {
     appsSdk.addListeners({
       onSafeInfo: setSafeInfo,
+      onTransactionConfirmation: () => {},
     });
 
     return () => appsSdk.removeListeners();
@@ -278,7 +279,7 @@ const CompoundWidget = () => {
     const txs = [
       {
         to: selectedToken.cTokenAddr,
-        value: 0,
+        value: "0",
         data: cTokenInstance.methods
           .redeemUnderlying(supplyParameter)
           .encodeABI(),
