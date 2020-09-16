@@ -1,0 +1,6 @@
+{
+  "short_name": "Safe WalletConnect",
+  "name": "Safe Connect",
+  "description": "Allows your Gnosis Safe Multisig to connect to dapps via WalletConnect.",
+  "iconPath": "safe-connect.jpg"
+}
