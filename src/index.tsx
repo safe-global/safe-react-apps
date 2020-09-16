@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Compound from "./apps/Compound";
-import SafeConnect from "./apps/SafeConnect";
+import WalletConnect from "./apps/WalletConnect";
 import TxBuilder from "./apps/TxBuilder";
 import GlobalStyles from "./global";
 
@@ -20,8 +20,8 @@ ReactDOM.render(
         <Route path="/tx-builder">
           <TxBuilder />
         </Route>
-        <Route path="/safe-connect">
-          <SafeConnect />
+        <Route path="/walletConnect">
+          <WalletConnect />
         </Route>
         <Route
           path="/"
@@ -35,7 +35,7 @@ ReactDOM.render(
                   <Link to="/tx-builder">Tx Builder</Link>
                 </div>
                 <div>
-                  <Link to="/safe-connect">Safe Connect</Link>
+                  <Link to="/walletConnect">Wallet Connect</Link>
                 </div>
               </>
             );
