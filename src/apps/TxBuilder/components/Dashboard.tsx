@@ -241,12 +241,15 @@ const Dashboard = () => {
   };
 
   const getInputInterface = (input: any) => {
-    if (input.type !== "tuple[]") {
-      return input.type;
-    } else {
-      return `tuple[${input.components
+    // This code renders a helper for the input text.
+    // When the parameter is of Tuple type, it renders an array with the parameters types
+    // required to form the Tuple, if not, it renders the parameter type directly.
+    if (input.type.startsWith("tuple")) {
+      return `tuple(${input.components
         .map((c: any) => c.internalType)
-        .toString()}]`;
+        .toString()})${input.type.endsWith("[]") ? "[]" : ""}`;
+    } else {
+      return input.type;
     }
   };
 
@@ -352,33 +355,39 @@ const Dashboard = () => {
                       {showExamples && (
                         <>
                           <Text size="sm" strong>
-                            string {'> '}
+                            string {"> "}
                             <Text size="sm" as="span">
                               some value
                             </Text>
                           </Text>
                           <Text size="sm" strong>
-                            uint256 {'> '}
+                            uint256 {"> "}
                             <Text size="sm" as="span">
                               123
                             </Text>
                           </Text>
                           <Text size="sm" strong>
-                            address {'> '}
+                            address {"> "}
                             <Text size="sm" as="span">
                               0xDe75665F3BE46D696e5579628fA17b662e6fC04e
                             </Text>
                           </Text>
                           <Text size="sm" strong>
-                            array {'> '}
+                            array {"> "}
                             <Text size="sm" as="span">
                               [1,2,3]
                             </Text>
                           </Text>
                           <Text size="sm" strong>
-                            Tuple[uint256, string] {'> '}
+                            Tuple(uint256, string) {"> "}
                             <Text size="sm" as="span">
-                              [[1, "someValue"]]
+                              [1, "someValue"]
+                            </Text>
+                          </Text>
+                          <Text size="sm" strong>
+                            Tuple(uint256, string)[] {"> "}
+                            <Text size="sm" as="span">
+                              [[1, "someValue"], [2, "someOtherValue"]]
                             </Text>
                           </Text>
                         </>
