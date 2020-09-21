@@ -46,7 +46,7 @@ const HelpLink = () => (
       rel="noopener noreferrer"
     >
       <Text color="primary" size="lg">
-        How to user WalletConnect with the Gnosis Safe Multisig
+        How to use WalletConnect with the Gnosis Safe Multisig
       </Text>
     </a>
     <Icon type="externalLink" color="primary" size="sm" />
@@ -67,7 +67,7 @@ const ConnectedInstructions = () => (
     </StyledText>
 
     <StyledText size="lg">
-      3) Past QR code image into the input field (Command+V on Mac, Ctrl+V on
+      3) Paste QR code image into the input field (Command+V on Mac, Ctrl+V on
       Windows)
     </StyledText>
 
@@ -76,7 +76,7 @@ const ConnectedInstructions = () => (
     </StyledText>
 
     <StyledText size="lg">
-      5) Now you can trigger transactions view the Dapp to your Safe.
+      5) Now you can trigger transactions via the Dapp to your Safe.
     </StyledText>
 
     <HelpLink />
