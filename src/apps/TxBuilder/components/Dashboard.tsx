@@ -156,9 +156,9 @@ const Dashboard = () => {
       for (let i = 0; i < method.inputs.length; i++) {
         const cleanValue = inputCache[i] || "";
         cleanInputs[i] =
-          // eslint-disable-next-line
-          cleanValue.charAt(0) === "[" ? eval(cleanValue) : cleanValue;
-
+          cleanValue.charAt(0) === "["
+            ? JSON.parse(cleanValue.replace(/"/g, '"'))
+            : cleanValue;
         if (i > 0) {
           description += ", ";
         }
