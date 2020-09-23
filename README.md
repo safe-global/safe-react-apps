@@ -44,6 +44,11 @@ headers: {
 },
 ```
 
+## Environments
+These apps are deployed in the following environments
+* When the code is merged into development: https://safe-apps.dev.gnosisdev.com
+* When the code is merged into master: https://safe-apps.staging.gnosisdev.com
+* When the code is released: https://apps.gnosis-safe.io
 
 ## License
 
