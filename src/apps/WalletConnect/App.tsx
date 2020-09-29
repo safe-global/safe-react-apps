@@ -55,6 +55,26 @@ const HelpLink = () => (
 
 const ConnectedInstructions = () => (
   <>
+    <StyledTitle size="sm">How to confirm transactions</StyledTitle>
+
+    <StyledText size="lg">1) Trigger a transaction from the Dapp.</StyledText>
+
+    <StyledText size="lg">
+      2) Come back here to confirm the transaction. You will see a popup with
+      transactions details. Review the details and submit the transaction.
+    </StyledText>
+
+    <StyledText size="lg">
+      3) The transaction has to be confirmed be owners and executed just like
+      any other Safe transaction.
+    </StyledText>
+
+    <HelpLink />
+  </>
+);
+
+const DisconnectedInstructions = () => (
+  <>
     <StyledTitle size="sm">How to connect to a Dapp</StyledTitle>
 
     <StyledText size="lg">
@@ -77,26 +97,6 @@ const ConnectedInstructions = () => (
 
     <StyledText size="lg">
       5) Now you can trigger transactions via the Dapp to your Safe.
-    </StyledText>
-
-    <HelpLink />
-  </>
-);
-
-const DisconnectedInstructions = () => (
-  <>
-    <StyledTitle size="sm">How to confirm transactions</StyledTitle>
-
-    <StyledText size="lg">1) Trigger a transaction from the Dapp.</StyledText>
-
-    <StyledText size="lg">
-      2) Come back here to confirm the transaction. You will see a popup with
-      transactions details. Review the details and submit the transaction.
-    </StyledText>
-
-    <StyledText size="lg">
-      3) The transaction has to be confirmed be owners and executed just like
-      any other Safe transaction.
     </StyledText>
 
     <HelpLink />
