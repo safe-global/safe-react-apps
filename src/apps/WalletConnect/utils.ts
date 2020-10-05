@@ -13,7 +13,6 @@ export const blobToImageData = async (blob: string) => {
     if (!ctx) throw new Error("Could not generate context from canvas");
 
     ctx.drawImage(img, 0, 0);
-    console.log({ img });
     return ctx.getImageData(0, 0, img.width, img.height); // some browsers synchronously decode image here
   });
 };
