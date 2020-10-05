@@ -52,6 +52,7 @@ const useWalletConnect = () => {
         if (error) {
           throw error;
         }
+
         if (payload.method === "eth_sendTransaction") {
           const txInfo = payload.params[0];
           safe.sendTransactions([
@@ -61,6 +62,13 @@ const useWalletConnect = () => {
               data: txInfo.data || "0x",
             },
           ]);
+        } else {
+          wcConnector.rejectRequest({
+            id: payload.id,
+            error: {
+              message: "METHOD_NOT_SUPPORTED",
+            },
+          });
         }
       });
 
