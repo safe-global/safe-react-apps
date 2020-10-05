@@ -53,22 +53,35 @@ const useWalletConnect = () => {
           throw error;
         }
 
-        if (payload.method === "eth_sendTransaction") {
-          const txInfo = payload.params[0];
-          safe.sendTransactions([
-            {
-              to: txInfo.to,
-              value: txInfo.value || "0x0",
-              data: txInfo.data || "0x",
-            },
-          ]);
-        } else {
-          wcConnector.rejectRequest({
-            id: payload.id,
-            error: {
-              message: "METHOD_NOT_SUPPORTED",
-            },
-          });
+        switch (payload.method) {
+          case "eth_sendTransaction": {
+            const txInfo = payload.params[0];
+            safe.sendTransactions([
+              {
+                to: txInfo.to,
+                value: txInfo.value || "0x0",
+                data: txInfo.data || "0x",
+              },
+            ]);
+            break;
+          }
+          case "gs_multi_send": {
+            const txs = payload.params as any[];
+            safe.sendTransactions(
+              // TODO: should we do some parameter validation here?
+              txs.map((txInfo) => ({ to: txInfo.to, value: txInfo.value || "0x0", data: txInfo.data || "0x" }))
+            );
+            break;
+          }
+          default: {
+            wcConnector.rejectRequest({
+              id: payload.id,
+              error: {
+                message: "METHOD_NOT_SUPPORTED",
+              },
+            });
+            break;
+          }
         }
       });
 
