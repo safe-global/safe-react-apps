@@ -1,5 +1,6 @@
 import axios from "axios";
 import memoize from "lodash/memoize";
+import { LowercaseNetworks } from "@gnosis.pm/safe-apps-sdk";
 
 import { Safe } from "../../providers/SafeProvider/safeConnector";
 interface ContractMethod {
@@ -15,6 +16,24 @@ export interface ContractInterface {
 
 const getContract = memoize(async (apiUrl: string) => axios.get(apiUrl));
 
+const getAbiUrlByNetwork: {
+  [key in LowercaseNetworks]?: ((address: string) => string) | null;
+} = {
+  mainnet: (address: string) =>
+    `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  morden: null,
+  rinkeby: (address: string) =>
+    `https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  ropsten: null,
+  goerli: null,
+  kovan: null,
+  xdai: (address: string) =>
+    `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
+  energy_web_chain: null,
+  volta: null,
+  unknown: null,
+};
+
 class InterfaceRepository {
   safe: Safe;
   web3: any;
@@ -25,17 +44,15 @@ class InterfaceRepository {
   }
 
   private async _loadAbiFromEtherscan(address: string): Promise<string> {
-    const host =
-      this.safe.getSafeInfo().network === "rinkeby"
-        ? "https://api-rinkeby.etherscan.io"
-        : "https://api.etherscan.io";
+    const abiUrl = getAbiUrlByNetwork[this.safe.getSafeInfo().network];
+    if (!abiUrl) {
+      throw Error(`Network: ${this.safe.getSafeInfo().network} not supported.`);
+    }
 
-    const apiUrl = `${host}/api?module=contract&action=getabi&address=${address}`;
-
-    const contractInfo = await getContract(apiUrl);
+    const contractInfo = await getContract(abiUrl(address));
     if (contractInfo.data.status !== "1")
       throw Error(
-        `Request not successful: ${contractInfo.data.message}; ${contractInfo.data.result}`
+        `Request not successful: ${contractInfo.data.message}; ${contractInfo.data.result}.`
       );
     return contractInfo.data.result;
   }
