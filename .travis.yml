@@ -1,5 +1,5 @@
 
-if: (branch = master) OR (branch = development) OR (tag IS present)
+if: (branch = master) OR (branch = development) OR (tag IS present) OR (branch = feature/xdai-deployment)
 language: node_js
 node_js: '12'
 before_install:
@@ -18,6 +18,11 @@ matrix:
     # Use rinkeby for development and staging builds
     - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_RINKEBY
     if: NOT tag IS present
+  - env:
+    # Use xdai provider when building a tagged version
+    - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_XDAI
+    - STAGING_BUCKET_NAME=${STAGING_XDAI_BUCKET_NAME}
+    if: tag IS present OR (branch = feature/xdai-deployment)
 before_script:
 - yarn build
 script:
