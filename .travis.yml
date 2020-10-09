@@ -50,7 +50,9 @@ deploy:
     local_dir: build
     region: $AWS_REGION
     on:
-      branch: master
+      # branch: master
+      all_branches: true
+      condition: $TRAVIS_BRANCH =~ ^(master|feature/xdai-deployment)$
 
 
   # Prepare production env deployment
