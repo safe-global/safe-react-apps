@@ -14,9 +14,9 @@ export interface ContractInterface {
   methods: ContractMethod[];
 }
 
-const getContract = memoize(async (apiUrl: string) => axios.get(apiUrl));
+const getAbi = memoize(async (apiUrl: string) => axios.get(apiUrl));
 
-const getAbiUrlByNetwork: {
+const abiUrlGetterByNetwork: {
   [key in LowercaseNetworks]?: ((address: string) => string) | null;
 } = {
   mainnet: (address: string) =>
@@ -44,17 +44,17 @@ class InterfaceRepository {
   }
 
   private async _loadAbiFromEtherscan(address: string): Promise<string> {
-    const abiUrl = getAbiUrlByNetwork[this.safe.getSafeInfo().network];
-    if (!abiUrl) {
+    const getAbiUrl = abiUrlGetterByNetwork[this.safe.getSafeInfo().network];
+    if (!getAbiUrl) {
       throw Error(`Network: ${this.safe.getSafeInfo().network} not supported.`);
     }
 
-    const contractInfo = await getContract(abiUrl(address));
-    if (contractInfo.data.status !== "1")
+    const abi = await getAbi(getAbiUrl(address));
+    if (abi.data.status !== "1")
       throw Error(
-        `Request not successful: ${contractInfo.data.message}; ${contractInfo.data.result}.`
+        `Request not successful: ${abi.data.message}; ${abi.data.result}.`
       );
-    return contractInfo.data.result;
+    return abi.data.result;
   }
 
   async loadAbi(addressOrAbi: string): Promise<ContractInterface> {
