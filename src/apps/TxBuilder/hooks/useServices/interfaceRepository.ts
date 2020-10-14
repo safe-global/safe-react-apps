@@ -43,7 +43,7 @@ class InterfaceRepository {
     this.web3 = web3;
   }
 
-  private async _loadAbiFromEtherscan(address: string): Promise<string> {
+  private async _loadAbiFromBlockExplorer(address: string): Promise<string> {
     const getAbiUrl = abiUrlGetterByNetwork[this.safe.getSafeInfo().network];
     if (!getAbiUrl) {
       throw Error(`Network: ${this.safe.getSafeInfo().network} not supported.`);
@@ -59,7 +59,7 @@ class InterfaceRepository {
 
   async loadAbi(addressOrAbi: string): Promise<ContractInterface> {
     const abiString = this.web3.utils.isAddress(addressOrAbi)
-      ? await this._loadAbiFromEtherscan(addressOrAbi)
+      ? await this._loadAbiFromBlockExplorer(addressOrAbi)
       : addressOrAbi;
 
     const abi = JSON.parse(abiString);
