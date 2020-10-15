@@ -1491,13 +1491,14 @@
     "@ethersproject/constants" "^5.0.4"
     "@ethersproject/logger" "^5.0.5"
 
+"@gnosis.pm/safe-apps-sdk@0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-0.4.2.tgz#ae87b2164931c006cb0efdede3d82ff210df1648"
+  integrity sha512-BwA2dyCebPMdi4JhhTkp6EjkhEM6vAIviKdhqHiHnSmL+sDfxtP1jdOuE8ME2/4+5TiLSS8k8qscYjLSlf1LLw==
+
 "@gnosis.pm/safe-apps-sdk@https://github.com/gnosis/safe-apps-sdk#development":
   version "0.4.0"
   resolved "https://github.com/gnosis/safe-apps-sdk#25a1afe357e5c44d071c81ab9b7b3cf85e20ca80"
-
-"@gnosis.pm/safe-apps-sdk@https://github.com/gnosis/safe-apps-sdk.git#75232":
-  version "0.4.1"
-  resolved "https://github.com/gnosis/safe-apps-sdk.git#75232c1fd6b15e12f56f5f221b73aa7aa3eb68d6"
 
 "@gnosis.pm/safe-react-components@^0.3.0":
   version "0.3.0"
