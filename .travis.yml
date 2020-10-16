@@ -1,5 +1,5 @@
 
-if: (branch = master) OR (branch = development) OR (tag IS present) OR (branch = feature/xdai-deployment)
+if: (branch = master) OR (branch = development) OR (tag IS present) OR (branch = xdai-deployment)
 language: node_js
 node_js: '12'
 before_install:
@@ -22,7 +22,7 @@ matrix:
     # Use xdai provider when building a tagged version
     - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_XDAI
     - STAGING_BUCKET_NAME=${STAGING_XDAI_BUCKET_NAME}
-    if: tag IS present OR (branch = feature/xdai-deployment)
+    if: tag IS present OR (branch = xdai-deployment)
 before_script:
 - yarn build
 script:
@@ -52,7 +52,7 @@ deploy:
     on:
       # branch: master
       all_branches: true
-      condition: $TRAVIS_BRANCH =~ ^(master|feature/xdai-deployment)$
+      condition: $TRAVIS_BRANCH =~ ^(master|xdai-deployment)$
 
 
   # Prepare production env deployment
