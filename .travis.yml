@@ -1,5 +1,5 @@
 
-if: (branch = master) OR (branch = development) OR (tag IS present) OR (branch = xdai-deployment)
+if: (branch = master) OR (branch = development) OR (tag IS present)
 language: node_js
 node_js: '12'
 before_install:
@@ -19,10 +19,10 @@ matrix:
     - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_RINKEBY
     if: NOT tag IS present
   - env:
-    # Use xdai provider when building a tagged version
+    # Deploy to xDai staging when building master branch
     - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_XDAI
     - STAGING_BUCKET_NAME=${STAGING_XDAI_BUCKET_NAME}
-    if: tag IS present OR (branch = xdai-deployment)
+    if: branch = master
 before_script:
 - yarn build
 script:
@@ -50,10 +50,7 @@ deploy:
     local_dir: build
     region: $AWS_REGION
     on:
-      # branch: master
-      all_branches: true
-      condition: $TRAVIS_BRANCH =~ ^(master|xdai-deployment)$
-
+      branch: master
 
   # Prepare production env deployment
   - provider: s3
