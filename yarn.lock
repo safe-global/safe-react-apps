@@ -1491,18 +1491,19 @@
     "@ethersproject/constants" "^5.0.4"
     "@ethersproject/logger" "^5.0.5"
 
-"@gnosis.pm/safe-apps-sdk@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-0.4.0.tgz#26c821513c995b9dc023ebbdfe103a832e731521"
-  integrity sha512-hUt/Siz5kSu9jgvMZXejQsxQiUo/NIow67KNAQGfMt7D0S1YoyvpCGAgSliNelY/bP7EanBhhStOnItnu7DwUA==
+"@gnosis.pm/safe-apps-sdk@0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-0.4.2.tgz#ae87b2164931c006cb0efdede3d82ff210df1648"
+  integrity sha512-BwA2dyCebPMdi4JhhTkp6EjkhEM6vAIviKdhqHiHnSmL+sDfxtP1jdOuE8ME2/4+5TiLSS8k8qscYjLSlf1LLw==
 
 "@gnosis.pm/safe-apps-sdk@https://github.com/gnosis/safe-apps-sdk#development":
   version "0.4.0"
   resolved "https://github.com/gnosis/safe-apps-sdk#25a1afe357e5c44d071c81ab9b7b3cf85e20ca80"
 
-"@gnosis.pm/safe-react-components@https://github.com/gnosis/safe-react-components.git#be51ca5":
-  version "0.2.0"
-  resolved "https://github.com/gnosis/safe-react-components.git#be51ca5406cd47ef9fa82f03c5a677334a36fef4"
+"@gnosis.pm/safe-react-components@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.3.0.tgz#9f6ddc729c338ab8c1b1fc97094d89df845aab6c"
+  integrity sha512-IGOePDKLNgEdlkBfqGJ1gjEsEqIYI8bWeU1LvT0kHa0dlGwn7HEUnqp44K4YQ18bbc86Bq9m80H/0/Nn1buVwA==
   dependencies:
     classnames "^2.2.6"
     polished "3.6.5"

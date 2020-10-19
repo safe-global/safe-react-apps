@@ -18,6 +18,11 @@ matrix:
     # Use rinkeby for development and staging builds
     - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_RINKEBY
     if: NOT tag IS present
+  - env:
+    # Deploy to xDai staging when building master branch
+    - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_XDAI
+    - STAGING_BUCKET_NAME=${STAGING_XDAI_BUCKET_NAME}
+    if: branch = master
 before_script:
 - yarn build
 script:
@@ -46,7 +51,6 @@ deploy:
     region: $AWS_REGION
     on:
       branch: master
-
 
   # Prepare production env deployment
   - provider: s3

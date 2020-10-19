@@ -1,5 +1,6 @@
 import axios from "axios";
 import memoize from "lodash/memoize";
+import { LowercaseNetworks } from "@gnosis.pm/safe-apps-sdk";
 
 import { Safe } from "../../providers/SafeProvider/safeConnector";
 interface ContractMethod {
@@ -13,7 +14,25 @@ export interface ContractInterface {
   methods: ContractMethod[];
 }
 
-const getContract = memoize(async (apiUrl: string) => axios.get(apiUrl));
+const getAbi = memoize(async (apiUrl: string) => axios.get(apiUrl));
+
+const abiUrlGetterByNetwork: {
+  [key in LowercaseNetworks]?: ((address: string) => string) | null;
+} = {
+  mainnet: (address: string) =>
+    `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  morden: null,
+  rinkeby: (address: string) =>
+    `https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  ropsten: null,
+  goerli: null,
+  kovan: null,
+  xdai: (address: string) =>
+    `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
+  energy_web_chain: null,
+  volta: null,
+  unknown: null,
+};
 
 class InterfaceRepository {
   safe: Safe;
@@ -24,25 +43,23 @@ class InterfaceRepository {
     this.web3 = web3;
   }
 
-  private async _loadAbiFromEtherscan(address: string): Promise<string> {
-    const host =
-      this.safe.getSafeInfo().network === "rinkeby"
-        ? "https://api-rinkeby.etherscan.io"
-        : "https://api.etherscan.io";
+  private async _loadAbiFromBlockExplorer(address: string): Promise<string> {
+    const getAbiUrl = abiUrlGetterByNetwork[this.safe.getSafeInfo().network];
+    if (!getAbiUrl) {
+      throw Error(`Network: ${this.safe.getSafeInfo().network} not supported.`);
+    }
 
-    const apiUrl = `${host}/api?module=contract&action=getabi&address=${address}`;
-
-    const contractInfo = await getContract(apiUrl);
-    if (contractInfo.data.status !== "1")
+    const abi = await getAbi(getAbiUrl(address));
+    if (abi.data.status !== "1")
       throw Error(
-        `Request not successful: ${contractInfo.data.message}; ${contractInfo.data.result}`
+        `Request not successful: ${abi.data.message}; ${abi.data.result}.`
       );
-    return contractInfo.data.result;
+    return abi.data.result;
   }
 
   async loadAbi(addressOrAbi: string): Promise<ContractInterface> {
     const abiString = this.web3.utils.isAddress(addressOrAbi)
-      ? await this._loadAbiFromEtherscan(addressOrAbi)
+      ? await this._loadAbiFromBlockExplorer(addressOrAbi)
       : addressOrAbi;
 
     const abi = JSON.parse(abiString);
