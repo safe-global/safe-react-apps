@@ -22,7 +22,7 @@ matrix:
     # Deploy to xDai staging when building master branch
     - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_XDAI
     - STAGING_BUCKET_NAME=${STAGING_XDAI_BUCKET_NAME}
-    if: branch = master
+    if: branch = master OR tag IS present
 before_script:
 - yarn build
 script:
