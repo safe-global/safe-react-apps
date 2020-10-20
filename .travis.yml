@@ -22,7 +22,7 @@ matrix:
     # Deploy to xDai staging when building master branch
     - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_XDAI
     - STAGING_BUCKET_NAME=${STAGING_XDAI_BUCKET_NAME}
-    if: branch = master
+    if: branch = master OR tag IS present
 before_script:
 - yarn build
 script:
@@ -46,7 +46,7 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     skip_cleanup: true
-    upload-dir: current
+    upload_dir: current
     local_dir: build
     region: $AWS_REGION
     on:
@@ -58,7 +58,7 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     skip_cleanup: true
-    upload-dir: releases/$TRAVIS_TAG
+    upload_dir: releases/$TRAVIS_TAG
     local_dir: build
     region: $AWS_REGION
     on:
