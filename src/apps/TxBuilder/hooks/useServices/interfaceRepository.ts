@@ -29,8 +29,10 @@ const abiUrlGetterByNetwork: {
   kovan: null,
   xdai: (address: string) =>
     `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
-  energy_web_chain: null,
-  volta: null,
+  energy_web_chain: (address: string) =>
+    `https://explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
+  volta: (address: string) =>
+    `https://volta-explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
   unknown: null,
 };
 
