@@ -23,6 +23,16 @@ matrix:
     - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_XDAI
     - STAGING_BUCKET_NAME=${STAGING_XDAI_BUCKET_NAME}
     if: branch = master OR tag IS present
+  - env:
+    # Use EWC provider when building a tagged version
+    - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_EWC
+    - STAGING_BUCKET_NAME=${STAGING_EWC_BUCKET_NAME}
+    if: tag IS present
+  - env:
+    # Use Volta for development and staging builds
+    - REACT_APP_WEB3_PROVIDER_URL=$REACT_APP_WEB3_PROVIDER_URL_VOLTA
+    - STAGING_BUCKET_NAME=${STAGING_VOLTA_BUCKET_NAME}
+    if: NOT tag IS present
 before_script:
 - yarn build
 script:
