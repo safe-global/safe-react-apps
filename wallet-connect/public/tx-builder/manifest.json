@@ -1,0 +1,6 @@
+{
+  "short_name": "Tx Builder",
+  "name": "Transaction Builder",
+  "description": "A Safe app to compose custom transactions",
+  "iconPath": "tx-builder.png"
+}

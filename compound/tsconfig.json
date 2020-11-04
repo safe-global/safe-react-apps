@@ -20,13 +20,6 @@
     "jsx": "react"
   },
   "include": [
-    "typings",
-    "common",
-    "compound",
-    "tx-builder",
-    "wallet-connect"
-  ],
-  "exclude": [
-    "node_modules"
+    "src"
   ]
 }

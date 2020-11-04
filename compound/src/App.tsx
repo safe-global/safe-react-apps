@@ -15,9 +15,13 @@ import {
 import initSdk, { SafeInfo } from "@gnosis.pm/safe-apps-sdk";
 import styled from "styled-components";
 
-import WidgetWrapper from "../../components/WidgetWrapper";
 import { web3Provider, getTokenList, TokenItem } from "./config";
-import { SelectContainer, DaiInfo, ButtonContainer } from "./components";
+import {
+  WidgetWrapper,
+  SelectContainer,
+  DaiInfo,
+  ButtonContainer,
+} from "./components";
 import { getTokenInteractions, parseEvents } from "./tokensTransfers";
 
 import cERC20Abi from "./abis/CErc20";
@@ -162,12 +166,7 @@ const CompoundWidget = () => {
       const dailyRate = new Big(cTokenSupplyRate)
         .times(blocksPerDay)
         .div(10 ** 18);
-      const apy = dailyRate
-        .plus(1)
-        .pow(365)
-        .minus(1)
-        .times(100)
-        .toFixed(2);
+      const apy = dailyRate.plus(1).pow(365).minus(1).times(100).toFixed(2);
 
       // get interest earned
       const tokenEvents = await getTokenInteractions(
