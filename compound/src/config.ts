@@ -19,7 +19,7 @@ export type TokenItem = {
   cTokenAddr: string;
 };
 
-export const web3Provider = process.env.REACT_APP_WEB3_PROVIDER_URL || "";
+export const rpc_token = process.env.REACT_APP_RPC_TOKEN || "";
 
 export const getTokenList = (network: Networks): Array<TokenItem> => {
   if (network !== "rinkeby" && network !== "mainnet") {

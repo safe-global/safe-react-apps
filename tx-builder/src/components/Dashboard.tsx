@@ -10,13 +10,14 @@ import {
 } from "@gnosis.pm/safe-react-components";
 import React, { useState, useCallback } from "react";
 import Box from "@material-ui/core/Box";
+import styled from "styled-components";
+import { AbiItem } from "web3-utils";
 
 import { ContractInterface } from "../hooks/useServices/interfaceRepository";
 import useServices from "../hooks/useServices";
 import { ProposedTransaction } from "./models";
 import { useSafe } from "../hooks/useSafe";
-import WidgetWrapper from "../../../components/WidgetWrapper";
-import styled from "styled-components";
+import WidgetWrapper from "./WidgetWrapper";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -104,7 +105,7 @@ const Dashboard = () => {
     const cleanInput = e.currentTarget?.value?.trim();
     setAddressOrAbi(cleanInput);
 
-    if (!cleanInput.length) {
+    if (!cleanInput.length || !services.web3 || !services.interfaceRepo) {
       return;
     }
 
@@ -148,6 +149,10 @@ const Dashboard = () => {
 
     const web3 = services.web3;
 
+    if (!web3) {
+      return;
+    }
+
     if (contract && contract.methods.length > selectedMethodIndex) {
       const method = contract.methods[selectedMethodIndex];
       const cleanInputs = [];
@@ -168,7 +173,7 @@ const Dashboard = () => {
       description += ")";
 
       try {
-        data = web3.eth.abi.encodeFunctionCall(method, cleanInputs);
+        data = web3.eth.abi.encodeFunctionCall(method as AbiItem, cleanInputs);
       } catch (error) {
         setAddTxError(error.message);
         return;

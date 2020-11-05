@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import WalletConnect from "@walletconnect/client";
 import { IClientMeta } from "@walletconnect/types";
 import { useSafe } from "@rmeissner/safe-apps-react-sdk";
-import { chainIdByNetwork, gnosisUrlByNetwork } from "../../../utils";
+import { chainIdByNetwork, gnosisUrlByNetwork } from "../utils";
 
 export const LOCAL_STORAGE_URI_KEY = "safeAppWcUri";
 

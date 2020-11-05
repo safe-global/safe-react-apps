@@ -3,13 +3,19 @@
   "version": "1.6.2",
   "private": true,
   "scripts": {
-    "start-compound": "cd compound && react-app-rewired start",
-    "build-counpound": "cd compound && react-app-rewired build",
-    "ipfs-deploy-compound": "cd compound && yarn build && npx ipfs-deploy build --pinner pinata --no-open"
+    "start-compound": "cd compound && dotenv -e ../.env -- yarn start",
+    "start-tx-builder": "cd tx-builder && dotenv -e ../.env -- yarn start",
+    "start-wallet-connect": "cd wallet-connect && dotenv -e ../.env -- yarn start",
+    "build-compound": "cd compound && dotenv -e ../.env -- yarn build",
+    "build-tx-builder": "cd tx-builder && dotenv -e ../.env -- yarn build",
+    "build-wallet-connect": "cd wallet-connect && dotenv -e ../.env -- yarn build"
   },
   "workspaces": [
     "compound",
     "tx-builder",
     "wallet-connect"
-  ]
+  ],
+  "devDependencies": {
+    "dotenv-cli": "^4.0.0"
+  }
 }

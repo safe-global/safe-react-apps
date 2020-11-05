@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Big from "big.js";
 import { BigNumberInput } from "big-number-input";
 import Web3 from "web3";
+import { AbiItem } from "web3-utils";
+
 import {
   Button,
   Select,
@@ -15,7 +17,7 @@ import {
 import initSdk, { SafeInfo } from "@gnosis.pm/safe-apps-sdk";
 import styled from "styled-components";
 
-import { web3Provider, getTokenList, TokenItem } from "./config";
+import { rpc_token, getTokenList, TokenItem } from "./config";
 import {
   WidgetWrapper,
   SelectContainer,
@@ -27,7 +29,6 @@ import { getTokenInteractions, parseEvents } from "./tokensTransfers";
 import cERC20Abi from "./abis/CErc20";
 import cWEthAbi from "./abis/CWEth";
 
-const web3: any = new Web3(web3Provider);
 const blocksPerDay = 5760;
 
 type Operation = "lock" | "withdraw";
@@ -39,6 +40,8 @@ const StyledTitle = styled(Title)`
 const appsSdk = initSdk();
 
 const CompoundWidget = () => {
+  const [web3, setWeb3] = useState<Web3 | undefined>();
+
   const [safeInfo, setSafeInfo] = useState<SafeInfo>();
   const [tokenList, setTokenList] = useState<Array<TokenItem>>();
 
@@ -54,23 +57,6 @@ const CompoundWidget = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [inputError, setInputError] = useState<string | undefined>();
 
-  //-- for development purposes with local provider
-  useEffect(() => {
-    if (process.env.REACT_APP_LOCAL_WEB3_PROVIDER) {
-      console.warn("COMPOUND APP: you are using a local web3 provider");
-      const w: any = window;
-      w.web3 = new Web3(w.ethereum);
-      w.ethereum.enable();
-      w.web3.eth.getAccounts().then((addresses: Array<string>) => {
-        setSafeInfo({
-          safeAddress: addresses[0],
-          network: "rinkeby",
-          ethBalance: "0.99",
-        });
-      });
-    }
-  }, []);
-
   // config safe connector
   useEffect(() => {
     appsSdk.addListeners({
@@ -80,6 +66,18 @@ const CompoundWidget = () => {
 
     return () => appsSdk.removeListeners();
   }, []);
+
+  // set web3 instance
+  useEffect(() => {
+    if (!safeInfo) {
+      return;
+    }
+
+    const web3Intance = new Web3(
+      `https://${safeInfo.network}.infura.io/v3/${rpc_token}`
+    );
+    setWeb3(web3Intance);
+  }, [safeInfo]);
 
   // load tokens list and initialize with DAI
   useEffect(() => {
@@ -97,7 +95,7 @@ const CompoundWidget = () => {
 
   // on selectedToken
   useEffect(() => {
-    if (!selectedToken) {
+    if (!selectedToken || !web3) {
       return;
     }
 
@@ -108,17 +106,19 @@ const CompoundWidget = () => {
     setInputValue("");
     setInputError(undefined);
 
-    setTokenInstance(new web3.eth.Contract(cERC20Abi, selectedToken.tokenAddr));
+    setTokenInstance(
+      new web3.eth.Contract(cERC20Abi as AbiItem[], selectedToken.tokenAddr)
+    );
     if (selectedToken.id === "ETH") {
       setCTokenInstance(
-        new web3.eth.Contract(cWEthAbi, selectedToken.cTokenAddr)
+        new web3.eth.Contract(cWEthAbi as AbiItem[], selectedToken.cTokenAddr)
       );
     } else {
       setCTokenInstance(
-        new web3.eth.Contract(cERC20Abi, selectedToken.cTokenAddr)
+        new web3.eth.Contract(cERC20Abi as AbiItem[], selectedToken.cTokenAddr)
       );
     }
-  }, [selectedToken]);
+  }, [selectedToken, web3]);
 
   useEffect(() => {
     const getData = async () => {
@@ -166,7 +166,12 @@ const CompoundWidget = () => {
       const dailyRate = new Big(cTokenSupplyRate)
         .times(blocksPerDay)
         .div(10 ** 18);
-      const apy = dailyRate.plus(1).pow(365).minus(1).times(100).toFixed(2);
+      const apy = dailyRate
+        .plus(1)
+        .pow(365)
+        .minus(1)
+        .times(100)
+        .toFixed(2);
 
       // get interest earned
       const tokenEvents = await getTokenInteractions(
@@ -221,7 +226,7 @@ const CompoundWidget = () => {
   };
 
   const lock = () => {
-    if (!selectedToken || !validateInputValue("lock")) {
+    if (!selectedToken || !validateInputValue("lock") || !web3) {
       return;
     }
 
@@ -244,14 +249,14 @@ const CompoundWidget = () => {
       txs = [
         {
           to: selectedToken.tokenAddr,
-          value: 0,
+          value: "0",
           data: tokenInstance.methods
             .approve(selectedToken.cTokenAddr, supplyParameter)
             .encodeABI(),
         },
         {
           to: selectedToken.cTokenAddr,
-          value: 0,
+          value: "0",
           data: cTokenInstance.methods.mint(supplyParameter).encodeABI(),
         },
       ];
@@ -263,7 +268,7 @@ const CompoundWidget = () => {
   };
 
   const withdraw = () => {
-    if (!selectedToken || !validateInputValue("withdraw")) {
+    if (!selectedToken || !validateInputValue("withdraw") || !web3) {
       return;
     }
 
