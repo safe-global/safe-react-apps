@@ -3,12 +3,12 @@
   "version": "1.6.2",
   "private": true,
   "scripts": {
-    "start-compound": "cd compound && dotenv -e ../.env -- yarn start",
-    "start-tx-builder": "cd tx-builder && dotenv -e ../.env -- yarn start",
-    "start-wallet-connect": "cd wallet-connect && dotenv -e ../.env -- yarn start",
-    "build-compound": "cd compound && dotenv -e ../.env -- yarn build",
-    "build-tx-builder": "cd tx-builder && dotenv -e ../.env -- yarn build",
-    "build-wallet-connect": "cd wallet-connect && dotenv -e ../.env -- yarn build"
+    "start-compound": "dotenv -e .env -- yarn workspace compound start",
+    "start-tx-builder": "dotenv -e .env -- yarn workspace tx-builder start",
+    "start-wallet-connect": "dotenv -e .env -- yarn workspace wallet-connect start",
+    "build-compound": " dotenv -e .env -- yarn workspace compound build",
+    "build-tx-builder": "dotenv -e .env -- yarn tx-builder build",
+    "build-wallet-connect": "dotenv -e .env -- yarn workspace wallet-connect build"
   },
   "workspaces": [
     "compound",
