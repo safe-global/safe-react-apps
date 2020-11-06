@@ -9,7 +9,7 @@ export const rpcUrlGetterByNetwork: {
   rinkeby: (token) => `https://rinkeby.infura.io/v3/${token}`,
   goerli: null,
   kovan: null,
-  xdai: () => "https://dai.poa.network/",
+  xdai: () => "https://dai.poa.network",
   energy_web_chain: () => "https://rpc.energyweb.org",
   volta: () => "https://volta-rpc.energyweb.org",
   unknown: null,
