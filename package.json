@@ -11,9 +11,7 @@
     "build-wallet-connect": "dotenv -e .env -- yarn workspace wallet-connect build"
   },
   "workspaces": [
-    "compound",
-    "tx-builder",
-    "wallet-connect"
+    "apps/*"
   ],
   "devDependencies": {
     "dotenv-cli": "^4.0.0"
