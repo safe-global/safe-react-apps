@@ -19,14 +19,8 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": [
-    "typings",
-    "common",
-    "compound",
-    "tx-builder",
-    "wallet-connect"
-  ],
+  "include": ["./apps/*/**/src"],
   "exclude": [
-    "node_modules"
+    "node_modules", "build"
   ]
 }
