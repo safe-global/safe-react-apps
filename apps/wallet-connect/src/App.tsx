@@ -122,14 +122,28 @@ const App = () => {
       for (const index in items) {
         const item = items[index];
 
+        // detect if pasted data is a URI value
+        if (item.kind === "string" && item.type === "text/plain") {
+          const data = event.clipboardData.getData("Text");
+          if (!data.startsWith("wc:")) {
+            continue;
+          } else {
+            setIsConnecting(true);
+            wcConnect(data);
+          }
+        }
+
+        // detect if pasted data is a QR code
         if (item.kind !== "file") {
           continue;
         }
 
         const blob = item.getAsFile();
         const reader = new FileReader();
-        reader.onload = async (event: ProgressEvent<FileReader>) => {          
-          const imageData = await blobToImageData(event.target?.result as string);
+        reader.onload = async (event: ProgressEvent<FileReader>) => {
+          const imageData = await blobToImageData(
+            event.target?.result as string
+          );
           const code = jsQr(imageData.data, imageData.width, imageData.height);
           if (code?.data) {
             setIsConnecting(true);
