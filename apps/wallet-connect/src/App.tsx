@@ -173,7 +173,7 @@ const App = () => {
     return (
       <TextField
         id="wc-uri"
-        label="Paste WalletConnect QR code"
+        label="Paste WalletConnect QR code or connection URI"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onPaste={onPaste}
