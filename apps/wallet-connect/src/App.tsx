@@ -82,12 +82,12 @@ const DisconnectedInstructions = () => (
     </StyledText>
 
     <StyledText size="lg">
-      2) Copy QR code image into clipboard (Shift+Command+4 on Mac, Windows
-      key+PrtScn on Windows).
+      2) Copy QR code image (Shift+Command+4 on Mac, Windows
+      key+PrtScn on Windows) or connection URI into clipboard.
     </StyledText>
 
     <StyledText size="lg">
-      3) Paste QR code image into the input field (Command+V on Mac, Ctrl+V on
+      3) Paste QR code image or connection URI into the input field (Command+V on Mac, Ctrl+V on
       Windows)
     </StyledText>
 
