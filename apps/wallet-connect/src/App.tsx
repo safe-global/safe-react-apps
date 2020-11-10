@@ -111,33 +111,14 @@ const App = () => {
 
   const onPaste = React.useCallback(
     (event: React.ClipboardEvent) => {
-      setInvalidQRCode(false);
-      setInputValue("");
-
-      if (wcClientData) {
-        return;
-      }
-
-      const items = event.clipboardData.items;
-      for (const index in items) {
-        const item = items[index];
-
-        // detect if pasted data is a URI value
-        if (item.kind === "string" && item.type === "text/plain") {
-          const data = event.clipboardData.getData("Text");
-          if (!data.startsWith("wc:")) {
-            continue;
-          } else {
-            setIsConnecting(true);
-            wcConnect(data);
-          }
+      const connectWithUri = (data: string) => {
+        if (data.startsWith("wc:")) {
+          setIsConnecting(true);
+          wcConnect(data);
         }
+      };
 
-        // detect if pasted data is a QR code
-        if (item.kind !== "file") {
-          continue;
-        }
-
+      const connectWithQR = (item: DataTransferItem) => {
         const blob = item.getAsFile();
         const reader = new FileReader();
         reader.onload = async (event: ProgressEvent<FileReader>) => {
@@ -159,6 +140,27 @@ const App = () => {
           }
         };
         reader.readAsDataURL(blob as Blob);
+      };
+
+      setInvalidQRCode(false);
+      setInputValue("");
+
+      if (wcClientData) {
+        return;
+      }
+
+      const items = event.clipboardData.items;
+
+      for (const index in items) {
+        const item = items[index];
+
+        if (item.kind === "string" && item.type === "text/plain") {
+          connectWithUri(event.clipboardData.getData("Text"));
+        }
+
+        if (item.kind === "file") {
+          connectWithQR(item);
+        }
       }
     },
     [wcClientData, wcConnect]
