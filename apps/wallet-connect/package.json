@@ -2,6 +2,7 @@
   "name": "wallet-connect",
   "version": "1.0.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
     "@gnosis.pm/safe-apps-sdk": "0.4.2",
     "@gnosis.pm/safe-react-components": "^0.3.0",
