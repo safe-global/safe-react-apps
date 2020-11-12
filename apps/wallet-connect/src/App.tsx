@@ -82,7 +82,7 @@ const DisconnectedInstructions = () => (
     </StyledText>
 
     <StyledText size="lg">
-      2) Copy QR code image (Shift+Command+4 on Mac, Windows
+      2) Copy QR code image (Command+Control+Shift+4 on Mac, Windows
       key+PrtScn on Windows) or connection URI into clipboard.
     </StyledText>
 
