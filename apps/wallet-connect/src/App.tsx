@@ -82,12 +82,12 @@ const DisconnectedInstructions = () => (
     </StyledText>
 
     <StyledText size="lg">
-      2) Copy QR code image into clipboard (Shift+Command+4 on Mac, Windows
-      key+PrtScn on Windows).
+      2) Copy QR code image (Command+Control+Shift+4 on Mac, Windows
+      key+PrtScn on Windows) or connection URI into clipboard.
     </StyledText>
 
     <StyledText size="lg">
-      3) Paste QR code image into the input field (Command+V on Mac, Ctrl+V on
+      3) Paste QR code image or connection URI into the input field (Command+V on Mac, Ctrl+V on
       Windows)
     </StyledText>
 
@@ -111,25 +111,20 @@ const App = () => {
 
   const onPaste = React.useCallback(
     (event: React.ClipboardEvent) => {
-      setInvalidQRCode(false);
-      setInputValue("");
-
-      if (wcClientData) {
-        return;
-      }
-
-      const items = event.clipboardData.items;
-      for (const index in items) {
-        const item = items[index];
-
-        if (item.kind !== "file") {
-          continue;
+      const connectWithUri = (data: string) => {
+        if (data.startsWith("wc:")) {
+          setIsConnecting(true);
+          wcConnect(data);
         }
+      };
 
+      const connectWithQR = (item: DataTransferItem) => {
         const blob = item.getAsFile();
         const reader = new FileReader();
-        reader.onload = async (event: ProgressEvent<FileReader>) => {          
-          const imageData = await blobToImageData(event.target?.result as string);
+        reader.onload = async (event: ProgressEvent<FileReader>) => {
+          const imageData = await blobToImageData(
+            event.target?.result as string
+          );
           const code = jsQr(imageData.data, imageData.width, imageData.height);
           if (code?.data) {
             setIsConnecting(true);
@@ -145,6 +140,27 @@ const App = () => {
           }
         };
         reader.readAsDataURL(blob as Blob);
+      };
+
+      setInvalidQRCode(false);
+      setInputValue("");
+
+      if (wcClientData) {
+        return;
+      }
+
+      const items = event.clipboardData.items;
+
+      for (const index in items) {
+        const item = items[index];
+
+        if (item.kind === "string" && item.type === "text/plain") {
+          connectWithUri(event.clipboardData.getData("Text"));
+        }
+
+        if (item.kind === "file") {
+          connectWithQR(item);
+        }
       }
     },
     [wcClientData, wcConnect]
@@ -157,7 +173,7 @@ const App = () => {
     return (
       <TextField
         id="wc-uri"
-        label="Paste WalletConnect QR code"
+        label="Paste WalletConnect QR code or connection URI"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onPaste={onPaste}
