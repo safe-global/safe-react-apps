@@ -6,13 +6,17 @@ import { Loader, theme } from "@gnosis.pm/safe-react-components";
 import { ThemeProvider } from "styled-components";
 
 import * as serviceWorker from "./serviceWorker";
+import GlobalStyles from "./global";
 
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <SafeProvider loading={<Loader size="md" />}>
-      <App />
-    </SafeProvider>
-  </ThemeProvider>,
+  <>
+    <GlobalStyles />
+    <ThemeProvider theme={theme}>
+      <SafeProvider loading={<Loader size="md" />}>
+        <App />
+      </SafeProvider>
+    </ThemeProvider>
+  </>,
   document.getElementById("root")
 );
 
