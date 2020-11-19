@@ -1414,6 +1414,14 @@
     react-media "^1.10.0"
     url-loader "^4.1.0"
 
+"@gnosis.pm/safe-react-components@https://github.com/gnosis/safe-react-components.git#ff29c3c":
+  version "0.4.0"
+  resolved "https://github.com/gnosis/safe-react-components.git#ff29c3ccfd391142b92edefba0f773aaf16f1799"
+  dependencies:
+    classnames "^2.2.6"
+    polished "^3.6.7"
+    react-media "^1.10.0"
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"
@@ -9321,6 +9329,13 @@ polished@3.6.5:
   version "3.6.5"
   resolved "https://registry.yarnpkg.com/polished/-/polished-3.6.5.tgz#dbefdde64c675935ec55119fe2a2ab627ca82e9c"
   integrity sha512-VwhC9MlhW7O5dg/z7k32dabcAFW1VI2+7fSe8cE/kXcfL7mVdoa5UxciYGW2sJU78ldDLT6+ROEKIZKFNTnUXQ==
+  dependencies:
+    "@babel/runtime" "^7.9.2"
+
+polished@^3.6.7:
+  version "3.6.7"
+  resolved "https://registry.yarnpkg.com/polished/-/polished-3.6.7.tgz#44cbd0047f3187d83db0c479ef0c7d5583af5fb6"
+  integrity sha512-b4OViUOihwV0icb9PHmWbR+vPqaSzSAEbgLskvb7ANPATVXGiYv/TQFHQo65S53WU9i5EQ1I03YDOJW7K0bmYg==
   dependencies:
     "@babel/runtime" "^7.9.2"
 
