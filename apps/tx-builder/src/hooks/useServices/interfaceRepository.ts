@@ -72,6 +72,10 @@ class InterfaceRepository {
           return false;
         }
 
+        if(e?.type.toLowerCase() !== 'function') {
+          return false
+        }
+
         return !e.constant;
       })
       .map((m: any) => {
@@ -81,6 +85,9 @@ class InterfaceRepository {
     const payableFallback =
       abi.findIndex((e: any) => e.type === "fallback" && e.payable === true) >=
       0;
+
+    console.log("abi", abi)
+    console.log("methods", methods)
 
     return { payableFallback, methods };
   }
