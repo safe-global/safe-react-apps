@@ -86,9 +86,6 @@ class InterfaceRepository {
       abi.findIndex((e: any) => e.type === "fallback" && e.payable === true) >=
       0;
 
-    console.log("abi", abi)
-    console.log("methods", methods)
-
     return { payableFallback, methods };
   }
 }
