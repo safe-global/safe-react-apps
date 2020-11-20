@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import WalletConnect from "@walletconnect/client";
 import { IClientMeta } from "@walletconnect/types";
 import { useSafe } from "@rmeissner/safe-apps-react-sdk";
-import { chainIdByNetwork, gnosisUrlByNetwork } from "../utils";
+import { chainIdByNetwork, isMetaTxArray } from "../utils";
 
 export const LOCAL_STORAGE_URI_KEY = "safeAppWcUri";
 
@@ -22,18 +22,14 @@ const useWalletConnect = () => {
     async (uri: string) => {
       const network = safe.getSafeInfo().network;
 
-      const wcConnector = new WalletConnect({
-        uri,
-        clientMeta: {
-          description: "Gnosis Safe",
-          url: gnosisUrlByNetwork[network] || "",
-          icons: ["https://walletconnect.org/walletconnect-logo.png"],
-          name: "Gnosis Safe",
-        },
-      });
+      const wcConnector = new WalletConnect({ uri });
       setConnector(wcConnector);
       setWcClientData(wcConnector.peerMeta);
       localStorage.setItem(LOCAL_STORAGE_URI_KEY, uri);
+
+      const rejectWithMessage = (id: number | undefined, message: string) => {
+        wcConnector.rejectRequest({ id, error: { message } });
+      }
 
       wcConnector.on("session_request", (error, payload) => {
         if (error) {
@@ -66,20 +62,18 @@ const useWalletConnect = () => {
             break;
           }
           case "gs_multi_send": {
-            const txs = payload.params as any[];
-            safe.sendTransactions(
-              // TODO: should we do some parameter validation here?
-              txs.map((txInfo) => ({ to: txInfo.to, value: txInfo.value || "0x0", data: txInfo.data || "0x" }))
-            );
+            const txs = payload.params;
+            if (isMetaTxArray(txs)) {
+              safe.sendTransactions(
+                txs.map((txInfo) => ({ to: txInfo.to, value: (txInfo.value || "0x0").toString(), data: txInfo.data || "0x" }))
+              );
+            } else {
+              rejectWithMessage(payload.id, "INVALID_TRANSACTIONS_PROVIDED")
+            }
             break;
           }
           default: {
-            wcConnector.rejectRequest({
-              id: payload.id,
-              error: {
-                message: "METHOD_NOT_SUPPORTED",
-              },
-            });
+            rejectWithMessage(payload.id, "METHOD_NOT_SUPPORTED")
             break;
           }
         }
