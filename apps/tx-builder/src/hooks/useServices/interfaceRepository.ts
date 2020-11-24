@@ -72,13 +72,16 @@ class InterfaceRepository {
           return false;
         }
 
-        if(e?.type.toLowerCase() !== 'function') {
+        if(e?.type.toLowerCase() === 'event') {
           return false
         }
 
         return !e.constant;
       })
       .map((m: any) => {
+        if(m.type === 'fallback' || m.type === 'receive') {
+          return { inputs: [], name: m.type === 'fallback'  ? 'fallback' : 'receive', payable: m.payable || false };
+        }
         return { inputs: m.inputs, name: m.name, payable: m.payable || false };
       });
 
