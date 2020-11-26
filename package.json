@@ -7,7 +7,7 @@
     "start-tx-builder": "dotenv -e .env -- yarn workspace tx-builder start",
     "start-wallet-connect": "dotenv -e .env -- yarn workspace wallet-connect start",
     "build-compound": " dotenv -e .env -- yarn workspace compound build",
-    "build-tx-builder": "dotenv -e .env -- yarn tx-builder build",
+    "build-tx-builder": "dotenv -e .env -- yarn workspace tx-builder build",
     "build-wallet-connect": "dotenv -e .env -- yarn workspace wallet-connect build"
   },
   "workspaces": [
