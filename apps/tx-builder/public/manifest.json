@@ -1,8 +1,6 @@
 {
-  "short_name": "Gnosis Apps",
-  "name": "Gnosis.io Apps",  
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "short_name": "Tx Builder",
+  "name": "Transaction Builder",
+  "description": "A Safe app to compose custom transactions",
+  "iconPath": "tx-builder.png"
 }

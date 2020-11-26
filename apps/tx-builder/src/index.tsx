@@ -7,13 +7,17 @@ import * as serviceWorker from "./serviceWorker";
 
 import Dashboard from "./components/Dashboard";
 import SafeProvider from "./providers/SafeProvider";
+import GlobalStyles from "./global";
 
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <SafeProvider>
-      <Dashboard />
-    </SafeProvider>
-  </ThemeProvider>,
+  <>
+    <GlobalStyles />
+    <ThemeProvider theme={theme}>
+      <SafeProvider>
+        <Dashboard />
+      </SafeProvider>
+    </ThemeProvider>
+  </>,
   document.getElementById("root")
 );
 
