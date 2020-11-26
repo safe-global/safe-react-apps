@@ -140,8 +140,7 @@ const Dashboard = () => {
 
   const getContractMethod = () => contract?.methods[selectedMethodIndex];
 
-  const isValueInputVisible = () =>
-    !(!contract?.payableFallback || getContractMethod()?.payable);
+  const isValueInputVisible = () => getContractMethod()?.payable;
 
   const addTransaction = useCallback(async () => {
     let description = "";

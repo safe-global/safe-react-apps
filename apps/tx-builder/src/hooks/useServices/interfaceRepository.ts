@@ -72,10 +72,14 @@ class InterfaceRepository {
           return false;
         }
 
+        if(e?.type.toLowerCase() === 'event') {
+          return false
+        }
+
         return !e.constant;
       })
       .map((m: any) => {
-        return { inputs: m.inputs, name: m.name, payable: m.payable || false };
+        return { inputs: m.inputs || [], name: m.name || (m.type === 'fallback' ? 'fallback' : 'receive'), payable: m.payable || false };
       });
 
     const payableFallback =
