@@ -15,7 +15,7 @@ import { AbiItem } from "web3-utils";
 
 import { ContractInterface } from "../hooks/useServices/interfaceRepository";
 import useServices from "../hooks/useServices";
-import { ProposedTransaction } from "./models";
+import { ProposedTransaction } from "../typings/models";
 import { useSafe } from "../hooks/useSafe";
 import WidgetWrapper from "./WidgetWrapper";
 
@@ -140,7 +140,11 @@ const Dashboard = () => {
 
   const getContractMethod = () => contract?.methods[selectedMethodIndex];
 
-  const isValueInputVisible = () => getContractMethod()?.payable;
+  const isValueInputVisible = () => {
+    const method = getContractMethod();
+    debugger
+    return method?.payable;
+  };
 
   const addTransaction = useCallback(async () => {
     let description = "";
