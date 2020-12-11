@@ -142,7 +142,6 @@ const Dashboard = () => {
 
   const isValueInputVisible = () => {
     const method = getContractMethod();
-    debugger
     return method?.payable;
   };
 
