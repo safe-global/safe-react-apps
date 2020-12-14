@@ -59,6 +59,9 @@ class InterfaceRepository {
     return abi.data.result;
   }
 
+  private _isMethodPayable = (m: any) =>
+    m.payable || m.stateMutability === "payable";
+
   async loadAbi(addressOrAbi: string): Promise<ContractInterface> {
     const abiString = this.web3.utils.isAddress(addressOrAbi)
       ? await this._loadAbiFromBlockExplorer(addressOrAbi)
@@ -72,19 +75,24 @@ class InterfaceRepository {
           return false;
         }
 
-        if(e?.type.toLowerCase() === 'event') {
-          return false
+        if (e?.type.toLowerCase() === "event") {
+          return false;
         }
 
         return !e.constant;
       })
       .map((m: any) => {
-        return { inputs: m.inputs || [], name: m.name || (m.type === 'fallback' ? 'fallback' : 'receive'), payable: m.payable || false };
+        return {
+          inputs: m.inputs || [],
+          name: m.name || (m.type === "fallback" ? "fallback" : "receive"),
+          payable: this._isMethodPayable(m),
+        };
       });
 
     const payableFallback =
-      abi.findIndex((e: any) => e.type === "fallback" && e.payable === true) >=
-      0;
+      abi.findIndex(
+        (e: any) => e.type === "fallback" && this._isMethodPayable(e)
+      ) >= 0;
 
     return { payableFallback, methods };
   }
