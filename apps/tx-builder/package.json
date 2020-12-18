@@ -4,30 +4,14 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "@gnosis.pm/safe-apps-sdk": "0.4.2",
     "@gnosis.pm/safe-react-components": "^0.3.0",
     "@material-ui/core": "^4.9.0",
     "axios": "^0.21.0",
     "lodash": "^4.17.15",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.4.1",
-    "styled-components": "^5.2.0",
     "web3": "^1.2.5"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.0.0",
-    "@testing-library/react": "^11.0.0",
-    "@testing-library/user-event": "^12.0.0",
-    "@types/jest": "^26.0.0",
-    "@types/lodash": "^4.14.154",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.0",
-    "@types/react-dom": "^16.9.0",
-    "@types/react-router-dom": "^5.1.3",
-    "@types/styled-components": "^5.1.0",
-    "react-app-rewired": "^2.1.6"
+    "@types/lodash": "^4.14.154"
   },
   "scripts": {
     "start": "react-app-rewired start",
