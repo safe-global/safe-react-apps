@@ -55,10 +55,14 @@ const CompoundWidget = () => {
   // fetch eth balance
   useEffect(() => {
     const fetchEthBalance = async () => {
-      const balance = await web3?.eth.getBalance(safeInfo.safeAddress);
+      try {
+        const balance = await web3?.eth.getBalance(safeInfo.safeAddress);
 
-      if (balance) {
-        setEthBalance(balance);
+        if (balance) {
+          setEthBalance(balance);
+        }
+      } catch (err) {
+        console.error(err);
       }
     };
 
@@ -102,7 +106,7 @@ const CompoundWidget = () => {
 
   useEffect(() => {
     const getData = async () => {
-      if (!safeInfo || !selectedToken || !cTokenInstance || !tokenInstance) {
+      if (!safeInfo.safeAddress || !selectedToken || !cTokenInstance || !tokenInstance) {
         return;
       }
 
