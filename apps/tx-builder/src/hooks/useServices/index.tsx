@@ -1,40 +1,37 @@
-import { useState, useEffect } from "react";
-import Web3 from "web3";
+import { useState, useEffect } from 'react';
+import Web3 from 'web3';
+import { LowercaseNetworks } from '@gnosis.pm/safe-apps-sdk';
 
-import InterfaceRepository from "./interfaceRepository";
-import { useSafe } from "../useSafe";
-import { InterfaceRepo } from "./interfaceRepository";
-import { rpcUrlGetterByNetwork } from "../../utils";
+import InterfaceRepository from './interfaceRepository';
+import { InterfaceRepo } from './interfaceRepository';
+import { rpcUrlGetterByNetwork } from '../../utils';
 
 export interface Services {
   web3: Web3 | undefined;
   interfaceRepo: InterfaceRepo | undefined;
 }
 
-export default function useServices(): Services {
+export default function useServices(network: LowercaseNetworks): Services {
   const [web3, setWeb3] = useState<Web3 | undefined>();
-  const [interfaceRepo, setInterfaceRepo] = useState<
-    InterfaceRepository | undefined
-  >();
-  const safe = useSafe();
+  const [interfaceRepo, setInterfaceRepo] = useState<InterfaceRepository | undefined>();
 
   useEffect(() => {
-    if (!safe.info) {
+    if (!network) {
       return;
     }
 
-    const rpcUrlGetter = rpcUrlGetterByNetwork[safe.info.network];
+    const rpcUrlGetter = rpcUrlGetterByNetwork[network];
     if (!rpcUrlGetter) {
-      throw Error(`RPC URL not defined for network ${safe.info.network}`);
+      throw Error(`RPC URL not defined for network ${network}`);
     }
     const rpcUrl = rpcUrlGetter(process.env.REACT_APP_RPC_TOKEN);
 
     const web3Instance = new Web3(rpcUrl);
-    const interfaceRepo = new InterfaceRepository(safe, web3Instance);
+    const interfaceRepo = new InterfaceRepository(network, web3Instance);
 
     setWeb3(web3Instance);
     setInterfaceRepo(interfaceRepo);
-  }, [safe]);
+  }, [network]);
 
   return {
     web3,

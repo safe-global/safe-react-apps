@@ -7,17 +7,17 @@ import {
   Select,
   ModalFooterConfirmation,
   ButtonLink,
-} from "@gnosis.pm/safe-react-components";
-import React, { useState, useCallback } from "react";
-import Box from "@material-ui/core/Box";
-import styled from "styled-components";
-import { AbiItem } from "web3-utils";
+} from '@gnosis.pm/safe-react-components';
+import React, { useState, useCallback } from 'react';
+import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
+import Box from '@material-ui/core/Box';
+import styled from 'styled-components';
+import { AbiItem } from 'web3-utils';
 
-import { ContractInterface } from "../hooks/useServices/interfaceRepository";
-import useServices from "../hooks/useServices";
-import { ProposedTransaction } from "../typings/models";
-import { useSafe } from "../hooks/useSafe";
-import WidgetWrapper from "./WidgetWrapper";
+import { ContractInterface } from '../hooks/useServices/interfaceRepository';
+import useServices from '../hooks/useServices';
+import { ProposedTransaction } from '../typings/models';
+import WidgetWrapper from './WidgetWrapper';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -44,13 +44,7 @@ const StyledExamples = styled.div`
   }
 `;
 
-const ModalBody = ({
-  txs,
-  deleteTx,
-}: {
-  txs: Array<ProposedTransaction>;
-  deleteTx: (index: number) => void;
-}) => {
+const ModalBody = ({ txs, deleteTx }: { txs: Array<ProposedTransaction>; deleteTx: (index: number) => void }) => {
   return (
     <>
       {txs.map((tx, index) => (
@@ -62,14 +56,8 @@ const ModalBody = ({
           justifyContent="space-between"
           width="100%"
         >
-          <Button
-            size="md"
-            variant="outlined"
-            iconType="delete"
-            color="error"
-            onClick={() => deleteTx(index)}
-          >
-            {""}
+          <Button size="md" variant="outlined" iconType="delete" color="error" onClick={() => deleteTx(index)}>
+            {''}
           </Button>
           <Text size="lg">{tx.description}</Text>
         </Box>
@@ -79,26 +67,22 @@ const ModalBody = ({
 };
 
 const Dashboard = () => {
-  const services = useServices();
-  const safe = useSafe();
+  const { sdk, safe } = useSafeAppsSDK();
+  const services = useServices(safe.network.toLowerCase() as LowercaseNetworks);
 
-  const [addressOrAbi, setAddressOrAbi] = useState("");
+  const [addressOrAbi, setAddressOrAbi] = useState('');
   const [loadAbiError, setLoadAbiError] = useState(false);
   const [showExamples, setShowExamples] = useState(false);
-  const [toAddress, setToAddress] = useState("");
-  const [contract, setContract] = useState<ContractInterface | undefined>(
-    undefined
-  );
+  const [toAddress, setToAddress] = useState('');
+  const [contract, setContract] = useState<ContractInterface | undefined>(undefined);
   const [reviewing, setReviewing] = useState(false);
   const [selectedMethodIndex, setSelectedMethodIndex] = useState(0);
   const [inputCache, setInputCache] = useState<string[]>([]);
   const [addTxError, setAddTxError] = useState<string | undefined>();
   const [transactions, setTransactions] = useState<ProposedTransaction[]>([]);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState('');
 
-  const handleAddressOrABI = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): Promise<ContractInterface | void> => {
+  const handleAddressOrABI = async (e: React.ChangeEvent<HTMLInputElement>): Promise<ContractInterface | void> => {
     setContract(undefined);
     setLoadAbiError(false);
 
@@ -127,7 +111,7 @@ const Dashboard = () => {
       if (!contract || contract.methods.length <= methodIndex) return;
       setSelectedMethodIndex(methodIndex);
     },
-    [contract]
+    [contract],
   );
 
   const handleInput = useCallback(
@@ -135,7 +119,7 @@ const Dashboard = () => {
       inputCache[inputIndex] = input;
       setInputCache(inputCache.slice());
     },
-    [inputCache]
+    [inputCache],
   );
 
   const getContractMethod = () => contract?.methods[selectedMethodIndex];
@@ -146,8 +130,8 @@ const Dashboard = () => {
   };
 
   const addTransaction = useCallback(async () => {
-    let description = "";
-    let data = "";
+    let description = '';
+    let data = '';
 
     const web3 = services.web3;
 
@@ -159,20 +143,17 @@ const Dashboard = () => {
       const method = contract.methods[selectedMethodIndex];
       const cleanInputs = [];
 
-      description = method.name + " (";
+      description = method.name + ' (';
       for (let i = 0; i < method.inputs.length; i++) {
-        const cleanValue = inputCache[i] || "";
-        cleanInputs[i] =
-          cleanValue.charAt(0) === "["
-            ? JSON.parse(cleanValue.replace(/"/g, '"'))
-            : cleanValue;
+        const cleanValue = inputCache[i] || '';
+        cleanInputs[i] = cleanValue.charAt(0) === '[' ? JSON.parse(cleanValue.replace(/"/g, '"')) : cleanValue;
         if (i > 0) {
-          description += ", ";
+          description += ', ';
         }
         const input = method.inputs[i];
-        description += (input.name || input.type) + ": " + cleanValue;
+        description += (input.name || input.type) + ': ' + cleanValue;
       }
-      description += ")";
+      description += ')';
 
       try {
         data = web3.eth.abi.encodeFunctionCall(method as AbiItem, cleanInputs);
@@ -187,7 +168,7 @@ const Dashboard = () => {
       const cleanValue = value.length > 0 ? web3.utils.toWei(value) : 0;
 
       if (data.length === 0) {
-        data = "0x";
+        data = '0x';
       }
 
       if (description.length === 0) {
@@ -202,19 +183,11 @@ const Dashboard = () => {
       setInputCache([]);
       setTransactions(transactions);
       setSelectedMethodIndex(0);
-      setValue("");
+      setValue('');
     } catch (e) {
       console.error(e);
     }
-  }, [
-    services,
-    transactions,
-    toAddress,
-    value,
-    contract,
-    selectedMethodIndex,
-    inputCache,
-  ]);
+  }, [services, transactions, toAddress, value, contract, selectedMethodIndex, inputCache]);
 
   const deleteTransaction = useCallback(
     async (inputIndex: number) => {
@@ -222,7 +195,7 @@ const Dashboard = () => {
       newTxs.splice(inputIndex, 1);
       setTransactions(newTxs);
     },
-    [transactions]
+    [transactions],
   );
 
   const sendTransactions = useCallback(async () => {
@@ -231,11 +204,11 @@ const Dashboard = () => {
     }
 
     try {
-      safe.sendTransactions(transactions.map((d) => d.raw));
+      sdk.txs.send({ txs: transactions.map((d) => d.raw) });
     } catch (e) {
       console.error(e);
     }
-  }, [safe, transactions]);
+  }, [sdk, transactions]);
 
   const handleSubmit = () => {
     sendTransactions();
@@ -251,10 +224,10 @@ const Dashboard = () => {
     // This code renders a helper for the input text.
     // When the parameter is of Tuple type, it renders an array with the parameters types
     // required to form the Tuple, if not, it renders the parameter type directly.
-    if (input.type.startsWith("tuple")) {
-      return `tuple(${input.components
-        .map((c: any) => c.internalType)
-        .toString()})${input.type.endsWith("[]") ? "[]" : ""}`;
+    if (input.type.startsWith('tuple')) {
+      return `tuple(${input.components.map((c: any) => c.internalType).toString()})${
+        input.type.endsWith('[]') ? '[]' : ''
+      }`;
     } else {
       return input.type;
     }
@@ -275,21 +248,12 @@ const Dashboard = () => {
           body={<ModalBody txs={transactions} deleteTx={deleteTransaction} />}
           onClose={handleDismiss}
           title="Send Transactions"
-          footer={
-            <ModalFooterConfirmation
-              handleOk={handleSubmit}
-              handleCancel={handleDismiss}
-            />
-          }
+          footer={<ModalFooterConfirmation handleOk={handleSubmit} handleCancel={handleDismiss} />}
         />
       )}
 
       {/* ABI Input */}
-      <TextField
-        value={addressOrAbi}
-        label="Enter Contract Address or ABI"
-        onChange={handleAddressOrABI}
-      />
+      <TextField value={addressOrAbi} label="Enter Contract Address or ABI" onChange={handleAddressOrABI} />
       {loadAbiError && (
         <Text color="error" size="lg">
           There was a problem trying to load the ABI
@@ -301,9 +265,7 @@ const Dashboard = () => {
         <>
           <Title size="xs">Transaction information</Title>
 
-          {!contract?.methods.length && (
-            <Text size="lg">Contract ABI doesn't have any public methods.</Text>
-          )}
+          {!contract?.methods.length && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
 
           {/* Input To (destination) */}
           {(isValueInputVisible() || contract.methods.length > 0) && (
@@ -349,47 +311,44 @@ const Dashboard = () => {
                     }}
                   />
                   <StyledExamples>
-                    <ButtonLink
-                      color="primary"
-                      onClick={() => setShowExamples((prev) => !prev)}
-                    >
-                      {showExamples ? "Hide Examples" : "Show Examples"}
+                    <ButtonLink color="primary" onClick={() => setShowExamples((prev) => !prev)}>
+                      {showExamples ? 'Hide Examples' : 'Show Examples'}
                     </ButtonLink>
 
                     {showExamples && (
                       <>
                         <Text size="sm" strong>
-                          string {"> "}
+                          string {'> '}
                           <Text size="sm" as="span">
                             some value
                           </Text>
                         </Text>
                         <Text size="sm" strong>
-                          uint256 {"> "}
+                          uint256 {'> '}
                           <Text size="sm" as="span">
                             123
                           </Text>
                         </Text>
                         <Text size="sm" strong>
-                          address {"> "}
+                          address {'> '}
                           <Text size="sm" as="span">
                             0xDe75665F3BE46D696e5579628fA17b662e6fC04e
                           </Text>
                         </Text>
                         <Text size="sm" strong>
-                          array {"> "}
+                          array {'> '}
                           <Text size="sm" as="span">
                             [1,2,3]
                           </Text>
                         </Text>
                         <Text size="sm" strong>
-                          Tuple(uint256, string) {"> "}
+                          Tuple(uint256, string) {'> '}
                           <Text size="sm" as="span">
                             [1, "someValue"]
                           </Text>
                         </Text>
                         <Text size="sm" strong>
-                          Tuple(uint256, string)[] {"> "}
+                          Tuple(uint256, string)[] {'> '}
                           <Text size="sm" as="span">
                             [[1, "someValue"], [2, "someOtherValue"]]
                           </Text>
@@ -405,8 +364,8 @@ const Dashboard = () => {
                   <div key={index}>
                     <TextField
                       style={{ marginTop: 10 }}
-                      value={inputCache[index] || ""}
-                      label={`${input.name || ""}(${getInputInterface(input)})`}
+                      value={inputCache[index] || ''}
+                      label={`${input.name || ''}(${getInputInterface(input)})`}
                       onChange={(e) => {
                         setAddTxError(undefined);
                         handleInput(index, e.target.value);
@@ -429,11 +388,7 @@ const Dashboard = () => {
           {/* Actions */}
           <ButtonContainer>
             {isValueInputVisible() || contract.methods.length > 0 ? (
-              <Button
-                size="md"
-                color="primary"
-                onClick={() => addTransaction()}
-              >
+              <Button size="md" color="primary" onClick={() => addTransaction()}>
                 Add transaction
               </Button>
             ) : (
@@ -447,9 +402,7 @@ const Dashboard = () => {
               color="primary"
               onClick={() => setReviewing(true)}
             >
-              {`Send Transactions ${
-                transactions.length ? `(${transactions.length})` : ""
-              }`}
+              {`Send Transactions ${transactions.length ? `(${transactions.length})` : ''}`}
             </Button>
           </ButtonContainer>
         </>
