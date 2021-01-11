@@ -48,14 +48,14 @@ const useWalletConnect = () => {
         setWcClientData(payload.params[0].peerMeta);
       });
 
-      wcConnector.on('call_request', (error, payload) => {
+      wcConnector.on('call_request', async (error, payload) => {
         if (error) {
           throw error;
         }
 
         if (payload.method === 'eth_sendTransaction') {
           const txInfo = payload.params[0];
-          sdk.txs.send({
+          const { safeTxHash } = await sdk.txs.send({
             txs: [
               {
                 to: txInfo.to,
@@ -64,6 +64,8 @@ const useWalletConnect = () => {
               },
             ],
           });
+
+          return safeTxHash;
         } else {
           wcConnector.rejectRequest({
             id: payload.id,
