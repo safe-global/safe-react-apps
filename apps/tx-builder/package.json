@@ -6,12 +6,9 @@
   "dependencies": {
     "@gnosis.pm/safe-react-components": "^0.3.0",
     "@material-ui/core": "^4.9.0",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "lodash": "^4.17.15",
     "web3": "^1.2.5"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.154"
   },
   "scripts": {
     "start": "react-app-rewired start",
