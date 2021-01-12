@@ -55,10 +55,12 @@ const CompoundWidget = () => {
   // fetch eth balance
   useEffect(() => {
     const fetchEthBalance = async () => {
+      console.log(safeInfo.safeAddress);
       try {
         const balance = await web3?.eth.getBalance(safeInfo.safeAddress);
 
         if (balance) {
+          console.log({ balance });
           setEthBalance(balance);
         }
       } catch (err) {
@@ -126,7 +128,7 @@ const CompoundWidget = () => {
       // get token Balance
       let tokenBalance;
       if (selectedToken.id === 'ETH') {
-        tokenBalance = new Big(ethBalance).times(10 ** 18).toString();
+        tokenBalance = ethBalance;
       } else {
         tokenBalance = await tokenInstance.methods.balanceOf(safeInfo.safeAddress).call();
       }

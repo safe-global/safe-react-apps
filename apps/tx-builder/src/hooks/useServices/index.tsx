@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Web3 from 'web3';
-import { LowercaseNetworks } from '@gnosis.pm/safe-apps-sdk';
+import { Networks } from '@gnosis.pm/safe-apps-sdk';
 
 import InterfaceRepository from './interfaceRepository';
 import { InterfaceRepo } from './interfaceRepository';
@@ -11,7 +11,7 @@ export interface Services {
   interfaceRepo: InterfaceRepo | undefined;
 }
 
-export default function useServices(network: LowercaseNetworks): Services {
+export default function useServices(network: Networks): Services {
   const [web3, setWeb3] = useState<Web3 | undefined>();
   const [interfaceRepo, setInterfaceRepo] = useState<InterfaceRepository | undefined>();
 

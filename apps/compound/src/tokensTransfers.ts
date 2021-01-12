@@ -1,6 +1,6 @@
-import ApolloClient from "apollo-boost";
-import { gql } from "apollo-boost";
-import { Networks } from "@gnosis.pm/safe-apps-sdk";
+import ApolloClient from 'apollo-boost';
+import { gql } from 'apollo-boost';
+import { Networks } from '@gnosis.pm/safe-apps-sdk';
 
 export type TokenInteractionData = {
   amount: string;
@@ -8,31 +8,20 @@ export type TokenInteractionData = {
   sender?: string;
 };
 
-const rinkeby =
-  "https://api.thegraph.com/subgraphs/name/protofire/token-registry-rinkeby";
-const mainnet =
-  "https://api.thegraph.com/subgraphs/name/protofire/token-registry";
+const RINKEBY = 'https://api.thegraph.com/subgraphs/name/protofire/token-registry-rinkeby';
+const MAINNET = 'https://api.thegraph.com/subgraphs/name/protofire/token-registry';
 
-const subgraphUri: { [key in "mainnet" | "rinkeby"]: string } = {
-  rinkeby,
-  mainnet,
+const subgraphUri: { [key in 'MAINNET' | 'RINKEBY']: string } = {
+  RINKEBY,
+  MAINNET,
 };
 
 const TRANSFER_EVENTS = gql`
-  query TransferEvents(
-    $first: Int!
-    $skip: Int!
-    $token: String!
-    $addresses: [String!]!
-  ) {
+  query TransferEvents($first: Int!, $skip: Int!, $token: String!, $addresses: [String!]!) {
     transferEvents(
       first: $first
       skip: $skip
-      where: {
-        token: $token
-        destination_in: $addresses
-        sender_in: $addresses
-      }
+      where: { token: $token, destination_in: $addresses, sender_in: $addresses }
     ) {
       amount
       sender
@@ -45,7 +34,7 @@ async function getTransferEvents(
   client: any,
   safeAddress: string,
   tokenAddr: string,
-  cTokenAddr: string
+  cTokenAddr: string,
 ): Promise<Array<TokenInteractionData>> {
   let ended = false;
   let first = 100;
@@ -79,17 +68,8 @@ async function getTransferEvents(
 }
 
 const MINT_EVENTS = gql`
-  query MintEvents(
-    $first: Int!
-    $skip: Int!
-    $token: String!
-    $safeAddress: String!
-  ) {
-    mintEvents(
-      first: $first
-      skip: $skip
-      where: { token: $token, destination: $safeAddress }
-    ) {
+  query MintEvents($first: Int!, $skip: Int!, $token: String!, $safeAddress: String!) {
+    mintEvents(first: $first, skip: $skip, where: { token: $token, destination: $safeAddress }) {
       amount
       destination
     }
@@ -99,7 +79,7 @@ const MINT_EVENTS = gql`
 async function getMintEvents(
   client: any,
   safeAddress: string,
-  tokenAddr: string
+  tokenAddr: string,
 ): Promise<Array<TokenInteractionData>> {
   let ended = false;
   let first = 100;
@@ -136,9 +116,9 @@ export async function getTokenInteractions(
   network: Networks,
   safeAddress: string,
   tokenAddr: string,
-  cTokenAddr: string
+  cTokenAddr: string,
 ) {
-  if (network !== "rinkeby" && network !== "mainnet") {
+  if (network !== 'RINKEBY' && network !== 'MAINNET') {
     return [];
   }
 
@@ -147,12 +127,7 @@ export async function getTokenInteractions(
   });
 
   const mintEventsRes = await getMintEvents(client, safeAddress, tokenAddr);
-  const transferEventsRes = await getTransferEvents(
-    client,
-    safeAddress,
-    tokenAddr,
-    cTokenAddr
-  );
+  const transferEventsRes = await getTransferEvents(client, safeAddress, tokenAddr, cTokenAddr);
   return [...mintEventsRes, ...transferEventsRes];
 }
 
