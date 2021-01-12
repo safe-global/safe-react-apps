@@ -49,23 +49,37 @@ const useWalletConnect = () => {
       });
 
       wcConnector.on('call_request', async (error, payload) => {
+        console.log({ payload });
         if (error) {
           throw error;
         }
 
         if (payload.method === 'eth_sendTransaction') {
           const txInfo = payload.params[0];
-          const { safeTxHash } = await sdk.txs.send({
-            txs: [
-              {
-                to: txInfo.to,
-                value: txInfo.value || '0x0',
-                data: txInfo.data || '0x',
-              },
-            ],
-          });
+          try {
+            const { safeTxHash } = await sdk.txs.send({
+              txs: [
+                {
+                  to: txInfo.to,
+                  value: txInfo.value || '0x0',
+                  data: txInfo.data || '0x',
+                },
+              ],
+            });
 
-          return safeTxHash;
+            wcConnector.approveRequest({
+              id: payload.id,
+              result: safeTxHash,
+            });
+          } catch (err) {
+            wcConnector.rejectRequest({
+              id: payload.id,
+              error: {
+                message: err.message,
+              },
+            });
+          }
+          return;
         } else {
           wcConnector.rejectRequest({
             id: payload.id,
