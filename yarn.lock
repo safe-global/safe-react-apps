@@ -1396,26 +1396,26 @@
     "@ethersproject/properties" "^5.0.3"
     "@ethersproject/strings" "^5.0.4"
 
-"@gnosis.pm/safe-apps-react-sdk@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-1.0.0.tgz#920e1dcd1bb9f3782bd17f93305aeb836bd6dc99"
-  integrity sha512-KIPk+bMBPV+0y/8rPq40Nf12HFJWLn38s8OO+SOoOHQD78MXkpWw0eFAexHu7953jDrcAxGrg8ldd0C2PGIYPQ==
+"@gnosis.pm/safe-apps-react-sdk@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-1.0.1.tgz#2e6b7c3af30465513c6baaf5aefeb3ca2d72909a"
+  integrity sha512-+kfoaqryP5W5bfcWJqsm3S1fupjflpojU4xZmMgD7qvzMJhiqt3W18nF3JaQYXxUgO+2ggRPKPwdAjwJ85rj/g==
   dependencies:
-    "@gnosis.pm/safe-apps-sdk" "1.0.0-beta.5"
+    "@gnosis.pm/safe-apps-sdk" "1.0.3-beta.0"
     "@types/jest" "^26.0.19"
 
-"@gnosis.pm/safe-apps-sdk@1.0.0-beta.5":
-  version "1.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-1.0.0-beta.5.tgz#3dbd901c222b3ff2173e21f7daea92d8e88cf4b1"
-  integrity sha512-Cp2QPXaWEKi0ZVXSxWWv4eEF/PBRIbqFJitnkvTOtpSPV4ES3ftzzsv4lRIS5o1i6xuMOZej89an+XRxwC3+Gw==
+"@gnosis.pm/safe-apps-sdk@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-1.0.3.tgz#006d709700419302af490f6beaac67b1db4b36fb"
+  integrity sha512-77c6lg4SfCbQtMjgB2vVPKQglUCOjSpwweNeoD4m0c5hnd5lFg0Dlcc45LwtcUL8j5XhDf+aBxT8LDD+XGDSNw==
   dependencies:
     semver "^7.3.2"
     web3-core "^1.3.0"
 
-"@gnosis.pm/safe-apps-sdk@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-1.0.2.tgz#c1a3e8799a0d36888556e15438a1bbe3b3c586ff"
-  integrity sha512-bXbD4ri92Ckc8otQBcESCXT5mdynrz7284xWDKNlGAQSnJU2JKimex5W/mpf80QUD3UNnww7YoEvz1h1nNz7+A==
+"@gnosis.pm/safe-apps-sdk@1.0.3-beta.0":
+  version "1.0.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-1.0.3-beta.0.tgz#637100b47f31da284f9d83a043ccc4ed6be44348"
+  integrity sha512-nM2Yl5tU0f3w+eEgLqHcrXCyN/CSme1FYBJesZHTEULlzOA2DMLq1mLvUDXGRVPJD74MaVoc5GiDC9mLNE3ZCw==
   dependencies:
     semver "^7.3.2"
     web3-core "^1.3.0"

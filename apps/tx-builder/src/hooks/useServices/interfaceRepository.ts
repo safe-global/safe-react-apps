@@ -1,6 +1,6 @@
 import axios from 'axios';
 import memoize from 'lodash/memoize';
-import { LowercaseNetworks } from '@gnosis.pm/safe-apps-sdk';
+import { Networks } from '@gnosis.pm/safe-apps-sdk';
 
 interface ContractMethod {
   inputs: any[];
@@ -16,27 +16,27 @@ export interface ContractInterface {
 const getAbi = memoize(async (apiUrl: string) => axios.get(apiUrl));
 
 const abiUrlGetterByNetwork: {
-  [key in LowercaseNetworks]?: ((address: string) => string) | null;
+  [key in Networks]?: ((address: string) => string) | null;
 } = {
-  mainnet: (address: string) => `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
-  morden: null,
-  rinkeby: (address: string) => `https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=${address}`,
-  ropsten: null,
-  goerli: null,
-  kovan: null,
-  xdai: (address: string) => `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
-  energy_web_chain: (address: string) =>
+  MAINNET: (address: string) => `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  MORDEN: null,
+  RINKEBY: (address: string) => `https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  ROPSTEN: null,
+  GOERLI: null,
+  KOVAN: null,
+  XDAI: (address: string) => `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
+  ENERGY_WEB_CHAIN: (address: string) =>
     `https://explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
-  volta: (address: string) =>
+  VOLTA: (address: string) =>
     `https://volta-explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
-  unknown: null,
+  UNKNOWN: null,
 };
 
 class InterfaceRepository {
-  network: LowercaseNetworks;
+  network: Networks;
   web3: any;
 
-  constructor(network: LowercaseNetworks, web3: any) {
+  constructor(network: Networks, web3: any) {
     this.network = network;
     this.web3 = web3;
   }

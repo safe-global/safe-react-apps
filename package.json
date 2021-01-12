@@ -14,8 +14,8 @@
     "apps/*"
   ],
   "dependencies": {
-    "@gnosis.pm/safe-apps-react-sdk": "1.0.0",
-    "@gnosis.pm/safe-apps-sdk": "1.0.2",
+    "@gnosis.pm/safe-apps-react-sdk": "1.0.1",
+    "@gnosis.pm/safe-apps-sdk": "1.0.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "^4.0.1",

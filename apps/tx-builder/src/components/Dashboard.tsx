@@ -10,7 +10,6 @@ import {
 } from '@gnosis.pm/safe-react-components';
 import React, { useState, useCallback } from 'react';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import { LowercaseNetworks } from '@gnosis.pm/safe-apps-sdk';
 import Box from '@material-ui/core/Box';
 import styled from 'styled-components';
 import { AbiItem } from 'web3-utils';
@@ -69,7 +68,7 @@ const ModalBody = ({ txs, deleteTx }: { txs: Array<ProposedTransaction>; deleteT
 
 const Dashboard = () => {
   const { sdk, safe } = useSafeAppsSDK();
-  const services = useServices(safe.network.toLowerCase() as LowercaseNetworks);
+  const services = useServices(safe.network);
 
   const [addressOrAbi, setAddressOrAbi] = useState('');
   const [loadAbiError, setLoadAbiError] = useState(false);
