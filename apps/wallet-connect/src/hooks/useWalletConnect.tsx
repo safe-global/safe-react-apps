@@ -49,7 +49,6 @@ const useWalletConnect = () => {
       });
 
       wcConnector.on('call_request', async (error, payload) => {
-        console.log({ payload });
         if (error) {
           throw error;
         }
