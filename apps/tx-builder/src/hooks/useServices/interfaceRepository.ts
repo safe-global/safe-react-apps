@@ -1,8 +1,7 @@
-import axios from "axios";
-import memoize from "lodash/memoize";
-import { LowercaseNetworks } from "@gnosis.pm/safe-apps-sdk";
+import axios from 'axios';
+import memoize from 'lodash/memoize';
+import { Networks } from '@gnosis.pm/safe-apps-sdk';
 
-import { Safe } from "../../providers/SafeProvider/safeConnector";
 interface ContractMethod {
   inputs: any[];
   name: string;
@@ -17,50 +16,43 @@ export interface ContractInterface {
 const getAbi = memoize(async (apiUrl: string) => axios.get(apiUrl));
 
 const abiUrlGetterByNetwork: {
-  [key in LowercaseNetworks]?: ((address: string) => string) | null;
+  [key in Networks]?: ((address: string) => string) | null;
 } = {
-  mainnet: (address: string) =>
-    `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
-  morden: null,
-  rinkeby: (address: string) =>
-    `https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=${address}`,
-  ropsten: null,
-  goerli: null,
-  kovan: null,
-  xdai: (address: string) =>
-    `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
-  energy_web_chain: (address: string) =>
+  MAINNET: (address: string) => `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  MORDEN: null,
+  RINKEBY: (address: string) => `https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  ROPSTEN: null,
+  GOERLI: null,
+  KOVAN: null,
+  XDAI: (address: string) => `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
+  ENERGY_WEB_CHAIN: (address: string) =>
     `https://explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
-  volta: (address: string) =>
+  VOLTA: (address: string) =>
     `https://volta-explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
-  unknown: null,
+  UNKNOWN: null,
 };
 
 class InterfaceRepository {
-  safe: Safe;
+  network: Networks;
   web3: any;
 
-  constructor(safe: Safe, web3: any) {
-    this.safe = safe;
+  constructor(network: Networks, web3: any) {
+    this.network = network;
     this.web3 = web3;
   }
 
   private async _loadAbiFromBlockExplorer(address: string): Promise<string> {
-    const getAbiUrl = abiUrlGetterByNetwork[this.safe.getSafeInfo().network];
+    const getAbiUrl = abiUrlGetterByNetwork[this.network];
     if (!getAbiUrl) {
-      throw Error(`Network: ${this.safe.getSafeInfo().network} not supported.`);
+      throw Error(`Network: ${this.network} not supported.`);
     }
 
     const abi = await getAbi(getAbiUrl(address));
-    if (abi.data.status !== "1")
-      throw Error(
-        `Request not successful: ${abi.data.message}; ${abi.data.result}.`
-      );
+    if (abi.data.status !== '1') throw Error(`Request not successful: ${abi.data.message}; ${abi.data.result}.`);
     return abi.data.result;
   }
 
-  private _isMethodPayable = (m: any) =>
-    m.payable || m.stateMutability === "payable";
+  private _isMethodPayable = (m: any) => m.payable || m.stateMutability === 'payable';
 
   async loadAbi(addressOrAbi: string): Promise<ContractInterface> {
     const abiString = this.web3.utils.isAddress(addressOrAbi)
@@ -71,11 +63,11 @@ class InterfaceRepository {
 
     const methods = abi
       .filter((e: any) => {
-        if (["pure", "view"].includes(e.stateMutability)) {
+        if (['pure', 'view'].includes(e.stateMutability)) {
           return false;
         }
 
-        if (e?.type.toLowerCase() === "event") {
+        if (e?.type.toLowerCase() === 'event') {
           return false;
         }
 
@@ -84,15 +76,12 @@ class InterfaceRepository {
       .map((m: any) => {
         return {
           inputs: m.inputs || [],
-          name: m.name || (m.type === "fallback" ? "fallback" : "receive"),
+          name: m.name || (m.type === 'fallback' ? 'fallback' : 'receive'),
           payable: this._isMethodPayable(m),
         };
       });
 
-    const payableFallback =
-      abi.findIndex(
-        (e: any) => e.type === "fallback" && this._isMethodPayable(e)
-      ) >= 0;
+    const payableFallback = abi.findIndex((e: any) => e.type === 'fallback' && this._isMethodPayable(e)) >= 0;
 
     return { payableFallback, methods };
   }

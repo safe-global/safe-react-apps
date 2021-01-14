@@ -1,13 +1,13 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { ThemeProvider } from "styled-components";
-import { theme } from "@gnosis.pm/safe-react-components";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { ThemeProvider } from 'styled-components';
+import { theme } from '@gnosis.pm/safe-react-components';
+import { SafeProvider } from '@gnosis.pm/safe-apps-react-sdk';
 
-import * as serviceWorker from "./serviceWorker";
+import * as serviceWorker from './serviceWorker';
 
-import Dashboard from "./components/Dashboard";
-import SafeProvider from "./providers/SafeProvider";
-import GlobalStyles from "./global";
+import Dashboard from './components/Dashboard';
+import GlobalStyles from './global';
 
 ReactDOM.render(
   <>
@@ -18,7 +18,7 @@ ReactDOM.render(
       </SafeProvider>
     </ThemeProvider>
   </>,
-  document.getElementById("root")
+  document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change

@@ -1,11 +1,12 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { ThemeProvider } from "styled-components";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { ThemeProvider } from 'styled-components';
+import { SafeProvider } from '@gnosis.pm/safe-apps-react-sdk';
 
-import GlobalStyles from "./global";
-import * as serviceWorker from "./serviceWorker";
-import App from "./App";
-import getTheme from "./customTheme";
+import GlobalStyles from './global';
+import * as serviceWorker from './serviceWorker';
+import App from './App';
+import getTheme from './customTheme';
 
 const theme = getTheme();
 
@@ -13,10 +14,12 @@ ReactDOM.render(
   <>
     <GlobalStyles />
     <ThemeProvider theme={theme}>
-      <App />
+      <SafeProvider>
+        <App />
+      </SafeProvider>
     </ThemeProvider>
   </>,
-  document.getElementById("root")
+  document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change

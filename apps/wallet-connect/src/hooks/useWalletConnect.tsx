@@ -1,13 +1,13 @@
-import { useState, useCallback, useEffect } from "react";
-import WalletConnect from "@walletconnect/client";
-import { IClientMeta } from "@walletconnect/types";
-import { useSafe } from "@rmeissner/safe-apps-react-sdk";
-import { chainIdByNetwork, gnosisUrlByNetwork } from "../utils";
+import { useState, useCallback, useEffect } from 'react';
+import WalletConnect from '@walletconnect/client';
+import { IClientMeta } from '@walletconnect/types';
+import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
+import { chainIdByNetwork, gnosisUrlByNetwork } from '../utils';
 
-export const LOCAL_STORAGE_URI_KEY = "safeAppWcUri";
+export const LOCAL_STORAGE_URI_KEY = 'safeAppWcUri';
 
 const useWalletConnect = () => {
-  const safe = useSafe();
+  const { safe, sdk } = useSafeAppsSDK();
   const [wcClientData, setWcClientData] = useState<IClientMeta | null>(null);
   const [connector, setConnector] = useState<WalletConnect | undefined>();
 
@@ -20,66 +20,68 @@ const useWalletConnect = () => {
 
   const wcConnect = useCallback(
     async (uri: string) => {
-      const network = safe.getSafeInfo().network;
+      const network = safe.network;
 
       const wcConnector = new WalletConnect({
         uri,
         clientMeta: {
-          description: "Gnosis Safe",
-          url: gnosisUrlByNetwork[network] || "",
-          icons: ["https://walletconnect.org/walletconnect-logo.png"],
-          name: "Gnosis Safe",
+          description: 'Gnosis Safe',
+          url: gnosisUrlByNetwork[network] || '',
+          icons: ['https://walletconnect.org/walletconnect-logo.png'],
+          name: 'Gnosis Safe',
         },
       });
       setConnector(wcConnector);
       setWcClientData(wcConnector.peerMeta);
       localStorage.setItem(LOCAL_STORAGE_URI_KEY, uri);
 
-      wcConnector.on("session_request", (error, payload) => {
+      wcConnector.on('session_request', (error, payload) => {
         if (error) {
           throw error;
         }
 
         wcConnector.approveSession({
-          accounts: [safe.getSafeInfo().safeAddress],
+          accounts: [safe.safeAddress],
           chainId: chainIdByNetwork[network],
         });
 
         setWcClientData(payload.params[0].peerMeta);
       });
 
-      wcConnector.on("call_request", (error, payload) => {
+      wcConnector.on('call_request', (error, payload) => {
         if (error) {
           throw error;
         }
 
-        if (payload.method === "eth_sendTransaction") {
+        if (payload.method === 'eth_sendTransaction') {
           const txInfo = payload.params[0];
-          safe.sendTransactions([
-            {
-              to: txInfo.to,
-              value: txInfo.value || "0x0",
-              data: txInfo.data || "0x",
-            },
-          ]);
+          sdk.txs.send({
+            txs: [
+              {
+                to: txInfo.to,
+                value: txInfo.value || '0x0',
+                data: txInfo.data || '0x',
+              },
+            ],
+          });
         } else {
           wcConnector.rejectRequest({
             id: payload.id,
             error: {
-              message: "METHOD_NOT_SUPPORTED",
+              message: 'METHOD_NOT_SUPPORTED',
             },
           });
         }
       });
 
-      wcConnector.on("disconnect", (error, payload) => {
+      wcConnector.on('disconnect', (error, payload) => {
         if (error) {
           throw error;
         }
         wcDisconnect();
       });
     },
-    [safe, wcDisconnect]
+    [safe, sdk, wcDisconnect],
   );
 
   useEffect(() => {
