@@ -5,7 +5,7 @@ import format from 'date-fns/format';
 
 import { TextField, Button, Text, Title, Icon, Loader } from '@gnosis.pm/safe-react-components';
 
-import { blobToImageData } from './utils';
+import { blobToImageData } from './utils/images';
 import { Wrapper } from './components/layout';
 import WCClientInfo from './components/WCClientInfo';
 import useWalletConnect from './hooks/useWalletConnect';

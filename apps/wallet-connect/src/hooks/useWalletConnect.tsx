@@ -2,7 +2,8 @@ import { useState, useCallback, useEffect } from 'react';
 import WalletConnect from '@walletconnect/client';
 import { IClientMeta } from '@walletconnect/types';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import { chainIdByNetwork, gnosisUrlByNetwork } from '../utils';
+import { chainIdByNetwork, gnosisUrlByNetwork } from '../utils/networks';
+import { encodeSignMessageCall } from '../utils/signatures';
 
 export const LOCAL_STORAGE_URI_KEY = 'safeAppWcUri';
 
@@ -52,9 +53,43 @@ const useWalletConnect = () => {
         if (error) {
           throw error;
         }
-        console.log(payload);
+
         if (payload.method === 'eth_sign') {
-          console.log({ payload });
+          const [address, messageHash] = payload.params;
+
+          if (address !== safe.safeAddress || !messageHash.startsWith('0x')) {
+            wcConnector.rejectRequest({
+              id: payload.id,
+              error: {
+                message: 'The address or message hash is invalid',
+              },
+            });
+          }
+
+          const callData = encodeSignMessageCall(messageHash);
+          try {
+            await sdk.txs.send({
+              txs: [
+                {
+                  to: safe.safeAddress,
+                  value: '0x0',
+                  data: callData,
+                },
+              ],
+            });
+
+            wcConnector.approveRequest({
+              id: payload.id,
+              result: '',
+            });
+          } catch (err) {
+            wcConnector.rejectRequest({
+              id: payload.id,
+              error: {
+                message: err.message,
+              },
+            });
+          }
         }
 
         if (payload.method === 'eth_sendTransaction') {
