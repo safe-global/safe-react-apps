@@ -52,6 +52,10 @@ const useWalletConnect = () => {
         if (error) {
           throw error;
         }
+        console.log(payload);
+        if (payload.method === 'eth_sign') {
+          console.log({ payload });
+        }
 
         if (payload.method === 'eth_sendTransaction') {
           const txInfo = payload.params[0];
