@@ -29,8 +29,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/ethereumjs-abi": "^0.6.3"
   }
 }
