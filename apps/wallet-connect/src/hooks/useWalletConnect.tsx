@@ -80,7 +80,7 @@ const useWalletConnect = () => {
 
             wcConnector.approveRequest({
               id: payload.id,
-              result: '',
+              result: '0x',
             });
           } catch (err) {
             wcConnector.rejectRequest({

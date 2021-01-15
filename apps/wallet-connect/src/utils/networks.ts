@@ -19,7 +19,7 @@ const gnosisUrlByNetwork: {
   MAINNET: 'https://gnosis-safe.io/app/#',
   MORDEN: null,
   ROPSTEN: null,
-  RINKEBY: 'https://safe-team-rinkeby.staging.gnosisdev.com/app/#',
+  RINKEBY: 'https://rinkeby.gnosis-safe.io/app/#',
   GOERLI: null,
   KOVAN: null,
   XDAI: null,
