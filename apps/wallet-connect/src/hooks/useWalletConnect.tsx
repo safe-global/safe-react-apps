@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import WalletConnect from '@walletconnect/client';
 import { IClientMeta } from '@walletconnect/types';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import { chainIdByNetwork, gnosisUrlByNetwork } from '../utils/networks';
+import { chainIdByNetwork } from '../utils/networks';
 import { encodeSignMessageCall } from '../utils/signatures';
 import { isMetaTxArray } from '../utils/transactions';
 
