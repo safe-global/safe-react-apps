@@ -52,6 +52,8 @@ const useWalletConnect = () => {
         }
 
         try {
+          let result = '0x';
+
           switch (payload.method) {
             case 'eth_sendTransaction': {
               const txInfo = payload.params[0];
@@ -65,10 +67,7 @@ const useWalletConnect = () => {
                 ],
               });
 
-              wcConnector.approveRequest({
-                id: payload.id,
-                result: safeTxHash,
-              });
+              result = safeTxHash;
               break;
             }
             case 'gs_multi_send': {
@@ -78,7 +77,7 @@ const useWalletConnect = () => {
                 throw new Error('INVALID_TRANSACTIONS_PROVIDED');
               }
 
-              sdk.txs.send({
+              const { safeTxHash } = await sdk.txs.send({
                 txs: txs.map((txInfo) => ({
                   to: txInfo.to,
                   value: (txInfo.value || '0x0').toString(),
@@ -86,6 +85,7 @@ const useWalletConnect = () => {
                 })),
               });
 
+              result = safeTxHash;
               break;
             }
 
@@ -106,12 +106,6 @@ const useWalletConnect = () => {
                   },
                 ],
               });
-
-              wcConnector.approveRequest({
-                id: payload.id,
-                result: '0x',
-              });
-
               break;
             }
             default: {
@@ -119,6 +113,11 @@ const useWalletConnect = () => {
               break;
             }
           }
+
+          wcConnector.approveRequest({
+            id: payload.id,
+            result,
+          });
         } catch (err) {
           rejectWithMessage(wcConnector, payload.id, err.message);
         }
