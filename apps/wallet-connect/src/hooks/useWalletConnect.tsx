@@ -2,7 +2,8 @@ import { useState, useCallback, useEffect } from 'react';
 import WalletConnect from '@walletconnect/client';
 import { IClientMeta } from '@walletconnect/types';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import { chainIdByNetwork, gnosisUrlByNetwork } from '../utils';
+import { chainIdByNetwork, gnosisUrlByNetwork } from '../utils/networks';
+import { encodeSignMessageCall } from '../utils/signatures';
 
 export const LOCAL_STORAGE_URI_KEY = 'safeAppWcUri';
 
@@ -48,22 +49,75 @@ const useWalletConnect = () => {
         setWcClientData(payload.params[0].peerMeta);
       });
 
-      wcConnector.on('call_request', (error, payload) => {
+      wcConnector.on('call_request', async (error, payload) => {
         if (error) {
           throw error;
         }
 
+        if (payload.method === 'eth_sign') {
+          const [address, messageHash] = payload.params;
+
+          if (address !== safe.safeAddress || !messageHash.startsWith('0x')) {
+            wcConnector.rejectRequest({
+              id: payload.id,
+              error: {
+                message: 'The address or message hash is invalid',
+              },
+            });
+          }
+
+          const callData = encodeSignMessageCall(messageHash);
+          try {
+            await sdk.txs.send({
+              txs: [
+                {
+                  to: safe.safeAddress,
+                  value: '0x0',
+                  data: callData,
+                },
+              ],
+            });
+
+            wcConnector.approveRequest({
+              id: payload.id,
+              result: '0x',
+            });
+          } catch (err) {
+            wcConnector.rejectRequest({
+              id: payload.id,
+              error: {
+                message: err.message,
+              },
+            });
+          }
+        }
+
         if (payload.method === 'eth_sendTransaction') {
           const txInfo = payload.params[0];
-          sdk.txs.send({
-            txs: [
-              {
-                to: txInfo.to,
-                value: txInfo.value || '0x0',
-                data: txInfo.data || '0x',
+          try {
+            const { safeTxHash } = await sdk.txs.send({
+              txs: [
+                {
+                  to: txInfo.to,
+                  value: txInfo.value || '0x0',
+                  data: txInfo.data || '0x',
+                },
+              ],
+            });
+
+            wcConnector.approveRequest({
+              id: payload.id,
+              result: safeTxHash,
+            });
+          } catch (err) {
+            wcConnector.rejectRequest({
+              id: payload.id,
+              error: {
+                message: err.message,
               },
-            ],
-          });
+            });
+          }
+          return;
         } else {
           wcConnector.rejectRequest({
             id: payload.id,
