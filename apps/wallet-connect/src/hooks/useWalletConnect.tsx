@@ -8,6 +8,10 @@ import { isMetaTxArray } from '../utils/transactions';
 
 export const LOCAL_STORAGE_URI_KEY = 'safeAppWcUri';
 
+const rejectWithMessage = (connector: WalletConnect, id: number | undefined, message: string) => {
+  connector.rejectRequest({ id, error: { message } });
+};
+
 const useWalletConnect = () => {
   const { safe, sdk } = useSafeAppsSDK();
   const [wcClientData, setWcClientData] = useState<IClientMeta | null>(null);
@@ -29,10 +33,6 @@ const useWalletConnect = () => {
       setWcClientData(wcConnector.peerMeta);
       localStorage.setItem(LOCAL_STORAGE_URI_KEY, uri);
 
-      const rejectWithMessage = (id: number | undefined, message: string) => {
-        wcConnector.rejectRequest({ id, error: { message } });
-      };
-
       wcConnector.on('session_request', (error, payload) => {
         if (error) {
           throw error;
@@ -51,10 +51,10 @@ const useWalletConnect = () => {
           throw error;
         }
 
-        switch (payload.method) {
-          case 'eth_sendTransaction': {
-            const txInfo = payload.params[0];
-            try {
+        try {
+          switch (payload.method) {
+            case 'eth_sendTransaction': {
+              const txInfo = payload.params[0];
               const { safeTxHash } = await sdk.txs.send({
                 txs: [
                   {
@@ -69,19 +69,15 @@ const useWalletConnect = () => {
                 id: payload.id,
                 result: safeTxHash,
               });
-            } catch (err) {
-              wcConnector.rejectRequest({
-                id: payload.id,
-                error: {
-                  message: err.message,
-                },
-              });
+              break;
             }
-            break;
-          }
-          case 'gs_multi_send': {
-            const txs = payload.params;
-            if (isMetaTxArray(txs)) {
+            case 'gs_multi_send': {
+              const txs = payload.params;
+
+              if (!isMetaTxArray(txs)) {
+                throw new Error('INVALID_TRANSACTIONS_PROVIDED');
+              }
+
               sdk.txs.send({
                 txs: txs.map((txInfo) => ({
                   to: txInfo.to,
@@ -89,26 +85,18 @@ const useWalletConnect = () => {
                   data: txInfo.data || '0x',
                 })),
               });
-            } else {
-              rejectWithMessage(payload.id, 'INVALID_TRANSACTIONS_PROVIDED');
-            }
-            break;
-          }
 
-          case 'eth_sign': {
-            const [address, messageHash] = payload.params;
-
-            if (address !== safe.safeAddress || !messageHash.startsWith('0x')) {
-              wcConnector.rejectRequest({
-                id: payload.id,
-                error: {
-                  message: 'The address or message hash is invalid',
-                },
-              });
+              break;
             }
 
-            const callData = encodeSignMessageCall(messageHash);
-            try {
+            case 'eth_sign': {
+              const [address, messageHash] = payload.params;
+
+              if (address !== safe.safeAddress || !messageHash.startsWith('0x')) {
+                throw new Error('The address or message hash is invalid');
+              }
+
+              const callData = encodeSignMessageCall(messageHash);
               await sdk.txs.send({
                 txs: [
                   {
@@ -123,20 +111,16 @@ const useWalletConnect = () => {
                 id: payload.id,
                 result: '0x',
               });
-            } catch (err) {
-              wcConnector.rejectRequest({
-                id: payload.id,
-                error: {
-                  message: err.message,
-                },
-              });
+
+              break;
             }
-            break;
+            default: {
+              rejectWithMessage(wcConnector, payload.id, 'METHOD_NOT_SUPPORTED');
+              break;
+            }
           }
-          default: {
-            rejectWithMessage(payload.id, 'METHOD_NOT_SUPPORTED');
-            break;
-          }
+        } catch (err) {
+          rejectWithMessage(wcConnector, payload.id, err.message);
         }
       });
 
