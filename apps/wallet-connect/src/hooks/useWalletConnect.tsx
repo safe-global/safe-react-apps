@@ -1,13 +1,15 @@
-import { useState, useCallback, useEffect } from "react";
-import WalletConnect from "@walletconnect/client";
-import { IClientMeta } from "@walletconnect/types";
-import { useSafe } from "@rmeissner/safe-apps-react-sdk";
-import { chainIdByNetwork, isMetaTxArray } from "../utils";
+import { useState, useCallback, useEffect } from 'react';
+import WalletConnect from '@walletconnect/client';
+import { IClientMeta } from '@walletconnect/types';
+import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
+import { chainIdByNetwork, gnosisUrlByNetwork } from '../utils/networks';
+import { encodeSignMessageCall } from '../utils/signatures';
+import { isMetaTxArray } from '../utils/transactions';
 
-export const LOCAL_STORAGE_URI_KEY = "safeAppWcUri";
+export const LOCAL_STORAGE_URI_KEY = 'safeAppWcUri';
 
 const useWalletConnect = () => {
-  const safe = useSafe();
+  const { safe, sdk } = useSafeAppsSDK();
   const [wcClientData, setWcClientData] = useState<IClientMeta | null>(null);
   const [connector, setConnector] = useState<WalletConnect | undefined>();
 
@@ -20,7 +22,7 @@ const useWalletConnect = () => {
 
   const wcConnect = useCallback(
     async (uri: string) => {
-      const network = safe.getSafeInfo().network;
+      const network = safe.network;
 
       const wcConnector = new WalletConnect({ uri });
       setConnector(wcConnector);
@@ -29,64 +31,123 @@ const useWalletConnect = () => {
 
       const rejectWithMessage = (id: number | undefined, message: string) => {
         wcConnector.rejectRequest({ id, error: { message } });
-      }
+      };
 
-      wcConnector.on("session_request", (error, payload) => {
+      wcConnector.on('session_request', (error, payload) => {
         if (error) {
           throw error;
         }
 
         wcConnector.approveSession({
-          accounts: [safe.getSafeInfo().safeAddress],
+          accounts: [safe.safeAddress],
           chainId: chainIdByNetwork[network],
         });
 
         setWcClientData(payload.params[0].peerMeta);
       });
 
-      wcConnector.on("call_request", (error, payload) => {
+      wcConnector.on('call_request', async (error, payload) => {
         if (error) {
           throw error;
         }
 
         switch (payload.method) {
-          case "eth_sendTransaction": {
+          case 'eth_sendTransaction': {
             const txInfo = payload.params[0];
-            safe.sendTransactions([
-              {
-                to: txInfo.to,
-                value: txInfo.value || "0x0",
-                data: txInfo.data || "0x",
-              },
-            ]);
+            try {
+              const { safeTxHash } = await sdk.txs.send({
+                txs: [
+                  {
+                    to: txInfo.to,
+                    value: txInfo.value || '0x0',
+                    data: txInfo.data || '0x',
+                  },
+                ],
+              });
+
+              wcConnector.approveRequest({
+                id: payload.id,
+                result: safeTxHash,
+              });
+            } catch (err) {
+              wcConnector.rejectRequest({
+                id: payload.id,
+                error: {
+                  message: err.message,
+                },
+              });
+            }
             break;
           }
-          case "gs_multi_send": {
+          case 'gs_multi_send': {
             const txs = payload.params;
             if (isMetaTxArray(txs)) {
-              safe.sendTransactions(
-                txs.map((txInfo) => ({ to: txInfo.to, value: (txInfo.value || "0x0").toString(), data: txInfo.data || "0x" }))
-              );
+              sdk.txs.send({
+                txs: txs.map((txInfo) => ({
+                  to: txInfo.to,
+                  value: (txInfo.value || '0x0').toString(),
+                  data: txInfo.data || '0x',
+                })),
+              });
             } else {
-              rejectWithMessage(payload.id, "INVALID_TRANSACTIONS_PROVIDED")
+              rejectWithMessage(payload.id, 'INVALID_TRANSACTIONS_PROVIDED');
+            }
+            break;
+          }
+
+          case 'eth_sign': {
+            const [address, messageHash] = payload.params;
+
+            if (address !== safe.safeAddress || !messageHash.startsWith('0x')) {
+              wcConnector.rejectRequest({
+                id: payload.id,
+                error: {
+                  message: 'The address or message hash is invalid',
+                },
+              });
+            }
+
+            const callData = encodeSignMessageCall(messageHash);
+            try {
+              await sdk.txs.send({
+                txs: [
+                  {
+                    to: safe.safeAddress,
+                    value: '0x0',
+                    data: callData,
+                  },
+                ],
+              });
+
+              wcConnector.approveRequest({
+                id: payload.id,
+                result: '0x',
+              });
+            } catch (err) {
+              wcConnector.rejectRequest({
+                id: payload.id,
+                error: {
+                  message: err.message,
+                },
+              });
             }
             break;
           }
           default: {
-            rejectWithMessage(payload.id, "METHOD_NOT_SUPPORTED")
+            rejectWithMessage(payload.id, 'METHOD_NOT_SUPPORTED');
             break;
           }
         }
       });
 
-      wcConnector.on("disconnect", (error, payload) => {
+      wcConnector.on('disconnect', (error, payload) => {
         if (error) {
           throw error;
         }
         wcDisconnect();
       });
     },
-    [safe, wcDisconnect]
+    [safe, sdk, wcDisconnect],
   );
 
   useEffect(() => {

@@ -1,71 +1,46 @@
-import React, { useEffect, useState } from "react";
-import Big from "big.js";
-import { BigNumberInput } from "big-number-input";
-import Web3 from "web3";
-import { AbiItem } from "web3-utils";
+import React, { useEffect, useState } from 'react';
+import Big from 'big.js';
+import { BigNumberInput } from 'big-number-input';
+import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
 
-import {
-  Button,
-  Select,
-  Title,
-  Section,
-  Text,
-  TextField,
-  Divider,
-  Loader,
-} from "@gnosis.pm/safe-react-components";
-import initSdk, { SafeInfo } from "@gnosis.pm/safe-apps-sdk";
-import styled from "styled-components";
+import { Button, Select, Title, Section, Text, TextField, Divider, Loader } from '@gnosis.pm/safe-react-components';
+import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
+import styled from 'styled-components';
 
-import { rpc_token, getTokenList, TokenItem } from "./config";
-import {
-  WidgetWrapper,
-  SelectContainer,
-  DaiInfo,
-  ButtonContainer,
-} from "./components";
-import { getTokenInteractions, parseEvents } from "./tokensTransfers";
+import { rpc_token, getTokenList, TokenItem } from './config';
+import { WidgetWrapper, SelectContainer, DaiInfo, ButtonContainer } from './components';
+import { getTokenInteractions, parseEvents } from './tokensTransfers';
 
-import cERC20Abi from "./abis/CErc20";
-import cWEthAbi from "./abis/CWEth";
+import cERC20Abi from './abis/CErc20';
+import cWEthAbi from './abis/CWEth';
 
 const blocksPerDay = 5760;
 
-type Operation = "lock" | "withdraw";
+type Operation = 'lock' | 'withdraw';
 
 const StyledTitle = styled(Title)`
-  margin-top: 0px;
+  margin-top: 0;
 `;
-
-const appsSdk = initSdk();
 
 const CompoundWidget = () => {
   const [web3, setWeb3] = useState<Web3 | undefined>();
+  const { sdk: appsSdk, safe: safeInfo, connected } = useSafeAppsSDK();
+  const [ethBalance, setEthBalance] = useState('0');
 
-  const [safeInfo, setSafeInfo] = useState<SafeInfo>();
   const [tokenList, setTokenList] = useState<Array<TokenItem>>();
 
   const [selectedToken, setSelectedToken] = useState<TokenItem>();
   const [cTokenInstance, setCTokenInstance] = useState<any>();
   const [tokenInstance, setTokenInstance] = useState<any>();
 
-  const [cTokenSupplyAPY, setCTokenSupplyAPY] = useState("0");
-  const [interestEarn, setInterestEarn] = useState("0");
-  const [tokenBalance, setTokenBalance] = useState<string>("0");
-  const [underlyingBalance, setUnderlyingBalance] = useState<string>("0");
+  const [cTokenSupplyAPY, setCTokenSupplyAPY] = useState('0');
+  const [interestEarn, setInterestEarn] = useState('0');
+  const [tokenBalance, setTokenBalance] = useState<string>('0');
+  const [underlyingBalance, setUnderlyingBalance] = useState<string>('0');
 
-  const [inputValue, setInputValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState<string>('');
   const [inputError, setInputError] = useState<string | undefined>();
-
-  // config safe connector
-  useEffect(() => {
-    appsSdk.addListeners({
-      onSafeInfo: setSafeInfo,
-      onTransactionConfirmation: () => {},
-    });
-
-    return () => appsSdk.removeListeners();
-  }, []);
 
   // set web3 instance
   useEffect(() => {
@@ -73,11 +48,28 @@ const CompoundWidget = () => {
       return;
     }
 
-    const web3Intance = new Web3(
-      `https://${safeInfo.network}.infura.io/v3/${rpc_token}`
-    );
-    setWeb3(web3Intance);
+    const web3Instance = new Web3(`https://${safeInfo.network}.infura.io/v3/${rpc_token}`);
+    setWeb3(web3Instance);
   }, [safeInfo]);
+
+  // fetch eth balance
+  useEffect(() => {
+    const fetchEthBalance = async () => {
+      console.log(safeInfo.safeAddress);
+      try {
+        const balance = await web3?.eth.getBalance(safeInfo.safeAddress);
+
+        if (balance) {
+          console.log({ balance });
+          setEthBalance(balance);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchEthBalance();
+  }, [web3, safeInfo.safeAddress]);
 
   // load tokens list and initialize with DAI
   useEffect(() => {
@@ -89,7 +81,7 @@ const CompoundWidget = () => {
 
     setTokenList(tokenListRes);
 
-    const findDaiRes = tokenListRes.find((t) => t.id === "DAI");
+    const findDaiRes = tokenListRes.find((t) => t.id === 'DAI');
     setSelectedToken(findDaiRes);
   }, [safeInfo]);
 
@@ -99,112 +91,82 @@ const CompoundWidget = () => {
       return;
     }
 
-    setCTokenSupplyAPY("0");
-    setInterestEarn("0");
-    setTokenBalance("0");
-    setUnderlyingBalance("0");
-    setInputValue("");
+    setCTokenSupplyAPY('0');
+    setInterestEarn('0');
+    setTokenBalance('0');
+    setUnderlyingBalance('0');
+    setInputValue('');
     setInputError(undefined);
 
-    setTokenInstance(
-      new web3.eth.Contract(cERC20Abi as AbiItem[], selectedToken.tokenAddr)
-    );
-    if (selectedToken.id === "ETH") {
-      setCTokenInstance(
-        new web3.eth.Contract(cWEthAbi as AbiItem[], selectedToken.cTokenAddr)
-      );
+    setTokenInstance(new web3.eth.Contract(cERC20Abi as AbiItem[], selectedToken.tokenAddr));
+    if (selectedToken.id === 'ETH') {
+      setCTokenInstance(new web3.eth.Contract(cWEthAbi as AbiItem[], selectedToken.cTokenAddr));
     } else {
-      setCTokenInstance(
-        new web3.eth.Contract(cERC20Abi as AbiItem[], selectedToken.cTokenAddr)
-      );
+      setCTokenInstance(new web3.eth.Contract(cERC20Abi as AbiItem[], selectedToken.cTokenAddr));
     }
   }, [selectedToken, web3]);
 
   useEffect(() => {
     const getData = async () => {
-      if (!safeInfo || !selectedToken || !cTokenInstance || !tokenInstance) {
+      if (!safeInfo.safeAddress || !selectedToken || !cTokenInstance || !tokenInstance) {
         return;
       }
 
       // wait until cToken is correctly updated
-      if (
-        selectedToken.cTokenAddr.toLocaleLowerCase() !==
-        cTokenInstance?._address.toLocaleLowerCase()
-      ) {
+      if (selectedToken.cTokenAddr.toLocaleLowerCase() !== cTokenInstance?._address.toLocaleLowerCase()) {
         return;
       }
 
       // wait until token is correctly updated
-      if (
-        selectedToken.tokenAddr.toLocaleLowerCase() !==
-        tokenInstance?._address.toLocaleLowerCase()
-      ) {
+      if (selectedToken.tokenAddr.toLocaleLowerCase() !== tokenInstance?._address.toLocaleLowerCase()) {
         return;
       }
 
       // get supplyRate
-      const cTokenSupplyRate = await cTokenInstance.methods
-        .supplyRatePerBlock()
-        .call();
+      const cTokenSupplyRate = await cTokenInstance.methods.supplyRatePerBlock().call();
 
       // get token Balance
       let tokenBalance;
-      if (selectedToken.id === "ETH") {
-        tokenBalance = new Big(safeInfo.ethBalance).times(10 ** 18).toString();
+      if (selectedToken.id === 'ETH') {
+        tokenBalance = ethBalance;
       } else {
-        tokenBalance = await tokenInstance.methods
-          .balanceOf(safeInfo.safeAddress)
-          .call();
+        tokenBalance = await tokenInstance.methods.balanceOf(safeInfo.safeAddress).call();
       }
 
       // get token Locked amount
-      const underlyingBalance = await cTokenInstance.methods
-        .balanceOfUnderlying(safeInfo.safeAddress)
-        .call();
+      const underlyingBalance = await cTokenInstance.methods.balanceOfUnderlying(safeInfo.safeAddress).call();
 
       // get APR
-      const dailyRate = new Big(cTokenSupplyRate)
-        .times(blocksPerDay)
-        .div(10 ** 18);
-      const apy = dailyRate
-        .plus(1)
-        .pow(365)
-        .minus(1)
-        .times(100)
-        .toFixed(2);
+      const dailyRate = new Big(cTokenSupplyRate).times(blocksPerDay).div(10 ** 18);
+      const apy = dailyRate.plus(1).pow(365).minus(1).times(100).toFixed(2);
 
       // get interest earned
       const tokenEvents = await getTokenInteractions(
         safeInfo.network,
         safeInfo.safeAddress,
         selectedToken.tokenAddr,
-        selectedToken.cTokenAddr
+        selectedToken.cTokenAddr,
       );
-      const { deposits, withdrawals } = parseEvents(
-        safeInfo.safeAddress,
-        tokenEvents
-      );
+      const { deposits, withdrawals } = parseEvents(safeInfo.safeAddress, tokenEvents);
       const earned = new Big(underlyingBalance)
         .div(10 ** selectedToken.decimals)
         .plus(withdrawals)
         .minus(deposits);
-      const underlyingEarned = earned.lt("0") ? "0" : earned.toFixed(4);
+      const underlyingEarned = earned.lt('0') ? '0' : earned.toFixed(4);
 
       // update all the values in a row to avoid UI flickers
-      selectedToken.id === "ETH"
-        ? setInterestEarn("-")
-        : setInterestEarn(underlyingEarned);
+      selectedToken.id === 'ETH' ? setInterestEarn('-') : setInterestEarn(underlyingEarned);
       setCTokenSupplyAPY(apy.toString());
       setTokenBalance(tokenBalance);
       setUnderlyingBalance(underlyingBalance);
     };
 
     getData();
-  }, [safeInfo, selectedToken, cTokenInstance, tokenInstance]);
+  }, [safeInfo, selectedToken, cTokenInstance, tokenInstance, ethBalance]);
 
   const bNumberToHumanFormat = (value: string) => {
     if (!selectedToken) {
-      return "";
+      return '';
     }
     return new Big(value).div(10 ** selectedToken.decimals).toFixed(4);
   };
@@ -213,11 +175,10 @@ const CompoundWidget = () => {
     setInputError(undefined);
 
     const currentValueBN = new Big(inputValue);
-    const comparisonValueBN =
-      operation === "lock" ? new Big(tokenBalance) : new Big(underlyingBalance);
+    const comparisonValueBN = operation === 'lock' ? new Big(tokenBalance) : new Big(underlyingBalance);
 
     if (currentValueBN.gt(comparisonValueBN)) {
-      const value = operation === "lock" ? tokenBalance : underlyingBalance;
+      const value = operation === 'lock' ? tokenBalance : underlyingBalance;
       setInputError(`Max value is ${bNumberToHumanFormat(value)}`);
       return false;
     }
@@ -226,18 +187,15 @@ const CompoundWidget = () => {
   };
 
   const lock = () => {
-    if (!selectedToken || !validateInputValue("lock") || !web3) {
+    if (!selectedToken || !validateInputValue('lock') || !web3) {
       return;
     }
 
-    const supplyParameter = web3.eth.abi.encodeParameter(
-      "uint256",
-      inputValue.toString()
-    );
+    const supplyParameter = web3.eth.abi.encodeParameter('uint256', inputValue.toString());
 
     let txs;
 
-    if (selectedToken.id === "ETH") {
+    if (selectedToken.id === 'ETH') {
       txs = [
         {
           to: selectedToken.cTokenAddr,
@@ -249,45 +207,38 @@ const CompoundWidget = () => {
       txs = [
         {
           to: selectedToken.tokenAddr,
-          value: "0",
-          data: tokenInstance.methods
-            .approve(selectedToken.cTokenAddr, supplyParameter)
-            .encodeABI(),
+          value: '0',
+          data: tokenInstance.methods.approve(selectedToken.cTokenAddr, supplyParameter).encodeABI(),
         },
         {
           to: selectedToken.cTokenAddr,
-          value: "0",
+          value: '0',
           data: cTokenInstance.methods.mint(supplyParameter).encodeABI(),
         },
       ];
     }
 
-    appsSdk.sendTransactions(txs);
+    appsSdk.txs.send({ txs });
 
-    setInputValue("");
+    setInputValue('');
   };
 
   const withdraw = () => {
-    if (!selectedToken || !validateInputValue("withdraw") || !web3) {
+    if (!selectedToken || !validateInputValue('withdraw') || !web3) {
       return;
     }
 
-    const supplyParameter = web3.eth.abi.encodeParameter(
-      "uint256",
-      inputValue.toString()
-    );
+    const supplyParameter = web3.eth.abi.encodeParameter('uint256', inputValue.toString());
     const txs = [
       {
         to: selectedToken.cTokenAddr,
-        value: "0",
-        data: cTokenInstance.methods
-          .redeemUnderlying(supplyParameter)
-          .encodeABI(),
+        value: '0',
+        data: cTokenInstance.methods.redeemUnderlying(supplyParameter).encodeABI(),
       },
     ];
-    appsSdk.sendTransactions(txs);
+    appsSdk.txs.send({ txs });
 
-    setInputValue("");
+    setInputValue('');
   };
 
   const isWithdrawDisabled = () => {
@@ -297,11 +248,7 @@ const CompoundWidget = () => {
 
     const bigInput = new Big(inputValue);
 
-    if (bigInput.eq("0") || bigInput.gt(underlyingBalance)) {
-      return true;
-    }
-
-    return false;
+    return bigInput.eq('0') || bigInput.gt(underlyingBalance);
   };
 
   const isSupplyDisabled = () => {
@@ -311,11 +258,7 @@ const CompoundWidget = () => {
 
     const bigInput = new Big(inputValue);
 
-    if (bigInput.eq("0") || bigInput.gt(tokenBalance)) {
-      return true;
-    }
-
-    return false;
+    return bigInput.eq('0') || bigInput.gt(tokenBalance);
   };
 
   const onSelectItem = (id: string) => {
@@ -334,7 +277,7 @@ const CompoundWidget = () => {
     setInputValue(value);
   };
 
-  if (!selectedToken) {
+  if (!selectedToken || !connected) {
     return <Loader size="md" />;
   }
 
@@ -343,11 +286,7 @@ const CompoundWidget = () => {
       <StyledTitle size="xs">Your Compound balance</StyledTitle>
 
       <SelectContainer>
-        <Select
-          items={tokenList || []}
-          activeItemId={selectedToken.id}
-          onItemClick={onSelectItem}
-        />
+        <Select items={tokenList || []} activeItemId={selectedToken.id} onItemClick={onSelectItem} />
         <Text strong size="lg">
           ~ {bNumberToHumanFormat(tokenBalance)}
         </Text>
@@ -381,28 +320,14 @@ const CompoundWidget = () => {
         decimals={selectedToken.decimals}
         onChange={onInputChange}
         value={inputValue}
-        renderInput={(props: any) => (
-          <TextField label="Amount" meta={{ error: inputError }} {...props} />
-        )}
+        renderInput={(props: any) => <TextField label="Amount" meta={{ error: inputError }} {...props} />}
       />
 
       <ButtonContainer>
-        <Button
-          size="lg"
-          color="secondary"
-          variant="contained"
-          onClick={withdraw}
-          disabled={isWithdrawDisabled()}
-        >
+        <Button size="lg" color="secondary" variant="contained" onClick={withdraw} disabled={isWithdrawDisabled()}>
           Withdraw
         </Button>
-        <Button
-          size="lg"
-          color="primary"
-          variant="contained"
-          onClick={lock}
-          disabled={isSupplyDisabled()}
-        >
+        <Button size="lg" color="primary" variant="contained" onClick={lock} disabled={isSupplyDisabled()}>
           Supply
         </Button>
       </ButtonContainer>
