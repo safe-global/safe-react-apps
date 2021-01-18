@@ -9,6 +9,7 @@ yalc.lock
 
 # testing
 /coverage
+.eslintcache
 
 # production
 build
