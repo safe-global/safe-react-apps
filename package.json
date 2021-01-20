@@ -4,10 +4,10 @@
   "scripts": {
     "start-compound": "dotenv -e .env -- yarn workspace compound start",
     "start-tx-builder": "dotenv -e .env -- yarn workspace tx-builder start",
-    "start-wallet-connect": "dotenv -e .env -- yarn workspace wallet-connect start",
-    "build-compound": " dotenv -e .env -- yarn workspace compound build",
+    "start-wallet-connect": "yarn workspace wallet-connect start",
+    "build-compound": "dotenv -e .env -- yarn workspace compound build",
     "build-tx-builder": "dotenv -e .env -- yarn workspace tx-builder build",
-    "build-wallet-connect": "dotenv -e .env -- yarn workspace wallet-connect build"
+    "build-wallet-connect": "yarn workspace wallet-connect build"
   },
   "version": "2.0.0",
   "workspaces": [
@@ -19,7 +19,8 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "^4.0.1",
-    "styled-components": "^5.2.0"
+    "styled-components": "^5.2.0",
+    "lerna": "^3.22.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.9",
