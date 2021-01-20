@@ -1,0 +1,122 @@
+name: Deploy PR
+
+# Run on pull request
+on: pull_request
+
+jobs:
+  build:
+    name: Setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: |
+          # If you have dependencies from git (wc app), yarn may randomly throw an error about invalid cache
+          # This approach is taken from https://github.com/yarnpkg/yarn/issues/7212#issuecomment-506155894 to fix the issue
+          # Another approach is to install with flag --network-concurrency 1, but this will make the installation pretty slow (default value is 8)
+          mkdir .yarncache
+          yarn install --cache-folder ./.yarncache --frozen-lockfile
+          rm -rf .yarncache
+          yarn cache clean
+          yarn global add lerna
+          # approach taken from https://github.com/actions/setup-node/issues/85
+          echo "$(yarn global bin)" >> $GITHUB_PATH
+      - run: lerna run build
+
+  # build:
+  #   name: Build apps
+  #   needs: setup
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+
+  #     - name: Set up node
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: 12
+
+  #     - name: Load dependencies
+  #       id: cache-node-modules
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: node_modules
+  #         key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
+
+  #     - name: Build Web Apps
+  #       run: yarn build
+
+  #     - name: Get PR number
+  #       uses: jwalton/gh-find-current-pr@v1
+  #       id: findPr
+  #       with:
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  #     - uses: mshick/add-pr-comment@v1
+  #       with:
+  #         message: |
+  #           * **🔭 [Explorer Dapp](${{ env.REVIEW_FEATURE_URL }})**: Explorer test app
+  #           * **📈 [Trade Dapp](${{ env.REVIEW_FEATURE_URL }}/trade.html)**: Trade test app
+  #           * **📚 [Storybook](${{ env.REVIEW_FEATURE_URL }}/storybook/)**: Component stories
+  #         repo-token: ${{ secrets.GITHUB_TOKEN }}
+  #         repo-token-user-login: 'github-actions[bot]'
+  #         if: success() && steps.findPr.outputs.number
+  #       env:
+  #         REVIEW_FEATURE_URL: https://pr${{ steps.findPr.outputs.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
+
+  #     - name: Upload websites artifact
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: website
+  #         path: dist
+
+  # deploy:
+  #   name: Deploy
+  #   needs: [build, storybook]
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Download website
+  #       uses: actions/download-artifact@v2
+
+  #     - name: Move storybook inside dist
+  #       run: mv storybook website/storybook
+
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v1
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: ${{ secrets.AWS_REGION }}
+
+  #     - name: 'Deploy to S3: PRaul'
+  #       if: success() && steps.findPr.outputs.number
+  #       run: aws s3 sync website s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/${{ env.REPO_NAME_SLUG }}/pr${{ steps.findPr.outputs.number }} --delete
+
+  #     - name: 'PRaul: Comment PR with app URLs'
+  #       uses: mshick/add-pr-comment@v1
+  #       with:
+  #         message: |
+  #           * **🔭 [Explorer Dapp](${{ env.REVIEW_FEATURE_URL }})**: Explorer test app
+  #           * **📈 [Trade Dapp](${{ env.REVIEW_FEATURE_URL }}/trade.html)**: Trade test app
+  #           * **📚 [Storybook](${{ env.REVIEW_FEATURE_URL }}/storybook/)**: Component stories
+  #         repo-token: ${{ secrets.GITHUB_TOKEN }}
+  #         repo-token-user-login: 'github-actions[bot]'
+  #       if: success() && steps.findPr.outputs.number
+  #       env:
+  #         REVIEW_FEATURE_URL: https://pr${{ steps.findPr.outputs.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
+
+  #     - name: 'Deploy to S3: Develop'
+  #       if: github.ref == 'refs/heads/develop'
+  #       run: aws s3 sync website s3://${{ secrets.AWS_DEV_BUCKET_NAME }} --delete
+
+  #     - name: 'Deploy to S3: Staging'
+  #       if: github.ref == 'refs/heads/master'
+  #       run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current --delete
