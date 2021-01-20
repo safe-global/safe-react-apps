@@ -19,9 +19,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: |
+          mkdir .yarncache
+          yarn install --cache-folder ./.yarncache
+          rm -rf .yarncache
           yarn cache clean
           yarn global add lerna
           # approach taken from https://github.com/actions/setup-node/issues/85
           echo "$(yarn global bin)" >> $GITHUB_PATH
-      - run: lerna bootstrap
       - run: lerna run test
