@@ -13,6 +13,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: |
+          yarn cache clean
           yarn global add lerna
           # approach taken from https://github.com/actions/setup-node/issues/85
           echo "$(yarn global bin)" >> $GITHUB_PATH
