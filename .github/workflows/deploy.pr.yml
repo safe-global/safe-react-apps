@@ -33,7 +33,8 @@ jobs:
           yarn global add lerna
           # approach taken from https://github.com/actions/setup-node/issues/85
           echo "$(yarn global bin)" >> $GITHUB_PATH
-      - run: lerna run deploy --since HEAD~1
+          lerna run build
+      - run: ./scripts/deploy_pr.sh
 
   # build:
   #   name: Build apps
