@@ -15,9 +15,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: |
-          - apt-get update
-          - apt-get -y install python3-pip python3-dev libusb-1.0-0-dev libudev-dev
-          - pip install awscli --upgrade --user
+          sudo apt-get update
+          sudo apt-get -y install python3-pip python3-dev libusb-1.0-0-dev libudev-dev
+          pip install awscli --upgrade --user
           # If you have dependencies from git (wc app), yarn may randomly throw an error about invalid cache
           # This approach is taken from https://github.com/yarnpkg/yarn/issues/7212#issuecomment-506155894 to fix the issue
           # Another approach is to install with flag --network-concurrency 1, but this will make the installation pretty slow (default value is 8)
