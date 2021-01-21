@@ -28,10 +28,16 @@ function publish_pull_request_urls_in_github {
   curl -H "Authorization: token ${GITHUB_API_TOKEN}" --request POST ${GITHUB_PR_COMMENTS} --data '{"body":"Travis automatic deployment:\r\n '${REVIEW_FEATURE_URL}' \r\n"}'
 }
 
+for file in ../apps/*/; do 
+  if [[ -d "$file" && ! -L "$file" ]]; then
+    app="$(echo $file | cut -d '/' -f 3)"
+  fi; 
+done
+
 # Only:
 # - Pull requests
 # - Security env variables are available. PR from forks don't have them.
-if [ "$TRAVIS_PULL_REQUEST" != "false" ] && [ -n "$AWS_ACCESS_KEY_ID" ]
+if [ -n "$AWS_ACCESS_KEY_ID" ]
 then
   deploy_pull_request
   publish_pull_request_urls_in_github
