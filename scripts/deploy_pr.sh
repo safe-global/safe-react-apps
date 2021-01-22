@@ -1,21 +1,21 @@
 #!/bin/bash
 
-function deploy_pull_request {
+function deploy_app_pr {
   REVIEW_ENVIRONMENT_DOMAIN='review.gnosisdev.com'
 
-  # Pull request name with "pr" prefix
-  PULL_REQUEST_NAME="pr$TRAVIS_PULL_REQUEST"
+  # Pull request number with "pr" prefix
+  PULL_REQUEST_NUMBER="pr$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')"
 
   # Feature name without all path. Example gnosis/pm-trading-ui -> pm-trading-ui
-  REPO_NAME=$(basename $TRAVIS_REPO_SLUG)
+  REPO_NAME=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}' | sed -e "s/:refs//")
   # Only alphanumeric characters. Example pm-trading-ui -> pmtradingui
   REPO_NAME_ALPHANUMERIC=$(echo $REPO_NAME | sed 's/[^a-zA-Z0-9]//g')
 
-  # TRAVIS_PULL_REQUEST contains pull request number
-  REVIEW_FEATURE_FOLDER="$REPO_NAME_ALPHANUMERIC/$PULL_REQUEST_NAME"
-
-  # Deploy safe-team project
-  aws s3 sync build s3://${REVIEW_BUCKET_NAME}/${REVIEW_FEATURE_FOLDER}/${REACT_APP_NETWORK}/app --delete
+  REVIEW_FEATURE_FOLDER="$REPO_NAME_ALPHANUMERIC/$PULL_REQUEST_NUMBER"
+  echo REPO_NAME_ALPHANUMERIC
+  echo PULL_REQUEST_NUMBER
+  # Deploy app project
+  # aws s3 sync build s3://${REVIEW_BUCKET_NAME}/${REVIEW_FEATURE_FOLDER}/$1 --delete
 }
 
 function publish_pull_request_urls_in_github {
@@ -39,6 +39,11 @@ done
 # - Security env variables are available. PR from forks don't have them.
 if [ -n "$AWS_ACCESS_KEY_ID" ]
 then
-  deploy_pull_request
-  publish_pull_request_urls_in_github
+  for file in ../apps/*/; do 
+    if [[ -d "$file" && ! -L "$file" ]]; then
+      app="$(echo $file | cut -d '/' -f 3)"
+      deploy_app_pr app
+    fi; 
+  done
+  # publish_pull_request_urls_in_github
 fi
