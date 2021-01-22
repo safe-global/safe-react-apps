@@ -32,10 +32,7 @@ jobs:
           rm -rf .yarncache
           yarn cache clean
       - run: |
-          yarn global add lerna
-          # approach taken from https://github.com/actions/setup-node/issues/85
-          echo "$(yarn global bin)" >> $GITHUB_PATH
-          lerna run build
+          npx lerna run build
       - run: ./scripts/deploy_pr.sh
 
   # build:
