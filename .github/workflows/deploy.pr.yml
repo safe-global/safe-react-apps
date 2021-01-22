@@ -33,7 +33,7 @@ jobs:
           yarn cache clean
       - run: |
           npx lerna run build
-      - run: ./scripts/deploy_pr.sh
+      - run: bash ./scripts/deploy_pr.sh
 
   # build:
   #   name: Build apps
