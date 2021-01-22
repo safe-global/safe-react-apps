@@ -57,7 +57,8 @@ jobs:
 
       - run: bash ./scripts/deploy_pr.sh
 
-      - uses: mshick/add-pr-comment@v1
+      - name: 'PRaul: Comment PR with app URLs'
+        uses: mshick/add-pr-comment@v1
         with:
           message: |
             * ** [Compound app](${{ env.REVIEW_FEATURE_URL }}/compound/)**
@@ -65,9 +66,9 @@ jobs:
             * ** [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)**
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
-        if: success() && steps.findPr.outputs.pr
+        if: success() && steps.findPr.outputs.number
         env:
-          REVIEW_FEATURE_URL: https://pr${{ steps.findPr.outputs.pr }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
+          REVIEW_FEATURE_URL: https://pr${{ steps.findPr.outputs.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
 
   # build:
   #   name: Build apps
