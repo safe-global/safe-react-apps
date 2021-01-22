@@ -4,7 +4,7 @@ name: Deploy PR
 on: pull_request
 
 jobs:
-  build:
+  setup:
     name: Setup
     runs-on: ubuntu-latest
 
@@ -33,6 +33,13 @@ jobs:
           yarn cache clean
       - run: |
           npx lerna run build
+
+  deploy:
+    name: Deploy PR
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    steps:
       - run: bash ./scripts/deploy_pr.sh
 
   # build:
