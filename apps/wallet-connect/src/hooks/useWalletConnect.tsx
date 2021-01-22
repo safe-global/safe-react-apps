@@ -2,10 +2,15 @@ import { useState, useCallback, useEffect } from 'react';
 import WalletConnect from '@walletconnect/client';
 import { IClientMeta } from '@walletconnect/types';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import { chainIdByNetwork, gnosisUrlByNetwork } from '../utils/networks';
+import { chainIdByNetwork } from '../utils/networks';
 import { encodeSignMessageCall } from '../utils/signatures';
+import { isMetaTxArray } from '../utils/transactions';
 
 export const LOCAL_STORAGE_URI_KEY = 'safeAppWcUri';
+
+const rejectWithMessage = (connector: WalletConnect, id: number | undefined, message: string) => {
+  connector.rejectRequest({ id, error: { message } });
+};
 
 const useWalletConnect = () => {
   const { safe, sdk } = useSafeAppsSDK();
@@ -23,15 +28,7 @@ const useWalletConnect = () => {
     async (uri: string) => {
       const network = safe.network;
 
-      const wcConnector = new WalletConnect({
-        uri,
-        clientMeta: {
-          description: 'Gnosis Safe',
-          url: gnosisUrlByNetwork[network] || '',
-          icons: ['https://walletconnect.org/walletconnect-logo.png'],
-          name: 'Gnosis Safe',
-        },
-      });
+      const wcConnector = new WalletConnect({ uri });
       setConnector(wcConnector);
       setWcClientData(wcConnector.peerMeta);
       localStorage.setItem(LOCAL_STORAGE_URI_KEY, uri);
@@ -54,77 +51,75 @@ const useWalletConnect = () => {
           throw error;
         }
 
-        if (payload.method === 'eth_sign') {
-          const [address, messageHash] = payload.params;
+        try {
+          let result = '0x';
 
-          if (address !== safe.safeAddress || !messageHash.startsWith('0x')) {
-            wcConnector.rejectRequest({
-              id: payload.id,
-              error: {
-                message: 'The address or message hash is invalid',
-              },
-            });
-          }
+          switch (payload.method) {
+            case 'eth_sendTransaction': {
+              const txInfo = payload.params[0];
+              const { safeTxHash } = await sdk.txs.send({
+                txs: [
+                  {
+                    to: txInfo.to,
+                    value: txInfo.value || '0x0',
+                    data: txInfo.data || '0x',
+                  },
+                ],
+              });
 
-          const callData = encodeSignMessageCall(messageHash);
-          try {
-            await sdk.txs.send({
-              txs: [
-                {
-                  to: safe.safeAddress,
-                  value: '0x0',
-                  data: callData,
-                },
-              ],
-            });
+              result = safeTxHash;
+              break;
+            }
+            case 'gs_multi_send': {
+              const txs = payload.params;
 
-            wcConnector.approveRequest({
-              id: payload.id,
-              result: '0x',
-            });
-          } catch (err) {
-            wcConnector.rejectRequest({
-              id: payload.id,
-              error: {
-                message: err.message,
-              },
-            });
-          }
-        }
+              if (!isMetaTxArray(txs)) {
+                throw new Error('INVALID_TRANSACTIONS_PROVIDED');
+              }
 
-        if (payload.method === 'eth_sendTransaction') {
-          const txInfo = payload.params[0];
-          try {
-            const { safeTxHash } = await sdk.txs.send({
-              txs: [
-                {
+              const { safeTxHash } = await sdk.txs.send({
+                txs: txs.map((txInfo) => ({
                   to: txInfo.to,
-                  value: txInfo.value || '0x0',
+                  value: (txInfo.value || '0x0').toString(),
                   data: txInfo.data || '0x',
-                },
-              ],
-            });
+                })),
+              });
 
-            wcConnector.approveRequest({
-              id: payload.id,
-              result: safeTxHash,
-            });
-          } catch (err) {
-            wcConnector.rejectRequest({
-              id: payload.id,
-              error: {
-                message: err.message,
-              },
-            });
+              result = safeTxHash;
+              break;
+            }
+
+            case 'eth_sign': {
+              const [address, messageHash] = payload.params;
+
+              if (address !== safe.safeAddress || !messageHash.startsWith('0x')) {
+                throw new Error('The address or message hash is invalid');
+              }
+
+              const callData = encodeSignMessageCall(messageHash);
+              await sdk.txs.send({
+                txs: [
+                  {
+                    to: safe.safeAddress,
+                    value: '0x0',
+                    data: callData,
+                  },
+                ],
+              });
+              break;
+            }
+            default: {
+              rejectWithMessage(wcConnector, payload.id, 'METHOD_NOT_SUPPORTED');
+              break;
+            }
           }
-          return;
-        } else {
-          wcConnector.rejectRequest({
+
+          wcConnector.approveRequest({
             id: payload.id,
-            error: {
-              message: 'METHOD_NOT_SUPPORTED',
-            },
+            result,
           });
+        } catch (err) {
+          rejectWithMessage(wcConnector, payload.id, err.message);
         }
       });
 
