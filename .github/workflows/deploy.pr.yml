@@ -65,7 +65,7 @@ jobs:
             * ** [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)**
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
-        if: success() && steps.findPr.outputs.number
+        if: success() && steps.findPr.outputs.pr
         env:
           REVIEW_FEATURE_URL: https://pr${{ steps.findPr.outputs.pr }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
 
