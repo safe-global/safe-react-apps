@@ -31,8 +31,13 @@ jobs:
           yarn install --cache-folder ./.yarncache --frozen-lockfile
           rm -rf .yarncache
           yarn cache clean
-      - run: |
-          npx lerna run build
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Build apps
+        run: npx lerna run build
 
   deploy:
     name: Deploy PR
@@ -40,7 +45,28 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
     steps:
+      - name: Checkout to the repo
+        uses: actions/checkout@v2
+
+      - name: Get PR number
+        uses: jwalton/gh-find-current-pr@v1
+        id: findPr
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - run: bash ./scripts/deploy_pr.sh
+
+      - uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            * ** [Compound app](${{ env.REVIEW_FEATURE_URL }}/compound/)**
+            * ** [WalletConnect app](${{ env.REVIEW_FEATURE_URL }}/wallet-connect/)**
+            * ** [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)**
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
+          if: success() && steps.findPr.outputs.number
+        env:
+          REVIEW_FEATURE_URL: https://pr${{ steps.findPr.outputs.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
 
   # build:
   #   name: Build apps
