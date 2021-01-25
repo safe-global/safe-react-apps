@@ -1,0 +1,10 @@
+name: Deploy to staging env
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest

@@ -1,0 +1,10 @@
+name: Deploy to development env
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
