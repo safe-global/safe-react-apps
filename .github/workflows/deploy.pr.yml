@@ -52,7 +52,8 @@ jobs:
 
       - run: bash ./scripts/deploy_pr.sh
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_ACCESS_KEY_ID: test
 
       - name: 'PRaul: Comment PR with app URLs'
         uses: mshick/add-pr-comment@v1
