@@ -3,6 +3,9 @@ name: Deploy PR
 # Run on pull request
 on: pull_request
 
+env:
+  REPO_NAME_SLUG: safe-react-apps
+
 jobs:
   setup:
     name: Setup
@@ -60,7 +63,6 @@ jobs:
             * ** [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)**
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
-          allow-repeats: true
         if: success() && github.event.number
         env:
           REVIEW_FEATURE_URL: https://pr${{ github.event.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
