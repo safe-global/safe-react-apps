@@ -2,7 +2,7 @@
 
 function deploy_app_pr {
   REVIEW_ENVIRONMENT_DOMAIN='review.gnosisdev.com'
-
+  echo $1
   # Pull request number with "pr" prefix
   PULL_REQUEST_NUMBER="pr$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')"
 
@@ -26,6 +26,7 @@ if [ -n "$AWS_ACCESS_KEY_ID" ]; then
   for file in ../apps/*/; do 
     if [[ -d "$file" && ! -L "$file" ]]; then
       app="$(echo $file | cut -d '/' -f 3)"
+      echo app
       deploy_app_pr app
     fi; 
   done
