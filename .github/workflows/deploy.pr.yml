@@ -55,10 +55,10 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: echo "Your PR is ${PR}"
-        if: steps.findPr.outputs.number
+      - run: echo "Your PR is ${PR} or ${PR2}"
         env:
           PR: ${{ steps.findPr.outputs.number }}
+          PR2: ${{ steps.findPr.outputs.pr }}
 
       - run: bash ./scripts/deploy_pr.sh
 
