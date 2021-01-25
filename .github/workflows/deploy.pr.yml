@@ -55,6 +55,11 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - run: echo "Your PR is ${PR}"
+        if: success() && steps.findPr.outputs.number
+        env:
+          PR: ${{ steps.findPr.outputs.pr }}
+
       - run: bash ./scripts/deploy_pr.sh
 
       - name: 'PRaul: Comment PR with app URLs'
