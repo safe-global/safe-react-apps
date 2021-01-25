@@ -17,12 +17,12 @@ function deploy_app_pr {
   # Deploy app project
   # aws s3 sync build s3://${REVIEW_BUCKET_NAME}/${REVIEW_FEATURE_FOLDER}/$1 --delete
 }
-echo $AWS_ACCESS_KEY_ID
+
 # Only:
 # - Pull requests
 # - Security env variables are available. PR from forks don't have them.
-if [ -n "$AWS_ACCESS_KEY_ID" ]
-then
+if [ -n "$AWS_ACCESS_KEY_ID" ]; then
+  echo "Running the script"
   for file in ../apps/*/; do 
     if [[ -d "$file" && ! -L "$file" ]]; then
       app="$(echo $file | cut -d '/' -f 3)"
