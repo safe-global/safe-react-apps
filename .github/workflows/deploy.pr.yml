@@ -53,10 +53,11 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: echo "Your PR is ${PR} or ${PR2}"
+      - run: echo "Your PR is ${PR} or ${PR2} or ${PR3}"
         env:
           PR: ${{ steps.findPr.outputs.number }}
           PR2: ${{ steps.findPr.outputs.pr }}
+          PR3: ${{ github.event.number }}
 
       - run: bash ./scripts/deploy_pr.sh
         env:
