@@ -42,8 +42,6 @@ jobs:
       - name: Build apps
         run: npx lerna run build
 
-      - run: ls -a
-
       - run: bash ./scripts/deploy_pr.sh
         env:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
