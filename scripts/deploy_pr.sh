@@ -8,10 +8,11 @@ function deploy_app_pr {
   REPO_NAME_ALPHANUMERIC=$(echo $REPO_NAME_SLUG | sed 's/[^a-zA-Z0-9]//g')
 
   REVIEW_FEATURE_FOLDER="$REPO_NAME_ALPHANUMERIC/$PULL_REQUEST_NUMBER"
-
+  APP_BUCKET_NAME=$(echo $1 | sed 's/[^a-zA-Z0-9]//g')
   APP_PATH="./apps/$1/build"
+  
   # Deploy app project
-  aws s3 sync $APP_PATH s3://${REVIEW_BUCKET_NAME}/${REVIEW_FEATURE_FOLDER}/$1 --delete
+  aws s3 sync $APP_PATH s3://${REVIEW_BUCKET_NAME}/${REVIEW_FEATURE_FOLDER}/${APP_BUCKET_NAME} --delete
 }
 
 # Only:
