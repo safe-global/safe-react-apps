@@ -46,7 +46,7 @@ jobs:
         env:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
           PR_NUMBER: ${{ github.event.number }}
-          REVIEW_BUCKET_NAME: ${{ secrets.REVIEW_BUCKET_NAME }}
+          REVIEW_BUCKET_NAME: ${{ secrets.AWS_REVIEW_BUCKET_NAME }}
 
       - name: 'PRaul: Comment PR with app URLs'
         uses: mshick/add-pr-comment@v1
