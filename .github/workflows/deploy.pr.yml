@@ -7,8 +7,8 @@ env:
   REPO_NAME_SLUG: safe-react-apps
 
 jobs:
-  setup:
-    name: Setup
+  deploy:
+    name: Deploy Pull Request
     runs-on: ubuntu-latest
 
     steps:
@@ -41,6 +41,8 @@ jobs:
 
       - name: Build apps
         run: npx lerna run build
+
+      - run: ls -a
 
       - run: bash ./scripts/deploy_pr.sh
         env:
