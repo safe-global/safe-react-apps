@@ -24,11 +24,10 @@ function deploy_app_pr {
 # - Security env variables are available. PR from forks don't have them.
 if [ -n "$AWS_ACCESS_KEY_ID" ]; then
   echo "Running the script"
-  for file in ../apps/*/; do 
+  for file in ./apps/*/; do
     if [[ -d "$file" && ! -L "$file" ]]; then
       app="$(echo $file | cut -d '/' -f 3)"
-      echo app
-      deploy_app_pr app
+      deploy_app_pr $app
     fi; 
   done
 fi
