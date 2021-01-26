@@ -2,19 +2,13 @@
 
 function deploy_app_pr {
   REVIEW_ENVIRONMENT_DOMAIN='review.gnosisdev.com'
-  echo $1
   # Pull request number with "pr" prefix
   PULL_REQUEST_NUMBER="pr$PR_NUMBER"
-
-  # Feature name without all path. Example gnosis/pm-trading-ui -> pm-trading-ui
-  REPO_NAME=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}' | sed -e "s/:refs//")
   # Only alphanumeric characters. Example pm-trading-ui -> pmtradingui
   REPO_NAME_ALPHANUMERIC=$(echo $REPO_NAME_SLUG | sed 's/[^a-zA-Z0-9]//g')
 
   REVIEW_FEATURE_FOLDER="$REPO_NAME_ALPHANUMERIC/$PULL_REQUEST_NUMBER"
-  echo $REPO_NAME_ALPHANUMERIC
-  echo $PULL_REQUEST_NUMBER
-  echo $REVIEW_FEATURE_FOLDER
+  echo $REVIEW_FEATURE_FOLDER/$1
   # Deploy app project
   # aws s3 sync build s3://${REVIEW_BUCKET_NAME}/${REVIEW_FEATURE_FOLDER}/$1 --delete
 }
