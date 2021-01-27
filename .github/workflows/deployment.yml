@@ -1,14 +1,17 @@
-name: Deploy PR
+name: Deploy S3
 
-# Run on pull request
-on: pull_request
-
+# Run on pushes to dev/master
+on:
+  push:
+    branches:
+      - master
+      - development
 env:
   REPO_NAME_SLUG: safe-react-apps
 
 jobs:
   deploy:
-    name: Deploy Pull Request
+    name: Deployment
     runs-on: ubuntu-latest
 
     steps:
@@ -42,22 +45,18 @@ jobs:
       - name: Build apps
         run: npx lerna run build
 
-      - run: bash ./scripts/deploy_pr.sh
+      - name: 'Deploy to S3: Develop'
+        run: bash ./scripts/deploy_to_s3_bucket.sh
+        if: github.ref == 'refs/heads/development'
         env:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          PR_NUMBER: ${{ github.event.number }}
-          REVIEW_BUCKET_NAME: ${{ secrets.AWS_REVIEW_BUCKET_NAME }}
+          BUCKET_NAME: ${{ secrets.AWS_DEV_BUCKET_NAME }}
 
-      - name: 'PRaul: Comment PR with app URLs'
-        uses: mshick/add-pr-comment@v1
-        with:
-          message: |
-            * [Compound app](${{ env.REVIEW_FEATURE_URL }}/compound/)
-            * [WalletConnect app](${{ env.REVIEW_FEATURE_URL }}/wallet-connect/)
-            * [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
-        if: success() && github.event.number
+      - name: 'Deploy to S3: Staging'
+        run: bash ./scripts/deploy_to_s3_bucket.sh
+        if: github.ref == 'refs/heads/master'
         env:
-          REVIEW_FEATURE_URL: https://pr${{ github.event.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          BUCKET_NAME: ${{ secrets.STAGING_BUCKET_NAME }}
