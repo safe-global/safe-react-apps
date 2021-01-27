@@ -11,8 +11,8 @@
     "web3": "^1.2.5"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "start": "dotenv -e .env -- react-app-rewired start",
+    "build": "dotenv -e .env -- react-app-rewired build",
     "test": "react-app-rewired test --passWithNoTests"
   },
   "eslintConfig": {
