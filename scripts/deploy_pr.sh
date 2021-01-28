@@ -1,12 +1,8 @@
 #!/bin/bash
 
 function deploy_app_pr {
-  REVIEW_ENVIRONMENT_DOMAIN='review.gnosisdev.com'
   # Pull request number with "pr" prefix
   PULL_REQUEST_NUMBER="pr$PR_NUMBER"
-  # Only alphanumeric characters. Example pm-trading-ui -> pmtradingui
-  REPO_NAME_ALPHANUMERIC=$(echo $REPO_NAME_SLUG | sed 's/[^a-zA-Z0-9]//g')
-
   REVIEW_FEATURE_FOLDER="$REPO_NAME_ALPHANUMERIC/$PULL_REQUEST_NUMBER"
   APP_BUCKET_NAME=$(echo $1 | sed 's/[^a-zA-Z0-9]//g')
   APP_PATH="./apps/$1/build"

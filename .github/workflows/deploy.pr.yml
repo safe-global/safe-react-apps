@@ -4,7 +4,7 @@ name: Deploy PR
 on: pull_request
 
 env:
-  REPO_NAME_SLUG: safe-react-apps
+  REPO_NAME_ALPHANUMERIC: safereactapps
 
 jobs:
   deploy:
@@ -60,4 +60,4 @@ jobs:
           repo-token-user-login: 'github-actions[bot]'
         if: success() && github.event.number
         env:
-          REVIEW_FEATURE_URL: https://pr${{ github.event.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
+          REVIEW_FEATURE_URL: https://pr${{ github.event.number }}--${{ env.REPO_NAME_ALPHANUMERIC }}.review.gnosisdev.com
