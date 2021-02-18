@@ -1,4 +1,4 @@
-name: Deploy S3
+name: Deploy Dev/Master
 
 # Run on pushes to dev/master
 on:
