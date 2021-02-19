@@ -25,7 +25,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - uses: actions/cache@v2
-        id: dep-cache
         with:
           path: |
             node_modules
@@ -39,7 +38,6 @@ jobs:
           pip install awscli --upgrade --user
 
       - name: Project dependencies setup, node version ${{ matrix.node-version }}
-        if: steps.dep-cache.outputs.cache-hit != 'true'
         run: |
           # If you have dependencies from git (wc app), yarn may randomly throw an error about invalid cache
           # This approach is taken from https://github.com/yarnpkg/yarn/issues/7212#issuecomment-506155894 to fix the issue
