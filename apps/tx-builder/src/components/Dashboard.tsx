@@ -246,6 +246,7 @@ const Dashboard = () => {
           href="https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app"
           size="lg"
           target="_blank"
+          rel="noreferrer"
         >
           Learn how to use the transaction builder.
         </Link>
