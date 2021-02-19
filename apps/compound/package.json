@@ -15,12 +15,12 @@
   },
   "devDependencies": {
     "@types/big.js": "^6.0.2",
-    "@types/lodash": "^4.14.167"
+    "@types/lodash": "^4.14.168"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test"
+    "start": "dotenv -e .env -- react-app-rewired start",
+    "build": "dotenv -e .env -- react-app-rewired build",
+    "test": "react-app-rewired test --passWithNoTests"
   },
   "eslintConfig": {
     "extends": "react-app"
