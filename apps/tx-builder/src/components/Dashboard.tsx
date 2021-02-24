@@ -7,6 +7,7 @@ import {
   Select,
   ModalFooterConfirmation,
   ButtonLink,
+  Link,
 } from '@gnosis.pm/safe-react-components';
 import React, { useState, useCallback } from 'react';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
@@ -240,6 +241,15 @@ const Dashboard = () => {
         This app allows you to build a custom multisend transaction.
         <br />
         Enter a Ethereum contract address or ABI to get started.
+        <br />
+        <Link
+          href="https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app"
+          size="lg"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Learn how to use the transaction builder.
+        </Link>
       </StyledText>
 
       {/* TXs MODAL */}

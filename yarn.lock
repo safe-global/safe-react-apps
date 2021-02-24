@@ -1502,6 +1502,14 @@
     react-media "^1.10.0"
     url-loader "^4.1.0"
 
+"@gnosis.pm/safe-react-components@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.5.0.tgz#ce72f3f0674d33bac507bf6409462655fb55f096"
+  integrity sha512-Xfqm4dMNlDqpYRsaKhNQ/tL+ftFuevpRx35dr26DM9gSl4ReC9i7c5SbOrAwbnv9RbQ4gJFRix9aH/gN2pK8CA==
+  dependencies:
+    classnames "^2.2.6"
+    react-media "^1.10.0"
+
 "@gnosis.pm/safe-react-components@https://github.com/gnosis/safe-react-components.git#ff29c3c":
   version "0.4.0"
   resolved "https://github.com/gnosis/safe-react-components.git#ff29c3ccfd391142b92edefba0f773aaf16f1799"
