@@ -2,42 +2,42 @@
   "name": "safe-apps",
   "private": true,
   "scripts": {
-    "start-compound": "yarn workspace compound start",
-    "start-tx-builder": "yarn workspace tx-builder start",
-    "start-wallet-connect": "yarn workspace wallet-connect start",
-    "build-compound": " yarn workspace compound build",
-    "build-tx-builder": "yarn workspace tx-builder build",
-    "build-wallet-connect": "yarn workspace wallet-connect build"
+    "start:compound": "yarn workspace compound start",
+    "start:tx-builder": "yarn workspace tx-builder start",
+    "start:walletconnect": "yarn workspace wallet-connect start",
+    "build:compound": " yarn workspace compound build",
+    "build:tx-builder": "yarn workspace tx-builder build",
+    "build:wallet-connect": "yarn workspace wallet-connect build"
   },
   "version": "2.0.0",
   "workspaces": [
     "apps/*"
   ],
   "dependencies": {
-    "@gnosis.pm/safe-apps-react-sdk": "1.0.1",
-    "@gnosis.pm/safe-apps-sdk": "1.0.3",
+    "@gnosis.pm/safe-apps-react-sdk": "2.0.0",
+    "@gnosis.pm/safe-apps-sdk": "2.0.0",
     "lerna": "^3.22.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-scripts": "^4.0.1",
+    "react-scripts": "^4.0.2",
     "styled-components": "^5.2.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.3",
-    "@testing-library/user-event": "^12.6.2",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.7.1",
     "@types/jest": "^26.0.20",
-    "@types/node": "^14.14.22",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
+    "@types/node": "^14.14.31",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.1",
     "@types/styled-components": "^5.1.7",
-    "@typescript-eslint/eslint-plugin": "^4.14.0",
-    "@typescript-eslint/parser": "^4.14.0",
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
     "dotenv-cli": "^4.0.0",
-    "eslint": "7.18.0",
+    "eslint": "7.20.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-config-react-app": "^6.0.0",
-    "eslint-plugin-flowtype": "^5.2.0",
+    "eslint-plugin-flowtype": "^5.2.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.3.1",
@@ -45,6 +45,6 @@
     "eslint-plugin-react-hooks": "^4.0.8",
     "prettier": "^2.2.1",
     "react-app-rewired": "^2.1.6",
-    "typescript": "^4.1.3"
+    "typescript": "^4.1.5"
   }
 }

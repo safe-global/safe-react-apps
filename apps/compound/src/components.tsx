@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 export const SelectContainer = styled.div`
   display: flex;
@@ -35,6 +35,7 @@ export const ButtonContainer = styled.div`
 const Card = styled.div`
   display: flex;
   justify-content: left;
+  padding: 24px;
 `;
 
 export const WidgetWrapper: React.FC = ({ children }) => (
