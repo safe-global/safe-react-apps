@@ -5,6 +5,7 @@ import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { chainIdByNetwork } from '../utils/networks';
 import { encodeSignMessageCall } from '../utils/signatures';
 import { isMetaTxArray } from '../utils/transactions';
+import { areStringsEqual } from '../utils/strings';
 
 export const LOCAL_STORAGE_URI_KEY = 'safeAppWcUri';
 
@@ -92,7 +93,7 @@ const useWalletConnect = () => {
             case 'eth_sign': {
               const [address, messageHash] = payload.params;
 
-              if (address !== safe.safeAddress || !messageHash.startsWith('0x')) {
+              if (!areStringsEqual(address, safe.safeAddress) || !messageHash.startsWith('0x')) {
                 throw new Error('The address or message hash is invalid');
               }
 
