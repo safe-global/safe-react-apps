@@ -10,7 +10,7 @@
     "big-number-input": "^1.0.3",
     "big.js": "^6.0.3",
     "graphql": "^14.6.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "web3": "^1.2.5"
   },
   "devDependencies": {
