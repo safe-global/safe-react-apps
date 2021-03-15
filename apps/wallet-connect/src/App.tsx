@@ -18,6 +18,16 @@ const StyledText = styled(Text)`
   margin-bottom: 8px;
 `;
 
+const StyledParagraph = styled(Text)`
+  display:flex;
+  flex:1;
+  flex-direction: column;
+  align-items: center;
+  background: #008c73;
+  padding:18px 0 12px 0;
+  border-radius: 8px;
+`;
+
 const StyledHelpLink = styled.div`
   display: flex;
 
@@ -184,16 +194,22 @@ const App = () => {
   }, [isConnecting]);
 
   return (
-    <Wrapper>
-      {/* WalletConnect */}
-      <WCContent>
-        <StyledTitle size="sm">Wallet Connect</StyledTitle>
-        {wcClientData ? getConnectedContent() : getDisconnectedContent()}
-      </WCContent>
+    <>
+     {/* WalletConnect */}
+      {wcClientData && <StyledParagraph size="sm">
+        <Text color="white" size="xl">You need to have this WalletConnect Safe app open for transactions to pop up.</Text>
+        <Text color="white" size="xl">You will not receive transaction requests when you don't have it open.</Text>
+      </StyledParagraph>}
+      <Wrapper>
+        <WCContent>
+          <StyledTitle size="sm">Wallet Connect</StyledTitle>
+          {wcClientData ? getConnectedContent() : getDisconnectedContent()}
+        </WCContent>
 
-      {/* Instructions */}
-      <div>{wcClientData ? <ConnectedInstructions /> : <DisconnectedInstructions />}</div>
-    </Wrapper>
+        {/* Instructions */}
+        <div>{wcClientData ? <ConnectedInstructions /> : <DisconnectedInstructions />}</div>
+      </Wrapper>
+    </>
   );
 };
 
