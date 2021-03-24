@@ -55,13 +55,13 @@ const CompoundWidget = () => {
   // fetch eth balance
   useEffect(() => {
     const fetchEthBalance = async () => {
-      console.log(safeInfo.safeAddress);
       try {
-        const balance = await web3?.eth.getBalance(safeInfo.safeAddress);
-
-        if (balance) {
-          console.log({ balance });
-          setEthBalance(balance);
+        if (safeInfo.safeAddress) {
+          const balance = await web3?.eth.getBalance(safeInfo.safeAddress);
+  
+          if (balance) {
+            setEthBalance(balance);
+          }
         }
       } catch (err) {
         console.error(err);
