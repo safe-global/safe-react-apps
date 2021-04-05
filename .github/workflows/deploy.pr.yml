@@ -9,11 +9,15 @@ env:
 jobs:
   deploy:
     name: Deploy Pull Request
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+        node-version: [14]
 
     steps:
       - name: Remove broken apt repos [Ubuntu]
-        if: ${{ matrix.os }} == 'ubuntu-latest'
+        if: ${{ matrix.os }} == 'ubuntu-18.04'
         run: |
           for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
 
