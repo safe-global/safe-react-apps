@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Remove broken apt repos [Ubuntu]
-        if: ${{ runner.os }} == 'ubuntu-18.04'
+        if: ${{ runner.os }} == 'ubuntu-latest'
         run: |
           for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
 
