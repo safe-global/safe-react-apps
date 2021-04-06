@@ -155,6 +155,7 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
       setSelectedMethodIndex(0);
       setValueInput('');
     } catch (e) {
+      setAddTxError('There was an error trying to add the transaction.');
       console.error(e);
     }
   };
