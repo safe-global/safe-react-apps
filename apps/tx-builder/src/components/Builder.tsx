@@ -47,6 +47,17 @@ type Props = {
   to: string | null;
 };
 
+const getInputHelper = (input: any) => {
+  // This code renders a helper for the input text.
+  if (input.type.startsWith('tuple')) {
+    return `tuple(${input.components.map((c: any) => c.internalType).toString()})${
+      input.type.endsWith('[]') ? '[]' : ''
+    }`;
+  } else {
+    return input.type;
+  }
+};
+
 export const Builder = ({ contract, to }: Props): ReactElement | null => {
   const { sdk, safe } = useSafeAppsSDK();
   const services = useServices(safe.network);
@@ -78,17 +89,6 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
     },
     [inputCache],
   );
-
-  const getInputHelper = (input: any) => {
-    // This code renders a helper for the input text.
-    if (input.type.startsWith('tuple')) {
-      return `tuple(${input.components.map((c: any) => c.internalType).toString()})${
-        input.type.endsWith('[]') ? '[]' : ''
-      }`;
-    } else {
-      return input.type;
-    }
-  };
 
   const getContractMethod = useCallback(() => contract?.methods[selectedMethodIndex], [contract, selectedMethodIndex]);
 
