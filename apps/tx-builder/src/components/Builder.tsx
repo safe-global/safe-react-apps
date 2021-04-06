@@ -139,11 +139,10 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
 
     try {
       const cleanTo = web3.utils.toChecksumAddress(toInput);
-      const cleanValue = valueInput.length > 0 ? web3.utils.toWei(valueInput) : 0;
+      const cleanValue = web3.utils.toWei(valueInput);
+
       if (data.length === 0) {
         data = '0x';
-      }
-      if (description.length === 0) {
         description = `Transfer ${web3.utils.fromWei(cleanValue.toString())} ETH to ${cleanTo}`;
       }
 
