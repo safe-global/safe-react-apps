@@ -113,26 +113,27 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
 
     if (contract && contract.methods.length > selectedMethodIndex) {
       const method = contract.methods[selectedMethodIndex];
-      const cleanInputs = [];
-      description = method.name + ' (';
-      for (let i = 0; i < method.inputs.length; i++) {
-        const cleanValue = inputCache[i] || '';
-        cleanInputs[i] = cleanValue.charAt(0) === '[' ? JSON.parse(cleanValue.replace(/"/g, '"')) : cleanValue;
-        if (i > 0) {
-          description += ', ';
-        }
-        const input = method.inputs[i];
-        description += (input.name || input.type) + ': ' + cleanValue;
-      }
-      description += ')';
 
-      try {
-        if (!['receive', 'fallback'].includes(method.name)) {
-          data = web3.eth.abi.encodeFunctionCall(method as AbiItem, cleanInputs);
+      if (!['receive', 'fallback'].includes(method.name)) {
+        const cleanInputs = [];
+        description = method.name + ' (';
+        for (let i = 0; i < method.inputs.length; i++) {
+          const cleanValue = inputCache[i] || '';
+          cleanInputs[i] = cleanValue.charAt(0) === '[' ? JSON.parse(cleanValue.replace(/"/g, '"')) : cleanValue;
+          if (i > 0) {
+            description += ', ';
+          }
+          const input = method.inputs[i];
+          description += (input.name || input.type) + ': ' + cleanValue;
         }
-      } catch (error) {
-        setAddTxError(error.message);
-        return;
+        description += ')';
+
+        try {
+          data = web3.eth.abi.encodeFunctionCall(method as AbiItem, cleanInputs);
+        } catch (error) {
+          setAddTxError(error.message);
+          return;
+        }
       }
     }
 
