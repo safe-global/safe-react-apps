@@ -146,10 +146,12 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
       if (description.length === 0) {
         description = `Transfer ${web3.utils.fromWei(cleanValue.toString())} ETH to ${cleanTo}`;
       }
+
       transactions.push({
         description,
         raw: { to: cleanTo, value: cleanValue, data },
       });
+
       setInputCache([]);
       setTransactions(transactions);
       setSelectedMethodIndex(0);
