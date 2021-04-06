@@ -59,6 +59,7 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
   const [selectedMethodIndex, setSelectedMethodIndex] = useState(0);
   const [showExamples, setShowExamples] = useState(false);
   const [addTxError, setAddTxError] = useState<string | undefined>();
+  const [valueError, setValueError] = useState<string | undefined>();
   const [inputCache, setInputCache] = useState<string[]>([]);
   const [isValueInputVisible, setIsValueInputVisible] = useState(false);
 
@@ -181,6 +182,15 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
     sdk.txs.send({ txs: transactions.map((d) => d.raw) }).catch(console.error);
   }, [sdk, transactions]);
 
+  const onValueInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValueError(undefined);
+    const value = Number(e.target.value);
+    if (isNaN(value) || value < 0) {
+      setValueError('ETH value');
+    }
+    setValueInput(e.target.value);
+  };
+
   // Set toInput when to changes
   useEffect(() => {
     const value = isValidAddress(to) ? (to as string) : '';
@@ -232,7 +242,8 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
           style={{ marginTop: 10, marginBottom: 10 }}
           value={valueInput}
           label="Eth value"
-          onChange={(e) => setValueInput(e.target.value)}
+          meta={{ error: valueError ?? undefined }}
+          onChange={onValueInputChange}
         />
       )}
 
