@@ -208,12 +208,7 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
         const method = getContractMethod();
         setIsValueInputVisible(method?.payable || false);
       } else {
-        try {
-          const code = await services?.web3?.eth.getCode(toInput);
-          setIsValueInputVisible(code === '0x');
-        } catch (error) {
-          setIsValueInputVisible(false);
-        }
+        setIsValueInputVisible(true);
       }
     };
 
