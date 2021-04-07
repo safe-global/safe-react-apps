@@ -9,7 +9,6 @@ interface ContractMethod {
 }
 
 export interface ContractInterface {
-  payableFallback: boolean;
   methods: ContractMethod[];
 }
 
@@ -76,14 +75,12 @@ class InterfaceRepository {
       .map((m: any) => {
         return {
           inputs: m.inputs || [],
-          name: m.name || (m.type === 'fallback' ? 'fallback' : 'receive'),
+          name: m.name || (m.type === 'fallback' ? 'fallback' : m.type === 'constructor' ? 'constructor' : 'receive'),
           payable: this._isMethodPayable(m),
         };
       });
 
-    const payableFallback = abi.findIndex((e: any) => e.type === 'fallback' && this._isMethodPayable(e)) >= 0;
-
-    return { payableFallback, methods };
+    return { methods };
   }
 }
 
