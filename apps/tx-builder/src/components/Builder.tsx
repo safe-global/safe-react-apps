@@ -318,7 +318,7 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
       </ButtonContainer>
 
       {/* TXs MODAL */}
-      {reviewing && transactions.length && (
+      {reviewing && transactions.length > 0 && (
         <GenericModal
           body={<ModalBody txs={transactions} deleteTx={deleteTransaction} />}
           onClose={handleDismiss}
