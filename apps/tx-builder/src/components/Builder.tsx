@@ -139,7 +139,7 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
 
     try {
       const cleanTo = web3.utils.toChecksumAddress(toInput);
-      const cleanValue = web3.utils.toWei(valueInput);
+      const cleanValue = web3.utils.toWei(valueInput || '0');
 
       if (data.length === 0) {
         data = '0x';
