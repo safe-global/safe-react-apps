@@ -165,6 +165,9 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
     const newTxs = transactions.slice();
     newTxs.splice(inputIndex, 1);
     setTransactions(newTxs);
+    if (newTxs.length === 0) {
+      setReviewing(false);
+    }
   };
 
   const isValidAddress = useCallback(
