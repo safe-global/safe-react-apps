@@ -71,6 +71,7 @@ jobs:
             * [Compound app](${{ env.REVIEW_FEATURE_URL }}/compound/)
             * [WalletConnect app](${{ env.REVIEW_FEATURE_URL }}/wallet-connect/)
             * [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)
+            * [Drain Account App](${{ env.REVIEW_FEATURE_URL }}/drain-safe/)
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
         if: success() && github.event.number
