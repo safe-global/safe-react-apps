@@ -44,7 +44,7 @@ const App: React.FC = () => {
   const web3: Web3|undefined = services?.web3;
   const [submitting, setSubmitting] = useState(false);
   const [assets, setAssets] = useState<IAsset[]>([]);
-  const [toAddress, setToAddress] = useState<string>('0x474e5Ded6b5D078163BFB8F6dBa355C3aA5478C8');
+  const [toAddress, setToAddress] = useState<string>('');
 
   useEffect(() => {
     // Fetch safe assets
