@@ -151,8 +151,9 @@ const App: React.FC = () => {
 
       {finishedTxHash && (
         <Text size="lg">
-          The transaction has been created, refresh the app when it is executed.
-          <EthHashInfo hash={finishedTxHash} network={safe.network} textSize="lg" showCopyBtn showEtherscanBtn />
+          The transaction has been created. Refresh the app when it's executed.
+          <br />
+          <b>SafeTxHash</b>: <EthHashInfo hash={finishedTxHash} network={safe.network} textSize="lg" showCopyBtn />
         </Text>
       )}
 
