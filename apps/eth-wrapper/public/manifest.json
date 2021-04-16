@@ -1,8 +1,8 @@
 {
   "short_name": "ETH Wrapper",
   "name": "ETH Wrapper",
-  "description": "Wrap and unwrap Ether",
-  "iconPath": "logo.svg",
+  "description": "Wrap ETH and unwrap WETH",
+  "iconPath": "eth-wrapper-logo.png",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
