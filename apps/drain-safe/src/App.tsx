@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { Button, Loader, Title, TextField, Table, EthHashInfo, Text } from '@gnosis.pm/safe-react-components';
+import { Button, Loader, Title, TextField, Table, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
@@ -142,11 +142,7 @@ const App: React.FC = () => {
 
   return (
     <Container>
-      <Flex>
-        <Title size="md">Drain Account</Title>
-        <div style={{ flex: 1 }} />
-        <EthHashInfo hash={safe.safeAddress} network={safe.network} textSize="lg" showIdenticon showCopyBtn />
-      </Flex>
+      <Title size="md">Drain Account</Title>
 
       {isFinished && <Text size="lg">The transaction has been created. Refresh the app when it's executed.</Text>}
 
