@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { Button, Loader, Title, TextField, Table, EthHashInfo } from '@gnosis.pm/safe-react-components';
+import { Button, Loader, Title, TextField, Table, EthHashInfo, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
@@ -45,6 +45,7 @@ const App: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [toAddress, setToAddress] = useState<string>('');
+  const [finishedTxHash, setFinishedTxHash] = useState<string>('');
 
   const fetchBalances = useCallback(async (): Promise<void> => {
     // Fetch safe assets
@@ -115,6 +116,7 @@ const App: React.FC = () => {
         return;
       }
       setSubmitting(false);
+      setFinishedTxHash(safeTxHash);
 
       setAssets(
         assets.map((item) => ({
@@ -146,6 +148,13 @@ const App: React.FC = () => {
         <div style={{ flex: 1 }} />
         <EthHashInfo hash={safe.safeAddress} network={safe.network} textSize="lg" showIdenticon showCopyBtn />
       </Flex>
+
+      {finishedTxHash && (
+        <Text size="lg">
+          The transaction has been created, refresh the app when it is executed.
+          <EthHashInfo hash={finishedTxHash} network={safe.network} textSize="lg" showCopyBtn showEtherscanBtn />
+        </Text>
+      )}
 
       <Table
         headers={[
