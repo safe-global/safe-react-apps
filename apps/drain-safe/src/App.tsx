@@ -45,7 +45,7 @@ const App: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [toAddress, setToAddress] = useState<string>('');
-  const [finishedTxHash, setFinishedTxHash] = useState<string>('');
+  const [isFinished, setFinished] = useState<boolean>(false);
 
   const fetchBalances = useCallback(async (): Promise<void> => {
     // Fetch safe assets
@@ -73,10 +73,7 @@ const App: React.FC = () => {
 
   const submitTx = useCallback(async () => {
     setSubmitting(true);
-
-    if (!web3!.utils.isAddress(toAddress)) {
-      return;
-    }
+    setFinished(false);
 
     const txs = assets.map((item) => {
       return item.tokenInfo.type === 'ETHER'
@@ -113,10 +110,12 @@ const App: React.FC = () => {
         const safeTx = await sdk.txs.getBySafeTxHash(safeTxHash);
         console.log(safeTx);
       } catch (e) {
+        setSubmitting(false);
         return;
       }
+
       setSubmitting(false);
-      setFinishedTxHash(safeTxHash);
+      setFinished(true);
 
       setAssets(
         assets.map((item) => ({
@@ -149,13 +148,7 @@ const App: React.FC = () => {
         <EthHashInfo hash={safe.safeAddress} network={safe.network} textSize="lg" showIdenticon showCopyBtn />
       </Flex>
 
-      {finishedTxHash && (
-        <Text size="lg">
-          The transaction has been created. Refresh the app when it's executed.
-          <br />
-          <b>SafeTxHash</b>: <EthHashInfo hash={finishedTxHash} network={safe.network} textSize="lg" showCopyBtn />
-        </Text>
-      )}
+      {isFinished && <Text size="lg">The transaction has been created. Refresh the app when it's executed.</Text>}
 
       <Table
         headers={[
@@ -182,25 +175,36 @@ const App: React.FC = () => {
 
       {submitting ? (
         <>
-          <Loader size="md" />
-          <br />
-          <Button
-            size="lg"
-            color="secondary"
-            onClick={() => {
-              setSubmitting(false);
-            }}
-          >
-            Cancel
-          </Button>
+          <Flex centered>
+            <Loader size="md" />
+          </Flex>
+          <Flex centered>
+            <Button
+              size="lg"
+              color="secondary"
+              onClick={() => {
+                setSubmitting(false);
+              }}
+            >
+              Cancel
+            </Button>
+          </Flex>
         </>
       ) : (
         <>
           <TextField onChange={onToAddressChange} value={toAddress} label="Recipient" />
 
-          <Button size="lg" color="primary" onClick={submitTx} disabled={!toAddress || !assets.length}>
-            Transfer everything
-          </Button>
+          <Flex centered>
+            <Button
+              size="lg"
+              color="primary"
+              variant="contained"
+              onClick={submitTx}
+              disabled={!assets.length || !web3?.utils.isAddress(toAddress)}
+            >
+              Transfer everything
+            </Button>
+          </Flex>
         </>
       )}
     </Container>
