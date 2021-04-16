@@ -93,13 +93,41 @@ const App: React.FC = () => {
           };
     });
 
+    let safeTxHash = '';
     try {
-      const { safeTxHash } = await sdk.txs.send({ txs });
-      console.log({ safeTxHash });
+      const data = await sdk.txs.send({ txs });
+      safeTxHash = data.safeTxHash;
+      console.log(safeTxHash);
     } catch (e) {
       console.error(e);
     }
-    setSubmitting(false);
+
+    if (!safeTxHash) {
+      setSubmitting(false);
+      return;
+    }
+
+    const poll = setInterval(async (): Promise<void> => {
+      try {
+        const safeTx = await sdk.txs.getBySafeTxHash(safeTxHash);
+        console.log(safeTx);
+      } catch (e) {
+        return;
+      }
+      setSubmitting(false);
+
+      setAssets(
+        assets.map((item) => ({
+          ...item,
+          balance: '0',
+          fiatBalance: '0',
+        })),
+      );
+    }, 1000);
+
+    return () => {
+      clearInterval(poll);
+    };
   }, [sdk, assets, toAddress, web3, encodeTxData]);
 
   const onToAddressChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -109,15 +137,7 @@ const App: React.FC = () => {
   // Fetch balances
   useEffect(() => {
     fetchBalances();
-
-    const poll = setInterval(() => {
-      fetchBalances();
-    }, 3000);
-
-    return () => {
-      clearInterval(poll);
-    };
-  }, [sdk, safe, fetchBalances]);
+  }, [fetchBalances]);
 
   return (
     <Container>
