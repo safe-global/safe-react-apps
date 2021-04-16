@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
-export default styled.div`
+const Flex = styled.div`
   display: flex;
   align-items: center;
 `;
+
+export default Flex;

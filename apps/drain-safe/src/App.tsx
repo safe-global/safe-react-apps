@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { Button, Loader, Title, TextField, Table, EthHashInfo } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import Web3 from 'web3';
-import {AbiItem} from 'web3-utils';
+import { AbiItem } from 'web3-utils';
 import erc20 from './abis/erc20';
 import { fetchJson } from './utils';
 import useServices from './hooks/useServices';
@@ -10,7 +10,7 @@ import Container from './Container';
 import Icon from './Icon';
 import Flex from './Flex';
 
-interface IAsset {
+interface Asset {
   balance: string;
   fiatBalance: string;
   fiatConversion: string;
@@ -24,45 +24,51 @@ interface IAsset {
   };
 }
 
-interface IBalance {
+interface Balance {
   fiatTotal: string;
-  items: IAsset[]
+  items: Asset[];
 }
 
 const CURRENCY = 'USD';
 
-async function fetchSafeAssets(safeAddress: string, safeNetwork: string): Promise<IBalance> {
+async function fetchSafeAssets(safeAddress: string, safeNetwork: string): Promise<Balance> {
   const network = safeNetwork.toLowerCase() === 'mainnet' ? 'mainnet' : 'rinkeby';
   const url = `https://safe-client.${network}.gnosis.io/v1/safes/${safeAddress}/balances/${CURRENCY}/?trusted=false&exclude_spam=true`;
   const data = await fetchJson(url);
-  return data as IBalance;
+  return data as Balance;
 }
 
 const App: React.FC = () => {
   const { sdk, safe } = useSafeAppsSDK();
   const services = useServices(safe.network);
-  const web3: Web3|undefined = services?.web3;
+  const web3: Web3 | undefined = services?.web3;
   const [submitting, setSubmitting] = useState(false);
-  const [assets, setAssets] = useState<IAsset[]>([]);
+  const [assets, setAssets] = useState<Asset[]>([]);
   const [toAddress, setToAddress] = useState<string>('');
 
-  useEffect(() => {
+  const fetchBalances = useCallback(async (): Promise<void> => {
     // Fetch safe assets
-    fetchSafeAssets(safe.safeAddress, safe.network)
-      .then(data => setAssets(data.items))
-      .catch(err => console.error('Couldn\'t load assets', err));
-  }, [sdk, safe]);
+    try {
+      const data = await fetchSafeAssets(safe.safeAddress, safe.network);
+      setAssets(data.items);
+    } catch (err) {
+      console.error("Couldn't load assets", err);
+    }
+  }, [safe]);
 
-  const encodeTxData = useCallback((recipient, amount): string => {
-    if (web3 == null) { return '0x'; }
+  const encodeTxData = useCallback(
+    (recipient, amount): string => {
+      if (web3 == null) {
+        return '0x';
+      }
 
-    return web3.eth.abi.encodeFunctionCall(
-      erc20.transfer as AbiItem, [
+      return web3.eth.abi.encodeFunctionCall(erc20.transfer as AbiItem, [
         web3.utils.toChecksumAddress(recipient),
-        amount
-      ]
-    );
-  }, [web3]);
+        amount,
+      ]);
+    },
+    [web3],
+  );
 
   const submitTx = useCallback(async () => {
     setSubmitting(true);
@@ -71,38 +77,47 @@ const App: React.FC = () => {
       return;
     }
 
-    const txs = assets.map(item => {
-      return item.tokenInfo.type === 'ETHER' ? {
-        // Send ETH directly to the recipient address
-        to: web3!.utils.toChecksumAddress(toAddress),
-        value: item.balance,
-        data: '0x'
-      } : {
-        // For other token types, generate a contract tx
-        to: web3!.utils.toChecksumAddress(item.tokenInfo.address),
-        value: '0',
-        data: encodeTxData(toAddress, item.balance)
-      };
+    const txs = assets.map((item) => {
+      return item.tokenInfo.type === 'ETHER'
+        ? {
+            // Send ETH directly to the recipient address
+            to: web3!.utils.toChecksumAddress(toAddress),
+            value: item.balance,
+            data: '0x',
+          }
+        : {
+            // For other token types, generate a contract tx
+            to: web3!.utils.toChecksumAddress(item.tokenInfo.address),
+            value: '0',
+            data: encodeTxData(toAddress, item.balance),
+          };
     });
 
-    const params = {
-      safeTxGas: 500000,
-    };
-
     try {
-      const { safeTxHash } = await sdk.txs.send({ txs, params });
+      const { safeTxHash } = await sdk.txs.send({ txs });
       console.log({ safeTxHash });
-      setAssets([]);
     } catch (e) {
       console.error(e);
     }
     setSubmitting(false);
   }, [sdk, assets, toAddress, web3, encodeTxData]);
 
-  const onToAddressChange = (e: React.ChangeEvent): void => {
-    const val = (e.target as HTMLInputElement).value;
-    setToAddress(val);
+  const onToAddressChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setToAddress(e.target.value);
   };
+
+  // Fetch balances
+  useEffect(() => {
+    fetchBalances();
+
+    const poll = setInterval(() => {
+      fetchBalances();
+    }, 3000);
+
+    return () => {
+      clearInterval(poll);
+    };
+  }, [sdk, safe, fetchBalances]);
 
   return (
     <Container>
@@ -116,20 +131,22 @@ const App: React.FC = () => {
         headers={[
           { id: 'col1', label: 'Asset' },
           { id: 'col2', label: 'Amount' },
-          { id: 'col3', label: 'Value' },
+          { id: 'col3', label: `Value, ${CURRENCY}` },
         ]}
-        rows={assets.map((item, index) => ({
+        rows={assets.map((item: Asset, index: number) => ({
           id: `${index}`,
           cells: [
-            { content: (
-              <Flex>
-                <Icon src={item.tokenInfo.logoUri} alt="" />
-              {item.tokenInfo.name}
-              </Flex>
-            ) },
+            {
+              content: (
+                <Flex>
+                  <Icon src={item.tokenInfo.logoUri} alt="" />
+                  {item.tokenInfo.name}
+                </Flex>
+              ),
+            },
             { content: Web3.utils.fromWei(item.balance) },
-            { content: `${item.fiatBalance} ${CURRENCY}` },
-          ]
+            { content: item.fiatBalance },
+          ],
         }))}
       />
 
