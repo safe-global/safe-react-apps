@@ -1,11 +1,9 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Button, Loader, Title, TextField, Table, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import Web3 from 'web3';
-import { AbiItem } from 'web3-utils';
+import web3Utils from 'web3-utils';
 import erc20 from './abis/erc20';
-import { fetchJson } from './utils';
-import useServices from './hooks/useServices';
+import { fetchJson, encodeTxData } from './utils';
 import Container from './Container';
 import Icon from './Icon';
 import Flex from './Flex';
@@ -40,8 +38,6 @@ async function fetchSafeAssets(safeAddress: string, safeNetwork: string): Promis
 
 const App: React.FC = () => {
   const { sdk, safe } = useSafeAppsSDK();
-  const services = useServices(safe.network);
-  const web3: Web3 | undefined = services?.web3;
   const [submitting, setSubmitting] = useState(false);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [toAddress, setToAddress] = useState<string>('');
@@ -57,20 +53,6 @@ const App: React.FC = () => {
     }
   }, [safe]);
 
-  const encodeTxData = useCallback(
-    (recipient, amount): string => {
-      if (web3 == null) {
-        return '0x';
-      }
-
-      return web3.eth.abi.encodeFunctionCall(erc20.transfer as AbiItem, [
-        web3.utils.toChecksumAddress(recipient),
-        amount,
-      ]);
-    },
-    [web3],
-  );
-
   const submitTx = useCallback(async () => {
     setSubmitting(true);
     setFinished(false);
@@ -79,15 +61,15 @@ const App: React.FC = () => {
       return item.tokenInfo.type === 'ETHER'
         ? {
             // Send ETH directly to the recipient address
-            to: web3!.utils.toChecksumAddress(toAddress),
+            to: web3Utils.toChecksumAddress(toAddress),
             value: item.balance,
             data: '0x',
           }
         : {
             // For other token types, generate a contract tx
-            to: web3!.utils.toChecksumAddress(item.tokenInfo.address),
+            to: web3Utils.toChecksumAddress(item.tokenInfo.address),
             value: '0',
-            data: encodeTxData(toAddress, item.balance),
+            data: encodeTxData(erc20.transfer, toAddress, item.balance),
           };
     });
 
@@ -129,7 +111,7 @@ const App: React.FC = () => {
     return () => {
       clearInterval(poll);
     };
-  }, [sdk, assets, toAddress, web3, encodeTxData]);
+  }, [sdk, assets, toAddress]);
 
   const onToAddressChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setToAddress(e.target.value);
@@ -163,7 +145,7 @@ const App: React.FC = () => {
                 </Flex>
               ),
             },
-            { content: Web3.utils.fromWei(item.balance) },
+            { content: web3Utils.fromWei(item.balance) },
             { content: item.fiatBalance },
           ],
         }))}
@@ -196,7 +178,7 @@ const App: React.FC = () => {
               color="primary"
               variant="contained"
               onClick={submitTx}
-              disabled={!assets.length || !web3?.utils.isAddress(toAddress)}
+              disabled={!assets.length || !web3Utils.isAddress(toAddress)}
             >
               Transfer everything
             </Button>

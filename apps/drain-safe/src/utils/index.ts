@@ -1,19 +1,5 @@
-import { Networks } from '@gnosis.pm/safe-apps-sdk';
-
-export const rpcUrlGetterByNetwork: {
-  [key in Networks]: null | ((token?: string) => string);
-} = {
-  MAINNET: (token) => `https://mainnet.infura.io/v3/${token}`,
-  MORDEN: null,
-  ROPSTEN: null,
-  RINKEBY: (token) => `https://rinkeby.infura.io/v3/${token}`,
-  GOERLI: null,
-  KOVAN: null,
-  XDAI: () => 'https://dai.poa.network',
-  ENERGY_WEB_CHAIN: () => 'https://rpc.energyweb.org',
-  VOLTA: () => 'https://volta-rpc.energyweb.org',
-  UNKNOWN: null,
-};
+import utils, { AbiItem } from 'web3-utils';
+import abiCoder, { AbiCoder } from 'web3-eth-abi';
 
 export const fetchJson = async function fetchJson(url: string): Promise<unknown> {
   const resp = await fetch(url);
@@ -21,4 +7,9 @@ export const fetchJson = async function fetchJson(url: string): Promise<unknown>
     throw new Error('Network response was not ok');
   }
   return resp.json();
+};
+
+export const encodeTxData = (method: AbiItem, recipient: string, amount: string): string => {
+  const abi = abiCoder as unknown; // a bug in the web3-eth-abi types
+  return (abi as AbiCoder).encodeFunctionCall(method, [utils.toChecksumAddress(recipient), amount]);
 };

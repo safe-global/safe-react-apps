@@ -1,4 +1,6 @@
-const erc20 = {
+import { AbiItem } from 'web3-utils';
+
+const erc20: { [key: string]: AbiItem } = {
   transfer: {
     constant: false,
     inputs: [
