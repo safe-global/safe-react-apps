@@ -121,7 +121,7 @@ const App: React.FC = () => {
             {
               content: (
                 <Flex>
-                  {item.tokenInfo.logoUri && (<Icon src={item.tokenInfo.logoUri} alt="" />)}
+                  {item.tokenInfo.logoUri && <Icon src={item.tokenInfo.logoUri} alt="" />}
                   {item.tokenInfo.name}
                 </Flex>
               ),
@@ -136,7 +136,10 @@ const App: React.FC = () => {
 
       {isFinished && (
         <Text size="lg">
-          The transaction has been created. <span role="img" aria-label="success">✅</span>
+          The transaction has been created.{' '}
+          <span role="img" aria-label="success">
+            ✅
+          </span>
           <br />
           Refresh the app when it’s executed.
         </Text>
