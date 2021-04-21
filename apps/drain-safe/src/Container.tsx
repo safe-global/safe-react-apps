@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Container = styled.form`
+const FormContainer = styled.form`
   margin-bottom: 2rem;
   width: 100%;
   max-width: 800px;
@@ -12,4 +12,4 @@ const Container = styled.form`
   grid-row-gap: 1rem;
 `;
 
-export default Container;
+export default FormContainer;

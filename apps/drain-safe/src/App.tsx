@@ -1,10 +1,12 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Button, Loader, Title, TextField, Table, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
+import { Transaction } from '@gnosis.pm/safe-apps-sdk';
 import web3Utils from 'web3-utils';
+import { backOff } from 'exponential-backoff';
 import erc20 from './abis/erc20';
 import { fetchJson, encodeTxData } from './utils';
-import Container from './Container';
+import FormContainer from './Container';
 import Icon from './Icon';
 import Flex from './Flex';
 
@@ -36,12 +38,34 @@ async function fetchSafeAssets(safeAddress: string, safeNetwork: string): Promis
   return data as Balance;
 }
 
+function tokenToTx(recipient: string, item: Asset): Transaction {
+  return item.tokenInfo.type === 'ETHER'
+    ? {
+        // Send ETH directly to the recipient address
+        to: web3Utils.toChecksumAddress(recipient),
+        value: item.balance,
+        data: '0x',
+      }
+    : {
+        // For other token types, generate a contract tx
+        to: web3Utils.toChecksumAddress(item.tokenInfo.address),
+        value: '0',
+        data: encodeTxData(erc20.transfer, recipient, item.balance),
+      };
+}
+
 const App: React.FC = () => {
   const { sdk, safe } = useSafeAppsSDK();
   const [submitting, setSubmitting] = useState(false);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [toAddress, setToAddress] = useState<string>('');
   const [isFinished, setFinished] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+
+  const onError = (userMsg: string, err: Error) => {
+    setError(`${userMsg}: ${err.message}`);
+    console.error(userMsg, err);
+  };
 
   const fetchBalances = useCallback(async (): Promise<void> => {
     // Fetch safe assets
@@ -49,29 +73,25 @@ const App: React.FC = () => {
       const data = await fetchSafeAssets(safe.safeAddress, safe.network);
       setAssets(data.items);
     } catch (err) {
-      console.error("Couldn't load assets", err);
+      onError('Failed fetching balances', err);
     }
   }, [safe]);
 
-  const submitTx = useCallback(async () => {
-    setSubmitting(true);
+  const resetMessages = () => {
+    setError('');
     setFinished(false);
+  };
 
-    const txs = assets.map((item) => {
-      return item.tokenInfo.type === 'ETHER'
-        ? {
-            // Send ETH directly to the recipient address
-            to: web3Utils.toChecksumAddress(toAddress),
-            value: item.balance,
-            data: '0x',
-          }
-        : {
-            // For other token types, generate a contract tx
-            to: web3Utils.toChecksumAddress(item.tokenInfo.address),
-            value: '0',
-            data: encodeTxData(erc20.transfer, toAddress, item.balance),
-          };
-    });
+  const submitTx = useCallback(async () => {
+    if (!web3Utils.isAddress(toAddress)) {
+      setError('Please enter a valid recipient address');
+      return;
+    }
+
+    resetMessages();
+    setSubmitting(true);
+
+    const txs = assets.map((item) => tokenToTx(toAddress, item));
 
     let safeTxHash = '';
     try {
@@ -79,7 +99,7 @@ const App: React.FC = () => {
       safeTxHash = data.safeTxHash;
       console.log(safeTxHash);
     } catch (e) {
-      console.error(e);
+      onError('Failed sending transactions', e);
     }
 
     if (!safeTxHash) {
@@ -87,34 +107,38 @@ const App: React.FC = () => {
       return;
     }
 
-    const poll = setInterval(async (): Promise<void> => {
-      try {
-        const safeTx = await sdk.txs.getBySafeTxHash(safeTxHash);
-        console.log(safeTx);
-      } catch (e) {
-        setSubmitting(false);
-        return;
-      }
+    try {
+      await backOff(() => sdk.txs.getBySafeTxHash(safeTxHash));
+    } catch (e) {
+      // ignore error
+    }
 
-      setSubmitting(false);
-      setFinished(true);
+    setSubmitting(false);
+    setFinished(true);
+    setToAddress('');
 
-      setAssets(
-        assets.map((item) => ({
-          ...item,
-          balance: '0',
-          fiatBalance: '0',
-        })),
-      );
-    }, 1000);
-
-    return () => {
-      clearInterval(poll);
-    };
+    setAssets(
+      assets.map((item) => ({
+        ...item,
+        balance: '0',
+        fiatBalance: '0',
+      })),
+    );
   }, [sdk, assets, toAddress]);
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submitTx();
+  };
+
+  const onCancel = () => {
+    resetMessages();
+    setSubmitting(false);
+  };
 
   const onToAddressChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setToAddress(e.target.value);
+    resetMessages();
   };
 
   // Fetch balances
@@ -123,10 +147,8 @@ const App: React.FC = () => {
   }, [fetchBalances]);
 
   return (
-    <Container>
+    <FormContainer onSubmit={onSubmit} onReset={onCancel}>
       <Title size="md">Drain Account</Title>
-
-      {isFinished && <Text size="lg">The transaction has been created. Refresh the app when it's executed.</Text>}
 
       <Table
         headers={[
@@ -135,7 +157,7 @@ const App: React.FC = () => {
           { id: 'col3', label: `Value, ${CURRENCY}` },
         ]}
         rows={assets.map((item: Asset, index: number) => ({
-          id: `${index}`,
+          id: `row${index}`,
           cells: [
             {
               content: (
@@ -151,19 +173,17 @@ const App: React.FC = () => {
         }))}
       />
 
+      {error && <Text size="lg">{error}</Text>}
+
+      {isFinished && <Text size="lg">The transaction has been created. Refresh the app when it’s executed.</Text>}
+
       {submitting ? (
         <>
           <Flex centered>
             <Loader size="md" />
           </Flex>
           <Flex centered>
-            <Button
-              size="lg"
-              color="secondary"
-              onClick={() => {
-                setSubmitting(false);
-              }}
-            >
+            <Button size="lg" color="secondary" type="reset">
               Cancel
             </Button>
           </Flex>
@@ -173,19 +193,13 @@ const App: React.FC = () => {
           <TextField onChange={onToAddressChange} value={toAddress} label="Recipient" />
 
           <Flex centered>
-            <Button
-              size="lg"
-              color="primary"
-              variant="contained"
-              onClick={submitTx}
-              disabled={!assets.length || !web3Utils.isAddress(toAddress)}
-            >
+            <Button size="lg" color="primary" variant="contained" type="submit">
               Transfer everything
             </Button>
           </Flex>
         </>
       )}
-    </Container>
+    </FormContainer>
   );
 };
 
