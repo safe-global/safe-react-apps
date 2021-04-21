@@ -35,13 +35,11 @@ const Dashboard = () => {
   const services = useServices(safe.network);
 
   const [addressOrAbiInput, setAddressOrAbiInput] = useState('');
-  const [contract, setContract] = useState<ContractInterface | undefined>(undefined);
+  const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadAbiError, setLoadAbiError] = useState(false);
 
-  const isValidAddress = (address: string) => services?.web3?.utils.isAddress(address);
-
   const handleAddressOrABIInput = async (e: React.ChangeEvent<HTMLInputElement>): Promise<ContractInterface | void> => {
-    setContract(undefined);
+    setContract(null);
     setLoadAbiError(false);
 
     const cleanInput = e.currentTarget?.value?.trim();
@@ -55,7 +53,7 @@ const Dashboard = () => {
       const contract = await services.interfaceRepo.loadAbi(cleanInput);
       setContract(contract);
     } catch (e) {
-      setContract(undefined);
+      setContract(null);
       setLoadAbiError(true);
       console.error(e);
     }
@@ -86,7 +84,7 @@ const Dashboard = () => {
       )}
 
       {/* Builder */}
-      <Builder contract={contract} to={isValidAddress(addressOrAbiInput) ? addressOrAbiInput : null} />
+      <Builder contract={contract} to={addressOrAbiInput} />
     </Wrapper>
   );
 };

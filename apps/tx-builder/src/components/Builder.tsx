@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement, useCallback } from 'react';
+import React, { useState, useEffect, ReactElement, useCallback, useRef } from 'react';
 import {
   Button,
   Text,
@@ -43,24 +43,23 @@ const StyledExamples = styled.div`
 `;
 
 type Props = {
-  contract: ContractInterface | undefined;
-  to: string | null;
+  contract: ContractInterface | null;
+  to: string;
 };
 
 const getInputHelper = (input: any) => {
   // This code renders a helper for the input text.
   if (input.type.startsWith('tuple')) {
-    return `tuple(${input.components.map((c: any) => c.internalType).toString()})${
-      input.type.endsWith('[]') ? '[]' : ''
-    }`;
+    return `tuple(${input.components.map((c: any) => c.internalType).toString()})${input.type.endsWith('[]') ? '[]' : ''
+      }`;
   } else {
     return input.type;
   }
 };
 
 export const Builder = ({ contract, to }: Props): ReactElement | null => {
-  const { sdk, safe } = useSafeAppsSDK();
-  const services = useServices(safe.network);
+  const { sdk, safe } = useRef(useSafeAppsSDK()).current;
+  const services = useRef(useServices(safe.network)).current;
 
   const [toInput, setToInput] = useState('');
   const [valueInput, setValueInput] = useState('');
@@ -74,21 +73,15 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
   const [inputCache, setInputCache] = useState<string[]>([]);
   const [isValueInputVisible, setIsValueInputVisible] = useState(false);
 
-  const handleMethod = useCallback(
-    async (methodIndex: number) => {
-      if (!contract || contract.methods.length <= methodIndex) return;
-      setSelectedMethodIndex(methodIndex);
-    },
-    [contract],
-  );
+  const handleMethod = async (methodIndex: number) => {
+    if (!contract || contract.methods.length <= methodIndex) return;
+    setSelectedMethodIndex(methodIndex);
+  };
 
-  const handleInput = useCallback(
-    async (inputIndex: number, input: string) => {
-      inputCache[inputIndex] = input;
-      setInputCache(inputCache.slice());
-    },
-    [inputCache],
-  );
+  const handleInput = async (inputIndex: number, input: string) => {
+    inputCache[inputIndex] = input;
+    setInputCache(inputCache.slice());
+  };
 
   const getContractMethod = useCallback(() => contract?.methods[selectedMethodIndex], [contract, selectedMethodIndex]);
 
@@ -176,17 +169,15 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
         return false;
       }
       return services?.web3?.utils.isAddress(address);
-    },
-    [services],
-  );
+    }, [services]);
 
-  const sendTransactions = useCallback(async () => {
+  const sendTransactions = async () => {
     if (!transactions.length) {
       return;
     }
 
     sdk.txs.send({ txs: transactions.map((d) => d.raw) }).catch(console.error);
-  }, [sdk, transactions]);
+  };
 
   const onValueInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValueError(undefined);
@@ -215,7 +206,7 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
     };
 
     isVisible();
-  }, [isValidAddress, getContractMethod, contract, services, toInput]);
+  }, [getContractMethod, contract, services, toInput]);
 
   if (!contract && !isValueInputVisible) {
     return null;
@@ -227,8 +218,8 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
 
       {contract && !contract?.methods.length && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
 
-      {/* toInput */}
-      {!isValidAddress(to) && (
+      {/* show `toInput`  when `to` is not a valid address */}
+      {to.length > 0 && !isValidAddress(to) && (
         <StyledTextField
           style={{ marginTop: 10 }}
           value={toInput}
