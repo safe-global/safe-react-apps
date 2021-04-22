@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement, useCallback, useRef } from 'react';
+import React, { useState, useEffect, ReactElement, useCallback } from 'react';
 import {
   Button,
   Text,
