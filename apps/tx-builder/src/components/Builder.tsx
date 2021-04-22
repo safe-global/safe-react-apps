@@ -58,8 +58,8 @@ const getInputHelper = (input: any) => {
 };
 
 export const Builder = ({ contract, to }: Props): ReactElement | null => {
-  const { sdk, safe } = useRef(useSafeAppsSDK()).current;
-  const services = useRef(useServices(safe.network)).current;
+  const { sdk, safe } = useSafeAppsSDK();
+  const services = useServices(safe.network);
 
   const [toInput, setToInput] = useState('');
   const [valueInput, setValueInput] = useState('');
@@ -169,7 +169,7 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
         return false;
       }
       return services?.web3?.utils.isAddress(address);
-    }, [services]);
+    }, [services.web3]);
 
   const sendTransactions = async () => {
     if (!transactions.length) {
