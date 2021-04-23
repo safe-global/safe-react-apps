@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Remove broken apt repos [Ubuntu]
-        if: ${{ matrix.os }} == 'ubuntu-latest'
+        if: ${{ runner.os }} == 'ubuntu-latest'
         run: |
           for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
 
@@ -22,7 +22,7 @@ jobs:
       - name: Node.js setup
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 14
 
       - uses: actions/cache@v2
         with:
