@@ -7,8 +7,6 @@ import { Button, TextField } from '@gnosis.pm/safe-react-components';
 import { getWethAddress, Erc20 } from '../utils/Erc20Constants';
 import { ethers } from 'ethers';
 import { WETHwithdraw_function } from '../utils/WETHConstants';
-import { wrap } from 'node:module';
-
 
 interface WrapperProps {
     wrap: boolean
@@ -24,7 +22,7 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
     const [safeTxHash, setSafeTxHash] = useState("");
 
     const provider = useMemo(() => new SafeAppsSdkProvider(safe, sdk), [safe, sdk]);
-    const weth = useMemo(() => new ethers.Contract(getWethAddress(safe.network.toLowerCase()), Erc20, provider), [provider]);
+    const weth = useMemo(() => new ethers.Contract(getWethAddress(safe.network.toLowerCase()), Erc20, provider), [provider, safe]);
 
     const wrapEth = useCallback(async () => {
         if (isError) {
@@ -63,15 +61,7 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
                 console.error(e);
             }
         }
-    }, [sdk, amountToWrap, isError, props.wrap])
-
-    useEffect(() => {
-        const runEffect = async () => {
-            await fetchAvailableEth();
-            await validateAmout("");
-        };
-        runEffect();
-    }, [safe, sdk, props, availableBalance]);
+    }, [sdk, amountToWrap, isError, props.wrap, safe])
 
     async function fetchAvailableEth() {
         var newValue = "0";
@@ -102,12 +92,20 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
             setErrorMessage("");
             setAmountToWrap(newValue);
         }
-    }, [availableBalance, props])
+    }, [availableBalance])
+
+    useEffect(() => {
+        const runEffect = async () => {
+            await fetchAvailableEth();
+            await validateAmout("");
+        };
+        runEffect();
+    }, [safe, sdk, props, availableBalance, fetchAvailableEth, validateAmout]);
 
     return (
         <Grid container spacing={3}>
             <Snackbar
-                open={safeTxHash.length != 0}
+                open={safeTxHash.length !== 0}
                 autoHideDuration={3000}
                 onClose={() => setSafeTxHash("")}
                 message="You transaction has been submitted"
