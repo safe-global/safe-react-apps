@@ -10,7 +10,7 @@ const WethBalance: React.FC = () => {
 
     const { sdk, safe } = useSafeAppsSDK();
     const provider = useMemo(() => new SafeAppsSdkProvider(safe, sdk), [safe, sdk]);
-    const weth = useMemo(() => new ethers.Contract(getWethAddress(safe.network.toLowerCase()), Erc20, provider), [provider]);
+    const weth = useMemo(() => new ethers.Contract(getWethAddress(safe.network.toLowerCase()), Erc20, provider), [safe, provider]);
 
     async function fetchBalance() {
         const balanceWeth = await weth.balanceOf(safe.safeAddress);
@@ -20,7 +20,7 @@ const WethBalance: React.FC = () => {
     useEffect(() => {
         fetchBalance();
         console.log("Updating WETH balance");
-    }, []);
+    });
 
     return <Text size="xl" >Your WETH Balance: {balance}</Text>
 }

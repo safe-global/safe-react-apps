@@ -15,7 +15,7 @@ const EthBalance: React.FC = () => {
     useEffect(() => {
         fetchBalance();
         console.log("Updating ETH balance");
-    }, []);
+    });
 
     return <Text size="xl" >Your ETH balance: {balance}</Text>
 }
