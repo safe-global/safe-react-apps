@@ -5,9 +5,11 @@
     "start:compound": "yarn workspace compound start",
     "start:tx-builder": "yarn workspace tx-builder start",
     "start:walletconnect": "yarn workspace wallet-connect start",
+    "start:eth-wrapper": "yarn workspace eth-wrapper start",
     "build:compound": " yarn workspace compound build",
     "build:tx-builder": "yarn workspace tx-builder build",
-    "build:wallet-connect": "yarn workspace wallet-connect build"
+    "build:wallet-connect": "yarn workspace wallet-connect build",
+    "build:eth-wrapper": "yarn workspace eth-wrapper build"
   },
   "version": "2.0.0",
   "workspaces": [
