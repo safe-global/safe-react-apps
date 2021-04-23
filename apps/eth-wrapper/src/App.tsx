@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import EthBalance from './components/EthBalance';
 import WethBalance from './components/WethBalance';
 import Wrapper from './components/Wrapper';
-import { CardContent, makeStyles, CardActions, CardHeader } from '@material-ui/core';
-import { Button, ButtonLink, Card, IconText, Text, Title } from '@gnosis.pm/safe-react-components';
+import { CardContent, makeStyles, CardHeader } from '@material-ui/core';
+import { ButtonLink, Card, Text, Title } from '@gnosis.pm/safe-react-components';
 import React, { useState } from 'react';
 
 const useStyles = makeStyles({
