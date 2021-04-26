@@ -26,7 +26,6 @@ const App: React.FC = () => {
     // Fetch safe assets
     try {
       const data = await fetchSafeAssets(safe.safeAddress, safe.network);
-      console.log('Safe balances', data);
       setAssets(data.items);
     } catch (err) {
       onError('Failed fetching balances', err);
@@ -53,7 +52,6 @@ const App: React.FC = () => {
     try {
       const data = await sdk.txs.send({ txs });
       safeTxHash = data.safeTxHash;
-      console.log(safeTxHash);
     } catch (e) {
       onError('Failed sending transactions', e);
     }
