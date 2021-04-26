@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import { Button, TextField } from '@gnosis.pm/safe-react-components';
 import { getWethAddress, Erc20 } from '../utils/Erc20Constants';
 import { ethers } from 'ethers';
-import { withdraw, wrap } from '../logic/Wrapper';
+import { validateAmount, withdraw, wrap } from '../logic/Wrapper';
 
 interface WrapperProps {
     wrap: boolean
@@ -35,7 +35,7 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
 
         } catch (e) {
             console.error(e)
-        } finally { 
+        } finally {
             console.log("Submitted safeTxHash: ", safeTxHash);
             setSafeTxHash(safeTxHash);
         }
@@ -43,20 +43,29 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
 
     const validateAmout = useCallback((newValue: string) => {
         console.log("available balance:", availableBalance);
-        console.log("new value: ", newValue)
-        if (isNaN(Number(newValue))) {
-            setIsError(true);
-            setErrorMessage("Not a number");
-        }
-        else if (Number.parseFloat(newValue) > availableBalance) {
-            setIsError(true);
-            setErrorMessage("Insufficient funds");
-        }
-        else {
+        console.log("new value: ", newValue);
+        try {
             setIsError(false);
             setErrorMessage("");
-            setAmountToWrap(newValue);
+            setAmountToWrap(validateAmount(newValue, availableBalance));
+        } catch (e) {
+            setIsError(true);
+            setErrorMessage(e.message);
         }
+
+        // if (isNaN(Number(newValue))) {
+        //     setIsError(true);
+        //     setErrorMessage("Not a number");
+        // }
+        // else if (Number.parseFloat(newValue) > availableBalance) {
+        //     setIsError(true);
+        //     setErrorMessage("Insufficient funds");
+        // }
+        // else {
+        //     setIsError(false);
+        //     setErrorMessage("");
+        //     setAmountToWrap(newValue);
+        // }
     }, [availableBalance])
 
     useEffect(() => {

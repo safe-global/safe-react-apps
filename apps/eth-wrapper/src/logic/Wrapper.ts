@@ -28,3 +28,14 @@ export async function withdraw(amountToWrap: string, safe: SafeInfo, sdk: SafeAp
     })
     return safeTx.safeTxHash;
 }
+
+export function validateAmount(input: string, availableBalance: Number): string {
+    if (isNaN(Number(input))) {
+        throw new Error("Not a number");
+    }
+    else if (Number.parseFloat(input) > availableBalance) {
+        throw new Error("Insufficient funds");
+    }else {
+        return input;
+    }
+}
