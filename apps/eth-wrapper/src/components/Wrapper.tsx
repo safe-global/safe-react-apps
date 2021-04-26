@@ -63,21 +63,9 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
         }
     }, [sdk, amountToWrap, isError, props.wrap, safe])
 
-    async function fetchAvailableEth() {
-        var newValue = "0";
-        if (props.wrap) {
-            const balanceEth = await sdk.eth.getBalance([safe.safeAddress]);
-            newValue = ethers.utils.formatEther(balanceEth);
-        } else {
-            const balanceWeth = await weth.balanceOf(safe.safeAddress);
-            newValue = ethers.utils.formatEther(balanceWeth);
-        }
-        setAvailableBalance(Number.parseFloat(newValue));
-    };
-
     const validateAmout = useCallback((newValue: string) => {
         console.log("available balance:", availableBalance);
-        console.log("new value: ", newValue);
+        console.log("new value: ", newValue)
         if (isNaN(Number(newValue))) {
             setIsError(true);
             setErrorMessage("Not a number");
@@ -93,17 +81,25 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
         }
     }, [availableBalance])
 
-    useEffect(()=> {
+    useEffect(() => {
         setAmountToWrap("");
     }, [props.wrap])
 
     useEffect(() => {
         const runEffect = async () => {
-            await fetchAvailableEth();
-            // await validateAmout("");
+            // update available balance
+            var newValue = "0";
+            if (props.wrap) {
+                const balanceEth = await sdk.eth.getBalance([safe.safeAddress]);
+                newValue = ethers.utils.formatEther(balanceEth);
+            } else {
+                const balanceWeth = await weth.balanceOf(safe.safeAddress);
+                newValue = ethers.utils.formatEther(balanceWeth);
+            }
+            setAvailableBalance(Number.parseFloat(newValue));
         };
         runEffect();
-    }, [safe, sdk, props, availableBalance, fetchAvailableEth, validateAmout]);
+    }, [safe, sdk, weth, props.wrap]);
 
     return (
         <Grid container spacing={3}>
