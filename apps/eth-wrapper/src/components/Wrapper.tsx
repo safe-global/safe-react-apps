@@ -69,7 +69,7 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
                 open={safeTxHash.length !== 0}
                 autoHideDuration={3000}
                 onClose={() => setSafeTxHash("")}
-                message="You transaction has been submitted"
+                message="Your transaction has been submitted"
             />
             <Grid item xs={8}>
                 <TextField
