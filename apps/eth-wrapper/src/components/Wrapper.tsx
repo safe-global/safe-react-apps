@@ -77,13 +77,12 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
 
     const validateAmout = useCallback((newValue: string) => {
         console.log("available balance:", availableBalance);
+        console.log("new value: ", newValue);
         if (isNaN(Number(newValue))) {
             setIsError(true);
             setErrorMessage("Not a number");
         }
         else if (Number.parseFloat(newValue) > availableBalance) {
-            console.log("on switch new value ", Number.parseFloat(newValue));
-            console.log("on switch available balance", availableBalance);
             setIsError(true);
             setErrorMessage("Insufficient funds");
         }
@@ -94,10 +93,14 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
         }
     }, [availableBalance])
 
+    useEffect(()=> {
+        setAmountToWrap("");
+    }, [props.wrap])
+
     useEffect(() => {
         const runEffect = async () => {
             await fetchAvailableEth();
-            await validateAmout("");
+            // await validateAmout("");
         };
         runEffect();
     }, [safe, sdk, props, availableBalance, fetchAvailableEth, validateAmout]);
