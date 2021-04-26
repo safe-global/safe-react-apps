@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import { Button, TextField } from '@gnosis.pm/safe-react-components';
 import { getWethAddress, Erc20 } from '../utils/Erc20Constants';
 import { ethers } from 'ethers';
-import { WETHwithdraw_function } from '../utils/WETHConstants';
+import { withdraw, wrap } from '../logic/Wrapper';
 
 interface WrapperProps {
     wrap: boolean
@@ -28,38 +28,16 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
         if (isError) {
             return;
         }
+        let safeTxHash: string = "";
+        try {
+            safeTxHash = props.wrap ? await wrap(amountToWrap, safe, sdk) :
+                await withdraw(amountToWrap, safe, sdk);
 
-        if (props.wrap) {
-            try {
-                const parsedAmount = ethers.utils.parseEther(amountToWrap)
-                const safeTx = await sdk.txs.send({
-                    txs: [{
-                        to: getWethAddress(safe.network.toLowerCase()),
-                        value: parsedAmount.toString(),
-                        data: '0x'
-                    }]
-                })
-                setSafeTxHash(safeTx.safeTxHash);
-                console.log(safeTx.safeTxHash);
-            } catch (e) {
-                console.error(e)
-            }
-        } else {
-            try {
-                const parsedAmount = ethers.utils.parseEther(amountToWrap);
-                const withdraw = new ethers.utils.Interface(WETHwithdraw_function);
-                const safeTx = await sdk.txs.send({
-                    txs: [{
-                        to: getWethAddress(safe.network.toLowerCase()),
-                        value: '0',
-                        data: withdraw.encodeFunctionData("withdraw", [parsedAmount])
-                    }]
-                })
-                setSafeTxHash(safeTx.safeTxHash);
-                console.log(safeTx.safeTxHash);
-            } catch (e) {
-                console.error(e);
-            }
+        } catch (e) {
+            console.error(e)
+        } finally { 
+            console.log("Submitted safeTxHash: ", safeTxHash);
+            setSafeTxHash(safeTxHash);
         }
     }, [sdk, amountToWrap, isError, props.wrap, safe])
 
