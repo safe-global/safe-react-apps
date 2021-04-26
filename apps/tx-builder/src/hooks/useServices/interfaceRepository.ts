@@ -72,10 +72,11 @@ class InterfaceRepository {
 
         return !e.constant;
       })
+      .filter((m:any) => m.type !== 'constructor')
       .map((m: any) => {
         return {
           inputs: m.inputs || [],
-          name: m.name || (m.type === 'fallback' ? 'fallback' : m.type === 'constructor' ? 'constructor' : 'receive'),
+          name: m.name || (m.type === 'fallback' ? 'fallback' : 'receive'),
           payable: this._isMethodPayable(m),
         };
       });
