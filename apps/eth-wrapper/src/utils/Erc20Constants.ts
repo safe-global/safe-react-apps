@@ -6,6 +6,12 @@ export const Erc20 = [
 ];
 
 export function getWethAddress(network: string): string {
-    return network.toLowerCase() === "mainnet" ? "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" :
-        "0xc778417E063141139Fce010982780140Aa0cD5Ab";
+    switch (network.toLocaleLowerCase()) {
+        case "mainnet": 
+            return "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+        case "rinkeby":
+            return "0xc778417E063141139Fce010982780140Aa0cD5Ab";
+        default:
+            throw new Error("Unsupported network"); 
+    }
 }
