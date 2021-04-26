@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import { Button, TextField } from '@gnosis.pm/safe-react-components';
 import { getWethAddress, Erc20 } from '../utils/Erc20Constants';
 import { ethers } from 'ethers';
-import { validateAmount, withdraw, wrap } from '../logic/Wrapper';
+import { fetchAvailableBalance, validateAmount, withdraw, wrap } from '../logic/Wrapper';
 
 interface WrapperProps {
     wrap: boolean
@@ -42,8 +42,6 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
     }, [sdk, amountToWrap, isError, props.wrap, safe])
 
     const validateAmout = useCallback((newValue: string) => {
-        console.log("available balance:", availableBalance);
-        console.log("new value: ", newValue);
         try {
             setIsError(false);
             setErrorMessage("");
@@ -52,20 +50,6 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
             setIsError(true);
             setErrorMessage(e.message);
         }
-
-        // if (isNaN(Number(newValue))) {
-        //     setIsError(true);
-        //     setErrorMessage("Not a number");
-        // }
-        // else if (Number.parseFloat(newValue) > availableBalance) {
-        //     setIsError(true);
-        //     setErrorMessage("Insufficient funds");
-        // }
-        // else {
-        //     setIsError(false);
-        //     setErrorMessage("");
-        //     setAmountToWrap(newValue);
-        // }
     }, [availableBalance])
 
     useEffect(() => {
@@ -74,16 +58,7 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
 
     useEffect(() => {
         const runEffect = async () => {
-            // update available balance
-            var newValue = "0";
-            if (props.wrap) {
-                const balanceEth = await sdk.eth.getBalance([safe.safeAddress]);
-                newValue = ethers.utils.formatEther(balanceEth);
-            } else {
-                const balanceWeth = await weth.balanceOf(safe.safeAddress);
-                newValue = ethers.utils.formatEther(balanceWeth);
-            }
-            setAvailableBalance(Number.parseFloat(newValue));
+            setAvailableBalance(await fetchAvailableBalance(props.wrap, safe, sdk, weth))
         };
         runEffect();
     }, [safe, sdk, weth, props.wrap]);

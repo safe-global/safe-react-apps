@@ -1,6 +1,6 @@
 import { SafeInfo } from '@gnosis.pm/safe-apps-sdk';
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk/dist/src/sdk';
-import { ethers } from 'ethers';
+import { Contract, ethers } from 'ethers';
 import { getWethAddress } from '../utils/Erc20Constants';
 import { WETHwithdraw_function } from '../utils/WETHConstants';
 
@@ -35,7 +35,16 @@ export function validateAmount(input: string, availableBalance: Number): string 
     }
     else if (Number.parseFloat(input) > availableBalance) {
         throw new Error("Insufficient funds");
-    }else {
+    } else {
         return input;
     }
+}
+
+export async function fetchAvailableBalance(isWrap: boolean, safe: SafeInfo, sdk: SafeAppsSDK, weth: Contract): Promise<number> {
+    let availableBalance = isWrap ?
+        await sdk.eth.getBalance([safe.safeAddress]) :
+        await weth.balanceOf(safe.safeAddress);
+    let newValue = ethers.utils.formatEther(availableBalance);
+
+    return Number.parseFloat(newValue);
 }
