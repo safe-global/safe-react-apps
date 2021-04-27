@@ -1,5 +1,5 @@
 import { Text, Title, Link, TextField } from '@gnosis.pm/safe-react-components';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import styled from 'styled-components';
 
@@ -59,6 +59,16 @@ const Dashboard = () => {
     }
   };
 
+  const isValidAddress = useCallback(
+    (address: string | null) => {
+      if (!address) {
+        return false;
+      }
+      return services?.web3?.utils.isAddress(address);
+    },
+    [services.web3],
+  );
+
   return (
     <Wrapper>
       <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
@@ -84,7 +94,7 @@ const Dashboard = () => {
       )}
 
       {/* Builder */}
-      <Builder contract={contract} to={addressOrAbiInput} />
+      {(isValidAddress(addressOrAbiInput) || contract) && <Builder contract={contract} to={addressOrAbiInput} />}
     </Wrapper>
   );
 };
