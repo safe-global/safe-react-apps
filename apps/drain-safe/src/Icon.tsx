@@ -14,7 +14,7 @@ const IconImg = styled.img`
 
 function Icon(props: Props): JSX.Element | null {
   const { token } = props.asset;
-  const src = token ? token.logoUri : '/eth.svg';
+  const src = token ? token.logoUri : './eth.svg';
   const symbol = token ? token.symbol : 'ETH';
   return src ? <IconImg src={src} alt={symbol} /> : null;
 }
