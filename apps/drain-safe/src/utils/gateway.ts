@@ -2,28 +2,25 @@ import { fetchJson } from '.';
 
 export interface Asset {
   balance: string;
+  ethValue: string;
+  timestamp: string;
   fiatBalance: string;
   fiatConversion: string;
-  tokenInfo: {
-    address: string;
-    decimals: number;
-    logoUri: string | null;
+  fiatCode: string;
+  tokenAddress: string | null;
+  token: null | {
     name: string;
     symbol: string;
-    type: string;
+    decimals: number;
+    logoUri: string;
   };
-}
-
-interface Balance {
-  fiatTotal: string;
-  items: Asset[];
 }
 
 export const CURRENCY = 'USD';
 
-export async function fetchSafeAssets(safeAddress: string, safeNetwork: string): Promise<Balance> {
+export async function fetchSafeAssets(safeAddress: string, safeNetwork: string): Promise<Asset[]> {
   const network = safeNetwork.toLowerCase(); // mainnet, rinkeby etc
-  const url = `https://safe-client.${network}.gnosis.io/v1/safes/${safeAddress}/balances/${CURRENCY}/?trusted=false&exclude_spam=true`;
+  const url = `https://safe-transaction.${network}.gnosis.io/api/v1/safes/${safeAddress}/balances/${CURRENCY.toLowerCase()}/?exclude_spam=true`;
   const data = await fetchJson(url);
-  return data as Balance;
+  return data as Asset[];
 }

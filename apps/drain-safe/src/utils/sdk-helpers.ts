@@ -10,7 +10,7 @@ export function encodeTxData(method: AbiItem, recipient: string, amount: string)
 }
 
 export function tokenToTx(recipient: string, item: Asset): Transaction {
-  return item.tokenInfo.type === 'ETHER'
+  return !item.tokenAddress
     ? {
         // Send ETH directly to the recipient address
         to: web3Utils.toChecksumAddress(recipient),
@@ -19,7 +19,7 @@ export function tokenToTx(recipient: string, item: Asset): Transaction {
       }
     : {
         // For other token types, generate a contract tx
-        to: web3Utils.toChecksumAddress(item.tokenInfo.address),
+        to: web3Utils.toChecksumAddress(item.tokenAddress),
         value: '0',
         data: encodeTxData(erc20.transfer, recipient, item.balance),
       };

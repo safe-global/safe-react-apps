@@ -26,9 +26,8 @@ describe('Safe SDK helpers', () => {
   describe('tokenToTx', () => {
     it('creats a tx for a ERC-20 token', () => {
       const tx = tokenToTx('0xb3b83bf204C458B461de9B0CD2739DB152b4fa5A', {
-        tokenInfo: {
-          type: 'ERC20',
-          address: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
+        tokenAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
+        token: {
           decimals: 18,
           symbol: 'DAI',
           name: 'Dai',
@@ -49,14 +48,8 @@ describe('Safe SDK helpers', () => {
 
     it('creats a tx for ETH', () => {
       const tx = tokenToTx('0xb3b83bf204C458B461de9B0CD2739DB152b4fa5A', {
-        tokenInfo: {
-          type: 'ETHER',
-          address: '0x0000000000000000000000000000000000000000',
-          decimals: 18,
-          symbol: 'ETH',
-          name: 'Ether',
-          logoUri: null,
-        },
+        tokenAddress: null,
+        token: null,
         balance: '2000000000000000000',
         fiatBalance: '4574.8946',
         fiatConversion: '2287.4473',

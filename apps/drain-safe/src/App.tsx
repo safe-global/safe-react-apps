@@ -26,7 +26,7 @@ const App: React.FC = () => {
     // Fetch safe assets
     try {
       const data = await fetchSafeAssets(safe.safeAddress, safe.network);
-      setAssets(data.items);
+      setAssets(data);
     } catch (err) {
       onError('Failed fetching balances', err);
     }
@@ -119,8 +119,8 @@ const App: React.FC = () => {
             {
               content: (
                 <Flex>
-                  {item.tokenInfo.logoUri && <Icon src={item.tokenInfo.logoUri} alt="" />}
-                  {item.tokenInfo.name}
+                  <Icon asset={item} />
+                  {item.token?.name || 'Ether'}
                 </Flex>
               ),
             },
