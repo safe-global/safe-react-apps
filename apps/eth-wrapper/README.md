@@ -12,3 +12,7 @@ To run the safe app locally:
 
 `yarn start:eth-wrapper`
 
+To run all tests: 
+
+`cd apps/eth-wrapper`
+`yarn test`
