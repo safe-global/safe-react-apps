@@ -15,7 +15,7 @@ interface WrapperProps {
 const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
     const { sdk, safe } = useSafeAppsSDK();
 
-    const [amountToWrap, setAmountToWrap] = useState("");
+    const [amount, setAmount] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [availableBalance, setAvailableBalance] = useState(0.0);
     const [isError, setIsError] = useState(false);
@@ -30,8 +30,8 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
         }
         let safeTxHash: string = "";
         try {
-            safeTxHash = props.wrap ? await wrap(amountToWrap, safe, sdk) :
-                await withdraw(amountToWrap, safe, sdk);
+            safeTxHash = props.wrap ? await wrap(amount, safe, sdk) :
+                await withdraw(amount, safe, sdk);
 
         } catch (e) {
             console.error(e)
@@ -39,13 +39,13 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
             console.log("Submitted safeTxHash: ", safeTxHash);
             setSafeTxHash(safeTxHash);
         }
-    }, [sdk, amountToWrap, isError, props.wrap, safe])
+    }, [sdk, amount, isError, props.wrap, safe])
 
     const validateAmout = useCallback((newValue: string) => {
         try {
             setIsError(false);
             setErrorMessage("");
-            setAmountToWrap(validateAmount(newValue, availableBalance));
+            setAmount(validateAmount(newValue, availableBalance));
         } catch (e) {
             setIsError(true);
             setErrorMessage(e.message);
@@ -53,7 +53,7 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
     }, [availableBalance])
 
     useEffect(() => {
-        setAmountToWrap("");
+        setAmount("");
     }, [props.wrap])
 
     useEffect(() => {
@@ -73,7 +73,7 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
             />
             <Grid item xs={8}>
                 <TextField
-                    value={amountToWrap}
+                    value={amount}
                     label={props.wrap ? "ETH amount" : "WETH amount"}
                     meta={{ error: errorMessage }}
                     onChange={e => validateAmout(e.target.value)} />
