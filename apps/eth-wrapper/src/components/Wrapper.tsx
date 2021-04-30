@@ -24,7 +24,7 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
     const provider = useMemo(() => new SafeAppsSdkProvider(safe, sdk), [safe, sdk]);
     const weth = useMemo(() => new ethers.Contract(getWethAddress(safe.network.toLowerCase()), Erc20, provider), [provider, safe]);
 
-    const wrapEth = useCallback(async () => {
+    const submitTransaction = useCallback(async () => {
         if (isError) {
             return;
         }
@@ -79,7 +79,7 @@ const Wrapper: React.FC<WrapperProps> = (props: WrapperProps) => {
                     onChange={e => validateAmout(e.target.value)} />
             </Grid>
             <Grid item xs={8}>
-                <Button size="md" color="primary" variant="contained" onClick={() => wrapEth()}>
+                <Button size="md" color="primary" variant="contained" onClick={() => submitTransaction()}>
                     {props.wrap ? "Wrap" : "Unwrap"}
                 </Button>
             </Grid>
