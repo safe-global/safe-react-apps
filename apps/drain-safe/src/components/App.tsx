@@ -6,6 +6,8 @@ import { Asset } from '../utils/api';
 import useBalances from '../hooks/use-balances';
 import { tokenToTx } from '../utils/sdk-helpers';
 import FormContainer from './FormContainer';
+import Flex from './Flex';
+import Logo from './Logo';
 import Balances from './Balances';
 import SubmitButton from './SubmitButton';
 import CancelButton from './CancelButton';
@@ -91,7 +93,10 @@ const App: React.FC = () => {
 
   return (
     <FormContainer onSubmit={onSubmit} onReset={onCancel}>
-      <Title size="md">Drain Account</Title>
+      <Flex>
+        <Logo />
+        <Title size="md">Drain Account</Title>
+      </Flex>
 
       <Balances assets={emptyAssets || assets} />
 
