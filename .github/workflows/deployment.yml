@@ -51,7 +51,7 @@ jobs:
           yarn cache clean
 
       - name: Build apps
-        run: npx lerna run build
+        run: yarn build
         env:
           REACT_APP_RPC_TOKEN: ${{ secrets.REACT_APP_RPC_TOKEN }}
 
