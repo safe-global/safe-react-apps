@@ -1,6 +1,6 @@
 import web3Utils from 'web3-utils';
 import { Table } from '@gnosis.pm/safe-react-components';
-import { Asset, Token, CURRENCY } from '../utils/gateway';
+import { Asset, Token, CURRENCY } from '../utils/api';
 import Icon from './Icon';
 import Flex from './Flex';
 

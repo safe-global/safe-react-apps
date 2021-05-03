@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchSafeAssets, Asset } from '../utils/gateway';
+import { fetchSafeAssets, Asset } from '../utils/api';
 
 function useBalances(safeAddress: string, network: string): { error?: Error; assets: Asset[] } {
   const [assets, setAssets] = useState<Asset[]>([]);

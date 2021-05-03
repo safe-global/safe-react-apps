@@ -1,5 +1,5 @@
 import fetchJson from '../utils/fetch-json';
-import { fetchSafeAssets } from '../utils/gateway';
+import { fetchSafeAssets } from '../utils/api';
 
 jest.mock('../utils/fetch-json', () => jest.fn());
 

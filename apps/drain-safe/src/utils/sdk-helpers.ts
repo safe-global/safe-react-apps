@@ -1,7 +1,7 @@
 import web3Utils, { AbiItem } from 'web3-utils';
 import abiCoder, { AbiCoder } from 'web3-eth-abi';
 import { Transaction } from '@gnosis.pm/safe-apps-sdk';
-import { Asset } from './gateway';
+import { Asset } from './api';
 import erc20 from '../abis/erc20';
 
 export function encodeTxData(method: AbiItem, recipient: string, amount: string): string {
