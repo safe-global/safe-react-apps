@@ -1,9 +1,7 @@
-import { fetchJson } from '../utils';
+import fetchJson from '../utils/fetch-json';
 import { fetchSafeAssets } from '../utils/gateway';
 
-jest.mock('../utils', () => ({
-  fetchJson: jest.fn(),
-}));
+jest.mock('../utils/fetch-json', () => jest.fn());
 
 describe('Client Gateway functions', () => {
   describe('fetchSafeAssets', () => {

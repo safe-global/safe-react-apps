@@ -1,4 +1,11 @@
-import { fetchJson } from '.';
+import fetchJson from './fetch-json';
+
+export interface Token {
+  name: string;
+  symbol: string;
+  decimals: number;
+  logoUri: string;
+}
 
 export interface Asset {
   balance: string;
@@ -8,12 +15,7 @@ export interface Asset {
   fiatConversion: string;
   fiatCode: string;
   tokenAddress: string | null;
-  token: null | {
-    name: string;
-    symbol: string;
-    decimals: number;
-    logoUri: string;
-  };
+  token: Token | null;
 }
 
 export const CURRENCY = 'USD';

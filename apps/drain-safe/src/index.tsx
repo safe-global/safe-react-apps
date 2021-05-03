@@ -5,7 +5,7 @@ import { theme, Loader, Title } from '@gnosis.pm/safe-react-components';
 import SafeProvider from '@gnosis.pm/safe-apps-react-sdk';
 
 import GlobalStyle from './GlobalStyle';
-import App from './App';
+import App from './components/App';
 
 ReactDOM.render(
   <React.StrictMode>
