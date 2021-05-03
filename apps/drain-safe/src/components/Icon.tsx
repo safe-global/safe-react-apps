@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 interface Props {
@@ -12,9 +12,11 @@ const IconImg = styled.img`
   width: auto;
 `;
 
-function Icon(props: Props): JSX.Element {
+function Icon(props: Props): JSX.Element | null {
+  const [noIcon, setNoIcon] = useState<boolean>(false);
   const { logoUri, symbol } = props;
-  return <IconImg src={logoUri} alt={symbol} />;
+
+  return noIcon ? null : <IconImg src={logoUri} alt={symbol} onError={() => setNoIcon(true)} />;
 }
 
 export default Icon;
