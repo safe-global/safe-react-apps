@@ -12,11 +12,19 @@ const IconImg = styled.img`
   width: auto;
 `;
 
+const defaultIcon = './question.svg';
+
 function Icon(props: Props): JSX.Element | null {
-  const [noIcon, setNoIcon] = useState<boolean>(false);
+  const [fallbackIcon, setFallbackIcon] = useState<string>('');
   const { logoUri, symbol } = props;
 
-  return noIcon ? null : <IconImg src={logoUri} alt={symbol} onError={() => setNoIcon(true)} />;
+  const onError = () => {
+    if (!fallbackIcon) {
+      setFallbackIcon(defaultIcon);
+    }
+  };
+
+  return <IconImg src={fallbackIcon || logoUri} alt={symbol} onError={onError} />;
 }
 
 export default Icon;
