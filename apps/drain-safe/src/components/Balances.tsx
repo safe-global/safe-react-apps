@@ -1,6 +1,6 @@
-import web3Utils from 'web3-utils';
 import { Table } from '@gnosis.pm/safe-react-components';
 import { Asset, Token, CURRENCY } from '../utils/api';
+import { formatTokenValue, formatCurrencyValue } from '../utils/formatters';
 import Icon from './Icon';
 import Flex from './Flex';
 
@@ -33,8 +33,9 @@ function Balances({ assets }: { assets: Asset[] }): JSX.Element {
                 </Flex>
               ),
             },
-            { content: web3Utils.fromWei(item.balance) },
-            { content: item.fiatBalance },
+
+            { content: formatTokenValue(item.balance, token.decimals) },
+            { content: formatCurrencyValue(item.fiatBalance, CURRENCY) },
           ],
         };
       })}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 interface Props {
@@ -12,9 +12,19 @@ const IconImg = styled.img`
   width: auto;
 `;
 
-function Icon(props: Props): JSX.Element {
+const defaultIcon = './question.svg';
+
+function Icon(props: Props): JSX.Element | null {
+  const [fallbackIcon, setFallbackIcon] = useState<string>('');
   const { logoUri, symbol } = props;
-  return <IconImg src={logoUri} alt={symbol} />;
+
+  const onError = () => {
+    if (!fallbackIcon) {
+      setFallbackIcon(defaultIcon);
+    }
+  };
+
+  return <IconImg src={fallbackIcon || logoUri} alt={symbol} onError={onError} />;
 }
 
 export default Icon;
