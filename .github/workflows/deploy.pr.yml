@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Remove broken apt repos [Ubuntu]
-        if: matrix.os == 'ubuntu-latest'
+        if: ${{ runner.os }} == 'ubuntu-latest'
         run: |
           for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
 
@@ -22,7 +22,7 @@ jobs:
       - name: Node.js setup
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 14
 
       - uses: actions/cache@v2
         with:
@@ -48,14 +48,19 @@ jobs:
           yarn cache clean
 
       - name: Build apps
-        run: npx lerna run build
+        run: yarn build
         env:
           REACT_APP_RPC_TOKEN: ${{ secrets.REACT_APP_RPC_TOKEN }}
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
       - run: bash ./scripts/deploy_pr.sh
         env:
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           PR_NUMBER: ${{ github.event.number }}
           REVIEW_BUCKET_NAME: ${{ secrets.AWS_REVIEW_BUCKET_NAME }}
 
@@ -66,6 +71,7 @@ jobs:
             * [Compound app](${{ env.REVIEW_FEATURE_URL }}/compound/)
             * [WalletConnect app](${{ env.REVIEW_FEATURE_URL }}/wallet-connect/)
             * [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)
+            * [Drain Account App](${{ env.REVIEW_FEATURE_URL }}/drain-safe/)
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
         if: success() && github.event.number
