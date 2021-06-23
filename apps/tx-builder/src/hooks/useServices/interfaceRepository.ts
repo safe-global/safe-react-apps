@@ -28,6 +28,8 @@ const abiUrlGetterByNetwork: {
     `https://explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
   VOLTA: (address: string) =>
     `https://volta-explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
+  POLYGON: (address: string) =>
+    `https://api.polygonscan.com/api?module=contract&action=getabi&address=${address}`,
   UNKNOWN: null,
 };
 
@@ -72,7 +74,7 @@ class InterfaceRepository {
 
         return !e.constant;
       })
-      .filter((m:any) => m.type !== 'constructor')
+      .filter((m: any) => m.type !== 'constructor')
       .map((m: any) => {
         return {
           inputs: m.inputs || [],

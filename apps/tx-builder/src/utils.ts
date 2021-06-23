@@ -12,5 +12,6 @@ export const rpcUrlGetterByNetwork: {
   XDAI: () => 'https://dai.poa.network',
   ENERGY_WEB_CHAIN: () => 'https://rpc.energyweb.org',
   VOLTA: () => 'https://volta-rpc.energyweb.org',
+  POLYGON: () => 'https://rpc-mainnet.matic.network',
   UNKNOWN: null,
 };
