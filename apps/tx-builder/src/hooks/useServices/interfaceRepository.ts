@@ -1,6 +1,5 @@
 import axios from 'axios';
 import memoize from 'lodash/memoize';
-import { Networks } from '@gnosis.pm/safe-apps-sdk';
 
 interface ContractMethod {
   inputs: any[];
@@ -15,37 +14,36 @@ export interface ContractInterface {
 const getAbi = memoize(async (apiUrl: string) => axios.get(apiUrl));
 
 const abiUrlGetterByNetwork: {
-  [key in Networks]?: ((address: string) => string) | null;
+  [key in number]?: ((address: string) => string) | null;
 } = {
-  MAINNET: (address: string) => `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
-  MORDEN: null,
-  RINKEBY: (address: string) => `https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=${address}`,
-  ROPSTEN: null,
-  GOERLI: null,
-  KOVAN: null,
-  XDAI: (address: string) => `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
-  ENERGY_WEB_CHAIN: (address: string) =>
+  1: (address: string) => `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  2: null,
+  4: (address: string) => `https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  3: null,
+  5: null,
+  42: null,
+  100: (address: string) => `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
+  246: (address: string) =>
     `https://explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
-  VOLTA: (address: string) =>
+  73799: (address: string) =>
     `https://volta-explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
-  POLYGON: (address: string) =>
+  137: (address: string) =>
     `https://api.polygonscan.com/api?module=contract&action=getabi&address=${address}`,
-  UNKNOWN: null,
 };
 
 class InterfaceRepository {
-  network: Networks;
+  chainId: number;
   web3: any;
 
-  constructor(network: Networks, web3: any) {
-    this.network = network;
+  constructor(chainId: number, web3: any) {
+    this.chainId = chainId;
     this.web3 = web3;
   }
 
   private async _loadAbiFromBlockExplorer(address: string): Promise<string> {
-    const getAbiUrl = abiUrlGetterByNetwork[this.network];
+    const getAbiUrl = abiUrlGetterByNetwork[this.chainId];
     if (!getAbiUrl) {
-      throw Error(`Network: ${this.network} not supported.`);
+      throw Error(`Chain id: ${this.chainId} not supported.`);
     }
 
     const abi = await getAbi(getAbiUrl(address));

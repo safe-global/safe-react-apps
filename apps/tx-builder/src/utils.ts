@@ -1,17 +1,14 @@
-import { Networks } from '@gnosis.pm/safe-apps-sdk';
-
 export const rpcUrlGetterByNetwork: {
-  [key in Networks]: null | ((token?: string) => string);
+  [key in number]: null | ((token?: string) => string);
 } = {
-  MAINNET: (token) => `https://mainnet.infura.io/v3/${token}`,
-  MORDEN: null,
-  ROPSTEN: null,
-  RINKEBY: (token) => `https://rinkeby.infura.io/v3/${token}`,
-  GOERLI: null,
-  KOVAN: null,
-  XDAI: () => 'https://dai.poa.network',
-  ENERGY_WEB_CHAIN: () => 'https://rpc.energyweb.org',
-  VOLTA: () => 'https://volta-rpc.energyweb.org',
-  POLYGON: () => 'https://rpc-mainnet.matic.network',
-  UNKNOWN: null,
+  1: (token) => `https://mainnet.infura.io/v3/${token}`,
+  2: null,
+  3: null,
+  4: (token) => `https://rinkeby.infura.io/v3/${token}`,
+  5: null,
+  42: null,
+  100: () => 'https://dai.poa.network',
+  246: () => 'https://rpc.energyweb.org',
+  73799: () => 'https://volta-rpc.energyweb.org',
+  137: () => 'https://rpc-mainnet.matic.network',
 };

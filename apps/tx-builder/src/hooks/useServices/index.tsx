@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import Web3 from 'web3';
-import { Networks } from '@gnosis.pm/safe-apps-sdk';
 
 import InterfaceRepository from './interfaceRepository';
 import { InterfaceRepo } from './interfaceRepository';
@@ -11,27 +10,27 @@ export interface Services {
   interfaceRepo: InterfaceRepo | undefined;
 }
 
-export default function useServices(network: Networks): Services {
+export default function useServices(chainId: number): Services {
   const [web3, setWeb3] = useState<Web3 | undefined>();
   const [interfaceRepo, setInterfaceRepo] = useState<InterfaceRepository | undefined>();
 
   useEffect(() => {
-    if (!network) {
+    if (!chainId) {
       return;
     }
 
-    const rpcUrlGetter = rpcUrlGetterByNetwork[network];
+    const rpcUrlGetter = rpcUrlGetterByNetwork[chainId];
     if (!rpcUrlGetter) {
-      throw Error(`RPC URL not defined for network ${network}`);
+      throw Error(`RPC URL not defined for chain id ${chainId}`);
     }
     const rpcUrl = rpcUrlGetter(process.env.REACT_APP_RPC_TOKEN);
 
     const web3Instance = new Web3(rpcUrl);
-    const interfaceRepo = new InterfaceRepository(network, web3Instance);
+    const interfaceRepo = new InterfaceRepository(chainId, web3Instance);
 
     setWeb3(web3Instance);
     setInterfaceRepo(interfaceRepo);
-  }, [network]);
+  }, [chainId]);
 
   return {
     web3,

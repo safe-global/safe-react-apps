@@ -1,6 +1,5 @@
 import ApolloClient from 'apollo-boost';
 import { gql } from 'apollo-boost';
-import { Networks } from '@gnosis.pm/safe-apps-sdk';
 
 export type TokenInteractionData = {
   amount: string;
@@ -11,9 +10,9 @@ export type TokenInteractionData = {
 const RINKEBY = 'https://api.thegraph.com/subgraphs/name/protofire/token-registry-rinkeby';
 const MAINNET = 'https://api.thegraph.com/subgraphs/name/protofire/token-registry';
 
-const subgraphUri: { [key in 'MAINNET' | 'RINKEBY']: string } = {
-  RINKEBY,
-  MAINNET,
+const subgraphUri: { [key in 1 | 4]: string } = {
+  4:RINKEBY,
+  1:MAINNET,
 };
 
 const TRANSFER_EVENTS = gql`
@@ -113,17 +112,17 @@ async function getMintEvents(
 }
 
 export async function getTokenInteractions(
-  network: Networks,
+  chainId: number,
   safeAddress: string,
   tokenAddr: string,
   cTokenAddr: string,
 ) {
-  if (network !== 'RINKEBY' && network !== 'MAINNET') {
+  if (chainId !== 4 && chainId !== 1) {
     return [];
   }
 
   const client = new ApolloClient({
-    uri: subgraphUri[network],
+    uri: subgraphUri[chainId],
   });
 
   const mintEventsRes = await getMintEvents(client, safeAddress, tokenAddr);

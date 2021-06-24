@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect } from 'react';
 import WalletConnect from '@walletconnect/client';
 import { IClientMeta } from '@walletconnect/types';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import { chainIdByNetwork } from '../utils/networks';
 import { encodeSignMessageCall } from '../utils/signatures';
 import { isMetaTxArray } from '../utils/transactions';
 import { areStringsEqual } from '../utils/strings';
@@ -27,7 +26,7 @@ const useWalletConnect = () => {
 
   const wcConnect = useCallback(
     async (uri: string) => {
-      const network = safe.network;
+      const chainId = safe.chainId;
 
       const wcConnector = new WalletConnect({ uri });
       setConnector(wcConnector);
@@ -41,7 +40,7 @@ const useWalletConnect = () => {
 
         wcConnector.approveSession({
           accounts: [safe.safeAddress],
-          chainId: chainIdByNetwork[network],
+          chainId,
         });
 
         setWcClientData(payload.params[0].peerMeta);

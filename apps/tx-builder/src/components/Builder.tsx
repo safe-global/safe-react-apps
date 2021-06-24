@@ -59,7 +59,7 @@ const getInputHelper = (input: any) => {
 
 export const Builder = ({ contract, to }: Props): ReactElement | null => {
   const { sdk, safe } = useSafeAppsSDK();
-  const services = useServices(safe.network);
+  const services = useServices(safe.chainId);
 
   const [toInput, setToInput] = useState('');
   const [valueInput, setValueInput] = useState('');

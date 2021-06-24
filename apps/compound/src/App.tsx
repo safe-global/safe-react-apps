@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { rpc_token, getTokenList, TokenItem } from './config';
 import { WidgetWrapper, SelectContainer, DaiInfo, ButtonContainer } from './components';
 import { getTokenInteractions, parseEvents } from './tokensTransfers';
+import {networkByChainId} from './utils/networks';
 
 import cERC20Abi from './abis/CErc20';
 import cWEthAbi from './abis/CWEth';
@@ -48,7 +49,7 @@ const CompoundWidget = () => {
       return;
     }
 
-    const web3Instance = new Web3(`https://${safeInfo.network}.infura.io/v3/${rpc_token}`);
+    const web3Instance = new Web3(`https://${networkByChainId[safeInfo.chainId]}.infura.io/v3/${rpc_token}`);
     setWeb3(web3Instance);
   }, [safeInfo]);
 
@@ -77,7 +78,7 @@ const CompoundWidget = () => {
       return;
     }
 
-    const tokenListRes = getTokenList(safeInfo.network);
+    const tokenListRes = getTokenList(safeInfo.chainId);
 
     setTokenList(tokenListRes);
 
@@ -142,7 +143,7 @@ const CompoundWidget = () => {
 
       // get interest earned
       const tokenEvents = await getTokenInteractions(
-        safeInfo.network,
+        safeInfo.chainId,
         safeInfo.safeAddress,
         selectedToken.tokenAddr,
         selectedToken.cTokenAddr,

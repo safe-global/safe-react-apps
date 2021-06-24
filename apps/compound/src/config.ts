@@ -1,4 +1,3 @@
-import { Networks } from '@gnosis.pm/safe-apps-sdk';
 
 import daiIcon from './images/asset_DAI.svg';
 import batIcon from './images/asset_BAT.svg';
@@ -21,17 +20,16 @@ export type TokenItem = {
 
 export const rpc_token = process.env.REACT_APP_RPC_TOKEN || '';
 
-export const getTokenList = (network: Networks): Array<TokenItem> => {
-  const lowercaseNetwork = network.toLowerCase();
+export const getTokenList = (chainId: number): Array<TokenItem> => {
 
-  if (lowercaseNetwork !== 'rinkeby' && lowercaseNetwork !== 'mainnet') {
-    throw Error(`Not supported Network ${network}`);
+  if (chainId !== 4 && chainId !== 1) {
+    throw Error(`Not supported Chain id ${chainId}`);
   }
 
-  const tokensByNetwork = tokens[lowercaseNetwork];
+  const tokensByNetwork = tokens[chainId];
 
   if (!tokensByNetwork) {
-    throw Error(`No token configuration for ${network}`);
+    throw Error(`No token configuration for chain id: ${chainId}`);
   }
 
   return [
