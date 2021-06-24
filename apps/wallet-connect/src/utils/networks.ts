@@ -1,4 +1,3 @@
-
 const gnosisUrlByNetwork: {
   [key in number]: null | string;
 } = {

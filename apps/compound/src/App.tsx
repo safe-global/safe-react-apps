@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { rpc_token, getTokenList, TokenItem } from './config';
 import { WidgetWrapper, SelectContainer, DaiInfo, ButtonContainer } from './components';
 import { getTokenInteractions, parseEvents } from './tokensTransfers';
-import {networkByChainId} from './utils/networks';
+import { networkByChainId } from '../../drain-safe/src/utils/networks';
 
 import cERC20Abi from './abis/CErc20';
 import cWEthAbi from './abis/CWEth';
@@ -59,7 +59,7 @@ const CompoundWidget = () => {
       try {
         if (safeInfo.safeAddress) {
           const balance = await web3?.eth.getBalance(safeInfo.safeAddress);
-  
+
           if (balance) {
             setEthBalance(balance);
           }
