@@ -1,17 +1,29 @@
-const networkByChainId: {
-    [key in number]: string;
-  } = {
-    1: 'MAINNET',
-    2: 'MORDEN',
-    3: 'ROPSTEN',
-    4: 'RINKEBY',
-    5: 'GOERLI',
-    42: 'KOVAN',
-    100: 'XDAI',
-    246: 'ENERGY_WEB_CHAIN',
-    73799: 'VOLTA',
-    137: 'POLYGON',
+enum CHAINS {
+  MAINNET = 1,
+  MORDEN = 2,
+  ROPSTEN = 3,
+  RINKEBY = 4,
+  GOERLI = 5,
+  KOVAN = 42,
+  XDAI = 100,
+  ENERGY_WEB_CHAIN = 246,
+  VOLTA = 73799,
+  POLYGON = 137,
+}
 
-  };
-  
-  export { networkByChainId };
+const networkByChainId: {
+  [key in CHAINS]: string;
+} = {
+  [CHAINS.MAINNET]: 'MAINNET',
+  [CHAINS.MORDEN]: 'MORDEN',
+  [CHAINS.ROPSTEN]: 'ROPSTEN',
+  [CHAINS.RINKEBY]: 'RINKEBY',
+  [CHAINS.GOERLI]: 'GOERLI',
+  [CHAINS.KOVAN]: 'KOVAN',
+  [CHAINS.XDAI]: 'XDAI',
+  [CHAINS.ENERGY_WEB_CHAIN]: 'ENERGY_WEENERGY_WEB_CHAIN',
+  [CHAINS.VOLTA]: 'VOLTA',
+  [CHAINS.POLYGON]: 'POLYGON',
+};
+
+export { CHAINS, networkByChainId };

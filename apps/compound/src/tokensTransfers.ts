@@ -1,5 +1,6 @@
 import ApolloClient from 'apollo-boost';
 import { gql } from 'apollo-boost';
+import { CHAINS } from './utils/networks';
 
 export type TokenInteractionData = {
   amount: string;
@@ -10,9 +11,9 @@ export type TokenInteractionData = {
 const RINKEBY = 'https://api.thegraph.com/subgraphs/name/protofire/token-registry-rinkeby';
 const MAINNET = 'https://api.thegraph.com/subgraphs/name/protofire/token-registry';
 
-const subgraphUri: { [key in 1 | 4]: string } = {
-  4:RINKEBY,
-  1:MAINNET,
+const subgraphUri: { [key in CHAINS.MAINNET | CHAINS.RINKEBY]: string } = {
+  [CHAINS.RINKEBY]: RINKEBY,
+  [CHAINS.MAINNET]: MAINNET,
 };
 
 const TRANSFER_EVENTS = gql`
@@ -117,7 +118,7 @@ export async function getTokenInteractions(
   tokenAddr: string,
   cTokenAddr: string,
 ) {
-  if (chainId !== 4 && chainId !== 1) {
+  if (chainId !== CHAINS.RINKEBY && chainId !== CHAINS.MAINNET) {
     return [];
   }
 

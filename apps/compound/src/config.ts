@@ -8,6 +8,7 @@ import usdcIcon from './images/asset_USDC.svg';
 import usdtIcon from './images/asset_USDT.svg';
 import zrxIcon from './images/asset_ZRX.svg';
 import tokens from './tokens';
+import {CHAINS} from './utils/networks'
 
 export type TokenItem = {
   id: string;
@@ -22,7 +23,7 @@ export const rpc_token = process.env.REACT_APP_RPC_TOKEN || '';
 
 export const getTokenList = (chainId: number): Array<TokenItem> => {
 
-  if (chainId !== 4 && chainId !== 1) {
+  if (chainId !== CHAINS.RINKEBY && chainId !== CHAINS.MAINNET) {
     throw Error(`Not supported Chain id ${chainId}`);
   }
 
