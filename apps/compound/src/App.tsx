@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { rpc_token, getTokenList, TokenItem } from './config';
 import { WidgetWrapper, SelectContainer, DaiInfo, ButtonContainer } from './components';
 import { getTokenInteractions, parseEvents } from './tokensTransfers';
-import { networkByChainId } from './utils/networks';
+import { networkByChainId,CHAINS } from './utils/networks';
 
 import cERC20Abi from './abis/CErc20';
 import cWEthAbi from './abis/CWEth';
@@ -48,8 +48,8 @@ const CompoundWidget = () => {
     if (!safeInfo) {
       return;
     }
-
-    const web3Instance = new Web3(`https://${networkByChainId[safeInfo.chainId]}.infura.io/v3/${rpc_token}`);
+    const chainId = safeInfo.chainId as CHAINS;
+    const web3Instance = new Web3(`https://${networkByChainId[chainId]}.infura.io/v3/${rpc_token}`);
     setWeb3(web3Instance);
   }, [safeInfo]);
 
