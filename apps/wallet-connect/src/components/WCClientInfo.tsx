@@ -1,6 +1,5 @@
-import React from "react";
-import styled from "styled-components";
-import { Text, IconText, Icon } from "@gnosis.pm/safe-react-components";
+import styled from 'styled-components';
+import { Text, IconText, Icon } from '@gnosis.pm/safe-react-components';
 
 const Wrapper = styled.div`
   display: flex;
@@ -12,7 +11,7 @@ const Wrapper = styled.div`
 `;
 
 const Image = styled.div<{ src: string }>`
-  background: url("${({ src }) => src}") no-repeat center;
+  background: url('${({ src }) => src}') no-repeat center;
   height: 60px;
   width: 60px;
   background-size: contain;
@@ -33,13 +32,7 @@ const WCClientInfo = ({ name, url, iconSrc }: Props) => {
           <Text size="xl" as="span" strong>
             {name}
           </Text>
-          <IconText
-            iconSize="sm"
-            iconType="check"
-            text="Connected"
-            textSize="lg"
-            color="primary"
-          />
+          <IconText iconSize="sm" iconType="check" text="Connected" textSize="lg" color="primary" />
         </Wrapper>
         <Wrapper>
           <a target="_blank" href={url} rel="noopener noreferrer">
