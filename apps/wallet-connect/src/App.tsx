@@ -19,12 +19,12 @@ const StyledText = styled(Text)`
 `;
 
 const StyledParagraph = styled(Text)`
-  display:flex;
-  flex:1;
+  display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   background: #008c73;
-  padding:18px 0 12px 0;
+  padding: 18px 0 12px 0;
   border-radius: 8px;
 `;
 
@@ -195,11 +195,17 @@ const App = () => {
 
   return (
     <>
-     {/* WalletConnect */}
-      {wcClientData && <StyledParagraph size="sm">
-        <Text color="white" size="xl">You need to have this WalletConnect Safe app open for transactions to pop up.</Text>
-        <Text color="white" size="xl">You will not receive transaction requests when you don't have it open.</Text>
-      </StyledParagraph>}
+      {/* WalletConnect */}
+      {wcClientData && (
+        <StyledParagraph size="sm">
+          <Text color="white" size="xl">
+            You need to have this WalletConnect Safe app open for transactions to pop up.
+          </Text>
+          <Text color="white" size="xl">
+            You will not receive transaction requests when you don't have it open.
+          </Text>
+        </StyledParagraph>
+      )}
       <Wrapper>
         <WCContent>
           <StyledTitle size="sm">Wallet Connect</StyledTitle>
