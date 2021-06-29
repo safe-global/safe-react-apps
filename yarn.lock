@@ -1452,11 +1452,6 @@
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-4.0.0.tgz#2fa53ba3e6a88c606787cc7c4d7836181e256024"
   integrity sha512-D+jFrRnhzmDbuA3D6tLH615WXdOtBEsv3qCAbBfXFDUiDbXFPVZbMdgnWUowA8he6PBbBYTn7LbSJaq/K5T3ZA==
 
-"@gnosis.pm/safe-apps-sdk@4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-4.0.0.tgz#2fa53ba3e6a88c606787cc7c4d7836181e256024"
-  integrity sha512-D+jFrRnhzmDbuA3D6tLH615WXdOtBEsv3qCAbBfXFDUiDbXFPVZbMdgnWUowA8he6PBbBYTn7LbSJaq/K5T3ZA==
-
 "@gnosis.pm/safe-react-components@^0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.5.0.tgz#ce72f3f0674d33bac507bf6409462655fb55f096"
