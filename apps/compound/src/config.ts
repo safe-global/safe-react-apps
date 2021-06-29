@@ -8,7 +8,7 @@ import usdcIcon from './images/asset_USDC.svg';
 import usdtIcon from './images/asset_USDT.svg';
 import zrxIcon from './images/asset_ZRX.svg';
 import tokens from './tokens';
-import {CHAINS} from './utils/networks'
+import { CHAINS } from './utils/networks'
 
 export type TokenItem = {
   id: string;
