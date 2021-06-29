@@ -6,9 +6,9 @@ enum CHAINS {
   GOERLI = 5,
   KOVAN = 42,
   XDAI = 100,
+  POLYGON = 137,
   ENERGY_WEB_CHAIN = 246,
   VOLTA = 73799,
-  POLYGON = 137,
 }
 
 const networkByChainId: {
@@ -21,9 +21,9 @@ const networkByChainId: {
   [CHAINS.GOERLI]: 'GOERLI',
   [CHAINS.KOVAN]: 'KOVAN',
   [CHAINS.XDAI]: 'XDAI',
-  [CHAINS.ENERGY_WEB_CHAIN]: 'ENERGY_WEENERGY_WEB_CHAIN',
-  [CHAINS.VOLTA]: 'VOLTA',
   [CHAINS.POLYGON]: 'POLYGON',
+  [CHAINS.ENERGY_WEB_CHAIN]: 'ENERGY_WEB_CHAIN',
+  [CHAINS.VOLTA]: 'VOLTA',
 };
 
 export { CHAINS, networkByChainId };

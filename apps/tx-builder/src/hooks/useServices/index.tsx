@@ -3,14 +3,14 @@ import Web3 from 'web3';
 
 import InterfaceRepository from './interfaceRepository';
 import { InterfaceRepo } from './interfaceRepository';
-import { rpcUrlGetterByNetwork } from '../../utils';
+import { CHAINS, rpcUrlGetterByNetwork } from '../../utils';
 
 export interface Services {
   web3: Web3 | undefined;
   interfaceRepo: InterfaceRepo | undefined;
 }
 
-export default function useServices(chainId: number): Services {
+export default function useServices(chainId: CHAINS): Services {
   const [web3, setWeb3] = useState<Web3 | undefined>();
   const [interfaceRepo, setInterfaceRepo] = useState<InterfaceRepository | undefined>();
 

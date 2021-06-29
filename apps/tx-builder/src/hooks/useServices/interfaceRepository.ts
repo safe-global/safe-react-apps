@@ -1,6 +1,8 @@
 import axios from 'axios';
 import memoize from 'lodash/memoize';
 
+import { CHAINS } from '../../utils';
+
 interface ContractMethod {
   inputs: any[];
   name: string;
@@ -14,28 +16,29 @@ export interface ContractInterface {
 const getAbi = memoize(async (apiUrl: string) => axios.get(apiUrl));
 
 const abiUrlGetterByNetwork: {
-  [key in number]?: ((address: string) => string) | null;
+  [key in CHAINS]?: ((address: string) => string) | null;
 } = {
-  1: (address: string) => `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
-  2: null,
-  4: (address: string) => `https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=${address}`,
-  3: null,
-  5: null,
-  42: null,
-  100: (address: string) => `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
-  246: (address: string) =>
-    `https://explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
-  73799: (address: string) =>
-    `https://volta-explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
-  137: (address: string) =>
+  [CHAINS.MAINNET]: (address: string) => `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  [CHAINS.MORDEN]: null,
+  [CHAINS.ROPSTEN]: null,
+  [CHAINS.RINKEBY]: (address: string) => `https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  [CHAINS.GOERLI]: null,
+  [CHAINS.KOVAN]: null,
+  [CHAINS.BSC]: (address: string) => `https://api.bscscan.com/api?module=contract&action=getabi&address=${address}`,
+  [CHAINS.XDAI]: (address: string) => `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
+  [CHAINS.POLYGON]: (address: string) =>
     `https://api.polygonscan.com/api?module=contract&action=getabi&address=${address}`,
+  [CHAINS.ENERGY_WEB_CHAIN]: (address: string) =>
+    `https://explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
+  [CHAINS.VOLTA]: (address: string) =>
+    `https://volta-explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
 };
 
 class InterfaceRepository {
-  chainId: number;
+  chainId: CHAINS;
   web3: any;
 
-  constructor(chainId: number, web3: any) {
+  constructor(chainId: CHAINS, web3: any) {
     this.chainId = chainId;
     this.web3 = web3;
   }
