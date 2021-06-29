@@ -26,8 +26,6 @@ const useWalletConnect = () => {
 
   const wcConnect = useCallback(
     async (uri: string) => {
-      const chainId = safe.chainId;
-
       const wcConnector = new WalletConnect({ uri });
       setConnector(wcConnector);
       setWcClientData(wcConnector.peerMeta);
@@ -40,7 +38,7 @@ const useWalletConnect = () => {
 
         wcConnector.approveSession({
           accounts: [safe.safeAddress],
-          chainId,
+          chainId: safe.chainId,
         });
 
         setWcClientData(payload.params[0].peerMeta);
