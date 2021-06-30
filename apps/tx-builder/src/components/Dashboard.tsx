@@ -32,7 +32,7 @@ const StyledTextFiled = styled(TextField)`
 
 const Dashboard = () => {
   const { safe } = useSafeAppsSDK();
-  const services = useServices(safe.network);
+  const services = useServices(safe.chainId);
 
   const [addressOrAbiInput, setAddressOrAbiInput] = useState('');
   const [contract, setContract] = useState<ContractInterface | null>(null);

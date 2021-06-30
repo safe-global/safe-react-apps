@@ -2,7 +2,7 @@
 // https://github.com/compound-finance/compound-protocol/tree/f33865017e15bd3e5b49d5cb34affcc572eebea3/networks
 
 const tokens = {
-  rinkeby: {
+  4: {
     DAI: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
     cDAI: '0x6D7F0754FFeb405d23C51CE938289d4835bE3b14',
 
@@ -27,7 +27,7 @@ const tokens = {
     ZRX: '0xddea378A6dDC8AfeC82C36E9b0078826bf9e68B6',
     cZRX: '0x52201ff1720134bBbBB2f6BC97Bf3715490EC19B',
   },
-  mainnet: {
+  1: {
     DAI: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     cDAI: '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643',
 

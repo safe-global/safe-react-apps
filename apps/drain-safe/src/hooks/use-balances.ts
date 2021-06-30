@@ -1,22 +1,24 @@
 import { useState, useEffect, useCallback } from 'react';
 import { fetchSafeAssets, Asset } from '../utils/api';
+import { networkByChainId } from '../utils/networks';
 
-function useBalances(safeAddress: string, network: string): { error?: Error; assets: Asset[] } {
+
+function useBalances(safeAddress: string, chainId: number): { error?: Error; assets: Asset[] } {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [error, setError] = useState<Error>();
 
   const loadBalances = useCallback(async () => {
-    if (!safeAddress || !network) {
+    if (!safeAddress || !chainId) {
       return;
     }
 
     try {
-      const data = await fetchSafeAssets(safeAddress, network);
+      const data = await fetchSafeAssets(safeAddress, networkByChainId[chainId]);
       setAssets(data);
     } catch (err) {
       setError(err);
     }
-  }, [safeAddress, network]);
+  }, [safeAddress, chainId]);
 
   useEffect(() => {
     loadBalances();
