@@ -59,7 +59,7 @@ const getInputHelper = (input: any) => {
 
 export const Builder = ({ contract, to }: Props): ReactElement | null => {
   const { sdk, safe } = useSafeAppsSDK();
-  const services = useServices(safe.network);
+  const services = useServices(safe.chainId);
 
   const [toInput, setToInput] = useState('');
   const [valueInput, setValueInput] = useState('');
@@ -218,8 +218,7 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
 
       {contract && !contract?.methods.length && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
 
-      {/* show `toInput`  when `to` is not a valid address */}
-      {to.length > 0 && !isValidAddress(to) && (
+      {to.length > 0 && (
         <StyledTextField
           style={{ marginTop: 10 }}
           value={toInput}

@@ -1,6 +1,6 @@
 import web3Utils, { AbiItem } from 'web3-utils';
 import abiCoder, { AbiCoder } from 'web3-eth-abi';
-import { Transaction } from '@gnosis.pm/safe-apps-sdk';
+import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk';
 import { Asset } from './api';
 import erc20 from '../abis/erc20';
 
@@ -9,7 +9,7 @@ export function encodeTxData(method: AbiItem, recipient: string, amount: string)
   return (abi as AbiCoder).encodeFunctionCall(method, [web3Utils.toChecksumAddress(recipient), amount]);
 }
 
-export function tokenToTx(recipient: string, item: Asset): Transaction {
+export function tokenToTx(recipient: string, item: Asset): BaseTransaction {
   return !item.tokenAddress
     ? {
         // Send ETH directly to the recipient address

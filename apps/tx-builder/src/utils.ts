@@ -1,16 +1,29 @@
-import { Networks } from '@gnosis.pm/safe-apps-sdk';
+export enum CHAINS {
+  MAINNET = 1,
+  MORDEN = 2,
+  ROPSTEN = 3,
+  RINKEBY = 4,
+  GOERLI = 5,
+  KOVAN = 42,
+  BSC = 56,
+  XDAI = 100,
+  POLYGON = 137,
+  ENERGY_WEB_CHAIN = 246,
+  VOLTA = 73799,
+}
 
 export const rpcUrlGetterByNetwork: {
-  [key in Networks]: null | ((token?: string) => string);
+  [key in CHAINS]: null | ((token?: string) => string);
 } = {
-  MAINNET: (token) => `https://mainnet.infura.io/v3/${token}`,
-  MORDEN: null,
-  ROPSTEN: null,
-  RINKEBY: (token) => `https://rinkeby.infura.io/v3/${token}`,
-  GOERLI: null,
-  KOVAN: null,
-  XDAI: () => 'https://dai.poa.network',
-  ENERGY_WEB_CHAIN: () => 'https://rpc.energyweb.org',
-  VOLTA: () => 'https://volta-rpc.energyweb.org',
-  UNKNOWN: null,
+  [CHAINS.MAINNET]: (token) => `https://mainnet.infura.io/v3/${token}`,
+  [CHAINS.MORDEN]: null,
+  [CHAINS.ROPSTEN]: null,
+  [CHAINS.RINKEBY]: (token) => `https://rinkeby.infura.io/v3/${token}`,
+  [CHAINS.GOERLI]: null,
+  [CHAINS.KOVAN]: null,
+  [CHAINS.BSC]: () => 'https://bsc-dataseed.binance.org',
+  [CHAINS.XDAI]: () => 'https://dai.poa.network',
+  [CHAINS.POLYGON]: () => 'https://rpc-mainnet.matic.network',
+  [CHAINS.ENERGY_WEB_CHAIN]: () => 'https://rpc.energyweb.org',
+  [CHAINS.VOLTA]: () => 'https://volta-rpc.energyweb.org',
 };
