@@ -1440,28 +1440,12 @@
     "@ethersproject/properties" "^5.1.0"
     "@ethersproject/strings" "^5.1.0"
 
-"@gnosis.pm/safe-apps-react-sdk@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-2.0.0.tgz#0d020d7d420e91dd980a79036ff5f4c2719f00c0"
-  integrity sha512-EDccQ3XZtIzyO06RRDlIkLWvsIedHrnMDxfSSn5Cxql4km6mrEhA4oUtJ+PsrzQrApiAmm76GenkKswH0NBt/g==
-  dependencies:
-    "@gnosis.pm/safe-apps-sdk" "2.0.0"
-    "@types/jest" "^26.0.20"
-
-"@gnosis.pm/safe-apps-react-sdk@^4.0.0":
+"@gnosis.pm/safe-apps-react-sdk@4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-4.0.0.tgz#15c5014bbf3e0bff6ef4c296f9b8c184a50eb7fa"
   integrity sha512-1+UoqdWUJOZ5cM+1hAosCMx2zHBNMC6YVm3vKYBfG8Er/z4VTimR27QldjVN241s/INA4Lw/LYmL5jFlynhOLw==
   dependencies:
     "@gnosis.pm/safe-apps-sdk" "4.0.0"
-
-"@gnosis.pm/safe-apps-sdk@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-2.0.0.tgz#6f18c7436a8402e4987b7846b9a9538c8d011a2a"
-  integrity sha512-Ig4RJNx9yZmEMALI6cqsx/kj77BPfVItbIX40/0K2ElbS9w9gyCRz0sp8w6vDot3O3qQ+0zDYbfmqzALT9/zLQ==
-  dependencies:
-    semver "^7.3.2"
-    web3-core "^1.3.0"
 
 "@gnosis.pm/safe-apps-sdk@4.0.0":
   version "4.0.0"
@@ -12905,7 +12889,7 @@ web3-core-subscriptions@1.3.5:
     underscore "1.9.1"
     web3-core-helpers "1.3.5"
 
-web3-core@1.3.5, web3-core@^1.3.0:
+web3-core@1.3.5:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/web3-core/-/web3-core-1.3.5.tgz#1e9335e6c4549dac09aaa07157242ebd6d097226"
   integrity sha512-VQjTvnGTqJwDwjKEHSApea3RmgtFGLDSJ6bqrOyHROYNyTyKYjFQ/drG9zs3rjDkND9mgh8foI1ty37Qua3QCQ==
