@@ -136,10 +136,10 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
         method.inputs.forEach((input, index) => {
           const cleanValue = inputCache[index] || '';
           parsedInputs[index] = parseInputValue(input, cleanValue);
-          inputDescription[index] = (input.name || input.type) + ': ' + cleanValue;
+          inputDescription[index] = `${(input.name || input.type)}: ${cleanValue}`;
         })
 
-        description = method.name + ' (' + inputDescription.join(', ') + ')';
+        description = `${method.name} (${inputDescription.join(', ')})`;
 
         try {
           data = web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs);
