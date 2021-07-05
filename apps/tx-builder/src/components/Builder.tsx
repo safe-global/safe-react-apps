@@ -59,7 +59,7 @@ const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/);
 const parseInputValue = (input: any, value: string): string => {
   // If there is a match with this regular expression we get an array value like the following
   // ex: ['uint16', 'uint', '16']. If no match, null is returned
-  const isNumberInput = input.type.match(paramTypeNumber)
+  const isNumberInput = paramTypeNumber.test(input.type)
 
   if (value.charAt(0) === '[') {
     return JSON.parse(value.replace(/"/g, '"'));
@@ -67,11 +67,11 @@ const parseInputValue = (input: any, value: string): string => {
     // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
     // To fix that we pad the numeric values here as the encode function is expecting a string
     // more info here https://github.com/ChainSafe/web3.js/issues/3772
-    const bitWidth = isNumberInput[2]
+    const bitWidth = input.type.match(paramTypeNumber)[2]
     return toBN(value).toString(10, bitWidth);
-  } else {
-    return value;
   }
+  
+  return value;
 }
 
 type Props = {
