@@ -11,7 +11,7 @@ import {
 } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import styled from 'styled-components';
-import { AbiItem } from 'web3-utils';
+import { AbiItem, toBN } from 'web3-utils';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
@@ -42,11 +42,6 @@ const StyledExamples = styled.div`
   }
 `;
 
-type Props = {
-  contract: ContractInterface | null;
-  to: string;
-};
-
 const getInputHelper = (input: any) => {
   // This code renders a helper for the input text.
   if (input.type.startsWith('tuple')) {
@@ -55,6 +50,33 @@ const getInputHelper = (input: any) => {
   } else {
     return input.type;
   }
+};
+
+// Same regex used for web3@1.3.6
+const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/);
+
+// This function is used to apply some parsing to some value types
+const parseInputValue = (input: any, value: string): string => {
+  // If there is a match with this regular expression we get an array value like the following
+  // ex: ['uint16', 'uint', '16']. If no match, null is returned
+  const isNumberInput = paramTypeNumber.test(input.type)
+
+  if (value.charAt(0) === '[') {
+    return JSON.parse(value.replace(/"/g, '"'));
+  } else if (isNumberInput) {
+    // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
+    // To fix that we pad the numeric values here as the encode function is expecting a string
+    // more info here https://github.com/ChainSafe/web3.js/issues/3772
+    const bitWidth = input.type.match(paramTypeNumber)[2]
+    return toBN(value).toString(10, bitWidth);
+  }
+  
+  return value;
+}
+
+type Props = {
+  contract: ContractInterface | null;
+  to: string;
 };
 
 export const Builder = ({ contract, to }: Props): ReactElement | null => {
@@ -108,21 +130,19 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
       const method = contract.methods[selectedMethodIndex];
 
       if (!['receive', 'fallback'].includes(method.name)) {
-        const cleanInputs = [];
-        description = method.name + ' (';
-        for (let i = 0; i < method.inputs.length; i++) {
-          const cleanValue = inputCache[i] || '';
-          cleanInputs[i] = cleanValue.charAt(0) === '[' ? JSON.parse(cleanValue.replace(/"/g, '"')) : cleanValue;
-          if (i > 0) {
-            description += ', ';
-          }
-          const input = method.inputs[i];
-          description += (input.name || input.type) + ': ' + cleanValue;
-        }
-        description += ')';
+        const parsedInputs: string[] = [];
+        const inputDescription: string[] = [];
 
         try {
-          data = web3.eth.abi.encodeFunctionCall(method as AbiItem, cleanInputs);
+          method.inputs.forEach((input, index) => {
+            const cleanValue = inputCache[index] || '';
+            parsedInputs[index] = parseInputValue(input, cleanValue);
+            inputDescription[index] = `${(input.name || input.type)}: ${cleanValue}`;
+          })
+
+          description = `${method.name} (${inputDescription.join(', ')})`;
+
+          data = web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs);
         } catch (error) {
           setAddTxError(error.message);
           return;
