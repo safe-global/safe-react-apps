@@ -62,14 +62,31 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
+      # Script to deploy to the dev environment
       - name: 'Deploy to S3: Develop'
-        run: bash ./scripts/deploy_to_s3_bucket.sh
         if: github.ref == 'refs/heads/development'
+        run: bash ./scripts/deploy_to_s3_bucket.sh
         env:
           BUCKET_NAME: ${{ secrets.AWS_DEV_BUCKET_NAME }}
 
+      # Script to deploy to staging environment
       - name: 'Deploy to S3: Staging'
-        run: bash ./scripts/deploy_to_s3_bucket.sh
         if: github.ref == 'refs/heads/master'
+        run: bash ./scripts/deploy_to_s3_bucket.sh
         env:
-          BUCKET_NAME: ${{ secrets.STAGING_BUCKET_NAME }}
+          BUCKET_NAME: ${{ secrets.STAGING_BUCKET_NAME }}/current
+
+      # Script to upload release files
+      - name: 'Upload to S3: apps build files for production'
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: bash ./scripts/deploy_to_s3_bucket.sh
+        env:
+          BUCKET_NAME: ${{ secrets.STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }}
+
+      # Script to notify production deployments
+      - run: bash ./scripts/prepare_production_deployment.sh
+        if: success() && startsWith(github.ref, 'refs/tags/v')
+        env:
+          PROD_DEPLOYMENT_HOOK_TOKEN: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
+          PROD_DEPLOYMENT_HOOK_URL: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
+          VERSION_TAG: ${{ github.event.release.tag_name }}
