@@ -9,6 +9,9 @@ on:
     branches:
       - master
       - development
+  # Launches build when release is published
+  release:
+    types: [published]
 env:
   REPO_NAME_SLUG: safe-react-apps
 
@@ -74,7 +77,7 @@ jobs:
 
       # Script to deploy to staging environment
       - name: 'Deploy to S3: Staging'
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master' || github.base_ref == 'refs/heads/master'
         run: bash ./scripts/deploy_to_s3_bucket.sh
         env:
           BUCKET_NAME: ${{ secrets.STAGING_BUCKET_NAME }}/current
