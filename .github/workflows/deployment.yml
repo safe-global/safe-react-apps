@@ -2,6 +2,9 @@ name: Deploy Dev/Master
 
 # Run on pushes to dev/master
 on:
+  pull_request:
+    branches:
+      - master
   push:
     branches:
       - master
