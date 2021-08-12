@@ -6,7 +6,7 @@ on:
   # Launches for pushes to main or dev
   push:
     branches:
-      - master
+      - main
       - development
   # Launches build when release is published
   release:
@@ -101,7 +101,7 @@ jobs:
 
       # Script to deploy to staging environment
       - name: 'Deploy to S3: Staging'
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         run: bash ./scripts/deploy_to_s3_bucket.sh
         env:
           BUCKET_NAME: ${{ secrets.STAGING_BUCKET_NAME }}/current

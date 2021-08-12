@@ -1,10 +1,10 @@
 # Gnosis Safe Apps 
 
-[![Logo](https://raw.githubusercontent.com/gnosis/safe-react-apps/master/assets/logo.png)](https://gnosis.pm/)
+[![Logo](https://raw.githubusercontent.com/gnosis/safe-react-apps/main/assets/logo.png)](https://gnosis.pm/)
 
-[![Build Status](https://travis-ci.com/gnosis/safe-react-apps.svg?branch=master)](https://travis-ci.com/gnosis/safe-react-apps)
+[![Build Status](https://travis-ci.com/gnosis/safe-react-apps.svg?branch=main)](https://travis-ci.com/gnosis/safe-react-apps)
 
-This project contains the apps developed by Gnosis to be consumed by Safe Multisig.
+This project contains the apps developed by Gnosis to be consumed by Gnosis Safe.
 
 
 ## Install
@@ -21,19 +21,18 @@ Configure your `.env` file starting from `.env.example` one. Fill the provided e
 
 ## Build
 
-We use yarn workspaces to handle different apps inside this project. To build each app you can use one of the following commands:
+We use yarn workspaces to handle different apps inside this project. All apps are built with this command:
 
 ```bash
-yarn build-compound
-yarn build-tx-builder
-yarn build-wallet-connect
+yarn build
 ```
 
 ### Run locally
-You can also run this apps locally using the following commands:
+You can also run each app locally using the following commands:
 
 ```bash
 yarn start-compound
+yarn start-drain-safe
 yarn start-tx-builder
 yarn start-wallet-connect
 ```
