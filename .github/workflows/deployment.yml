@@ -16,7 +16,7 @@ env:
   REPO_NAME_SLUG: safe-react-apps
 
 jobs:
-debug:
+  debug:
     name: Debug
     runs-on: ubuntu-latest
     steps:
