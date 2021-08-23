@@ -1,0 +1,22 @@
+{
+  "short_name": "Dashboard",
+  "name": "Safe Dashboard",
+  "description": "Essential info about your Safe",
+  "iconPath": "logo.svg",
+  "icons": [
+    {
+      "src": "logo.svg",
+      "type": "image/svg",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo.svg",
+      "type": "image/svg",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
