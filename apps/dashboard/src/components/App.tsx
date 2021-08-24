@@ -8,10 +8,11 @@ import Balances from './Balances';
 import Transactions from './Transactions';
 import PieChart from './PieChart';
 import AddressInfo from './AddressInfo';
+import config from '../config'
 
-const clientGatewayUrl = 'https://safe-client.staging.gnosisdev.com/v1';
 const CURRENCY = 'USD'
 const MAX_TXNS = 4
+const MAX_OWNERS = 3
 
 const App: React.FC = () => {
   const { safe } = useSafeAppsSDK();
@@ -24,6 +25,7 @@ const App: React.FC = () => {
     if (!safe.chainId || !safe.safeAddress) { return; }
 
     const chainId = safe.chainId.toString()
+    const { clientGatewayUrl } = config;
 
     getBalances(clientGatewayUrl, chainId, safe.safeAddress, CURRENCY)
       .then((data) => {
@@ -49,7 +51,7 @@ const App: React.FC = () => {
     <div style={{ padding: '0 30px 50px' }}>
       <Flex>
         <div style={{ flex: 1 }}>
-          <Title size="md">Safe Dashboard</Title>
+          <Title size="md">Safe Dachboard</Title>
         </div>
 
         <label style={{ flex: 1 }}>
@@ -86,7 +88,7 @@ const App: React.FC = () => {
           <div style={{ width: '40%' }}>
             <Title size="md">Owners</Title>
             <div style={{ maxHeight: '300px', overflow: 'auto' }}>
-              {safeInfo.owners.map((owner) => (
+              {safeInfo.owners.slice(0, MAX_OWNERS).map((owner) => (
                 <AddressInfo hash={owner.value} key={owner.value} />
               ))}
             </div>
