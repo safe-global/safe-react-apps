@@ -87,6 +87,18 @@ const useWalletConnect = () => {
               break;
             }
 
+            case 'personal_sign': {
+              const [message, address] = payload.params;
+
+              if (!areStringsEqual(address, safe.safeAddress)) {
+                throw new Error('The address or message hash is invalid');
+              }
+
+              await sdk.txs.signMessage(message);
+
+              return '0x';
+            }
+
             case 'eth_sign': {
               const [address, messageHash] = payload.params;
 
@@ -94,17 +106,9 @@ const useWalletConnect = () => {
                 throw new Error('The address or message hash is invalid');
               }
 
-              const callData = encodeSignMessageCall(messageHash);
-              await sdk.txs.send({
-                txs: [
-                  {
-                    to: safe.safeAddress,
-                    value: '0x0',
-                    data: callData,
-                  },
-                ],
-              });
-              break;
+              await sdk.txs.signMessage(messageHash);
+
+              return '0x';
             }
             default: {
               rejectWithMessage(wcConnector, payload.id, 'METHOD_NOT_SUPPORTED');
