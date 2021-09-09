@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect } from 'react';
 import WalletConnect from '@walletconnect/client';
 import { IClientMeta } from '@walletconnect/types';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import { encodeSignMessageCall } from '../utils/signatures';
 import { isMetaTxArray } from '../utils/transactions';
 import { areStringsEqual } from '../utils/strings';
 

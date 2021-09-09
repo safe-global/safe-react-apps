@@ -4,7 +4,6 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "@ethersproject/abi": "^5.4.1",
     "@gnosis.pm/safe-react-components": "^0.8.0",
     "@walletconnect/client": "^1.5.2",
     "date-fns": "^2.23.0",
