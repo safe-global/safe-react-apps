@@ -45,8 +45,9 @@ const StyledExamples = styled.div`
 const getInputHelper = (input: any) => {
   // This code renders a helper for the input text.
   if (input.type.startsWith('tuple')) {
-    return `tuple(${input.components.map((c: any) => c.internalType).toString()})${input.type.endsWith('[]') ? '[]' : ''
-      }`;
+    return `tuple(${input.components.map((c: any) => c.internalType).toString()})${
+      input.type.endsWith('[]') ? '[]' : ''
+    }`;
   } else {
     return input.type;
   }
@@ -59,7 +60,7 @@ const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/);
 const parseInputValue = (input: any, value: string): string => {
   // If there is a match with this regular expression we get an array value like the following
   // ex: ['uint16', 'uint', '16']. If no match, null is returned
-  const isNumberInput = paramTypeNumber.test(input.type)
+  const isNumberInput = paramTypeNumber.test(input.type);
 
   if (value.charAt(0) === '[') {
     return JSON.parse(value.replace(/"/g, '"'));
@@ -67,12 +68,12 @@ const parseInputValue = (input: any, value: string): string => {
     // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
     // To fix that we pad the numeric values here as the encode function is expecting a string
     // more info here https://github.com/ChainSafe/web3.js/issues/3772
-    const bitWidth = input.type.match(paramTypeNumber)[2]
+    const bitWidth = input.type.match(paramTypeNumber)[2];
     return toBN(value).toString(10, bitWidth);
   }
-  
+
   return value;
-}
+};
 
 type Props = {
   contract: ContractInterface | null;
@@ -137,14 +138,14 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
           method.inputs.forEach((input, index) => {
             const cleanValue = inputCache[index] || '';
             parsedInputs[index] = parseInputValue(input, cleanValue);
-            inputDescription[index] = `${(input.name || input.type)}: ${cleanValue}`;
-          })
+            inputDescription[index] = `${input.name || input.type}: ${cleanValue}`;
+          });
 
           description = `${method.name} (${inputDescription.join(', ')})`;
 
           data = web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs);
         } catch (error) {
-          setAddTxError(error.message);
+          setAddTxError((error as Error).message);
           return;
         }
       }
@@ -189,7 +190,9 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
         return false;
       }
       return services?.web3?.utils.isAddress(address);
-    }, [services.web3]);
+    },
+    [services.web3],
+  );
 
   const sendTransactions = async () => {
     if (!transactions.length) {
