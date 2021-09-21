@@ -1955,17 +1955,17 @@
     "@ethersproject/properties" "^5.4.0"
     "@ethersproject/strings" "^5.4.0"
 
-"@gnosis.pm/safe-apps-react-sdk@4.0.4-next.2":
-  version "4.0.4-next.2"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-4.0.4-next.2.tgz#dc4bd55945486ba9b31a2954ca771b0f5e9183c8"
-  integrity sha512-pG9OkbbYeZZkS0rBCOuoMghnzCh6UyRftVe0KfSyEgeQpzuql5HyjtMZDioOx3jnW3DEhFZjIXHC56DRrGNoDw==
+"@gnosis.pm/safe-apps-react-sdk@4.0.4":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-4.0.4.tgz#1286beea5e9b518bf1368f9cfa07f6d41b83ab33"
+  integrity sha512-B9HOKNHuq4SImfVCgEsNGhGQp5vcKy2QCCgAFlORQkCbrclnP0IswgS8Y4hDkEoIieLljhqjzKjlGtsXNreJ3w==
   dependencies:
-    "@gnosis.pm/safe-apps-sdk" "4.3.0-next.2"
+    "@gnosis.pm/safe-apps-sdk" "4.3.0"
 
-"@gnosis.pm/safe-apps-sdk@4.3.0-next.2":
-  version "4.3.0-next.2"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-4.3.0-next.2.tgz#90cd433c3183cee0f6cb4de5e5337e24f884caf6"
-  integrity sha512-1bNVRh2K5NP0sRj1URU4z6mF4chyeCGdr871yXqLLOv99zBrFQgDv8gBnSzva3hzth46YBb+zSAFGQHkmcpH0Q==
+"@gnosis.pm/safe-apps-sdk@4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-4.3.0.tgz#37337035a2f0cc8aca54d9f20321778054dde342"
+  integrity sha512-Evr/TdTmUUZXVZF0dcU1gLZj04+8Ea/6R8S3tRzxyOW5cN81NUuPNIiF5x/5Os3Mi+iPNG7qUZ5IHsU6Av3zPw==
   dependencies:
     "@changesets/cli" "^2.16.0"
     ethers "^5.4.5"
@@ -5498,10 +5498,10 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
-date-fns@^2.23.0:
-  version "2.23.0"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.23.0.tgz#4e886c941659af0cf7b30fafdd1eaa37e88788a9"
-  integrity sha512-5ycpauovVyAk0kXNZz6ZoB9AYMZB4DObse7P3BPWmyEjXNORTI8EJ6X0uaSAq4sCHzM1uajzrkr6HnsLQpxGXA==
+date-fns@^2.24.0:
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.24.0.tgz#7d86dc0d93c87b76b63d213b4413337cfd1c105d"
+  integrity sha512-6ujwvwgPID6zbI0o7UbURi2vlLDR9uP26+tW6Lg+Ji3w7dd0i3DOcjcClLjLPranT60SSEFBwdSyYwn/ZkPIuw==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
@@ -13527,10 +13527,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^4.3.4:
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.4.tgz#3f85b986945bcf31071decdd96cf8bfa65f9dcbc"
-  integrity sha512-uauPG7XZn9F/mo+7MrsRjyvbxFpzemRjKEZXS4AK83oP2KKOJPvb+9cO/gmnv8arWZvhnjVOXz7B49m1l0e9Ew==
+typescript@^4.4.3:
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.3.tgz#bdc5407caa2b109efd4f82fe130656f977a29324"
+  integrity sha512-4xfscpisVgqqDfPaJo5vkd+Qd/ItkoagnHpufr+i2QCHBsNYp+G7UAoyFl8aPtx879u38wPV65rZ8qbGZijalA==
 
 ultron@~1.1.0:
   version "1.1.1"
