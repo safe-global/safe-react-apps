@@ -120,7 +120,7 @@ const useWalletConnect = () => {
             result,
           });
         } catch (err) {
-          rejectWithMessage(wcConnector, payload.id, err.message);
+          rejectWithMessage(wcConnector, payload.id, (err as Error).message);
         }
       });
 
