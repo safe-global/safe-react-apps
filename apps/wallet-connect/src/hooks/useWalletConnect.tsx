@@ -95,7 +95,8 @@ const useWalletConnect = () => {
 
               await sdk.txs.signMessage(message);
 
-              return '0x';
+              result = '0x';
+              break;
             }
 
             case 'eth_sign': {
@@ -107,7 +108,8 @@ const useWalletConnect = () => {
 
               await sdk.txs.signMessage(messageHash);
 
-              return '0x';
+              result = '0x';
+              break;
             }
             default: {
               rejectWithMessage(wcConnector, payload.id, 'METHOD_NOT_SUPPORTED');
