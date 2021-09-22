@@ -1,13 +1,18 @@
-name: Deploy Dev/Master
-
-# Run on pushes to dev/master
+name: Deploy safe apps
+# Run on pushes to dev/main or PR
 on:
+  # Pull request hook without any config. Launches for every pull request
+  pull_request:
+  # Launches for pushes to main or dev
   push:
     branches:
-      - master
+      - main
       - development
+  # Launches build when release is published
+  release:
+    types: [published]
 env:
-  REPO_NAME_SLUG: safe-react-apps
+  REPO_NAME_ALPHANUMERIC: safereactapps
 
 jobs:
   deploy:
@@ -15,6 +20,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
       - name: Remove broken apt repos [Ubuntu]
         if: ${{ runner.os }} == 'ubuntu-latest'
         run: |
@@ -62,14 +71,52 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
+      # Script to deploy Pull Requests
+      - run: bash ./scripts/deploy_pr.sh
+        if: success() && github.event.number
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+          REVIEW_BUCKET_NAME: ${{ secrets.AWS_REVIEW_BUCKET_NAME }}
+
+      - name: 'PRaul: Comment PR with app URLs'
+        if: success() && github.event.number
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            * [Compound app](${{ env.REVIEW_FEATURE_URL }}/compound/)
+            * [WalletConnect app](${{ env.REVIEW_FEATURE_URL }}/wallet-connect/)
+            * [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)
+            * [Drain Account App](${{ env.REVIEW_FEATURE_URL }}/drain-safe/)
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
+        env:
+          REVIEW_FEATURE_URL: https://pr${{ github.event.number }}--${{ env.REPO_NAME_ALPHANUMERIC }}.review.gnosisdev.com
+
+      # Script to deploy to the dev environment
       - name: 'Deploy to S3: Develop'
-        run: bash ./scripts/deploy_to_s3_bucket.sh
         if: github.ref == 'refs/heads/development'
+        run: bash ./scripts/deploy_to_s3_bucket.sh
         env:
           BUCKET_NAME: ${{ secrets.AWS_DEV_BUCKET_NAME }}
 
+      # Script to deploy to staging environment
       - name: 'Deploy to S3: Staging'
+        if: github.ref == 'refs/heads/main'
         run: bash ./scripts/deploy_to_s3_bucket.sh
-        if: github.ref == 'refs/heads/master'
         env:
-          BUCKET_NAME: ${{ secrets.STAGING_BUCKET_NAME }}
+          BUCKET_NAME: ${{ secrets.STAGING_BUCKET_NAME }}/current
+
+      # Script to upload release files
+      - name: 'Upload to S3: apps build files for production'
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: bash ./scripts/deploy_to_s3_bucket.sh
+        env:
+          BUCKET_NAME: ${{ secrets.STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }}
+
+      # Script to notify production deployments
+      - run: bash ./scripts/prepare_production_deployment.sh
+        if: success() && startsWith(github.ref, 'refs/tags/v')
+        env:
+          PROD_DEPLOYMENT_HOOK_TOKEN: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
+          PROD_DEPLOYMENT_HOOK_URL: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
+          VERSION_TAG: ${{ github.event.release.tag_name }}
