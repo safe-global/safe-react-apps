@@ -16,6 +16,7 @@ export interface Asset {
   fiatCode: string;
   tokenAddress: string | null;
   token: Token | null;
+  spam: boolean | null;
 }
 
 export const CURRENCY = 'USD';
@@ -24,5 +25,6 @@ export async function fetchSafeAssets(safeAddress: string, safeNetwork: string):
   const network = safeNetwork.toLowerCase(); // mainnet, rinkeby etc
   const url = `https://safe-transaction.${network}.gnosis.io/api/v1/safes/${safeAddress}/balances/${CURRENCY.toLowerCase()}/?exclude_spam=true`;
   const data = await fetchJson(url);
+
   return data as Asset[];
 }

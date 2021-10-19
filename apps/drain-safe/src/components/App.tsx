@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Title, TextField, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import web3Utils from 'web3-utils';
-import { Asset } from '../utils/api';
-import useBalances from '../hooks/use-balances';
+import useBalances, { DrainSafeTokenBalance } from '../hooks/use-balances';
 import { tokenToTx } from '../utils/sdk-helpers';
 import FormContainer from './FormContainer';
 import Flex from './Flex';
@@ -14,11 +13,16 @@ import CancelButton from './CancelButton';
 
 const App: React.FC = () => {
   const { sdk, safe } = useSafeAppsSDK();
-  const { assets, error: balancesError }: { assets: Asset[]; error?: Error } = useBalances(
-    safe.safeAddress,
-    safe.chainId,
-  );
-  const [emptyAssets, setEmptyAssets] = useState<Asset[] | null>(null);
+  const {
+    assets,
+    setAssets,
+    error: balancesError,
+  }: {
+    assets: DrainSafeTokenBalance[];
+    setAssets: (assets: DrainSafeTokenBalance[]) => void;
+    error?: Error;
+  } = useBalances(safe.safeAddress, safe.chainId);
+  const [emptyAssets, setEmptyAssets] = useState<DrainSafeTokenBalance[] | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [toAddress, setToAddress] = useState<string>('');
   const [isFinished, setFinished] = useState<boolean>(false);
@@ -35,9 +39,10 @@ const App: React.FC = () => {
   };
 
   const sendTxs = async (): Promise<string> => {
-    const txs = assets.map((item) => tokenToTx(toAddress, item));
-    const data = await sdk.txs.send({ txs });
-    return data.safeTxHash;
+    const txs = assets.filter((item) => !item.spam).map((item) => tokenToTx(toAddress, item));
+    console.log(txs);
+    // const data = await sdk.txs.send({ txs });
+    return Promise.resolve('hash');
   };
 
   const submitTx = async (): Promise<void> => {
@@ -98,7 +103,7 @@ const App: React.FC = () => {
         <Title size="md">Drain Account</Title>
       </Flex>
 
-      <Balances assets={emptyAssets || assets} />
+      <Balances assets={emptyAssets || assets} onAssetsChanged={setAssets} />
 
       {error && <Text size="lg">{error}</Text>}
 
