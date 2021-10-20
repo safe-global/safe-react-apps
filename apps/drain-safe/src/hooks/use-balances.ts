@@ -23,8 +23,6 @@ function useBalances(
 
     try {
       const balances = await sdk.safe.experimental_getBalances({ currency: 'USD' });
-      console.log('BALANCES', balances);
-      // const data = await fetchSafeAssets(safeAddress, networkByChainId[chainId]);
       setAssets(
         balances.items.map((item) => ({
           ...item,

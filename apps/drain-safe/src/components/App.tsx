@@ -40,9 +40,8 @@ const App: React.FC = () => {
 
   const sendTxs = async (): Promise<string> => {
     const txs = assets.filter((item) => !item.spam).map((item) => tokenToTx(toAddress, item));
-    console.log(txs);
-    // const data = await sdk.txs.send({ txs });
-    return Promise.resolve('hash');
+    const data = await sdk.txs.send({ txs });
+    return data.safeTxHash;
   };
 
   const submitTx = async (): Promise<void> => {

@@ -4,13 +4,15 @@ import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk';
 import erc20 from '../abis/erc20';
 import { DrainSafeTokenBalance } from '../hooks/use-balances';
 
+const NATIVE_TOKEN = 'NATIVE_TOKEN';
+
 export function encodeTxData(method: AbiItem, recipient: string, amount: string): string {
   const abi = abiCoder as unknown; // a bug in the web3-eth-abi types
   return (abi as AbiCoder).encodeFunctionCall(method, [web3Utils.toChecksumAddress(recipient), amount]);
 }
 
 export function tokenToTx(recipient: string, item: DrainSafeTokenBalance): BaseTransaction {
-  return !item.tokenInfo.address
+  return item.tokenInfo.type === NATIVE_TOKEN
     ? {
         // Send ETH directly to the recipient address
         to: web3Utils.toChecksumAddress(recipient),
