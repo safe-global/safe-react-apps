@@ -66,11 +66,16 @@ const App: React.FC = () => {
     setToAddress('');
 
     setEmptyAssets(
-      assets.map((item) => ({
-        ...item,
-        balance: '0',
-        fiatBalance: '0',
-      })),
+      assets.map((item) =>
+        item.spam
+          ? item
+          : {
+              ...item,
+              spam: false,
+              balance: '0',
+              fiatBalance: '0',
+            },
+      ),
     );
   };
 
