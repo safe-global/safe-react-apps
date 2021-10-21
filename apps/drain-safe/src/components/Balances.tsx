@@ -1,15 +1,19 @@
 import { Table, Checkbox } from '@gnosis.pm/safe-react-components';
-import { Token, CURRENCY } from '../utils/api';
 import { formatTokenValue, formatCurrencyValue } from '../utils/formatters';
 import Icon from './Icon';
+import { TokenInfo } from '@gnosis.pm/safe-apps-sdk';
 import Flex from './Flex';
 import { DrainSafeTokenBalance } from '../hooks/use-balances';
 
-const ethToken: Token = {
+const CURRENCY = 'USD';
+
+const ethToken: TokenInfo = {
   logoUri: './eth.svg',
   symbol: 'ETH',
   name: 'Ether',
   decimals: 18,
+  type: 'NATIVE_TOKEN',
+  address: '',
 };
 
 function Balances({
