@@ -4,9 +4,8 @@ import * as safeAppsSdk from '@gnosis.pm/safe-apps-react-sdk';
 import useBalances from '../hooks/use-balances';
 import App from '../components/App';
 import renderWithProviders from '../../internals/renderWithProviders';
-import { SAFE_BALANCES } from '../../internals/safeBalancesMock';
 
-const mockSendTxs = jest.fn();
+const mockSendTxs = jest.fn().mockResolvedValue({ safeTxHash: 'safeTxHash' });
 
 jest.mock('@gnosis.pm/safe-apps-react-sdk', () => ({
   useSafeAppsSDK: () => ({
@@ -86,6 +85,7 @@ describe('<App />', () => {
     await screen.findByText('ChainLink Token');
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '0x301812eb4c89766875eFe61460f7a8bBC0CadB96' } });
     fireEvent.click(screen.getByText('Transfer everything'));
+
     expect(mockSendTxs).toHaveBeenCalledWith(TXS_REQUEST);
   });
 
@@ -94,6 +94,7 @@ describe('<App />', () => {
 
     await screen.findByText('ChainLink Token');
     fireEvent.click(screen.getByText('Transfer everything'));
+
     expect(await screen.findByText('Please enter a valid recipient address')).toBeInTheDocument();
   });
 });

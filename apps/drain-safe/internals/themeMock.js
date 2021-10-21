@@ -1,4 +1,4 @@
-export const THEME = {
+export const themeMock = {
   buttons: {
     size: {
       md: { height: '36px', minWidth: '130px', padding: '0 24px' },

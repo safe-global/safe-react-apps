@@ -1,9 +1,9 @@
 import { ThemeProvider } from 'styled-components';
 import { render } from '@testing-library/react';
-import { THEME } from './themeMock';
+import { themeMock } from './themeMock';
 
 export default function renderWithProviders(ui) {
   return {
-    ...render(<ThemeProvider theme={THEME}>{ui}</ThemeProvider>),
+    ...render(<ThemeProvider theme={themeMock}>{ui}</ThemeProvider>),
   };
 }
