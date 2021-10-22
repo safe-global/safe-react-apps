@@ -1,4 +1,8 @@
-export const themeMock = {
+import { ThemeProvider } from 'styled-components';
+import { render } from '@testing-library/react';
+import React from 'react';
+
+export const THEME = {
   buttons: {
     size: {
       md: { height: '36px', minWidth: '130px', padding: '0 24px' },
@@ -146,3 +150,24 @@ export const themeMock = {
     },
   },
 };
+
+export const TXS_REQUEST = {
+  txs: [
+    {
+      data: '0x',
+      to: '0x301812eb4c89766875eFe61460f7a8bBC0CadB96',
+      value: '949938510499549077',
+    },
+    {
+      data: '0xa9059cbb000000000000000000000000301812eb4c89766875efe61460f7a8bbc0cadb960000000000000000000000000000000000000000000000008ac7230489e80000',
+      to: '0x01BE23585060835E02B77ef475b0Cc51aA1e0709',
+      value: '0',
+    },
+  ],
+};
+
+export function renderWithProviders(ui: JSX.Element) {
+  return {
+    ...render(<ThemeProvider theme={THEME}>{ui}</ThemeProvider>),
+  };
+}
