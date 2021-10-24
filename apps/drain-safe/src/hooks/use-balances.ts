@@ -32,7 +32,8 @@ function useBalances(
     } catch (err) {
       setError(err as Error);
     }
-  }, [safeAddress, chainId, sdk.safe]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [safeAddress, chainId]);
 
   useEffect(() => {
     loadBalances();
