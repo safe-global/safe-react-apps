@@ -28,40 +28,40 @@ describe('<App />', () => {
   it('should render the tokens in the safe balance', async () => {
     const { container, debug } = renderWithProviders(<App />);
 
-    expect(await screen.findByText('Ether')).toBeInTheDocument();
-    expect(await screen.findByText('0.949938510499549077')).toBeInTheDocument();
+    expect(await screen.findByText(/ether/i)).toBeInTheDocument();
+    expect(await screen.findByText(/0.949938510499549077/)).toBeInTheDocument();
   });
 
   it('should drain the safe when submit button is clicked', async () => {
     const { container, debug } = renderWithProviders(<App />);
 
-    await screen.findByText('ChainLink Token');
+    await screen.findByText(/chainLink token/i);
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '0x301812eb4c89766875eFe61460f7a8bBC0CadB96' } });
-    fireEvent.click(screen.getByText('Transfer everything'));
+    fireEvent.click(screen.getByText(/transfer everything/i));
 
     expect(mockSendTxs).toHaveBeenCalledWith(mockTxsRequest);
   });
 
-  it('should show an error if no recipient address is provided', async () => {
+  it('should drain the safe when submit button is clicked removing the spam tokens selected by the user', async () => {
     const { container, debug } = renderWithProviders(<App />);
 
-    await screen.findByText('ChainLink Token');
-    fireEvent.click(screen.getByText('Transfer everything'));
-
-    expect(await screen.findByText('Please enter a valid recipient address')).toBeInTheDocument();
-  });
-
-  it('should drain the safe when submit button is clicked', async () => {
-    const { container, debug } = renderWithProviders(<App />);
-
-    const checkboxElement = await screen.findAllByRole('checkbox');
-    fireEvent.click(checkboxElement[1]);
+    fireEvent.click((await screen.findAllByRole('checkbox'))[1]);
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '0x301812eb4c89766875eFe61460f7a8bBC0CadB96' } });
-    fireEvent.click(screen.getByText('Transfer everything'));
+    fireEvent.click(screen.getByText(/transfer everything/i));
+
     await waitFor(() =>
       expect(mockSendTxs).toHaveBeenCalledWith({
         txs: [mockTxsRequest.txs[0]],
       }),
     );
+  });
+
+  it('should show an error if no recipient address is entered', async () => {
+    const { container, debug } = renderWithProviders(<App />);
+
+    await screen.findByText(/chainLink token/i);
+    fireEvent.click(screen.getByText(/transfer everything/i));
+
+    expect(await screen.findByText(/please enter a valid recipient address/i)).toBeInTheDocument();
   });
 });

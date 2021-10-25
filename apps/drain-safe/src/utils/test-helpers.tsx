@@ -17,6 +17,18 @@ export const mockTheme = {
   },
   text: {
     size: {
+      sm: {
+        fontSize: '',
+        lineHeight: '',
+      },
+      md: {
+        fontSize: '',
+        lineHeight: '',
+      },
+      lg: {
+        fontSize: '',
+        lineHeight: '',
+      },
       xl: {
         fontSize: '',
         lineHeight: '',
