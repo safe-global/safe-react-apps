@@ -23,6 +23,7 @@ function useBalances(
 
     try {
       const balances = await sdk.safe.experimental_getBalances({ currency: 'USD' });
+
       setAssets(
         balances.items.map((item) => ({
           ...item,
@@ -32,8 +33,7 @@ function useBalances(
     } catch (err) {
       setError(err as Error);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [safeAddress, chainId]);
+  }, [safeAddress, chainId, sdk]);
 
   useEffect(() => {
     loadBalances();

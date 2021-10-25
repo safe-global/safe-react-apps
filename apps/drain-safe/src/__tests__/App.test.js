@@ -7,21 +7,34 @@ import App from '../components/App';
 
 const mockSendTxs = jest.fn().mockResolvedValue({ safeTxHash: 'safeTxHash' });
 
+const memoize = (func) => {
+  const results = {};
+  return (...args) => {
+    const argsKey = JSON.stringify(args);
+    if (!results[argsKey]) {
+      results[argsKey] = func(...args);
+    }
+    return results[argsKey];
+  };
+};
+
 jest.mock('@gnosis.pm/safe-apps-react-sdk', () => ({
-  useSafeAppsSDK: () => ({
+  // Memoize in other to keep the same reference to the sdk in the mocked hook
+  useSafeAppsSDK: memoize(() => ({
     sdk: {
       txs: { send: mockSendTxs },
       safe: {
-        experimental_getBalances: jest.fn().mockResolvedValue({
-          items: mockInitialBalances,
-        }),
+        experimental_getBalances: () =>
+          Promise.resolve({
+            items: mockInitialBalances,
+          }),
       },
     },
     safe: {
       safeAddress: 'safeAddress',
       chainId: 'chainId',
     },
-  }),
+  })),
 }));
 
 describe('<App />', () => {
