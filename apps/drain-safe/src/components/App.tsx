@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Title, TextField, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
+import { TokenBalance } from '@gnosis.pm/safe-apps-sdk';
 import web3Utils from 'web3-utils';
-import useBalances, { DrainSafeTokenBalance } from '../hooks/use-balances';
+import useBalances, { BalancesType } from '../hooks/use-balances';
 import { tokenToTx } from '../utils/sdk-helpers';
 import FormContainer from './FormContainer';
 import Flex from './Flex';
@@ -15,14 +16,11 @@ const App: React.FC = () => {
   const { sdk, safe } = useSafeAppsSDK();
   const {
     assets,
-    setAssets,
+    excludedTokens,
+    setExcludedTokens,
     error: balancesError,
-  }: {
-    assets: DrainSafeTokenBalance[];
-    setAssets: (assets: DrainSafeTokenBalance[]) => void;
-    error?: Error;
-  } = useBalances(safe.safeAddress, safe.chainId);
-  const [emptyAssets, setEmptyAssets] = useState<DrainSafeTokenBalance[] | null>(null);
+  }: BalancesType = useBalances(safe.safeAddress, safe.chainId);
+  const [emptyAssets, setEmptyAssets] = useState<TokenBalance[] | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [toAddress, setToAddress] = useState<string>('');
   const [isFinished, setFinished] = useState<boolean>(false);
@@ -39,7 +37,9 @@ const App: React.FC = () => {
   };
 
   const sendTxs = async (): Promise<string> => {
-    const txs = assets.filter((item) => !item.exclude).map((item) => tokenToTx(toAddress, item));
+    const txs = assets
+      .filter((item) => !excludedTokens.includes(item.tokenInfo.address))
+      .map((item) => tokenToTx(toAddress, item));
     const data = await sdk.txs.send({ txs });
 
     return data?.safeTxHash;
@@ -65,18 +65,13 @@ const App: React.FC = () => {
     setSubmitting(false);
     setFinished(true);
     setToAddress('');
-
+    setExcludedTokens([]);
     setEmptyAssets(
-      assets.map((item) =>
-        item.exclude
-          ? item
-          : {
-              ...item,
-              exclude: false,
-              balance: '0',
-              fiatBalance: '0',
-            },
-      ),
+      assets.map((item) => ({
+        ...item,
+        balance: '0',
+        fiatBalance: '0',
+      })),
     );
   };
 
@@ -95,6 +90,14 @@ const App: React.FC = () => {
     resetMessages();
   };
 
+  const handleExcludeChange = (tokenAddress: string, checked: boolean): void => {
+    if (checked) {
+      setExcludedTokens([...excludedTokens, tokenAddress]);
+    } else {
+      setExcludedTokens(excludedTokens.filter((address) => address !== tokenAddress));
+    }
+  };
+
   useEffect(() => {
     if (balancesError) {
       onError('Failed fetching balances', balancesError);
@@ -108,7 +111,7 @@ const App: React.FC = () => {
         <Title size="md">Drain Account</Title>
       </Flex>
 
-      <Balances assets={emptyAssets || assets} onAssetsChanged={setAssets} />
+      <Balances assets={emptyAssets || assets} exclude={excludedTokens} onExcludeChange={handleExcludeChange} />
 
       {error && <Text size="lg">{error}</Text>}
 

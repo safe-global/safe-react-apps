@@ -1,9 +1,8 @@
 import { Table, Checkbox } from '@gnosis.pm/safe-react-components';
 import { formatTokenValue, formatCurrencyValue } from '../utils/formatters';
 import Icon from './Icon';
-import { TokenInfo } from '@gnosis.pm/safe-apps-sdk';
+import { TokenBalance, TokenInfo } from '@gnosis.pm/safe-apps-sdk';
 import Flex from './Flex';
-import { DrainSafeTokenBalance } from '../hooks/use-balances';
 
 const CURRENCY = 'USD';
 
@@ -18,15 +17,15 @@ const ethToken: TokenInfo = {
 
 function Balances({
   assets,
-  onAssetsChanged,
+  exclude,
+  onExcludeChange,
 }: {
-  assets: DrainSafeTokenBalance[];
-  onAssetsChanged: (assets: DrainSafeTokenBalance[]) => void;
+  assets: TokenBalance[];
+  exclude: string[];
+  onExcludeChange: (address: string, checked: boolean) => void;
 }): JSX.Element {
-  const handleExclusion = (index: number, checked: boolean) => {
-    const updatedAssets = [...assets];
-    updatedAssets[index].exclude = checked;
-    onAssetsChanged(updatedAssets);
+  const handleExclusion = (address: string, checked: boolean) => {
+    onExcludeChange(address, checked);
   };
 
   return (
@@ -37,7 +36,7 @@ function Balances({
         { id: 'col3', label: `Value, ${CURRENCY}` },
         { id: 'col4', label: 'Exclude' },
       ]}
-      rows={assets.map((item: DrainSafeTokenBalance, index: number) => {
+      rows={assets.map((item: TokenBalance, index: number) => {
         const token = item.tokenInfo || ethToken;
 
         return {
@@ -60,8 +59,8 @@ function Balances({
                 <Checkbox
                   label=""
                   name="exclude"
-                  checked={!!item.exclude}
-                  onChange={(_, checked) => handleExclusion(index, checked)}
+                  checked={exclude.includes(item.tokenInfo.address)}
+                  onChange={(_, checked) => handleExclusion(item.tokenInfo.address, checked)}
                 />
               ),
             },
