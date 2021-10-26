@@ -39,7 +39,7 @@ const App: React.FC = () => {
   };
 
   const sendTxs = async (): Promise<string> => {
-    const txs = assets.filter((item) => !item.spam).map((item) => tokenToTx(toAddress, item));
+    const txs = assets.filter((item) => !item.exclude).map((item) => tokenToTx(toAddress, item));
     const data = await sdk.txs.send({ txs });
 
     return data?.safeTxHash;
@@ -68,11 +68,11 @@ const App: React.FC = () => {
 
     setEmptyAssets(
       assets.map((item) =>
-        item.spam
+        item.exclude
           ? item
           : {
               ...item,
-              spam: false,
+              exclude: false,
               balance: '0',
               fiatBalance: '0',
             },

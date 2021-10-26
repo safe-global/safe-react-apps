@@ -47,7 +47,7 @@ describe('<App />', () => {
     await waitFor(() => expect(sdk.txs.send).toHaveBeenCalledWith(mockTxsRequest));
   });
 
-  it('should drain the safe when submit button is clicked removing the spam tokens selected by the user', async () => {
+  it('should drain the safe when submit button is clicked removing the tokens excluded by the user', async () => {
     const { container, debug } = renderWithProviders(<App />);
     const { sdk } = useSafeAppsSDK();
 

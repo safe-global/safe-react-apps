@@ -2,11 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { TokenBalance } from '@gnosis.pm/safe-apps-sdk';
 
-type TokenSpam = {
-  spam: boolean | null;
+type TokenExclusion = {
+  exclude: boolean | null;
 };
 
-export type DrainSafeTokenBalance = TokenBalance & TokenSpam;
+export type DrainSafeTokenBalance = TokenBalance & TokenExclusion;
 
 function useBalances(
   safeAddress: string,
@@ -27,7 +27,7 @@ function useBalances(
       setAssets(
         balances.items.map((item) => ({
           ...item,
-          spam: false,
+          exclude: false,
         })),
       );
     } catch (err) {

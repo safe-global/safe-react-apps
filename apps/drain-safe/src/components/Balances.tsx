@@ -25,7 +25,7 @@ function Balances({
 }): JSX.Element {
   const handleExclusion = (index: number, checked: boolean) => {
     const updatedAssets = [...assets];
-    updatedAssets[index].spam = checked;
+    updatedAssets[index].exclude = checked;
     onAssetsChanged(updatedAssets);
   };
 
@@ -60,7 +60,7 @@ function Balances({
                 <Checkbox
                   label=""
                   name="exclude"
-                  checked={!!item.spam}
+                  checked={!!item.exclude}
                   onChange={(_, checked) => handleExclusion(index, checked)}
                 />
               ),

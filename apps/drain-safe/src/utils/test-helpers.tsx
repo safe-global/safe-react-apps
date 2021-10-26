@@ -73,7 +73,7 @@ export const mockInitialBalances = [
     balance: '949938510499549077',
     fiatBalance: '3912.43897',
     fiatConversion: '4118.62339607',
-    spam: false,
+    exclude: false,
   },
   {
     tokenInfo: {
@@ -87,7 +87,7 @@ export const mockInitialBalances = [
     balance: '10000000000000000000',
     fiatBalance: '32.17898',
     fiatConversion: '3.2178980896091103',
-    spam: false,
+    exclude: false,
   },
 ];
 
