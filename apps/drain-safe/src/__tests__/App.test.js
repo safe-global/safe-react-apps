@@ -1,28 +1,15 @@
 import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import * as safeAppsSdk from '@gnosis.pm/safe-apps-react-sdk';
+import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import useBalances from '../hooks/use-balances';
 import { mockTxsRequest, mockInitialBalances, renderWithProviders } from '../utils/test-helpers';
 import App from '../components/App';
 
-const mockSendTxs = jest.fn().mockResolvedValue({ safeTxHash: 'safeTxHash' });
-
-const memoize = (func) => {
-  const results = {};
-  return (...args) => {
-    const argsKey = JSON.stringify(args);
-    if (!results[argsKey]) {
-      results[argsKey] = func(...args);
-    }
-    return results[argsKey];
-  };
-};
-
-jest.mock('@gnosis.pm/safe-apps-react-sdk', () => ({
-  // Memoize in other to keep the same reference to the sdk in the mocked hook
-  useSafeAppsSDK: memoize(() => ({
+jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
+  const originalModule = jest.requireActual('@gnosis.pm/safe-apps-react-sdk');
+  const sdk = {
     sdk: {
-      txs: { send: mockSendTxs },
+      txs: { send: jest.fn().mockResolvedValue({ safeTxHash: 'safeTxHash' }) },
       safe: {
         experimental_getBalances: () =>
           Promise.resolve({
@@ -34,8 +21,13 @@ jest.mock('@gnosis.pm/safe-apps-react-sdk', () => ({
       safeAddress: 'safeAddress',
       chainId: 'chainId',
     },
-  })),
-}));
+  };
+
+  return {
+    ...originalModule,
+    useSafeAppsSDK: () => sdk,
+  };
+});
 
 describe('<App />', () => {
   it('should render the tokens in the safe balance', async () => {
@@ -47,23 +39,24 @@ describe('<App />', () => {
 
   it('should drain the safe when submit button is clicked', async () => {
     const { container, debug } = renderWithProviders(<App />);
+    const { sdk } = useSafeAppsSDK();
 
     await screen.findByText(/chainLink token/i);
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '0x301812eb4c89766875eFe61460f7a8bBC0CadB96' } });
     fireEvent.click(screen.getByText(/transfer everything/i));
-
-    expect(mockSendTxs).toHaveBeenCalledWith(mockTxsRequest);
+    await waitFor(() => expect(sdk.txs.send).toHaveBeenCalledWith(mockTxsRequest));
   });
 
   it('should drain the safe when submit button is clicked removing the spam tokens selected by the user', async () => {
     const { container, debug } = renderWithProviders(<App />);
+    const { sdk } = useSafeAppsSDK();
 
     fireEvent.click((await screen.findAllByRole('checkbox'))[1]);
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '0x301812eb4c89766875eFe61460f7a8bBC0CadB96' } });
     fireEvent.click(screen.getByText(/transfer everything/i));
 
     await waitFor(() =>
-      expect(mockSendTxs).toHaveBeenCalledWith({
+      expect(sdk.txs.send).toHaveBeenCalledWith({
         txs: [mockTxsRequest.txs[0]],
       }),
     );
