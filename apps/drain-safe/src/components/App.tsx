@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Title, TextField, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
+import { TokenBalance } from '@gnosis.pm/safe-apps-sdk';
 import web3Utils from 'web3-utils';
-import { Asset } from '../utils/api';
-import useBalances from '../hooks/use-balances';
+import useBalances, { BalancesType } from '../hooks/use-balances';
 import { tokenToTx } from '../utils/sdk-helpers';
 import FormContainer from './FormContainer';
 import Flex from './Flex';
@@ -14,11 +14,13 @@ import CancelButton from './CancelButton';
 
 const App: React.FC = () => {
   const { sdk, safe } = useSafeAppsSDK();
-  const { assets, error: balancesError }: { assets: Asset[]; error?: Error } = useBalances(
-    safe.safeAddress,
-    safe.chainId,
-  );
-  const [emptyAssets, setEmptyAssets] = useState<Asset[] | null>(null);
+  const {
+    assets,
+    excludedTokens,
+    setExcludedTokens,
+    error: balancesError,
+  }: BalancesType = useBalances(safe.safeAddress, safe.chainId);
+  const [emptyAssets, setEmptyAssets] = useState<TokenBalance[] | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [toAddress, setToAddress] = useState<string>('');
   const [isFinished, setFinished] = useState<boolean>(false);
@@ -35,9 +37,12 @@ const App: React.FC = () => {
   };
 
   const sendTxs = async (): Promise<string> => {
-    const txs = assets.map((item) => tokenToTx(toAddress, item));
+    const txs = assets
+      .filter((item) => !excludedTokens.includes(item.tokenInfo.address))
+      .map((item) => tokenToTx(toAddress, item));
     const data = await sdk.txs.send({ txs });
-    return data.safeTxHash;
+
+    return data?.safeTxHash;
   };
 
   const submitTx = async (): Promise<void> => {
@@ -60,7 +65,7 @@ const App: React.FC = () => {
     setSubmitting(false);
     setFinished(true);
     setToAddress('');
-
+    setExcludedTokens([]);
     setEmptyAssets(
       assets.map((item) => ({
         ...item,
@@ -85,6 +90,14 @@ const App: React.FC = () => {
     resetMessages();
   };
 
+  const handleExcludeChange = (tokenAddress: string, checked: boolean): void => {
+    if (checked) {
+      setExcludedTokens([...excludedTokens, tokenAddress]);
+    } else {
+      setExcludedTokens(excludedTokens.filter((address) => address !== tokenAddress));
+    }
+  };
+
   useEffect(() => {
     if (balancesError) {
       onError('Failed fetching balances', balancesError);
@@ -98,7 +111,7 @@ const App: React.FC = () => {
         <Title size="md">Drain Account</Title>
       </Flex>
 
-      <Balances assets={emptyAssets || assets} />
+      <Balances assets={emptyAssets || assets} exclude={excludedTokens} onExcludeChange={handleExcludeChange} />
 
       {error && <Text size="lg">{error}</Text>}
 

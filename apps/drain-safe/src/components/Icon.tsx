@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 interface Props {
-  logoUri: string;
+  logoUri: string | null;
   symbol: string;
 }
 
@@ -24,7 +24,7 @@ function Icon(props: Props): JSX.Element | null {
     }
   };
 
-  return <IconImg src={fallbackIcon || logoUri} alt={symbol} onError={onError} />;
+  return <IconImg src={fallbackIcon || logoUri || ''} alt={symbol} onError={onError} />;
 }
 
 export default Icon;
