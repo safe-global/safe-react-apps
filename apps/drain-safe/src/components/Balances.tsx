@@ -3,7 +3,7 @@ import { formatTokenValue, formatCurrencyValue } from '../utils/formatters';
 import Icon from './Icon';
 import { TokenBalance, TokenInfo } from '@gnosis.pm/safe-apps-sdk';
 import Flex from './Flex';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 const CURRENCY = 'USD';
 
@@ -60,56 +60,67 @@ function Balances({
 }): JSX.Element {
   const [orderBy, setOrderBy] = useState<string | undefined>();
   const [order, setOrder] = useState<TableSortDirection>(TableSortDirection.asc);
-  const rows = assets
-    .slice()
-    .sort(getComparator(order, orderBy))
-    .map((item: TokenBalance, index: number) => {
-      const token = item.tokenInfo || ethToken;
 
-      return {
-        id: `row${index}`,
-        cells: [
-          {
-            content: (
-              <Flex>
-                <Icon logoUri={token.logoUri} symbol={token.symbol} />
-                {token.name}
-              </Flex>
-            ),
-          },
+  const handleHeaderClick = useCallback(
+    (headerId: string) => {
+      if (headerId === 'exclude') {
+        return;
+      }
 
-          { content: formatTokenValue(item.balance, token.decimals) },
-          { content: formatCurrencyValue(item.fiatBalance, CURRENCY) },
+      const newDirection =
+        orderBy === headerId && order === TableSortDirection.asc ? TableSortDirection.desc : TableSortDirection.asc;
 
-          {
-            content: (
-              <Checkbox
-                label=""
-                name="exclude"
-                checked={exclude.includes(item.tokenInfo.address)}
-                onChange={(_, checked) => handleExclusion(item.tokenInfo.address, checked)}
-              />
-            ),
-          },
-        ],
-      };
-    });
+      setOrder(newDirection);
+      setOrderBy(headerId);
+    },
+    [order, orderBy],
+  );
 
-  const handleHeaderClick = (headerId: string) => {
-    if (headerId === 'exclude') {
-      return;
-    }
+  const handleExclusion = useCallback(
+    (address: string, checked: boolean) => {
+      onExcludeChange(address, checked);
+    },
+    [onExcludeChange],
+  );
 
-    const newDirection =
-      orderBy === headerId && order === TableSortDirection.asc ? TableSortDirection.desc : TableSortDirection.asc;
+  const rows = useMemo(
+    () =>
+      assets
+        .slice()
+        .sort(getComparator(order, orderBy))
+        .map((item: TokenBalance, index: number) => {
+          const token = item.tokenInfo || ethToken;
 
-    setOrder(newDirection);
-    setOrderBy(headerId);
-  };
+          return {
+            id: `row${index}`,
+            cells: [
+              {
+                content: (
+                  <Flex>
+                    <Icon logoUri={token.logoUri} symbol={token.symbol} />
+                    {token.name}
+                  </Flex>
+                ),
+              },
 
-  const handleExclusion = (address: string, checked: boolean) => {
-    onExcludeChange(address, checked);
-  };
+              { content: formatTokenValue(item.balance, token.decimals) },
+              { content: formatCurrencyValue(item.fiatBalance, CURRENCY) },
+
+              {
+                content: (
+                  <Checkbox
+                    label=""
+                    name="exclude"
+                    checked={exclude.includes(item.tokenInfo.address)}
+                    onChange={(_, checked) => handleExclusion(item.tokenInfo.address, checked)}
+                  />
+                ),
+              },
+            ],
+          };
+        }),
+    [assets, exclude, handleExclusion, order, orderBy],
+  );
 
   return (
     <Table
