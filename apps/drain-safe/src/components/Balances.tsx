@@ -4,6 +4,7 @@ import Icon from './Icon';
 import { TokenBalance, TokenInfo } from '@gnosis.pm/safe-apps-sdk';
 import Flex from './Flex';
 import { useCallback, useMemo, useState } from 'react';
+import { getComparator } from '../utils/sort-helpers';
 
 const CURRENCY = 'USD';
 
@@ -15,39 +16,6 @@ const ethToken: TokenInfo = {
   type: 'NATIVE_TOKEN',
   address: '',
 };
-
-function resolvePath(path: string, obj: any) {
-  const props = path.split('.');
-  return props.reduce((prev, curr) => prev && prev[curr], obj);
-}
-
-function descendingComparator<T>(a: T, b: T, orderBy: string) {
-  let item1 = resolvePath(orderBy, a);
-  let item2 = resolvePath(orderBy, b);
-
-  if (item2 < item1) {
-    return -1;
-  }
-
-  if (item2 > item1) {
-    return 1;
-  }
-
-  return 0;
-}
-
-function getComparator(
-  order: TableSortDirection,
-  orderBy: string | undefined,
-): (a: TokenBalance, b: TokenBalance) => number {
-  if (!orderBy) {
-    return () => 0;
-  }
-
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
 
 const HEADERS = [
   { id: 'tokenInfo.name', label: 'Asset' },
