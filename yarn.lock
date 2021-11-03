@@ -1987,9 +1987,10 @@
     classnames "^2.2.6"
     react-media "^1.10.0"
 
-"@gnosis.pm/safe-react-components@git+https://github.com/gnosis/safe-react-components#1d732d38f1f7a6497b404339f6b75f9aeda6da39":
-  version "0.8.0"
-  resolved "git+https://github.com/gnosis/safe-react-components#1d732d38f1f7a6497b404339f6b75f9aeda6da39"
+"@gnosis.pm/safe-react-components@^0.8.0":
+  version "0.8.5"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.8.5.tgz#bc8ed6bd74db68c49da7ba706d77f9ba5fa4b092"
+  integrity sha512-gvqbuUGhDtjCTF8u+s6jEC0PkWXNMHQQum6rHQktgfnZ/X1WgxnIifooQvXT6MEpOCgkRxEYE+bowxp+eih6FA==
   dependencies:
     react-media "^1.10.0"
 
