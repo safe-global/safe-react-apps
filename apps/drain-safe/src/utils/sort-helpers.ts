@@ -7,6 +7,10 @@ function descendingComparator<T>(a: T, b: T, orderBy: string) {
   let item1 = resolvePath(orderBy, a);
   let item2 = resolvePath(orderBy, b);
 
+  if (isNumeric(item1) && isNumeric(item2)) {
+    return item1 - item2;
+  }
+
   if (item2 < item1) {
     return -1;
   }
@@ -16,6 +20,10 @@ function descendingComparator<T>(a: T, b: T, orderBy: string) {
   }
 
   return 0;
+}
+
+function isNumeric(num: any) {
+  return !isNaN(num);
 }
 
 export function getComparator<T>(order: string, orderBy: string | undefined): (a: T, b: T) => number {
