@@ -21,7 +21,7 @@ const HEADERS = [
   { id: 'tokenInfo.name', label: 'Asset' },
   { id: 'balance', label: 'Amount' },
   { id: 'fiatBalance', label: `Value, ${CURRENCY}` },
-  { id: 'exclude', label: 'Exclude' },
+  { id: 'exclude', label: 'Exclude', hideSortIcon: true },
 ];
 
 function Balances({
