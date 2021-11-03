@@ -49,6 +49,13 @@ function getComparator(
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
+const HEADERS = [
+  { id: 'tokenInfo.name', label: 'Asset' },
+  { id: 'balance', label: 'Amount' },
+  { id: 'fiatBalance', label: `Value, ${CURRENCY}` },
+  { id: 'exclude', label: 'Exclude' },
+];
+
 function Balances({
   assets,
   exclude,
@@ -124,12 +131,7 @@ function Balances({
 
   return (
     <Table
-      headers={[
-        { id: 'tokenInfo.name', label: 'Asset' },
-        { id: 'balance', label: 'Amount' },
-        { id: 'fiatBalance', label: `Value, ${CURRENCY}` },
-        { id: 'exclude', label: 'Exclude' },
-      ]}
+      headers={HEADERS}
       rows={rows}
       sortedByHeaderId={orderBy}
       sortDirection={order}
