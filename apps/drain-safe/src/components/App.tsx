@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Title, TextField, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import { TokenBalance } from '@gnosis.pm/safe-apps-sdk';
 import web3Utils from 'web3-utils';
 import useBalances, { BalancesType } from '../hooks/use-balances';
 import { tokenToTx } from '../utils/sdk-helpers';
