@@ -91,8 +91,12 @@ const Dashboard = () => {
       return;
     }
 
-    await sdk.txs.send({ txs: transactions.map((d) => d.raw) }).catch(console.error);
-    setTransactions([]);
+    try {
+      await sdk.txs.send({ txs: transactions.map((d) => d.raw) }).catch(console.error);
+      setTransactions([]);
+    } catch (e) {
+      console.error('Error sending transactions:', e);
+    }
   }, [sdk.txs, transactions]);
 
   return (
