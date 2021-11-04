@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Title, TextField, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import { TokenBalance } from '@gnosis.pm/safe-apps-sdk';
 import web3Utils from 'web3-utils';
 import useBalances, { BalancesType } from '../hooks/use-balances';
 import { tokenToTx } from '../utils/sdk-helpers';
@@ -20,7 +19,6 @@ const App: React.FC = () => {
     setExcludedTokens,
     error: balancesError,
   }: BalancesType = useBalances(safe.safeAddress, safe.chainId);
-  const [emptyAssets, setEmptyAssets] = useState<TokenBalance[] | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [toAddress, setToAddress] = useState<string>('');
   const [isFinished, setFinished] = useState<boolean>(false);
@@ -66,13 +64,6 @@ const App: React.FC = () => {
     setFinished(true);
     setToAddress('');
     setExcludedTokens([]);
-    setEmptyAssets(
-      assets.map((item) => ({
-        ...item,
-        balance: '0',
-        fiatBalance: '0',
-      })),
-    );
   };
 
   const onSubmit = (e: React.FormEvent) => {
@@ -111,7 +102,7 @@ const App: React.FC = () => {
         <Title size="md">Drain Account</Title>
       </Flex>
 
-      <Balances assets={emptyAssets || assets} exclude={excludedTokens} onExcludeChange={handleExcludeChange} />
+      <Balances assets={assets} exclude={excludedTokens} onExcludeChange={handleExcludeChange} />
 
       {error && <Text size="lg">{error}</Text>}
 
