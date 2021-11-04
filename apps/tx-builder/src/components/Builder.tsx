@@ -9,7 +9,6 @@ import {
   ModalFooterConfirmation,
   ButtonLink,
 } from '@gnosis.pm/safe-react-components';
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import styled from 'styled-components';
 import { AbiItem, toBN } from 'web3-utils';
 
@@ -78,16 +77,25 @@ const parseInputValue = (input: any, value: string): string => {
 type Props = {
   contract: ContractInterface | null;
   to: string;
+  chainId: number;
+  transactions: ProposedTransaction[];
+  onAddTransaction: (transaction: ProposedTransaction) => void;
+  onRemoveTransaction: (index: number) => void;
+  onSubmitTransactions: () => void;
 };
 
-export const Builder = ({ contract, to }: Props): ReactElement | null => {
-  const { sdk, safe } = useSafeAppsSDK();
-  const services = useServices(safe.chainId);
-
+export const Builder = ({
+  contract,
+  to,
+  chainId,
+  transactions,
+  onAddTransaction,
+  onRemoveTransaction,
+  onSubmitTransactions,
+}: Props): ReactElement | null => {
+  const services = useServices(chainId);
   const [toInput, setToInput] = useState('');
   const [valueInput, setValueInput] = useState('');
-
-  const [transactions, setTransactions] = useState<ProposedTransaction[]>([]);
   const [reviewing, setReviewing] = useState(false);
   const [selectedMethodIndex, setSelectedMethodIndex] = useState(0);
   const [showExamples, setShowExamples] = useState(false);
@@ -109,8 +117,7 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
   const getContractMethod = useCallback(() => contract?.methods[selectedMethodIndex], [contract, selectedMethodIndex]);
 
   const handleSubmit = () => {
-    sendTransactions();
-    setTransactions([]);
+    onSubmitTransactions();
     setReviewing(false);
   };
 
@@ -160,13 +167,12 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
         description = `Transfer ${web3.utils.fromWei(cleanValue.toString())} ETH to ${cleanTo}`;
       }
 
-      transactions.push({
+      onAddTransaction({
         description,
         raw: { to: cleanTo, value: cleanValue, data },
       });
 
       setInputCache([]);
-      setTransactions(transactions);
       setSelectedMethodIndex(0);
       setValueInput('');
     } catch (e) {
@@ -175,13 +181,8 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
     }
   };
 
-  const deleteTransaction = async (inputIndex: number) => {
-    const newTxs = transactions.slice();
-    newTxs.splice(inputIndex, 1);
-    setTransactions(newTxs);
-    if (newTxs.length === 0) {
-      setReviewing(false);
-    }
+  const deleteTransaction = (inputIndex: number) => {
+    onRemoveTransaction(inputIndex);
   };
 
   const isValidAddress = useCallback(
@@ -193,14 +194,6 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
     },
     [services.web3],
   );
-
-  const sendTransactions = async () => {
-    if (!transactions.length) {
-      return;
-    }
-
-    sdk.txs.send({ txs: transactions.map((d) => d.raw) }).catch(console.error);
-  };
 
   const onValueInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValueError(undefined);
@@ -230,6 +223,12 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
 
     isVisible();
   }, [getContractMethod, contract, services, toInput]);
+
+  useEffect(() => {
+    if (transactions.length === 0) {
+      setReviewing(false);
+    }
+  }, [transactions]);
 
   if (!contract && !isValueInputVisible) {
     return null;
