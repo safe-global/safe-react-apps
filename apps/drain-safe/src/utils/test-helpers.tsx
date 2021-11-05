@@ -57,6 +57,21 @@ export const mockTxsRequest = {
       to: '0x01BE23585060835E02B77ef475b0Cc51aA1e0709',
       value: '0',
     },
+    {
+      data: '0xa9059cbb000000000000000000000000301812eb4c89766875efe61460f7a8bbc0cadb960000000000000000000000000000000000000004522aeecb72953a54801c0000',
+      to: '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735',
+      value: '0',
+    },
+    {
+      data: '0xa9059cbb000000000000000000000000301812eb4c89766875efe61460f7a8bbc0cadb960000000000000000000000000000000000000000000000000001219e40046889',
+      to: '0xF9bA5210F91D0474bd1e1DcDAeC4C58E359AaD85',
+      value: '0',
+    },
+    {
+      data: '0xa9059cbb000000000000000000000000301812eb4c89766875efe61460f7a8bbc0cadb960000000000000000000000000000000000000000000000000e92596fd629002c',
+      to: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+      value: '0',
+    },
   ],
 };
 
@@ -73,7 +88,6 @@ export const mockInitialBalances = [
     balance: '949938510499549077',
     fiatBalance: '3912.43897',
     fiatConversion: '4118.62339607',
-    exclude: false,
   },
   {
     tokenInfo: {
@@ -87,7 +101,45 @@ export const mockInitialBalances = [
     balance: '10000000000000000000',
     fiatBalance: '32.17898',
     fiatConversion: '3.2178980896091103',
-    exclude: false,
+  },
+  {
+    tokenInfo: {
+      type: 'ERC20',
+      address: '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735',
+      decimals: 18,
+      symbol: 'DAI',
+      name: 'Dai Stablecoin',
+      logoUri: 'https://gnosis-safe-token-logos.s3.amazonaws.com/0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735.png',
+    },
+    balance: '342342323423000000000000000000',
+    fiatBalance: '24.89904',
+    fiatConversion: '0.00000000007273142207527887',
+  },
+  {
+    tokenInfo: {
+      type: 'ERC20',
+      address: '0xF9bA5210F91D0474bd1e1DcDAeC4C58E359AaD85',
+      decimals: 18,
+      symbol: 'MKR',
+      name: 'Maker',
+      logoUri: 'https://gnosis-safe-token-logos.s3.amazonaws.com/0xF9bA5210F91D0474bd1e1DcDAeC4C58E359AaD85.png',
+    },
+    balance: '318438539290761',
+    fiatBalance: '0.00000',
+    fiatConversion: '0.0',
+  },
+  {
+    tokenInfo: {
+      type: 'ERC20',
+      address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+      decimals: 18,
+      symbol: 'UNI',
+      name: 'Uniswap',
+      logoUri: 'https://gnosis-safe-token-logos.s3.amazonaws.com/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984.png',
+    },
+    balance: '1050000000000000044',
+    fiatBalance: '3971.92584',
+    fiatConversion: '3782.786514637171',
   },
 ];
 
