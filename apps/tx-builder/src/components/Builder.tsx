@@ -57,7 +57,7 @@ const getInputHelper = (input: any) => {
 const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/);
 
 // This function is used to apply some parsing to some value types
-const parseInputValue = (input: any, value: string): string | boolean => {
+const parseInputValue = (input: any, value: string): any => {
   // If there is a match with this regular expression we get an array value like the following
   // ex: ['uint16', 'uint', '16']. If no match, null is returned
   const isNumberInput = paramTypeNumber.test(input.type);
@@ -138,7 +138,7 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
       const method = contract.methods[selectedMethodIndex];
 
       if (!['receive', 'fallback'].includes(method.name)) {
-        const parsedInputs: Array<string | boolean> = [];
+        const parsedInputs: any[] = [];
         const inputDescription: string[] = [];
 
         try {
@@ -150,7 +150,7 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
 
           description = `${method.name} (${inputDescription.join(', ')})`;
 
-          data = web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs as string[]);
+          data = web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs as any[]);
         } catch (error) {
           setAddTxError((error as Error).message);
           return;
