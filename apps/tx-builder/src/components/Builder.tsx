@@ -57,14 +57,21 @@ const getInputHelper = (input: any) => {
 const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/);
 
 // This function is used to apply some parsing to some value types
-const parseInputValue = (input: any, value: string): string => {
+const parseInputValue = (input: any, value: string): any => {
   // If there is a match with this regular expression we get an array value like the following
   // ex: ['uint16', 'uint', '16']. If no match, null is returned
   const isNumberInput = paramTypeNumber.test(input.type);
+  const isBooleanInput = input.type === 'bool';
 
   if (value.charAt(0) === '[') {
     return JSON.parse(value.replace(/"/g, '"'));
-  } else if (isNumberInput) {
+  }
+
+  if (isBooleanInput) {
+    return value.toLowerCase() === 'true';
+  }
+
+  if (isNumberInput) {
     // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
     // To fix that we pad the numeric values here as the encode function is expecting a string
     // more info here https://github.com/ChainSafe/web3.js/issues/3772
@@ -131,7 +138,7 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
       const method = contract.methods[selectedMethodIndex];
 
       if (!['receive', 'fallback'].includes(method.name)) {
-        const parsedInputs: string[] = [];
+        const parsedInputs: any[] = [];
         const inputDescription: string[] = [];
 
         try {
@@ -143,7 +150,7 @@ export const Builder = ({ contract, to }: Props): ReactElement | null => {
 
           description = `${method.name} (${inputDescription.join(', ')})`;
 
-          data = web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs);
+          data = web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs as any[]);
         } catch (error) {
           setAddTxError((error as Error).message);
           return;
