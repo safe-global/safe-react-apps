@@ -68,7 +68,7 @@ const parseInputValue = (input: any, value: string): any => {
   }
 
   if (isBooleanInput) {
-    return value === 'true';
+    return value.toLowerCase() === 'true';
   }
 
   if (isNumberInput) {
