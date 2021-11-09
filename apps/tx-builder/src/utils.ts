@@ -9,6 +9,7 @@ export enum CHAINS {
   XDAI = 100,
   POLYGON = 137,
   ENERGY_WEB_CHAIN = 246,
+  ARBITRUM = 42161,
   VOLTA = 73799,
 }
 
@@ -25,5 +26,6 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.XDAI]: () => 'https://dai.poa.network',
   [CHAINS.POLYGON]: () => 'https://rpc-mainnet.matic.network',
   [CHAINS.ENERGY_WEB_CHAIN]: () => 'https://rpc.energyweb.org',
+  [CHAINS.ARBITRUM]: () => 'https://arb1.arbitrum.io/rpc',
   [CHAINS.VOLTA]: () => 'https://volta-rpc.energyweb.org',
 };
