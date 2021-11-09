@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import { Builder } from './Builder';
+import { ProposedTransaction } from '../typings/models';
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,9 +32,9 @@ const StyledTextFiled = styled(TextField)`
 `;
 
 const Dashboard = () => {
-  const { safe } = useSafeAppsSDK();
+  const { sdk, safe } = useSafeAppsSDK();
   const services = useServices(safe.chainId);
-
+  const [transactions, setTransactions] = useState<ProposedTransaction[]>([]);
   const [addressOrAbiInput, setAddressOrAbiInput] = useState('');
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadAbiError, setLoadAbiError] = useState(false);
@@ -69,6 +70,35 @@ const Dashboard = () => {
     [services.web3],
   );
 
+  const handleAddTransaction = useCallback(
+    (tx: ProposedTransaction) => {
+      setTransactions([...transactions, tx]);
+    },
+    [transactions],
+  );
+
+  const handleRemoveTransaction = useCallback(
+    (index: number) => {
+      const newTxs = transactions.slice();
+      newTxs.splice(index, 1);
+      setTransactions(newTxs);
+    },
+    [transactions],
+  );
+
+  const handleSubmitTransactions = useCallback(async () => {
+    if (!transactions.length) {
+      return;
+    }
+
+    try {
+      await sdk.txs.send({ txs: transactions.map((transaction) => transaction.raw) }).catch(console.error);
+      setTransactions([]);
+    } catch (e) {
+      console.error('Error sending transactions:', e);
+    }
+  }, [sdk.txs, transactions]);
+
   return (
     <Wrapper>
       <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
@@ -94,7 +124,17 @@ const Dashboard = () => {
       )}
 
       {/* Builder */}
-      {(isValidAddress(addressOrAbiInput) || contract) && <Builder contract={contract} to={addressOrAbiInput} />}
+      {(isValidAddress(addressOrAbiInput) || contract) && (
+        <Builder
+          contract={contract}
+          to={addressOrAbiInput}
+          chainId={safe.chainId}
+          transactions={transactions}
+          onAddTransaction={handleAddTransaction}
+          onRemoveTransaction={handleRemoveTransaction}
+          onSubmitTransactions={handleSubmitTransactions}
+        />
+      )}
     </Wrapper>
   );
 };
