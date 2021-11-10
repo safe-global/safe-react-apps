@@ -30,6 +30,8 @@ const abiUrlGetterByNetwork: {
     `https://api.polygonscan.com/api?module=contract&action=getabi&address=${address}`,
   [CHAINS.ENERGY_WEB_CHAIN]: (address: string) =>
     `https://explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
+  [CHAINS.ARBITRUM]: (address: string) =>
+    `https://api.arbiscan.io/api?module=contract&action=getabi&address=${address}`,  
   [CHAINS.VOLTA]: (address: string) =>
     `https://volta-explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
 };
