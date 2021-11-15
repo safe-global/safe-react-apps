@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import WalletConnect from '@walletconnect/client';
 import { IClientMeta } from '@walletconnect/types';
+import Connector from '@walletconnect/core';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { isMetaTxArray } from '../utils/transactions';
 import { areStringsEqual } from '../utils/strings';
@@ -142,6 +143,15 @@ const useWalletConnect = () => {
       if (uri) wcConnect(uri);
     }
   }, [connector, wcConnect]);
+
+  useEffect(() => {
+    if (connector) {
+      const { accounts } = (connector as Connector) || [];
+      if (accounts.length && !accounts.includes(safe.safeAddress)) {
+        wcDisconnect();
+      }
+    }
+  }, [connector, safe.safeAddress, wcDisconnect]);
 
   return { wcClientData, wcConnect, wcDisconnect };
 };
