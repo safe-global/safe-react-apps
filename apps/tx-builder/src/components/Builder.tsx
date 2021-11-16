@@ -8,6 +8,7 @@ import {
   Select,
   ModalFooterConfirmation,
   ButtonLink,
+  AddressInput,
 } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import { AbiItem, toBN } from 'web3-utils';
@@ -32,10 +33,13 @@ const StyledTextField = styled(TextField)`
 `;
 
 const StyledSelect = styled(Select)`
+  margin-top: 10px;
   width: 520px;
 `;
 
 const StyledExamples = styled.div`
+  margin-bottom: 10px;
+
   button {
     padding: 0;
   }
@@ -89,6 +93,8 @@ type Props = {
   onAddTransaction: (transaction: ProposedTransaction) => void;
   onRemoveTransaction: (index: number) => void;
   onSubmitTransactions: () => void;
+  networkPrefix: undefined | string;
+  getAddressFromDomain: (name: string) => Promise<string>;
 };
 
 export const Builder = ({
@@ -99,6 +105,8 @@ export const Builder = ({
   onAddTransaction,
   onRemoveTransaction,
   onSubmitTransactions,
+  networkPrefix,
+  getAddressFromDomain,
 }: Props): ReactElement | null => {
   const services = useServices(chainId);
   const [toInput, setToInput] = useState('');
@@ -248,11 +256,18 @@ export const Builder = ({
       {contract && !contract?.methods.length && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
 
       {to.length > 0 && (
-        <StyledTextField
-          style={{ marginTop: 10 }}
-          value={toInput}
+        <AddressInput
+          id={'to-address-input'}
+          key={networkPrefix}
           label="To Address"
-          onChange={(e) => setToInput(e.target.value)}
+          name="toAddress"
+          placeholder={'To Address'}
+          showNetworkPrefix={!!networkPrefix}
+          networkPrefix={networkPrefix}
+          error={toInput && !isValidAddress(toInput) ? 'Invalid Address' : ''}
+          address={toInput}
+          getAddressFromDomain={getAddressFromDomain}
+          onChangeAddress={(address) => setToInput(address)}
         />
       )}
 
@@ -290,17 +305,36 @@ export const Builder = ({
           </StyledExamples>
 
           {getContractMethod()?.inputs.map((input, index) => {
+            const isAddressField = input.internalType === 'address' || input.type === 'address';
             return (
-              <div key={index}>
-                <StyledTextField
-                  style={{ marginTop: 10 }}
-                  value={inputCache[index] || ''}
-                  label={`${input.name || ''}(${getInputHelper(input)})`}
-                  onChange={(e) => {
-                    setAddTxError(undefined);
-                    handleInput(index, e.target.value);
-                  }}
-                />
+              <div key={index} style={{ marginTop: 10 }}>
+                {isAddressField ? (
+                  <AddressInput
+                    id={`${input.name || ''}(${getInputHelper(input)})`}
+                    key={networkPrefix}
+                    label={`${input.name || ''}(${getInputHelper(input)})`}
+                    name={input.name}
+                    placeholder={getInputHelper(input) || ''}
+                    showNetworkPrefix={!!networkPrefix}
+                    networkPrefix={networkPrefix}
+                    error={inputCache[index] && !isValidAddress(inputCache[index]) ? 'Invalid Address' : ''}
+                    address={inputCache[index] || ''}
+                    getAddressFromDomain={getAddressFromDomain}
+                    onChangeAddress={(address) => {
+                      setAddTxError(undefined);
+                      handleInput(index, address);
+                    }}
+                  />
+                ) : (
+                  <StyledTextField
+                    value={inputCache[index] || ''}
+                    label={`${input.name || ''}(${getInputHelper(input)})`}
+                    onChange={(e) => {
+                      setAddTxError(undefined);
+                      handleInput(index, e.target.value);
+                    }}
+                  />
+                )}
                 <br />
               </div>
             );

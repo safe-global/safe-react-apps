@@ -4,7 +4,6 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "@gnosis.pm/safe-react-components": "https://github.com/gnosis/safe-react-components.git#2e427ee",
     "@material-ui/core": "^4.11.3",
     "axios": "^0.21.1",
     "lodash": "^4.17.21",

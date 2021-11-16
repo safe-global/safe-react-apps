@@ -18,6 +18,8 @@
   "dependencies": {
     "@gnosis.pm/safe-apps-react-sdk": "4.0.5",
     "@gnosis.pm/safe-apps-sdk": "5.0.0",
+    "@gnosis.pm/safe-react-components": "git://github.com/gnosis/safe-react-components.git#27ecf08b4a9fbd6d81be6d550bbdfc92eb632d68",
+    "@material-ui/icons": "^4.11.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "^4.0.3",
