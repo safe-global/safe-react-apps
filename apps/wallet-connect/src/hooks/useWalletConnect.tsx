@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import WalletConnect from '@walletconnect/client';
-import { IClientMeta } from '@walletconnect/types';
+import { IClientMeta, IWalletConnectSession } from '@walletconnect/types';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { isMetaTxArray } from '../utils/transactions';
 import { areStringsEqual } from '../utils/strings';
@@ -23,7 +23,7 @@ const useWalletConnect = () => {
   }, [connector]);
 
   const wcConnect = useCallback(
-    async ({ uri, session }) => {
+    async ({ uri, session }: { uri?: string; session?: IWalletConnectSession }) => {
       const wcConnector = new WalletConnect({ uri, session, storageId: localStorageSessionKey.current });
       setConnector(wcConnector);
       setWcClientData(wcConnector.peerMeta);
