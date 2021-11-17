@@ -143,15 +143,6 @@ const useWalletConnect = () => {
     }
   }, [connector, wcConnect]);
 
-  // useEffect(() => {
-  //   if (connector) {
-  //     const { accounts } = (connector as Connector) || [];
-  //     if (accounts.length && !accounts.includes(safe.safeAddress)) {
-  //       wcDisconnect();
-  //     }
-  //   }
-  // }, [connector, safe.safeAddress, wcDisconnect]);
-
   return { wcClientData, wcConnect, wcDisconnect };
 };
 
