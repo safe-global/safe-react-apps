@@ -1,11 +1,9 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import WalletConnect from '@walletconnect/client';
-import { IClientMeta } from '@walletconnect/types';
+import { IClientMeta, IWalletConnectSession } from '@walletconnect/types';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { isMetaTxArray } from '../utils/transactions';
 import { areStringsEqual } from '../utils/strings';
-
-export const LOCAL_STORAGE_URI_KEY = 'safeAppWcUri';
 
 const rejectWithMessage = (connector: WalletConnect, id: number | undefined, message: string) => {
   connector.rejectRequest({ id, error: { message } });
@@ -16,19 +14,19 @@ const useWalletConnect = () => {
   const [wcClientData, setWcClientData] = useState<IClientMeta | null>(null);
   const [connector, setConnector] = useState<WalletConnect | undefined>();
 
+  const localStorageSessionKey = useRef(`session_${safe.safeAddress}`);
+
   const wcDisconnect = useCallback(async () => {
-    connector?.killSession();
-    localStorage.removeItem(LOCAL_STORAGE_URI_KEY);
+    await connector?.killSession();
     setConnector(undefined);
     setWcClientData(null);
   }, [connector]);
 
   const wcConnect = useCallback(
-    async (uri: string) => {
-      const wcConnector = new WalletConnect({ uri });
+    async ({ uri, session }: { uri?: string; session?: IWalletConnectSession }) => {
+      const wcConnector = new WalletConnect({ uri, session, storageId: localStorageSessionKey.current });
       setConnector(wcConnector);
       setWcClientData(wcConnector.peerMeta);
-      localStorage.setItem(LOCAL_STORAGE_URI_KEY, uri);
 
       wcConnector.on('session_request', (error, payload) => {
         if (error) {
@@ -138,8 +136,10 @@ const useWalletConnect = () => {
 
   useEffect(() => {
     if (!connector) {
-      const uri = localStorage.getItem(LOCAL_STORAGE_URI_KEY);
-      if (uri) wcConnect(uri);
+      const session = localStorage.getItem(localStorageSessionKey.current);
+      if (session) {
+        wcConnect({ session: JSON.parse(session) });
+      }
     }
   }, [connector, wcConnect]);
 

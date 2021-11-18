@@ -109,7 +109,7 @@ const App = () => {
       const connectWithUri = (data: string) => {
         if (data.startsWith('wc:')) {
           setIsConnecting(true);
-          wcConnect(data);
+          wcConnect({ uri: data });
         }
       };
 
@@ -121,7 +121,7 @@ const App = () => {
           const code = jsQr(imageData.data, imageData.width, imageData.height);
           if (code?.data) {
             setIsConnecting(true);
-            wcConnect(code.data);
+            wcConnect({ uri: code.data });
           } else {
             setInvalidQRCode(true);
             setInputValue(`Screen Shot ${format(new Date(), 'yyyy-MM-dd')} at ${format(new Date(), 'hh.mm.ss')}`);
