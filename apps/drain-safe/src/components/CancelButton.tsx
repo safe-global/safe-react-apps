@@ -1,7 +1,7 @@
 import { Button, Loader } from '@gnosis.pm/safe-react-components';
 import Flex from './Flex';
 
-function CancelButton(): JSX.Element {
+function CancelButton({ children }: { children: string }): JSX.Element {
   return (
     <>
       <Flex centered>
@@ -9,7 +9,7 @@ function CancelButton(): JSX.Element {
       </Flex>
       <Flex centered>
         <Button size="lg" color="secondary" type="reset">
-          Cancel
+          {children}
         </Button>
       </Flex>
     </>
