@@ -98,7 +98,7 @@ describe('<App />', () => {
   });
 
   it('should allow to order token by numeric prop', async () => {
-    const { container, debug } = renderWithProviders(<App />);
+    const { container } = renderWithProviders(<App />);
 
     await screen.findByText(/chainLink token/i);
     const amountColumnHeaderElement = screen.getByText(/amount/i);
