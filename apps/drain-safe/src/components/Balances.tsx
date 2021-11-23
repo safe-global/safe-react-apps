@@ -105,7 +105,6 @@ function Balances({
       sortedByHeaderId={orderBy}
       sortDirection={order}
       onHeaderClick={handleHeaderClick}
-      onRowClick={handleExclusion}
     />
   );
 }
