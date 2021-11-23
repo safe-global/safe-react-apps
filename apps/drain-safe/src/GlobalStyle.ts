@@ -23,10 +23,6 @@ const GlobalStyle = createGlobalStyle`
         width: 100% !important;
     }
 
-    tbody > tr {
-        cursor: pointer;
-    }
-
     @font-face {
         font-family: 'Averta';
         src: local('Averta'), local('Averta Bold'),
