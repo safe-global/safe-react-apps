@@ -1,5 +1,5 @@
 import { Text, Title, Link, AddressInput } from '@gnosis.pm/safe-react-components';
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { ReactElement, useState, useCallback, useEffect } from 'react';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import styled from 'styled-components';
 import { InputAdornment } from '@material-ui/core';
@@ -32,7 +32,7 @@ const CheckIconAddressAdornment = styled(CheckCircle)`
   height: 20px;
 `;
 
-const Dashboard = () => {
+const Dashboard = (): ReactElement => {
   const { sdk, safe } = useSafeAppsSDK();
 
   const services = useServices(safe.chainId);
@@ -67,7 +67,9 @@ const Dashboard = () => {
     }
 
     try {
-      await sdk.txs.send({ txs: transactions.map((transaction) => transaction.raw) }).catch(console.error);
+      await sdk.txs
+        .send({ txs: transactions.map((transaction: ProposedTransaction) => transaction.raw) })
+        .catch(console.error);
       setTransactions([]);
     } catch (e) {
       console.error('Error sending transactions:', e);
@@ -76,7 +78,7 @@ const Dashboard = () => {
 
   // Load contract from address or ABI
   useEffect(() => {
-    async function loadContract(addressOrAbi: string) {
+    const loadContract = async (addressOrAbi: string) => {
       setContract(null);
       setLoadContractError('');
 
@@ -94,14 +96,14 @@ const Dashboard = () => {
         console.error(e);
       }
       setIsABILoading(false);
-    }
+    };
 
     loadContract(addressOrAbi);
   }, [addressOrAbi, services.interfaceRepo, services.web3]);
 
-  function getAddressFromDomain(name: string): Promise<string> {
+  const getAddressFromDomain = (name: string): Promise<string> => {
     return services?.web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
-  }
+  };
 
   const isValidAddress = useCallback(
     (address: string | null) => {
@@ -113,7 +115,7 @@ const Dashboard = () => {
     [services.web3],
   );
 
-  const hasError = !isValidAddress(addressOrAbi) && !contract;
+  const isValidAddressOrContract = isValidAddress(addressOrAbi) || contract;
 
   return (
     <Wrapper>
@@ -134,28 +136,27 @@ const Dashboard = () => {
       {/* ABI or Address Input */}
       <AddressInput
         id={'address-or-ABI-input'}
-        key={services.networkPrefix}
-        label="Address or ABI"
         name="addressOrAbi"
+        label="Address or ABI"
+        address={addressOrAbi}
         placeholder={'Enter Address, ENS Name or ABI'}
         showNetworkPrefix={!!services.networkPrefix}
         networkPrefix={services.networkPrefix}
-        error={hasError ? loadContractError : ''}
+        error={!isValidAddressOrContract ? loadContractError : ''}
         showLoadingSpinner={isABILoading}
-        address={addressOrAbi}
         getAddressFromDomain={getAddressFromDomain}
-        onChangeAddress={(addressOrAbi) => setAddressOrAbi(addressOrAbi)}
-        inputAdornment={
-          !hasError && (
+        onChangeAddress={(addressOrAbi: string) => setAddressOrAbi(addressOrAbi)}
+        InputProps={{
+          endAdornment: isValidAddressOrContract && (
             <InputAdornment position="end">
               <CheckIconAddressAdornment />
             </InputAdornment>
-          )
-        }
+          ),
+        }}
       />
 
       {/* Builder */}
-      {!hasError && (
+      {isValidAddressOrContract && (
         <Builder
           contract={contract}
           to={addressOrAbi}

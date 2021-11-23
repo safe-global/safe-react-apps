@@ -258,16 +258,15 @@ export const Builder = ({
       {to.length > 0 && (
         <AddressInput
           id={'to-address-input'}
-          key={networkPrefix}
-          label="To Address"
           name="toAddress"
+          label="To Address"
+          address={toInput}
           placeholder={'To Address'}
           showNetworkPrefix={!!networkPrefix}
           networkPrefix={networkPrefix}
           error={toInput && !isValidAddress(toInput) ? 'Invalid Address' : ''}
-          address={toInput}
           getAddressFromDomain={getAddressFromDomain}
-          onChangeAddress={(address) => setToInput(address)}
+          onChangeAddress={(address: string) => setToInput(address)}
         />
       )}
 
@@ -311,16 +310,15 @@ export const Builder = ({
                 {isAddressField ? (
                   <AddressInput
                     id={`${input.name || ''}(${getInputHelper(input)})`}
-                    key={networkPrefix}
-                    label={`${input.name || ''}(${getInputHelper(input)})`}
                     name={input.name}
+                    label={`${input.name || ''}(${getInputHelper(input)})`}
+                    address={inputCache[index] || ''}
                     placeholder={getInputHelper(input) || ''}
                     showNetworkPrefix={!!networkPrefix}
                     networkPrefix={networkPrefix}
                     error={inputCache[index] && !isValidAddress(inputCache[index]) ? 'Invalid Address' : ''}
-                    address={inputCache[index] || ''}
                     getAddressFromDomain={getAddressFromDomain}
-                    onChangeAddress={(address) => {
+                    onChangeAddress={(address: string) => {
                       setAddTxError(undefined);
                       handleInput(index, address);
                     }}
@@ -329,7 +327,7 @@ export const Builder = ({
                   <StyledTextField
                     value={inputCache[index] || ''}
                     label={`${input.name || ''}(${getInputHelper(input)})`}
-                    onChange={(e) => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       setAddTxError(undefined);
                       handleInput(index, e.target.value);
                     }}
