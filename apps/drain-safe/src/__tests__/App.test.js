@@ -42,7 +42,7 @@ describe('<App />', () => {
     const { container } = renderWithProviders(<App />);
     const { sdk } = useSafeAppsSDK();
 
-    await screen.findByText(/chainLink token/i);
+    await screen.findByText(/chainlink token/i);
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '0x301812eb4c89766875eFe61460f7a8bBC0CadB96' } });
     fireEvent.click(screen.getByText(/transfer everything/i));
     await waitFor(() => expect(sdk.txs.send).toHaveBeenCalledWith(mockTxsRequest));
@@ -57,7 +57,7 @@ describe('<App />', () => {
     fireEvent.click(checkboxes[3]);
     fireEvent.click(checkboxes[4]);
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '0x301812eb4c89766875eFe61460f7a8bBC0CadB96' } });
-    fireEvent.click(screen.getByText(/transfer everything/i));
+    fireEvent.click(screen.getByText(/transfer 2 assets/i));
 
     await waitFor(() =>
       expect(sdk.txs.send).toHaveBeenCalledWith({
@@ -78,17 +78,23 @@ describe('<App />', () => {
   it('should allow to order token by string prop', async () => {
     const { container } = renderWithProviders(<App />);
 
-    await screen.findByText(/chainLink token/i);
+    await screen.findByText(/chainlink token/i);
     const assetColumnHeaderElement = screen.getByText(/asset/i);
+    fireEvent.click(assetColumnHeaderElement);
+
+    await waitFor(() => {
+      const tableRows = document.querySelectorAll('tbody tr');
+      expect(within(tableRows[0]).getByText(/chainlink token/i)).toBeDefined();
+      expect(within(tableRows[4]).getByText(/uniswap/i)).toBeDefined();
+    });
 
     fireEvent.click(assetColumnHeaderElement);
-    const tableRows = document.querySelectorAll('tbody tr');
-    expect(within(tableRows[0]).getByText(/chainLink token/i)).toBeDefined();
-    expect(within(tableRows[4]).getByText(/uniswap/i)).toBeDefined();
 
-    fireEvent.click(assetColumnHeaderElement);
-    expect(within(tableRows[4]).getByText(/chainLink token/i)).toBeDefined();
-    expect(within(tableRows[0]).getByText(/uniswap/i)).toBeDefined();
+    await waitFor(() => {
+      const tableRows = document.querySelectorAll('tbody tr');
+      expect(within(tableRows[4]).getByText(/chainlink token/i)).toBeDefined();
+      expect(within(tableRows[0]).getByText(/uniswap/i)).toBeDefined();
+    });
   });
 
   it('should allow to order token by numeric prop', async () => {
@@ -96,14 +102,20 @@ describe('<App />', () => {
 
     await screen.findByText(/chainLink token/i);
     const amountColumnHeaderElement = screen.getByText(/amount/i);
+    fireEvent.click(amountColumnHeaderElement);
+
+    await waitFor(() => {
+      const tableRows = document.querySelectorAll('tbody tr');
+      expect(within(tableRows[0]).getByText(/dai/i)).toBeDefined();
+      expect(within(tableRows[4]).getByText(/maker/i)).toBeDefined();
+    });
 
     fireEvent.click(amountColumnHeaderElement);
-    const tableRows = document.querySelectorAll('tbody tr');
-    expect(within(tableRows[0]).getByText(/dai/i)).toBeDefined();
-    expect(within(tableRows[4]).getByText(/maker/i)).toBeDefined();
 
-    fireEvent.click(amountColumnHeaderElement);
-    expect(within(tableRows[4]).getByText(/dai/i)).toBeDefined();
-    expect(within(tableRows[0]).getByText(/maker/i)).toBeDefined();
+    await waitFor(() => {
+      const tableRows = document.querySelectorAll('tbody tr');
+      expect(within(tableRows[4]).getByText(/dai/i)).toBeDefined();
+      expect(within(tableRows[0]).getByText(/maker/i)).toBeDefined();
+    });
   });
 });

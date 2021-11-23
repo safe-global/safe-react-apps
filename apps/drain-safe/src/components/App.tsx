@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Title, TextField, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import web3Utils from 'web3-utils';
@@ -83,11 +83,24 @@ const App: React.FC = () => {
 
   const handleExcludeChange = (tokenAddress: string, checked: boolean): void => {
     if (checked) {
-      setExcludedTokens([...excludedTokens, tokenAddress]);
-    } else {
       setExcludedTokens(excludedTokens.filter((address) => address !== tokenAddress));
+    } else {
+      setExcludedTokens([...excludedTokens, tokenAddress]);
     }
   };
+
+  const transferStatusText = useMemo(() => {
+    if (assets.length === excludedTokens.length) {
+      return 'No tokens selected';
+    }
+
+    if (excludedTokens.length === 0) {
+      return 'Transfer everything';
+    }
+
+    const assetsToTransferCount = assets.length - excludedTokens.length;
+    return `Transfer ${assetsToTransferCount} asset${assetsToTransferCount > 1 ? 's' : ''}`;
+  }, [assets.length, excludedTokens.length]);
 
   useEffect(() => {
     if (balancesError) {
@@ -101,11 +114,8 @@ const App: React.FC = () => {
         <Logo />
         <Title size="md">Drain Account</Title>
       </Flex>
-
       <Balances assets={assets} exclude={excludedTokens} onExcludeChange={handleExcludeChange} />
-
       {error && <Text size="lg">{error}</Text>}
-
       {isFinished && (
         <Text size="lg">
           The transaction has been created.{' '}
@@ -116,10 +126,13 @@ const App: React.FC = () => {
           Refresh the app when it’s executed.
         </Text>
       )}
-
       {!submitting && <TextField onChange={onToAddressChange} value={toAddress} label="Recipient" />}
 
-      {submitting ? <CancelButton /> : <SubmitButton />}
+      {submitting ? (
+        <CancelButton>Cancel</CancelButton>
+      ) : (
+        <SubmitButton disabled={assets.length === excludedTokens.length}>{transferStatusText}</SubmitButton>
+      )}
     </FormContainer>
   );
 };

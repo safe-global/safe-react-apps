@@ -1987,10 +1987,10 @@
     classnames "^2.2.6"
     react-media "^1.10.0"
 
-"@gnosis.pm/safe-react-components@^0.8.0":
-  version "0.8.5"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.8.5.tgz#bc8ed6bd74db68c49da7ba706d77f9ba5fa4b092"
-  integrity sha512-gvqbuUGhDtjCTF8u+s6jEC0PkWXNMHQQum6rHQktgfnZ/X1WgxnIifooQvXT6MEpOCgkRxEYE+bowxp+eih6FA==
+"@gnosis.pm/safe-react-components@^0.8.6":
+  version "0.8.6"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.8.6.tgz#a8275b02d41a7b0d69abef867900843a1a49bb11"
+  integrity sha512-lWHSjOQFmeck6D4cpzs6un09Zx7jptmdR3+QtUkB0obsmguU0o6fXtkK91SYE2Fm86GpmjhA03rKrOqzEeklBA==
   dependencies:
     react-media "^1.10.0"
 
