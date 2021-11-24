@@ -85,6 +85,7 @@ type Props = {
   contract: ContractInterface | null;
   to: string;
   chainId: number;
+  nativeToken: string;
   transactions: ProposedTransaction[];
   onAddTransaction: (transaction: ProposedTransaction) => void;
   onRemoveTransaction: (index: number) => void;
@@ -95,6 +96,7 @@ export const Builder = ({
   contract,
   to,
   chainId,
+  nativeToken,
   transactions,
   onAddTransaction,
   onRemoveTransaction,
@@ -261,7 +263,7 @@ export const Builder = ({
         <StyledTextField
           style={{ marginTop: 10, marginBottom: 10 }}
           value={valueInput}
-          label="Eth value"
+          label={`${nativeToken} value`}
           meta={{ error: valueError ?? undefined }}
           onChange={onValueInputChange}
         />
