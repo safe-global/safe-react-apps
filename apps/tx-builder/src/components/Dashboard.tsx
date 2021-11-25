@@ -38,7 +38,7 @@ const Dashboard = () => {
   const [addressOrAbiInput, setAddressOrAbiInput] = useState('');
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadAbiError, setLoadAbiError] = useState(false);
-  const [nativeToken, setNativeToken] = useState<string>('');
+  const [nativeCurrencySymbol, setNativeCurrencySymbol] = useState<string>('');
 
   const handleAddressOrABIInput = async (e: React.ChangeEvent<HTMLInputElement>): Promise<ContractInterface | void> => {
     setContract(null);
@@ -101,13 +101,16 @@ const Dashboard = () => {
   }, [sdk.txs, transactions]);
 
   useEffect(() => {
-    const getNetworkName = async () => {
-      const { chainInfo: { nativeCurrency } = {} } = await sdk.safe.getInfo();
-
-      setNativeToken(nativeCurrency);
+    const getChainInfo = async () => {
+      try {
+        const { nativeCurrency: { symbol = '' } = {} } = await sdk.safe.getChainInfo();
+        setNativeCurrencySymbol(symbol);
+      } catch (e) {
+        console.error('Unable to get chain info:', e);
+      }
     };
 
-    getNetworkName();
+    getChainInfo();
   }, [sdk.safe]);
 
   return (
@@ -140,7 +143,7 @@ const Dashboard = () => {
           contract={contract}
           to={addressOrAbiInput}
           chainId={safe.chainId}
-          nativeToken={nativeToken}
+          nativeCurrencySymbol={nativeCurrencySymbol}
           transactions={transactions}
           onAddTransaction={handleAddTransaction}
           onRemoveTransaction={handleRemoveTransaction}
