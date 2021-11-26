@@ -10,7 +10,7 @@ export interface Services {
   interfaceRepo: InterfaceRepo | undefined;
 }
 
-export default function useServices(chainId: CHAINS): Services {
+export default function useServices(chainId: string): Services {
   const [web3, setWeb3] = useState<Web3 | undefined>();
   const [interfaceRepo, setInterfaceRepo] = useState<InterfaceRepository | undefined>();
 

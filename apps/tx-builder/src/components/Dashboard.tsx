@@ -7,6 +7,7 @@ import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import { Builder } from './Builder';
 import { ProposedTransaction } from '../typings/models';
+import { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,7 +39,7 @@ const Dashboard = () => {
   const [addressOrAbiInput, setAddressOrAbiInput] = useState('');
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadAbiError, setLoadAbiError] = useState(false);
-  const [nativeCurrencySymbol, setNativeCurrencySymbol] = useState<string>('');
+  const [chainInfo, setChainInfo] = useState<ChainInfo>();
 
   const handleAddressOrABIInput = async (e: React.ChangeEvent<HTMLInputElement>): Promise<ContractInterface | void> => {
     setContract(null);
@@ -103,8 +104,8 @@ const Dashboard = () => {
   useEffect(() => {
     const getChainInfo = async () => {
       try {
-        const { nativeCurrency: { symbol = '' } = {} } = await sdk.safe.getChainInfo();
-        setNativeCurrencySymbol(symbol);
+        const chainInfo = await sdk.safe.getChainInfo();
+        setChainInfo(chainInfo);
       } catch (e) {
         console.error('Unable to get chain info:', e);
       }
@@ -143,7 +144,7 @@ const Dashboard = () => {
           contract={contract}
           to={addressOrAbiInput}
           chainId={safe.chainId}
-          nativeCurrencySymbol={nativeCurrencySymbol}
+          nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
           transactions={transactions}
           onAddTransaction={handleAddTransaction}
           onRemoveTransaction={handleRemoveTransaction}

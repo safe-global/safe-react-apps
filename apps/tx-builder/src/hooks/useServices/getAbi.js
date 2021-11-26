@@ -4,7 +4,7 @@ const SOURCIFY_ENDPOINT = 'https://sourcify.dev/server';
 const TRANSACTION_SERVICE_ENDPOINT = (address, chainId) =>
   `https://safe-transaction.${chainId}.gnosis.io/api/v1/contracts/${address}`;
 
-const getAbiFromSourcify = async (address, chainId) => {
+const getAbiFromSourcify = async (address: string, chainId: string): string => {
   try {
     const data = await axios.post(SOURCIFY_ENDPOINT, { address, chainId });
     console.log(data);
@@ -14,7 +14,7 @@ const getAbiFromSourcify = async (address, chainId) => {
   }
 };
 
-const getAbiFromTxService = async (address, chainId) => {
+const getAbiFromTxService = async (address: string, chainId: string): string => {
   try {
     const data = await axios.get(TRANSACTION_SERVICE_ENDPOINT(address, chainId));
     console.log(data);
@@ -24,7 +24,7 @@ const getAbiFromTxService = async (address, chainId) => {
   }
 };
 
-const getAbi = async (address, chainId) => {
+const getAbi = async (address: string, chainId: string): string => {
   try {
     let abi = await getAbiFromSourcify(address, chainId);
     if (!abi) {

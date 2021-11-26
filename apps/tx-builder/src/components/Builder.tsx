@@ -85,7 +85,7 @@ type Props = {
   contract: ContractInterface | null;
   to: string;
   chainId: number;
-  nativeCurrencySymbol: string;
+  nativeCurrencySymbol: string | undefined;
   transactions: ProposedTransaction[];
   onAddTransaction: (transaction: ProposedTransaction) => void;
   onRemoveTransaction: (index: number) => void;

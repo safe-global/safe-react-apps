@@ -1,4 +1,3 @@
-import { CHAINS } from '../../utils';
 import getAbi from './getAbi';
 
 interface ContractMethod {
@@ -12,10 +11,10 @@ export interface ContractInterface {
 }
 
 class InterfaceRepository {
-  chainId: CHAINS;
+  chainId: string;
   web3: any;
 
-  constructor(chainId: CHAINS, web3: any) {
+  constructor(chainId: string, web3: any) {
     this.chainId = chainId;
     this.web3 = web3;
   }
