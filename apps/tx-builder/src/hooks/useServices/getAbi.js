@@ -1,31 +1,39 @@
 import axios from 'axios';
-import { CHAINS } from '../../utils';
 
-const NETWORKS = {
-  [CHAINS.MAINNET]: 'mainnet',
-  [CHAINS.RINKEBY]: 'rinkeby',
-  [CHAINS.GOERLI]: 'goerli',
-  [CHAINS.KOVAN]: 'kovan',
-  [CHAINS.BSC]: 'bsc',
-  [CHAINS.XDAI]: 'xdai',
-  [CHAINS.POLYGON]: 'polygon',
-  [CHAINS.ARBITRUM]: 'arbitrum',
-  [CHAINS.VOLTA]: 'volta',
+const SOURCIFY_ENDPOINT = 'https://sourcify.dev/server';
+const TRANSACTION_SERVICE_ENDPOINT = (address, chainId) =>
+  `https://safe-transaction.${chainId}.gnosis.io/api/v1/contracts/${address}`;
+
+const getAbiFromSourcify = async (address, chainId) => {
+  try {
+    const data = await axios.post(SOURCIFY_ENDPOINT, { address, chainId });
+    console.log(data);
+    return data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+const getAbiFromTxService = async (address, chainId) => {
+  try {
+    const data = await axios.get(TRANSACTION_SERVICE_ENDPOINT(address, chainId));
+    console.log(data);
+    return data;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 const getAbi = async (address, chainId) => {
-  if (!NETWORKS[chainId]) {
-    throw new Error('Chain not supported');
-  }
-
   try {
-    const { data: { contractAbi: { abi } } = {} } = await axios.get(
-      `https://safe-transaction.${NETWORKS[chainId]}.gnosis.io/api/v1/contracts/${address}`,
-    );
+    let abi = await getAbiFromSourcify(address, chainId);
+    if (!abi) {
+      abi = await getAbiFromTxService(address, chainId);
+    }
 
     return abi;
   } catch (error) {
-    throw new Error(error);
+    return error;
   }
 };
 
