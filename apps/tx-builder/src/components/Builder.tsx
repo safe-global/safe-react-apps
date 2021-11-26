@@ -85,6 +85,7 @@ type Props = {
   contract: ContractInterface | null;
   to: string;
   chainId: number;
+  nativeCurrencySymbol: string;
   transactions: ProposedTransaction[];
   onAddTransaction: (transaction: ProposedTransaction) => void;
   onRemoveTransaction: (index: number) => void;
@@ -95,6 +96,7 @@ export const Builder = ({
   contract,
   to,
   chainId,
+  nativeCurrencySymbol,
   transactions,
   onAddTransaction,
   onRemoveTransaction,
@@ -171,7 +173,7 @@ export const Builder = ({
 
       if (data.length === 0) {
         data = '0x';
-        description = `Transfer ${web3.utils.fromWei(cleanValue.toString())} ETH to ${cleanTo}`;
+        description = `Transfer ${web3.utils.fromWei(cleanValue.toString())} ${nativeCurrencySymbol} to ${cleanTo}`;
       }
 
       onAddTransaction({
@@ -206,7 +208,7 @@ export const Builder = ({
     setValueError(undefined);
     const value = Number(e.target.value);
     if (isNaN(value) || value < 0) {
-      setValueError('ETH value');
+      setValueError(`${nativeCurrencySymbol} value`);
     }
     setValueInput(e.target.value);
   };
@@ -261,7 +263,7 @@ export const Builder = ({
         <StyledTextField
           style={{ marginTop: 10, marginBottom: 10 }}
           value={valueInput}
-          label="Eth value"
+          label={`${nativeCurrencySymbol} value`}
           meta={{ error: valueError ?? undefined }}
           onChange={onValueInputChange}
         />

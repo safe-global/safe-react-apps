@@ -1,5 +1,5 @@
 import { Text, Title, Link, TextField } from '@gnosis.pm/safe-react-components';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import styled from 'styled-components';
 
@@ -38,6 +38,7 @@ const Dashboard = () => {
   const [addressOrAbiInput, setAddressOrAbiInput] = useState('');
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadAbiError, setLoadAbiError] = useState(false);
+  const [nativeCurrencySymbol, setNativeCurrencySymbol] = useState<string>('');
 
   const handleAddressOrABIInput = async (e: React.ChangeEvent<HTMLInputElement>): Promise<ContractInterface | void> => {
     setContract(null);
@@ -99,6 +100,19 @@ const Dashboard = () => {
     }
   }, [sdk.txs, transactions]);
 
+  useEffect(() => {
+    const getChainInfo = async () => {
+      try {
+        const { nativeCurrency: { symbol = '' } = {} } = await sdk.safe.getChainInfo();
+        setNativeCurrencySymbol(symbol);
+      } catch (e) {
+        console.error('Unable to get chain info:', e);
+      }
+    };
+
+    getChainInfo();
+  }, [sdk.safe]);
+
   return (
     <Wrapper>
       <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
@@ -129,6 +143,7 @@ const Dashboard = () => {
           contract={contract}
           to={addressOrAbiInput}
           chainId={safe.chainId}
+          nativeCurrencySymbol={nativeCurrencySymbol}
           transactions={transactions}
           onAddTransaction={handleAddTransaction}
           onRemoveTransaction={handleRemoveTransaction}
