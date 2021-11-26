@@ -27,6 +27,10 @@ const StyledText = styled(Text)`
   margin-bottom: 15px;
 `;
 
+const StyledWarningText = styled(Text)`
+  margin-top: 5px;
+`;
+
 const CheckIconAddressAdornment = styled(CheckCircle)`
   color: #03ae60;
   height: 20px;
@@ -115,7 +119,7 @@ const Dashboard = (): ReactElement => {
     [services.web3],
   );
 
-  const isValidAddressOrContract = isValidAddress(addressOrAbi) || contract;
+  const isValidAddressOrContract = (isValidAddress(addressOrAbi) || contract) && !isABILoading;
 
   return (
     <Wrapper>
@@ -154,6 +158,13 @@ const Dashboard = (): ReactElement => {
           ),
         }}
       />
+
+      {/* ABI Warning */}
+      {isValidAddressOrContract && !contract && (
+        <StyledWarningText color="warning" size="lg">
+          No ABI found for this address
+        </StyledWarningText>
+      )}
 
       {/* Builder */}
       {isValidAddressOrContract && (
