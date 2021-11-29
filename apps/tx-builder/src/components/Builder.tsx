@@ -125,7 +125,7 @@ export const Builder = ({
 
   const isInputValueValid = useCallback((val: string) => {
     const value = Number(val);
-    if (isNaN(value) || value <= 0) {
+    if (isNaN(value) || value < 0) {
       return false;
     }
 
