@@ -1,6 +1,6 @@
-import { Text, Title, Link, TextField } from '@gnosis.pm/safe-react-components';
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
+import { Text, Title, Link, TextField } from '@gnosis.pm/safe-react-components';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';

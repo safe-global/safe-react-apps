@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import Web3 from 'web3';
+import SafeAppsSDK, { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
+import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 
 import InterfaceRepository from './interfaceRepository';
 import { InterfaceRepo } from './interfaceRepository';
 import { CHAINS, rpcUrlGetterByNetwork } from '../../utils';
-import { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk/dist/src/sdk';
 
 export interface Services {
   sdk: SafeAppsSDK;
@@ -44,8 +43,8 @@ export default function useServices(): Services {
       try {
         const chainInfo = await sdk.safe.getChainInfo();
         setChainInfo(chainInfo);
-      } catch (e) {
-        console.error('Unable to get chain info:', e);
+      } catch (error) {
+        console.error('Unable to get chain info:', error);
       }
     };
 

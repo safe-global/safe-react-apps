@@ -33,7 +33,7 @@ const getAbiFromSourcify = async (address: string, chainId: string): Promise<any
     return metadata && JSON.parse(metadata.content)?.output?.abi;
   }
 
-  throw new Error('No ABI found using Sourcify');
+  throw new Error('Contract found but could not found abi using Sourcify');
 };
 
 const getAbiFromTxService = async (address: string, chainName: string): Promise<any> => {
@@ -43,7 +43,7 @@ const getAbiFromTxService = async (address: string, chainName: string): Promise<
     return data?.contractAbi?.abi;
   }
 
-  throw new Error('No ABI found using the Transaction Service');
+  throw new Error('Contract found but could not found ABI using the Transaction Service');
 };
 
 const getAbi = async (address: string, chainInfo: ChainInfo): Promise<any> => {
