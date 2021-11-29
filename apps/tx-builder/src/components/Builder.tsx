@@ -123,6 +123,15 @@ export const Builder = ({
     setInputCache(inputCache.slice());
   };
 
+  const isInputValueValid = useCallback((val: string) => {
+    const value = Number(val);
+    if (isNaN(value) || value <= 0) {
+      return false;
+    }
+
+    return true;
+  }, []);
+
   const getContractMethod = useCallback(() => contract?.methods[selectedMethodIndex], [contract, selectedMethodIndex]);
 
   const handleSubmit = () => {
@@ -140,6 +149,11 @@ export const Builder = ({
     const web3 = services.web3;
 
     if (!web3) {
+      return;
+    }
+
+    if (!isInputValueValid(valueInput)) {
+      setValueError(`${nativeCurrencySymbol} value`);
       return;
     }
 
@@ -206,8 +220,7 @@ export const Builder = ({
 
   const onValueInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValueError(undefined);
-    const value = Number(e.target.value);
-    if (isNaN(value) || value < 0) {
+    if (!isInputValueValid(e.target.value)) {
       setValueError(`${nativeCurrencySymbol} value`);
     }
     setValueInput(e.target.value);
