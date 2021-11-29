@@ -84,7 +84,7 @@ const parseInputValue = (input: any, value: string): any => {
 type Props = {
   contract: ContractInterface | null;
   to: string;
-  chainId: number;
+  chainId: string | undefined;
   nativeCurrencySymbol: string | undefined;
   transactions: ProposedTransaction[];
   onAddTransaction: (transaction: ProposedTransaction) => void;
@@ -102,7 +102,7 @@ export const Builder = ({
   onRemoveTransaction,
   onSubmitTransactions,
 }: Props): ReactElement | null => {
-  const services = useServices(chainId);
+  const services = useServices();
   const [toInput, setToInput] = useState('');
   const [valueInput, setValueInput] = useState('');
   const [reviewing, setReviewing] = useState(false);

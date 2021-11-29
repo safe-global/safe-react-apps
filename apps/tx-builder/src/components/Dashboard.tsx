@@ -1,13 +1,11 @@
 import { Text, Title, Link, TextField } from '@gnosis.pm/safe-react-components';
-import React, { useState, useCallback, useEffect } from 'react';
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import { Builder } from './Builder';
 import { ProposedTransaction } from '../typings/models';
-import { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
 
 const Wrapper = styled.div`
   display: flex;
@@ -33,13 +31,11 @@ const StyledTextFiled = styled(TextField)`
 `;
 
 const Dashboard = () => {
-  const { sdk, safe } = useSafeAppsSDK();
-  const services = useServices(safe.chainId);
+  const { sdk, web3, interfaceRepo, chainInfo } = useServices();
   const [transactions, setTransactions] = useState<ProposedTransaction[]>([]);
   const [addressOrAbiInput, setAddressOrAbiInput] = useState('');
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadAbiError, setLoadAbiError] = useState(false);
-  const [chainInfo, setChainInfo] = useState<ChainInfo>();
 
   const handleAddressOrABIInput = async (e: React.ChangeEvent<HTMLInputElement>): Promise<ContractInterface | void> => {
     setContract(null);
@@ -48,12 +44,12 @@ const Dashboard = () => {
     const cleanInput = e.currentTarget?.value?.trim();
     setAddressOrAbiInput(cleanInput);
 
-    if (!cleanInput.length || !services.web3 || !services.interfaceRepo) {
+    if (!cleanInput.length || !web3 || !interfaceRepo) {
       return;
     }
 
     try {
-      const contract = await services.interfaceRepo.loadAbi(cleanInput);
+      const contract = await interfaceRepo.loadAbi(cleanInput);
       setContract(contract);
     } catch (e) {
       setContract(null);
@@ -67,9 +63,9 @@ const Dashboard = () => {
       if (!address) {
         return false;
       }
-      return services?.web3?.utils.isAddress(address);
+      return web3?.utils.isAddress(address);
     },
-    [services.web3],
+    [web3],
   );
 
   const handleAddTransaction = useCallback(
@@ -101,19 +97,6 @@ const Dashboard = () => {
     }
   }, [sdk.txs, transactions]);
 
-  useEffect(() => {
-    const getChainInfo = async () => {
-      try {
-        const chainInfo = await sdk.safe.getChainInfo();
-        setChainInfo(chainInfo);
-      } catch (e) {
-        console.error('Unable to get chain info:', e);
-      }
-    };
-
-    getChainInfo();
-  }, [sdk.safe]);
-
   return (
     <Wrapper>
       <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
@@ -143,7 +126,7 @@ const Dashboard = () => {
         <Builder
           contract={contract}
           to={addressOrAbiInput}
-          chainId={safe.chainId}
+          chainId={chainInfo?.chainId}
           nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
           transactions={transactions}
           onAddTransaction={handleAddTransaction}
