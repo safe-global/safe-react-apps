@@ -8,6 +8,7 @@ import {
   Select,
   ModalFooterConfirmation,
   ButtonLink,
+  Switch,
 } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import { AbiItem, toBN } from 'web3-utils';
@@ -30,6 +31,10 @@ const StyledTextField = styled(TextField)`
     margin-bottom: 10px;
   }
 `;
+
+const StyledTextAreaField = (props: any) => {
+  return <StyledTextField {...props} multiline rows={4} />;
+};
 
 const StyledSelect = styled(Select)`
   width: 520px;
@@ -111,6 +116,8 @@ export const Builder = ({
   const [addTxError, setAddTxError] = useState<string | undefined>();
   const [valueError, setValueError] = useState<string | undefined>();
   const [inputCache, setInputCache] = useState<string[]>([]);
+  const [isShowCustomDataChecked, setIsShowCustomDataChecked] = useState<boolean>(false);
+  const [hexDataValue, setHexDataValue] = useState<string>('');
   const [isValueInputVisible, setIsValueInputVisible] = useState(false);
 
   const handleMethod = async (methodIndex: number) => {
@@ -143,7 +150,13 @@ export const Builder = ({
       return;
     }
 
-    if (contract && contract.methods.length > selectedMethodIndex) {
+    if (isShowCustomDataChecked) {
+      if (!hexDataValue) {
+        return;
+      }
+
+      data = hexDataValue;
+    } else if (contract && contract.methods.length > selectedMethodIndex) {
       const method = contract.methods[selectedMethodIndex];
 
       if (!['receive', 'fallback'].includes(method.name)) {
@@ -173,7 +186,9 @@ export const Builder = ({
 
       if (data.length === 0) {
         data = '0x';
-        description = `Transfer ${web3.utils.fromWei(cleanValue.toString())} ${nativeCurrencySymbol} to ${cleanTo}`;
+        description = isShowCustomDataChecked
+          ? 'Custom transaction'
+          : `Transfer ${web3.utils.fromWei(cleanValue.toString())} ${nativeCurrencySymbol} to ${cleanTo}`;
       }
 
       onAddTransaction({
@@ -184,6 +199,7 @@ export const Builder = ({
       setInputCache([]);
       setSelectedMethodIndex(0);
       setValueInput('');
+      setHexDataValue('');
     } catch (e) {
       setAddTxError('There was an error trying to add the transaction.');
       console.error(e);
@@ -246,9 +262,7 @@ export const Builder = ({
   return (
     <>
       <Title size="xs">Transaction information</Title>
-
       {contract && !contract?.methods.length && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
-
       {to.length > 0 && (
         <StyledTextField
           style={{ marginTop: 10 }}
@@ -257,7 +271,6 @@ export const Builder = ({
           onChange={(e) => setToInput(e.target.value)}
         />
       )}
-
       {/* ValueInput */}
       {isValueInputVisible && (
         <StyledTextField
@@ -270,7 +283,7 @@ export const Builder = ({
       )}
 
       {/* Contract Inputs */}
-      {contract?.methods.length && (
+      {!isShowCustomDataChecked && contract?.methods.length && (
         <>
           <StyledSelect
             items={contract.methods.map((method, index) => ({
@@ -316,6 +329,20 @@ export const Builder = ({
         </>
       )}
 
+      {/* hex encoded switcher*/}
+      {isShowCustomDataChecked && (
+        <StyledTextAreaField
+          label="Data (hex encoded)*"
+          value={hexDataValue}
+          onChange={(e: any) => setHexDataValue(e.target.value)}
+        />
+      )}
+
+      <Text size="lg">
+        <Switch checked={isShowCustomDataChecked} onChange={setIsShowCustomDataChecked} />
+        Use custom data (hex encoded)
+      </Text>
+
       {/* Actions */}
       <ButtonContainer>
         <Button
@@ -337,7 +364,6 @@ export const Builder = ({
           {`Send Transactions ${transactions.length ? `(${transactions.length})` : ''}`}
         </Button>
       </ButtonContainer>
-
       {/* TXs MODAL */}
       {reviewing && transactions.length > 0 && (
         <GenericModal
