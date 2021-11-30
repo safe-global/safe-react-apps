@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import { Builder } from './Builder';
-import { ProposedTransaction } from '../typings/models';
+import useTransactions from '../hooks/useTransactions';
 
 const Wrapper = styled.div`
   display: flex;
@@ -34,11 +34,11 @@ const StyledTextFiled = styled(TextField)`
 const Dashboard = () => {
   const { sdk, safe } = useSafeAppsSDK();
   const services = useServices(safe.chainId);
-  const [transactions, setTransactions] = useState<ProposedTransaction[]>([]);
   const [addressOrAbiInput, setAddressOrAbiInput] = useState('');
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadAbiError, setLoadAbiError] = useState(false);
   const [nativeCurrencySymbol, setNativeCurrencySymbol] = useState<string>('');
+  const { transactions, handleAddTransaction, handleRemoveTransaction, handleSubmitTransactions } = useTransactions();
 
   const handleAddressOrABIInput = async (e: React.ChangeEvent<HTMLInputElement>): Promise<ContractInterface | void> => {
     setContract(null);
@@ -70,35 +70,6 @@ const Dashboard = () => {
     },
     [services.web3],
   );
-
-  const handleAddTransaction = useCallback(
-    (tx: ProposedTransaction) => {
-      setTransactions([...transactions, tx]);
-    },
-    [transactions],
-  );
-
-  const handleRemoveTransaction = useCallback(
-    (index: number) => {
-      const newTxs = transactions.slice();
-      newTxs.splice(index, 1);
-      setTransactions(newTxs);
-    },
-    [transactions],
-  );
-
-  const handleSubmitTransactions = useCallback(async () => {
-    if (!transactions.length) {
-      return;
-    }
-
-    try {
-      await sdk.txs.send({ txs: transactions.map((transaction) => transaction.raw) }).catch(console.error);
-      setTransactions([]);
-    } catch (e) {
-      console.error('Error sending transactions:', e);
-    }
-  }, [sdk.txs, transactions]);
 
   useEffect(() => {
     const getChainInfo = async () => {
