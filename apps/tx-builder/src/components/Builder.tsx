@@ -81,6 +81,15 @@ const parseInputValue = (input: any, value: string): any => {
   return value;
 };
 
+const isInputValueValid = (val: string) => {
+  const value = Number(val);
+  if (isNaN(value) || value < 0) {
+    return false;
+  }
+
+  return true;
+};
+
 type Props = {
   contract: ContractInterface | null;
   to: string;
@@ -122,15 +131,6 @@ export const Builder = ({
     inputCache[inputIndex] = input;
     setInputCache(inputCache.slice());
   };
-
-  const isInputValueValid = useCallback((val: string) => {
-    const value = Number(val);
-    if (isNaN(value) || value < 0) {
-      return false;
-    }
-
-    return true;
-  }, []);
 
   const getContractMethod = useCallback(() => contract?.methods[selectedMethodIndex], [contract, selectedMethodIndex]);
 
