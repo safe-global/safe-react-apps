@@ -21,7 +21,7 @@ const HEADERS = [
   { id: 'tokenInfo.name', label: 'Asset' },
   { id: 'balance', label: 'Amount' },
   { id: 'fiatBalance', label: `Value, ${CURRENCY}` },
-  { id: 'exclude', label: 'Exclude', hideSortIcon: true },
+  { id: 'transfer', label: 'Transfer', hideSortIcon: true },
 ];
 
 function Balances({
@@ -38,7 +38,7 @@ function Balances({
 
   const handleHeaderClick = useCallback(
     (headerId: string) => {
-      if (headerId === 'exclude') {
+      if (headerId === 'transfer') {
         return;
       }
 
@@ -52,10 +52,11 @@ function Balances({
   );
 
   const handleExclusion = useCallback(
-    (address: string, checked: boolean) => {
-      onExcludeChange(address, checked);
+    (rowId: string) => {
+      const isRowChecked = exclude.includes(rowId);
+      onExcludeChange(rowId, isRowChecked);
     },
-    [onExcludeChange],
+    [onExcludeChange, exclude],
   );
 
   const rows = useMemo(
@@ -63,11 +64,11 @@ function Balances({
       assets
         .slice()
         .sort(getComparator(order, orderBy))
-        .map((item: TokenBalance, index: number) => {
+        .map((item: TokenBalance) => {
           const token = item.tokenInfo || ethToken;
 
           return {
-            id: `row${index}`,
+            id: item.tokenInfo.address,
             cells: [
               {
                 content: (
@@ -85,9 +86,9 @@ function Balances({
                 content: (
                   <Checkbox
                     label=""
-                    name="exclude"
-                    checked={exclude.includes(item.tokenInfo.address)}
-                    onChange={(_, checked) => handleExclusion(item.tokenInfo.address, checked)}
+                    name="transfer"
+                    checked={!exclude.includes(item.tokenInfo.address)}
+                    onChange={() => handleExclusion(item.tokenInfo.address)}
                   />
                 ),
               },

@@ -32,6 +32,13 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
+const StyledAddressInput = styled(AddressInput)`
+  && {
+    width: 520px;
+    margin-bottom: 10px;
+  }
+`;
+
 const StyledSelect = styled(Select)`
   margin-top: 10px;
   width: 520px;
@@ -89,6 +96,7 @@ type Props = {
   contract: ContractInterface | null;
   to: string;
   chainId: number;
+  nativeCurrencySymbol: string;
   transactions: ProposedTransaction[];
   onAddTransaction: (transaction: ProposedTransaction) => void;
   onRemoveTransaction: (index: number) => void;
@@ -101,6 +109,7 @@ export const Builder = ({
   contract,
   to,
   chainId,
+  nativeCurrencySymbol,
   transactions,
   onAddTransaction,
   onRemoveTransaction,
@@ -179,7 +188,7 @@ export const Builder = ({
 
       if (data.length === 0) {
         data = '0x';
-        description = `Transfer ${web3.utils.fromWei(cleanValue.toString())} ETH to ${cleanTo}`;
+        description = `Transfer ${web3.utils.fromWei(cleanValue.toString())} ${nativeCurrencySymbol} to ${cleanTo}`;
       }
 
       onAddTransaction({
@@ -210,11 +219,13 @@ export const Builder = ({
     [services.web3],
   );
 
+  const onChangeToAddress = useCallback((address: string) => setToInput(address), []);
+
   const onValueInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValueError(undefined);
     const value = Number(e.target.value);
     if (isNaN(value) || value < 0) {
-      setValueError('ETH value');
+      setValueError(`${nativeCurrencySymbol} value`);
     }
     setValueInput(e.target.value);
   };
@@ -256,7 +267,7 @@ export const Builder = ({
       {contract && !contract?.methods.length && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
 
       {to.length > 0 && (
-        <AddressInput
+        <StyledAddressInput
           id={'to-address-input'}
           name="toAddress"
           label="To Address"
@@ -266,7 +277,8 @@ export const Builder = ({
           networkPrefix={networkPrefix}
           error={toInput && !isValidAddress(toInput) ? 'Invalid Address' : ''}
           getAddressFromDomain={getAddressFromDomain}
-          onChangeAddress={(address: string) => setToInput(address)}
+          onChangeAddress={onChangeToAddress}
+          hiddenLabel={!toInput}
         />
       )}
 
@@ -275,7 +287,7 @@ export const Builder = ({
         <StyledTextField
           style={{ marginTop: 10, marginBottom: 10 }}
           value={valueInput}
-          label="Eth value"
+          label={`${nativeCurrencySymbol} value`}
           meta={{ error: valueError ?? undefined }}
           onChange={onValueInputChange}
         />
@@ -308,7 +320,7 @@ export const Builder = ({
             return (
               <div key={index} style={{ marginTop: 10 }}>
                 {isAddressField ? (
-                  <AddressInput
+                  <StyledAddressInput
                     id={`${input.name || ''}(${getInputHelper(input)})`}
                     name={input.name}
                     label={`${input.name || ''}(${getInputHelper(input)})`}

@@ -3,12 +3,11 @@ import Web3 from 'web3';
 
 import InterfaceRepository from './interfaceRepository';
 import { InterfaceRepo } from './interfaceRepository';
-import { CHAINS, rpcUrlGetterByNetwork, shortNamesByNetwork, SHORT_NAMES } from '../../utils';
+import { CHAINS, rpcUrlGetterByNetwork } from '../../utils';
 
 export interface Services {
   web3: Web3 | undefined;
   interfaceRepo: InterfaceRepo | undefined;
-  networkPrefix: SHORT_NAMES | undefined;
 }
 
 export default function useServices(chainId: CHAINS): Services {
@@ -33,11 +32,8 @@ export default function useServices(chainId: CHAINS): Services {
     setInterfaceRepo(interfaceRepo);
   }, [chainId]);
 
-  const networkPrefix = shortNamesByNetwork[chainId];
-
   return {
     web3,
     interfaceRepo,
-    networkPrefix,
   };
 }

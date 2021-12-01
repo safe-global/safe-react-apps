@@ -1780,19 +1780,20 @@
     "@ethersproject/properties" "^5.5.0"
     "@ethersproject/strings" "^5.5.0"
 
-"@gnosis.pm/safe-apps-react-sdk@4.0.5":
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-4.0.5.tgz#8443b8687583beb5ee3fcfeaa05dd3e720001998"
-  integrity sha512-DaUr0loy/hvhtYn9EPla8GynkbmBifsNn05TXCRiju1QDO2luIqPSfV/OEMjoFCk5ljkXv+HQlxU0dsymDtCeg==
+"@gnosis.pm/safe-apps-react-sdk@4.0.7":
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-4.0.7.tgz#aa36bb6c618fb76323e69f5eabd7704ed53d4dd1"
+  integrity sha512-nN5QtTxCgE3BYKICernCUZuj4aGZQPuqW0iOF0AFx90kV5PsBNgERNJs1g7chwS7goJlwazOyXV2bUpt3QwkcA==
   dependencies:
-    "@gnosis.pm/safe-apps-sdk" "5.0.0"
+    "@gnosis.pm/safe-apps-sdk" "6.1.0"
 
-"@gnosis.pm/safe-apps-sdk@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-5.0.0.tgz#41fbd7084f05cc5ec79fd29bb570292c9ce9fa70"
-  integrity sha512-Jvy+vYXJlc2tCj3rAF5i4G9tWRDcoSFrZKufg+9X9EZO0VcjlcDrrgpxa1t0Gv3b17Bi2WUFvjl+fwehsPCfgQ==
+"@gnosis.pm/safe-apps-sdk@6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-6.1.0.tgz#b1b07504ed43d034e0b94c7fe274e908d62988a8"
+  integrity sha512-2NEd1CKoHTSkiQfdw8GJXtc/GfWogNHpRGeRmM2X1kvzlqIAheEhefM4BtyP/Nwo95/vvfwePi3ANuc6S6aUKQ==
   dependencies:
     "@changesets/cli" "^2.16.0"
+    "@gnosis.pm/safe-react-gateway-sdk" "^2.5.6"
     ethers "^5.4.7"
 
 "@gnosis.pm/safe-react-components@^0.5.0":
@@ -1811,20 +1812,27 @@
     classnames "^2.2.6"
     react-media "^1.10.0"
 
-"@gnosis.pm/safe-react-components@^0.8.0":
-  version "0.8.5"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.8.5.tgz#bc8ed6bd74db68c49da7ba706d77f9ba5fa4b092"
-  integrity sha512-gvqbuUGhDtjCTF8u+s6jEC0PkWXNMHQQum6rHQktgfnZ/X1WgxnIifooQvXT6MEpOCgkRxEYE+bowxp+eih6FA==
+"@gnosis.pm/safe-react-components@^0.8.6":
+  version "0.8.6"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.8.6.tgz#a8275b02d41a7b0d69abef867900843a1a49bb11"
+  integrity sha512-lWHSjOQFmeck6D4cpzs6un09Zx7jptmdR3+QtUkB0obsmguU0o6fXtkK91SYE2Fm86GpmjhA03rKrOqzEeklBA==
   dependencies:
     react-media "^1.10.0"
 
-"@gnosis.pm/safe-react-components@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.9.0.tgz#c5169cab41cde96c9a375005f380cd37bd909fe0"
-  integrity sha512-+SAJEuK4Zf1eBCtMpe1uQlJBN73zttIQwevEch7PDUBhJysc/oyEHuhmhpZpMYryoFgVVGYz7FZtwv2NxmUsJQ==
+"@gnosis.pm/safe-react-components@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.9.1.tgz#0324f73b7b99a22e054a27394c3aa9d21fd41b29"
+  integrity sha512-UE/zCwcxrYY2rDzT2f8MJywSmgdJbcpkwVroeB2VzFiLWmj3AwhBKEV47lvZCa90jycnJMZBOu++6SoIo19ojg==
   dependencies:
     react-media "^1.10.0"
     web3-utils "^1.6.0"
+
+"@gnosis.pm/safe-react-gateway-sdk@^2.5.6":
+  version "2.5.6"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-2.5.6.tgz#7b8713bb16a542c4af27d6e1f2d8925a21aaeb51"
+  integrity sha512-flM/i80oFwSRlW0U8HE7QurwwPpNTUjBv7gZNAjgOpGhub51r7Uf1LtSm89Mnxnh2mtj4Whl8ZC4RMoXdV3yvw==
+  dependencies:
+    isomorphic-unfetch "^3.1.0"
 
 "@hapi/address@2.x.x":
   version "2.1.4"
@@ -8062,6 +8070,14 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
+isomorphic-unfetch@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/isomorphic-unfetch/-/isomorphic-unfetch-3.1.0.tgz#87341d5f4f7b63843d468438128cb087b7c3e98f"
+  integrity sha512-geDJjpoZ8N0kWexiwkX8F9NkTsXhetLPVbZFQ+JTW239QNOwvB0gniuR1Wc6f0AMTn7/mFGyXvHTifrCp/GH8Q==
+  dependencies:
+    node-fetch "^2.6.1"
+    unfetch "^4.2.0"
+
 isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
@@ -9623,6 +9639,13 @@ node-addon-api@^2.0.0:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-2.0.2.tgz#432cfa82962ce494b132e9d72a15b29f71ff5d32"
   integrity sha512-Ntyt4AIXyaLIuMHF6IOoTakB3K+RWxwtsHNRxllEoA6vPwP9o4866g6YWDLUdnucilZhmkxiHwHr11gAENw+QA==
+
+node-fetch@^2.6.1:
+  version "2.6.6"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.6.tgz#1751a7c01834e8e1697758732e9efb6eeadfaf89"
+  integrity sha512-Z8/6vRlTUChSdIgMa51jxQ4lrw/Jy5SOW10ObaA47/RElsAN2c5Pn8bTgFGWn/ibwzXTE8qwr1Yzx28vsecXEA==
+  dependencies:
+    whatwg-url "^5.0.0"
 
 node-forge@^0.10.0:
   version "0.10.0"
@@ -13211,6 +13234,11 @@ tr46@^2.0.2:
   dependencies:
     punycode "^2.1.1"
 
+tr46@~0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
+  integrity sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=
+
 trim-newlines@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/trim-newlines/-/trim-newlines-3.0.1.tgz#260a5d962d8b752425b32f3a7db0dcacd176c144"
@@ -13392,6 +13420,11 @@ underscore@1.12.1:
   version "1.12.1"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.12.1.tgz#7bb8cc9b3d397e201cf8553336d262544ead829e"
   integrity sha512-hEQt0+ZLDVUMhebKxL4x1BTtDY7bavVofhZ9KZ4aI26X9SRaE+Y3m83XUL1UP2jn8ynjndwCCpEHdUG+9pP1Tw==
+
+unfetch@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/unfetch/-/unfetch-4.2.0.tgz#7e21b0ef7d363d8d9af0fb929a5555f6ef97a3be"
+  integrity sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"
@@ -13999,6 +14032,11 @@ web3@~1.3.6:
     web3-shh "1.3.6"
     web3-utils "1.3.6"
 
+webidl-conversions@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
+  integrity sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=
+
 webidl-conversions@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-5.0.0.tgz#ae59c8a00b121543a2acc65c0434f57b0fc11aff"
@@ -14156,6 +14194,14 @@ whatwg-mimetype@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/whatwg-mimetype/-/whatwg-mimetype-2.3.0.tgz#3d4b1e0312d2079879f826aff18dbeeca5960fbf"
   integrity sha512-M4yMwr6mAnQz76TbJm914+gPpB/nCwvZbJU28cUD6dR004SAxDLOOSUaB1JDRqLtaOV/vi0IC5lEAGFgrjGv/g==
+
+whatwg-url@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-5.0.0.tgz#966454e8765462e37644d3626f6742ce8b70965d"
+  integrity sha1-lmRU6HZUYuN2RNNib2dCzotwll0=
+  dependencies:
+    tr46 "~0.0.3"
+    webidl-conversions "^3.0.0"
 
 whatwg-url@^8.0.0, whatwg-url@^8.5.0:
   version "8.5.0"

@@ -36,6 +36,13 @@ const CheckIconAddressAdornment = styled(CheckCircle)`
   height: 20px;
 `;
 
+const StyledAddressInput = styled(AddressInput)`
+  && {
+    width: 520px;
+    margin-bottom: 10px;
+  }
+`;
+
 const Dashboard = (): ReactElement => {
   const { sdk, safe } = useSafeAppsSDK();
 
@@ -48,6 +55,8 @@ const Dashboard = (): ReactElement => {
   const [loadContractError, setLoadContractError] = useState('');
 
   const [transactions, setTransactions] = useState<ProposedTransaction[]>([]);
+  const [nativeCurrencySymbol, setNativeCurrencySymbol] = useState<string>('');
+  const [networkPrefix, setNetworkPrefix] = useState<string>('');
 
   const handleAddTransaction = useCallback(
     (tx: ProposedTransaction) => {
@@ -79,6 +88,20 @@ const Dashboard = (): ReactElement => {
       console.error('Error sending transactions:', e);
     }
   }, [sdk.txs, transactions]);
+
+  useEffect(() => {
+    const getChainInfo = async () => {
+      try {
+        const { nativeCurrency: { symbol = '' } = {}, shortName } = await sdk.safe.getChainInfo();
+        setNativeCurrencySymbol(symbol);
+        setNetworkPrefix(shortName);
+      } catch (e) {
+        console.error('Unable to get chain info:', e);
+      }
+    };
+
+    getChainInfo();
+  }, [sdk.safe]);
 
   // Load contract from address or ABI
   useEffect(() => {
@@ -138,14 +161,14 @@ const Dashboard = (): ReactElement => {
       </StyledText>
 
       {/* ABI or Address Input */}
-      <AddressInput
+      <StyledAddressInput
         id={'address-or-ABI-input'}
         name="addressOrAbi"
         label="Address or ABI"
         address={addressOrAbi}
         placeholder={'Enter Address, ENS Name or ABI'}
-        showNetworkPrefix={!!services.networkPrefix}
-        networkPrefix={services.networkPrefix}
+        showNetworkPrefix={!!networkPrefix}
+        networkPrefix={networkPrefix}
         error={!isValidAddressOrContract ? loadContractError : ''}
         showLoadingSpinner={isABILoading}
         getAddressFromDomain={getAddressFromDomain}
@@ -172,11 +195,12 @@ const Dashboard = (): ReactElement => {
           contract={contract}
           to={addressOrAbi}
           chainId={safe.chainId}
+          nativeCurrencySymbol={nativeCurrencySymbol}
           transactions={transactions}
           onAddTransaction={handleAddTransaction}
           onRemoveTransaction={handleRemoveTransaction}
           onSubmitTransactions={handleSubmitTransactions}
-          networkPrefix={services.networkPrefix}
+          networkPrefix={networkPrefix}
           getAddressFromDomain={getAddressFromDomain}
         />
       )}
