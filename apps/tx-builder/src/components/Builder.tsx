@@ -36,6 +36,14 @@ const StyledAddressInput = styled(AddressInput)`
   && {
     width: 520px;
     margin-bottom: 10px;
+
+    .MuiFormLabel-root {
+      color: #0000008a;
+    }
+
+    .MuiInputLabel-shrink {
+      color: #008c73;
+    }
   }
 `;
 
@@ -133,10 +141,13 @@ export const Builder = ({
     setSelectedMethodIndex(methodIndex);
   };
 
-  const handleInput = async (inputIndex: number, input: string) => {
-    inputCache[inputIndex] = input;
-    setInputCache(inputCache.slice());
-  };
+  const onChangeContractInput = useCallback((index: number, value: string) => {
+    setAddTxError(undefined);
+    setInputCache((inputCache) => {
+      inputCache[index] = value;
+      return inputCache.slice();
+    });
+  }, []);
 
   const getContractMethod = useCallback(() => contract?.methods[selectedMethodIndex], [contract, selectedMethodIndex]);
 
@@ -272,7 +283,6 @@ export const Builder = ({
           name="toAddress"
           label="To Address"
           address={toInput}
-          placeholder={'To Address'}
           showNetworkPrefix={!!networkPrefix}
           networkPrefix={networkPrefix}
           error={toInput && !isValidAddress(toInput) ? 'Invalid Address' : ''}
@@ -320,30 +330,30 @@ export const Builder = ({
             return (
               <div key={index} style={{ marginTop: 10 }}>
                 {isAddressField ? (
-                  <StyledAddressInput
-                    id={`${input.name || ''}(${getInputHelper(input)})`}
-                    name={input.name}
-                    label={`${input.name || ''}(${getInputHelper(input)})`}
-                    address={inputCache[index] || ''}
-                    placeholder={getInputHelper(input) || ''}
-                    showNetworkPrefix={!!networkPrefix}
-                    networkPrefix={networkPrefix}
-                    hiddenLabel={false}
-                    error={inputCache[index] && !isValidAddress(inputCache[index]) ? 'Invalid Address' : ''}
-                    getAddressFromDomain={getAddressFromDomain}
-                    onChangeAddress={(address: string) => {
-                      setAddTxError(undefined);
-                      handleInput(index, address);
-                    }}
-                  />
+                  function AddressContractField() {
+                    const onChangeAddress = useCallback((address: string) => {
+                      onChangeContractInput(index, address);
+                    }, []);
+                    return (
+                      <StyledAddressInput
+                        id={`${input.name || ''}(${getInputHelper(input)})`}
+                        name={input.name}
+                        label={`${input.name || ''}(${getInputHelper(input)})`}
+                        address={inputCache[index] || ''}
+                        showNetworkPrefix={!!networkPrefix}
+                        networkPrefix={networkPrefix}
+                        hiddenLabel={false}
+                        error={inputCache[index] && !isValidAddress(inputCache[index]) ? 'Invalid Address' : ''}
+                        getAddressFromDomain={getAddressFromDomain}
+                        onChangeAddress={onChangeAddress}
+                      />
+                    );
+                  }
                 ) : (
                   <StyledTextField
                     value={inputCache[index] || ''}
                     label={`${input.name || ''}(${getInputHelper(input)})`}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      setAddTxError(undefined);
-                      handleInput(index, e.target.value);
-                    }}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeContractInput(index, e.target.value)}
                   />
                 )}
                 <br />

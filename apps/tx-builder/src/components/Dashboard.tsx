@@ -39,7 +39,14 @@ const CheckIconAddressAdornment = styled(CheckCircle)`
 const StyledAddressInput = styled(AddressInput)`
   && {
     width: 520px;
-    margin-bottom: 10px;
+
+    .MuiFormLabel-root {
+      color: #0000008a;
+    }
+
+    .MuiInputLabel-shrink {
+      color: #008c73;
+    }
   }
 `;
 
@@ -167,7 +174,6 @@ const Dashboard = (): ReactElement => {
         label="Enter Address, ENS Name or ABI"
         hiddenLabel={false}
         address={addressOrAbi}
-        placeholder={'Enter Address, ENS Name or ABI'}
         showNetworkPrefix={!!networkPrefix}
         networkPrefix={networkPrefix}
         error={!isValidAddressOrContract ? loadContractError : ''}
