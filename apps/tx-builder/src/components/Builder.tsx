@@ -11,13 +11,14 @@ import {
   Switch,
 } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
-import { AbiItem, toBN } from 'web3-utils';
+import { AbiItem } from 'web3-utils';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import { ProposedTransaction } from '../typings/models';
 import { ModalBody } from './ModalBody';
 import { Examples } from './Examples';
+import { parseInputValue, getInputHelper } from '../utils';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -45,46 +46,6 @@ const StyledExamples = styled.div`
     padding: 0;
   }
 `;
-
-const getInputHelper = (input: any) => {
-  // This code renders a helper for the input text.
-  if (input.type.startsWith('tuple')) {
-    return `tuple(${input.components.map((c: any) => c.internalType).toString()})${
-      input.type.endsWith('[]') ? '[]' : ''
-    }`;
-  } else {
-    return input.type;
-  }
-};
-
-// Same regex used for web3@1.3.6
-const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/);
-
-// This function is used to apply some parsing to some value types
-const parseInputValue = (input: any, value: string): any => {
-  // If there is a match with this regular expression we get an array value like the following
-  // ex: ['uint16', 'uint', '16']. If no match, null is returned
-  const isNumberInput = paramTypeNumber.test(input.type);
-  const isBooleanInput = input.type === 'bool';
-
-  if (value.charAt(0) === '[') {
-    return JSON.parse(value.replace(/"/g, '"'));
-  }
-
-  if (isBooleanInput) {
-    return value.toLowerCase() === 'true';
-  }
-
-  if (isNumberInput) {
-    // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
-    // To fix that we pad the numeric values here as the encode function is expecting a string
-    // more info here https://github.com/ChainSafe/web3.js/issues/3772
-    const bitWidth = input.type.match(paramTypeNumber)[2];
-    return toBN(value).toString(10, bitWidth);
-  }
-
-  return value;
-};
 
 type Props = {
   contract: ContractInterface | null;
@@ -114,10 +75,11 @@ export const Builder = ({
   const [selectedMethodIndex, setSelectedMethodIndex] = useState(0);
   const [showExamples, setShowExamples] = useState(false);
   const [addTxError, setAddTxError] = useState<string | undefined>();
+  const [addCustomDataError, setAddCustomDataError] = useState<string | undefined>();
   const [valueError, setValueError] = useState<string | undefined>();
   const [inputCache, setInputCache] = useState<string[]>([]);
   const [isShowCustomDataChecked, setIsShowCustomDataChecked] = useState<boolean>(false);
-  const [hexDataValue, setHexDataValue] = useState<string>('');
+  const [customDataValue, setCustomDataValue] = useState<string>();
   const [isValueInputVisible, setIsValueInputVisible] = useState(false);
 
   const handleMethod = async (methodIndex: number) => {
@@ -141,9 +103,35 @@ export const Builder = ({
     setReviewing(false);
   };
 
+  const getData = useCallback(() => {
+    const web3 = services.web3;
+
+    if (!web3 || !contract?.methods) {
+      return;
+    }
+
+    const method = contract.methods[selectedMethodIndex];
+
+    if (!['receive', 'fallback'].includes(method.name)) {
+      const parsedInputs: any[] = [];
+      const inputDescription: string[] = [];
+
+      method.inputs.forEach((input, index) => {
+        const cleanValue = inputCache[index] || '';
+        parsedInputs[index] = parseInputValue(input, cleanValue);
+        inputDescription[index] = `${input.name || input.type}: ${cleanValue}`;
+      });
+      try {
+        return web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs as any[]);
+      } catch (error) {
+        throw error;
+      }
+    }
+  }, [contract, inputCache, selectedMethodIndex, services.web3]);
+
   const addTransaction = async () => {
     let description = '';
-    let data = '';
+    let data: string | undefined = '';
     const web3 = services.web3;
 
     if (!web3) {
@@ -151,32 +139,19 @@ export const Builder = ({
     }
 
     if (isShowCustomDataChecked) {
-      if (!hexDataValue) {
+      if (customDataValue && services.web3 && !services.web3.utils.isHexStrict(customDataValue as string | number)) {
+        setAddCustomDataError('Has to be a valid strict hex data (it must start with 0x)');
         return;
       }
 
-      data = hexDataValue;
+      data = customDataValue;
+      description = 'Custom transaction data';
     } else if (contract && contract.methods.length > selectedMethodIndex) {
-      const method = contract.methods[selectedMethodIndex];
-
-      if (!['receive', 'fallback'].includes(method.name)) {
-        const parsedInputs: any[] = [];
-        const inputDescription: string[] = [];
-
-        try {
-          method.inputs.forEach((input, index) => {
-            const cleanValue = inputCache[index] || '';
-            parsedInputs[index] = parseInputValue(input, cleanValue);
-            inputDescription[index] = `${input.name || input.type}: ${cleanValue}`;
-          });
-
-          description = `${method.name} (${inputDescription.join(', ')})`;
-
-          data = web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs as any[]);
-        } catch (error) {
-          setAddTxError((error as Error).message);
-          return;
-        }
+      try {
+        data = getData();
+      } catch (error) {
+        setAddTxError((error as Error).message);
+        return;
       }
     }
 
@@ -184,11 +159,9 @@ export const Builder = ({
       const cleanTo = web3.utils.toChecksumAddress(toInput);
       const cleanValue = web3.utils.toWei(valueInput || '0');
 
-      if (data.length === 0) {
+      if (data?.length === 0) {
         data = '0x';
-        description = isShowCustomDataChecked
-          ? 'Custom transaction'
-          : `Transfer ${web3.utils.fromWei(cleanValue.toString())} ${nativeCurrencySymbol} to ${cleanTo}`;
+        description = `Transfer ${web3.utils.fromWei(cleanValue.toString())} ${nativeCurrencySymbol} to ${cleanTo}`;
       }
 
       onAddTransaction({
@@ -199,7 +172,7 @@ export const Builder = ({
       setInputCache([]);
       setSelectedMethodIndex(0);
       setValueInput('');
-      setHexDataValue('');
+      setCustomDataValue('');
     } catch (e) {
       setAddTxError('There was an error trying to add the transaction.');
       console.error(e);
@@ -254,6 +227,21 @@ export const Builder = ({
       setReviewing(false);
     }
   }, [transactions]);
+
+  useEffect(() => {
+    if (isShowCustomDataChecked) {
+      setCustomDataValue('');
+      try {
+        const data = getData();
+        if (data && services.web3 && !services.web3.utils.isHexStrict(data as string | number)) {
+          setAddCustomDataError('Has to be a valid strict hex data (it must start with 0x)');
+        }
+        setCustomDataValue(data);
+      } catch (error) {
+        return;
+      }
+    }
+  }, [isShowCustomDataChecked, getData, services.web3]);
 
   if (!contract && !isValueInputVisible) {
     return null;
@@ -320,7 +308,6 @@ export const Builder = ({
               </div>
             );
           })}
-
           {addTxError && (
             <Text size="lg" color="error">
               {addTxError}
@@ -331,11 +318,18 @@ export const Builder = ({
 
       {/* hex encoded switcher*/}
       {isShowCustomDataChecked && (
-        <StyledTextAreaField
-          label="Data (hex encoded)*"
-          value={hexDataValue}
-          onChange={(e: any) => setHexDataValue(e.target.value)}
-        />
+        <>
+          <StyledTextAreaField
+            label="Data (hex encoded)*"
+            value={customDataValue}
+            onChange={(e: any) => setCustomDataValue(e.target.value)}
+          />
+          {addCustomDataError && (
+            <Text size="lg" color="error">
+              {addCustomDataError}
+            </Text>
+          )}
+        </>
       )}
 
       <Text size="lg">
