@@ -164,7 +164,8 @@ const Dashboard = (): ReactElement => {
       <StyledAddressInput
         id={'address-or-ABI-input'}
         name="addressOrAbi"
-        label="Address or ABI"
+        label="Enter Address, ENS Name or ABI"
+        hiddenLabel={false}
         address={addressOrAbi}
         placeholder={'Enter Address, ENS Name or ABI'}
         showNetworkPrefix={!!networkPrefix}

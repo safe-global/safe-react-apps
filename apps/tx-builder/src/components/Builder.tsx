@@ -278,7 +278,7 @@ export const Builder = ({
           error={toInput && !isValidAddress(toInput) ? 'Invalid Address' : ''}
           getAddressFromDomain={getAddressFromDomain}
           onChangeAddress={onChangeToAddress}
-          hiddenLabel={!toInput}
+          hiddenLabel={false}
         />
       )}
 
@@ -328,6 +328,7 @@ export const Builder = ({
                     placeholder={getInputHelper(input) || ''}
                     showNetworkPrefix={!!networkPrefix}
                     networkPrefix={networkPrefix}
+                    hiddenLabel={false}
                     error={inputCache[index] && !isValidAddress(inputCache[index]) ? 'Invalid Address' : ''}
                     getAddressFromDomain={getAddressFromDomain}
                     onChangeAddress={(address: string) => {
