@@ -59,7 +59,7 @@ const StyledAddressInput = styled(AddressInput)`
       color: #0000008a;
     }
 
-    .MuiInputLabel-shrink {
+    .MuiFormLabel-root.Mui-focused {
       color: #008c73;
     }
   }

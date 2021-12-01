@@ -39,12 +39,13 @@ const CheckIconAddressAdornment = styled(CheckCircle)`
 const StyledAddressInput = styled(AddressInput)`
   && {
     width: 520px;
+    margin-bottom: 10px;
 
     .MuiFormLabel-root {
       color: #0000008a;
     }
 
-    .MuiInputLabel-shrink {
+    .MuiFormLabel-root.Mui-focused {
       color: #008c73;
     }
   }
