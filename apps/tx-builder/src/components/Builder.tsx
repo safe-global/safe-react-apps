@@ -8,6 +8,7 @@ import {
   Select,
   ModalFooterConfirmation,
   ButtonLink,
+  AddressInput,
 } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import { AbiItem, toBN } from 'web3-utils';
@@ -17,6 +18,7 @@ import useServices from '../hooks/useServices';
 import { ProposedTransaction } from '../typings/models';
 import { ModalBody } from './ModalBody';
 import { Examples } from './Examples';
+import AddressContractField from './fields/AddressContractField';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -31,11 +33,29 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
+const StyledAddressInput = styled(AddressInput)`
+  && {
+    width: 520px;
+    margin-bottom: 10px;
+
+    .MuiFormLabel-root {
+      color: #0000008a;
+    }
+
+    .MuiFormLabel-root.Mui-focused {
+      color: #008c73;
+    }
+  }
+`;
+
 const StyledSelect = styled(Select)`
+  margin-top: 10px;
   width: 520px;
 `;
 
 const StyledExamples = styled.div`
+  margin-bottom: 10px;
+
   button {
     padding: 0;
   }
@@ -90,6 +110,8 @@ type Props = {
   onAddTransaction: (transaction: ProposedTransaction) => void;
   onRemoveTransaction: (index: number) => void;
   onSubmitTransactions: () => void;
+  networkPrefix: undefined | string;
+  getAddressFromDomain: (name: string) => Promise<string>;
 };
 
 export const Builder = ({
@@ -101,6 +123,8 @@ export const Builder = ({
   onAddTransaction,
   onRemoveTransaction,
   onSubmitTransactions,
+  networkPrefix,
+  getAddressFromDomain,
 }: Props): ReactElement | null => {
   const services = useServices(chainId);
   const [toInput, setToInput] = useState('');
@@ -118,10 +142,13 @@ export const Builder = ({
     setSelectedMethodIndex(methodIndex);
   };
 
-  const handleInput = async (inputIndex: number, input: string) => {
-    inputCache[inputIndex] = input;
-    setInputCache(inputCache.slice());
-  };
+  const onChangeContractInput = useCallback((index: number, value: string) => {
+    setAddTxError(undefined);
+    setInputCache((inputCache) => {
+      inputCache[index] = value;
+      return inputCache.slice();
+    });
+  }, []);
 
   const getContractMethod = useCallback(() => contract?.methods[selectedMethodIndex], [contract, selectedMethodIndex]);
 
@@ -204,6 +231,8 @@ export const Builder = ({
     [services.web3],
   );
 
+  const onChangeToAddress = useCallback((address: string) => setToInput(address), []);
+
   const onValueInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValueError(undefined);
     const value = Number(e.target.value);
@@ -250,11 +279,17 @@ export const Builder = ({
       {contract && !contract?.methods.length && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
 
       {to.length > 0 && (
-        <StyledTextField
-          style={{ marginTop: 10 }}
-          value={toInput}
+        <StyledAddressInput
+          id={'to-address-input'}
+          name="toAddress"
           label="To Address"
-          onChange={(e) => setToInput(e.target.value)}
+          address={toInput}
+          showNetworkPrefix={!!networkPrefix}
+          networkPrefix={networkPrefix}
+          error={toInput && !isValidAddress(toInput) ? 'Invalid Address' : ''}
+          getAddressFromDomain={getAddressFromDomain}
+          onChangeAddress={onChangeToAddress}
+          hiddenLabel={false}
         />
       )}
 
@@ -292,17 +327,27 @@ export const Builder = ({
           </StyledExamples>
 
           {getContractMethod()?.inputs.map((input, index) => {
+            const isAddressField = input.internalType === 'address' || input.type === 'address';
             return (
-              <div key={index}>
-                <StyledTextField
-                  style={{ marginTop: 10 }}
-                  value={inputCache[index] || ''}
-                  label={`${input.name || ''}(${getInputHelper(input)})`}
-                  onChange={(e) => {
-                    setAddTxError(undefined);
-                    handleInput(index, e.target.value);
-                  }}
-                />
+              <div key={index} style={{ marginTop: 10 }}>
+                {isAddressField ? (
+                  <AddressContractField
+                    label={`${input.name || ''}(${getInputHelper(input)})`}
+                    onChangeContractInput={onChangeContractInput}
+                    input={input}
+                    index={index}
+                    isValidAddress={isValidAddress}
+                    inputCache={inputCache}
+                    networkPrefix={networkPrefix}
+                    getAddressFromDomain={getAddressFromDomain}
+                  />
+                ) : (
+                  <StyledTextField
+                    value={inputCache[index] || ''}
+                    label={`${input.name || ''}(${getInputHelper(input)})`}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeContractInput(index, e.target.value)}
+                  />
+                )}
                 <br />
               </div>
             );
