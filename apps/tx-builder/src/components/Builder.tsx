@@ -18,6 +18,7 @@ import useServices from '../hooks/useServices';
 import { ProposedTransaction } from '../typings/models';
 import { ModalBody } from './ModalBody';
 import { Examples } from './Examples';
+import AddressContractField from './fields/AddressContractField';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -330,25 +331,16 @@ export const Builder = ({
             return (
               <div key={index} style={{ marginTop: 10 }}>
                 {isAddressField ? (
-                  function AddressContractField() {
-                    const onChangeAddress = useCallback((address: string) => {
-                      onChangeContractInput(index, address);
-                    }, []);
-                    return (
-                      <StyledAddressInput
-                        id={`${input.name || ''}(${getInputHelper(input)})`}
-                        name={input.name}
-                        label={`${input.name || ''}(${getInputHelper(input)})`}
-                        address={inputCache[index] || ''}
-                        showNetworkPrefix={!!networkPrefix}
-                        networkPrefix={networkPrefix}
-                        hiddenLabel={false}
-                        error={inputCache[index] && !isValidAddress(inputCache[index]) ? 'Invalid Address' : ''}
-                        getAddressFromDomain={getAddressFromDomain}
-                        onChangeAddress={onChangeAddress}
-                      />
-                    );
-                  }
+                  <AddressContractField
+                    label={`${input.name || ''}(${getInputHelper(input)})`}
+                    onChangeContractInput={onChangeContractInput}
+                    input={input}
+                    index={index}
+                    isValidAddress={isValidAddress}
+                    inputCache={inputCache}
+                    networkPrefix={networkPrefix}
+                    getAddressFromDomain={getAddressFromDomain}
+                  />
                 ) : (
                   <StyledTextField
                     value={inputCache[index] || ''}
