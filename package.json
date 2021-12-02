@@ -16,6 +16,7 @@
     "apps/*"
   ],
   "dependencies": {
+    "@material-ui/icons": "^4.11.0",
     "@gnosis.pm/safe-apps-react-sdk": "4.0.7",
     "@gnosis.pm/safe-apps-sdk": "6.1.0",
     "react": "^17.0.1",
