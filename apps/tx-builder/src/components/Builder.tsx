@@ -20,7 +20,7 @@ import { ProposedTransaction } from '../typings/models';
 import { ModalBody } from './ModalBody';
 import { Examples } from './Examples';
 import AddressContractField from './fields/AddressContractField';
-import { parseInputValue, getInputHelper } from '../utils';
+import { parseInputValue, getInputHelper, isInputValueValid } from '../utils';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -65,15 +65,6 @@ const StyledExamples = styled.div`
     padding: 0;
   }
 `;
-
-const isInputValueValid = (val: string) => {
-  const value = Number(val);
-  if (isNaN(value) || value < 0) {
-    return false;
-  }
-
-  return true;
-};
 
 type Props = {
   contract: ContractInterface | null;

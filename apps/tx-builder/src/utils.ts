@@ -71,3 +71,12 @@ export const parseInputValue = (input: any, value: string): any => {
 
   return value;
 };
+
+export const isInputValueValid = (val: string) => {
+  const value = Number(val);
+  if (isNaN(value) || value < 0) {
+    return false;
+  }
+
+  return true;
+};
