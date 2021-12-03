@@ -61,7 +61,7 @@ export const parseInputValue = (input: any, value: string): any => {
     return value.toLowerCase() === 'true';
   }
 
-  if (isNumberInput) {
+  if (isNumberInput && value) {
     // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
     // To fix that we pad the numeric values here as the encode function is expecting a string
     // more info here https://github.com/ChainSafe/web3.js/issues/3772

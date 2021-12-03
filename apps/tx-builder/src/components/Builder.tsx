@@ -1,9 +1,9 @@
-import React, { useState, useEffect, ReactElement, useCallback } from 'react';
+import React, { useState, useEffect, ReactElement, useCallback, useMemo } from 'react';
 import {
   Button,
   Text,
   Title,
-  TextField,
+  TextFieldInput,
   GenericModal,
   Select,
   ModalFooterConfirmation,
@@ -28,10 +28,18 @@ const ButtonContainer = styled.div`
   margin-top: 15px;
 `;
 
-const StyledTextField = styled(TextField)`
+const StyledTextField = styled(TextFieldInput)`
   && {
     width: 520px;
     margin-bottom: 10px;
+
+    .MuiFormLabel-root {
+      color: #0000008a;
+    }
+
+    .MuiFormLabel-root.Mui-focused {
+      color: #008c73;
+    }
   }
 `;
 
@@ -170,7 +178,7 @@ export const Builder = ({
     }
 
     if (isShowCustomDataChecked) {
-      if (customDataValue && services.web3 && !services.web3.utils.isHexStrict(customDataValue as string | number)) {
+      if (services.web3 && !services.web3.utils.isHexStrict(customDataValue as string | number)) {
         setAddCustomDataError('Has to be a valid strict hex data (it must start with 0x)');
         return;
       }
@@ -302,10 +310,13 @@ export const Builder = ({
       {/* ValueInput */}
       {isValueInputVisible && (
         <StyledTextField
+          name="value-input"
           style={{ marginTop: 10, marginBottom: 10 }}
           value={valueInput}
           label={`${nativeCurrencySymbol} value`}
-          meta={{ error: valueError ?? undefined }}
+          hiddenLabel={false}
+          showErrorsInTheLabel
+          error={valueError ?? undefined}
           onChange={onValueInputChange}
         />
       )}
@@ -349,8 +360,11 @@ export const Builder = ({
                   />
                 ) : (
                   <StyledTextField
+                    name={input.name}
                     value={inputCache[index] || ''}
                     label={`${input.name || ''}(${getInputHelper(input)})`}
+                    hiddenLabel={false}
+                    showErrorsInTheLabel
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeContractInput(index, e.target.value)}
                   />
                 )}
@@ -371,6 +385,7 @@ export const Builder = ({
         <>
           <StyledTextAreaField
             label="Data (hex encoded)*"
+            hiddenLabel={false}
             value={customDataValue}
             onChange={(e: any) => setCustomDataValue(e.target.value)}
           />
