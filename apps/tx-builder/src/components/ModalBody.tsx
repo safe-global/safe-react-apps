@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { Button, Text } from '@gnosis.pm/safe-react-components';
 import Box from '@material-ui/core/Box';
 import styled from 'styled-components';
@@ -10,6 +10,24 @@ const WrappedText = styled(Text)`
   word-break: break-all;
   margin: 5px 0;
 `;
+
+const ShowMeMore = ({ text }: { text: string }) => {
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleToggle = (e: SyntheticEvent) => {
+    e.preventDefault();
+    setExpanded(!expanded);
+  };
+
+  return (
+    <span>
+      {expanded ? text : `${text.substr(0, 30)}...`}
+      <a href="" onClick={handleToggle}>
+        {expanded ? 'Show me less' : 'Show me more'}
+      </a>
+    </span>
+  );
+};
 
 export const ModalBody = ({ txs, deleteTx }: Props) => {
   return (
@@ -26,7 +44,9 @@ export const ModalBody = ({ txs, deleteTx }: Props) => {
           <Button size="md" variant="outlined" iconType="delete" color="error" onClick={() => deleteTx(index)}>
             {''}
           </Button>
-          <WrappedText size="lg">{tx.description}</WrappedText>
+          <WrappedText size="lg">
+            {tx.description.startsWith('0x') ? <ShowMeMore text={tx.description} /> : tx.description}
+          </WrappedText>
         </Box>
       ))}
     </>

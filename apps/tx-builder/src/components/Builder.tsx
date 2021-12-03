@@ -184,7 +184,7 @@ export const Builder = ({
       }
 
       data = customDataValue;
-      description = 'Custom transaction data';
+      description = customDataValue || '';
     } else if (contract && contract.methods.length > selectedMethodIndex) {
       try {
         data = getData();
