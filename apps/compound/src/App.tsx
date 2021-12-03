@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { rpc_token, getTokenList, TokenItem } from './config';
 import { WidgetWrapper, SelectContainer, DaiInfo, ButtonContainer } from './components';
 import { getTokenInteractions, parseEvents } from './tokensTransfers';
-import { networkByChainId,CHAINS } from './utils/networks';
+import { networkByChainId, CHAINS } from './utils/networks';
 
 import cERC20Abi from './abis/CErc20';
 import cWEthAbi from './abis/CWEth';
@@ -296,7 +296,7 @@ const CompoundWidget = () => {
       <Section>
         <DaiInfo>
           <div>
-            <Text size="lg">Supply {selectedToken.label}</Text>
+            <Text size="lg">Supplied {selectedToken.label}</Text>
             <Text size="lg">~ {bNumberToHumanFormat(underlyingBalance)}</Text>
           </div>
           <Divider />

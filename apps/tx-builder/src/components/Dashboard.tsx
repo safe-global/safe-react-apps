@@ -1,7 +1,9 @@
-import { Text, Title, Link, TextField } from '@gnosis.pm/safe-react-components';
-import React, { useState, useCallback, useEffect } from 'react';
+import { Text, Title, Link, AddressInput } from '@gnosis.pm/safe-react-components';
+import React, { ReactElement, useState, useCallback, useEffect } from 'react';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import styled from 'styled-components';
+import { InputAdornment } from '@material-ui/core';
+import CheckCircle from '@material-ui/icons/CheckCircle';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
@@ -25,40 +27,82 @@ const StyledText = styled(Text)`
   margin-bottom: 15px;
 `;
 
-const StyledTextFiled = styled(TextField)`
+const StyledWarningText = styled(Text)`
+  margin-top: 5px;
+`;
+
+const CheckIconAddressAdornment = styled(CheckCircle)`
+  color: #03ae60;
+  height: 20px;
+`;
+
+const StyledAddressInput = styled(AddressInput)`
   && {
     width: 520px;
+    margin-bottom: 10px;
+
+    .MuiFormLabel-root {
+      color: #0000008a;
+    }
+
+    .MuiFormLabel-root.Mui-focused {
+      color: #008c73;
+    }
   }
 `;
 
-const Dashboard = () => {
+const Dashboard = (): ReactElement => {
   const { sdk, safe } = useSafeAppsSDK();
   const services = useServices(safe.chainId);
-  const [addressOrAbiInput, setAddressOrAbiInput] = useState('');
-  const [contract, setContract] = useState<ContractInterface | null>(null);
-  const [loadAbiError, setLoadAbiError] = useState(false);
-  const [nativeCurrencySymbol, setNativeCurrencySymbol] = useState<string>('');
   const { transactions, handleAddTransaction, handleRemoveTransaction, handleSubmitTransactions } = useTransactions();
+  const [addressOrAbi, setAddressOrAbi] = useState('');
+  const [isABILoading, setIsABILoading] = useState(false);
+  const [contract, setContract] = useState<ContractInterface | null>(null);
+  const [loadContractError, setLoadContractError] = useState('');
+  const [nativeCurrencySymbol, setNativeCurrencySymbol] = useState('');
+  const [networkPrefix, setNetworkPrefix] = useState('');
 
-  const handleAddressOrABIInput = async (e: React.ChangeEvent<HTMLInputElement>): Promise<ContractInterface | void> => {
-    setContract(null);
-    setLoadAbiError(false);
+  useEffect(() => {
+    const getChainInfo = async () => {
+      try {
+        const { nativeCurrency: { symbol = '' } = {}, shortName } = await sdk.safe.getChainInfo();
+        setNativeCurrencySymbol(symbol);
+        setNetworkPrefix(shortName);
+      } catch (e) {
+        console.error('Unable to get chain info:', e);
+      }
+    };
 
-    const cleanInput = e.currentTarget?.value?.trim();
-    setAddressOrAbiInput(cleanInput);
+    getChainInfo();
+  }, [sdk.safe]);
 
-    if (!cleanInput.length || !services.web3 || !services.interfaceRepo) {
-      return;
-    }
-
-    try {
-      const contract = await services.interfaceRepo.loadAbi(cleanInput);
-      setContract(contract);
-    } catch (e) {
+  // Load contract from address or ABI
+  useEffect(() => {
+    const loadContract = async (addressOrAbi: string) => {
       setContract(null);
-      setLoadAbiError(true);
-      console.error(e);
-    }
+      setLoadContractError('');
+
+      if (!addressOrAbi || !services.web3 || !services.interfaceRepo) {
+        return;
+      }
+
+      try {
+        setIsABILoading(true);
+        const contract = await services.interfaceRepo.loadAbi(addressOrAbi);
+        setContract(contract);
+      } catch (e) {
+        setContract(null);
+        setLoadContractError('No ABI found for this address');
+        console.error(e);
+      }
+      setIsABILoading(false);
+    };
+
+    loadContract(addressOrAbi);
+  }, [addressOrAbi, services.interfaceRepo, services.web3]);
+
+  const getAddressFromDomain = (name: string): Promise<string> => {
+    return services?.web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
   };
 
   const isValidAddress = useCallback(
@@ -71,18 +115,7 @@ const Dashboard = () => {
     [services.web3],
   );
 
-  useEffect(() => {
-    const getChainInfo = async () => {
-      try {
-        const { nativeCurrency: { symbol = '' } = {} } = await sdk.safe.getChainInfo();
-        setNativeCurrencySymbol(symbol);
-      } catch (e) {
-        console.error('Unable to get chain info:', e);
-      }
-    };
-
-    getChainInfo();
-  }, [sdk.safe]);
+  const isValidAddressOrContract = (isValidAddress(addressOrAbi) || contract) && !isABILoading;
 
   return (
     <Wrapper>
@@ -100,25 +133,48 @@ const Dashboard = () => {
         </Link>
       </StyledText>
 
-      {/* ABI Input */}
-      <StyledTextFiled value={addressOrAbiInput} label="Enter Address or ABI" onChange={handleAddressOrABIInput} />
-      {loadAbiError && (
-        <Text color="warning" size="lg">
+      {/* ABI or Address Input */}
+      <StyledAddressInput
+        id={'address-or-ABI-input'}
+        name="addressOrAbi"
+        label="Enter Address, ENS Name or ABI"
+        hiddenLabel={false}
+        address={addressOrAbi}
+        showNetworkPrefix={!!networkPrefix}
+        networkPrefix={networkPrefix}
+        error={!isValidAddressOrContract ? loadContractError : ''}
+        showLoadingSpinner={isABILoading}
+        getAddressFromDomain={getAddressFromDomain}
+        onChangeAddress={(addressOrAbi: string) => setAddressOrAbi(addressOrAbi)}
+        InputProps={{
+          endAdornment: isValidAddressOrContract && (
+            <InputAdornment position="end">
+              <CheckIconAddressAdornment />
+            </InputAdornment>
+          ),
+        }}
+      />
+
+      {/* ABI Warning */}
+      {isValidAddressOrContract && !contract && (
+        <StyledWarningText color="warning" size="lg">
           No ABI found for this address
-        </Text>
+        </StyledWarningText>
       )}
 
       {/* Builder */}
-      {(isValidAddress(addressOrAbiInput) || contract) && (
+      {isValidAddressOrContract && (
         <Builder
           contract={contract}
-          to={addressOrAbiInput}
+          to={addressOrAbi}
           chainId={safe.chainId}
           nativeCurrencySymbol={nativeCurrencySymbol}
           transactions={transactions}
           onAddTransaction={handleAddTransaction}
           onRemoveTransaction={handleRemoveTransaction}
           onSubmitTransactions={handleSubmitTransactions}
+          networkPrefix={networkPrefix}
+          getAddressFromDomain={getAddressFromDomain}
         />
       )}
     </Wrapper>
