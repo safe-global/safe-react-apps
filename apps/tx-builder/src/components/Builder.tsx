@@ -173,6 +173,8 @@ export const Builder = ({
       setSelectedMethodIndex(0);
       setValueInput('');
       setCustomDataValue('');
+      setAddTxError('');
+      setAddCustomDataError('');
     } catch (e) {
       setAddTxError('There was an error trying to add the transaction.');
       console.error(e);
