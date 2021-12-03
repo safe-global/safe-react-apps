@@ -1,6 +1,10 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  extends: ['plugin:@typescript-eslint/recommended', 'prettier'],
+  extends: [
+    'react-app', // extends Create React App eslint config
+    'plugin:@typescript-eslint/recommended', // Plugin to use typescript with eslint
+    'prettier', // Add prettier rules to eslint
+  ],
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: 'module',
