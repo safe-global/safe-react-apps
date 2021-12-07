@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { Button, Text } from '@gnosis.pm/safe-react-components';
+import { Button, Text, Link } from '@gnosis.pm/safe-react-components';
 import Box from '@material-ui/core/Box';
 import styled from 'styled-components';
 import { ProposedTransaction } from '../typings/models';
@@ -22,9 +22,7 @@ const ShowMeMore = ({ text }: { text: string }) => {
   return (
     <span>
       {expanded ? text : `${text.substr(0, 30)}...`}
-      <a href="" onClick={handleToggle}>
-        {expanded ? 'Show me less' : 'Show me more'}
-      </a>
+      <Link onClick={handleToggle}>{expanded ? 'Show me less' : 'Show me more'}</Link>
     </span>
   );
 };
