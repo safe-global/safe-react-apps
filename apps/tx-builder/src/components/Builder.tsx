@@ -40,6 +40,10 @@ const StyledTextField = styled(TextFieldInput)`
     .MuiFormLabel-root.Mui-focused {
       color: #008c73;
     }
+
+    .MuiInputBase-input {
+      padding: 0;
+    }
   }
 `;
 
@@ -136,6 +140,23 @@ export const Builder = ({
   const handleDismiss = () => {
     setReviewing(false);
   };
+
+  const handleCustomDataInputChange = useCallback(
+    (e: any) => {
+      setCustomDataValue(e.target.value);
+      if (services.web3 && services.web3.utils.isHexStrict(e.target.value)) {
+        setAddCustomDataError(undefined);
+      } else {
+        setAddCustomDataError(getCustomDataError(e.target.value));
+      }
+    },
+    [services.web3],
+  );
+
+  const handleCustomDataSwitchChange = useCallback(() => {
+    setIsShowCustomDataChecked(!isShowCustomDataChecked);
+    setAddCustomDataError(undefined);
+  }, [isShowCustomDataChecked]);
 
   const getTxData = useCallback(() => {
     let description = '';
@@ -323,6 +344,7 @@ export const Builder = ({
           hiddenLabel={false}
         />
       )}
+
       {/* ValueInput */}
       {isValueInputVisible && (
         <StyledTextField
@@ -398,23 +420,17 @@ export const Builder = ({
 
       {/* hex encoded switcher*/}
       {isShowCustomDataChecked && (
-        <>
-          <StyledTextAreaField
-            label="Data (hex encoded)*"
-            hiddenLabel={false}
-            value={customDataValue}
-            onChange={(e: any) => setCustomDataValue(e.target.value)}
-          />
-          {addCustomDataError && (
-            <Text size="lg" color="error">
-              {addCustomDataError}
-            </Text>
-          )}
-        </>
+        <StyledTextAreaField
+          label="Data (hex encoded)*"
+          hiddenLabel={false}
+          value={customDataValue}
+          error={addCustomDataError}
+          onChange={handleCustomDataInputChange}
+        />
       )}
 
       <Text size="lg">
-        <Switch checked={isShowCustomDataChecked} onChange={setIsShowCustomDataChecked} />
+        <Switch checked={isShowCustomDataChecked} onChange={handleCustomDataSwitchChange} />
         Use custom data (hex encoded)
       </Text>
 
@@ -439,6 +455,7 @@ export const Builder = ({
           {`Send Transactions ${transactions.length ? `(${transactions.length})` : ''}`}
         </Button>
       </ButtonContainer>
+
       {/* TXs MODAL */}
       {reviewing && transactions.length > 0 && (
         <GenericModal
