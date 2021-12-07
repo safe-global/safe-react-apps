@@ -41,8 +41,10 @@ const StyledTextField = styled(TextFieldInput)`
       color: #008c73;
     }
 
-    .MuiInputBase-input {
-      padding: 0;
+    textarea {
+      &.MuiInputBase-input {
+        padding: 0;
+      }
     }
   }
 `;
@@ -110,10 +112,10 @@ export const Builder = ({
   const [selectedMethodIndex, setSelectedMethodIndex] = useState(0);
   const [showExamples, setShowExamples] = useState(false);
   const [addTxError, setAddTxError] = useState<string | undefined>();
-  const [addCustomDataError, setAddCustomDataError] = useState<string | undefined>();
+  const [addCustomTxDataError, setAddCustomTxDataError] = useState<string | undefined>();
   const [valueError, setValueError] = useState<string | undefined>();
   const [inputCache, setInputCache] = useState<string[]>([]);
-  const [isShowCustomDataChecked, setIsShowCustomDataChecked] = useState<boolean>(false);
+  const [showCustomDataChecked, setShowCustomDataChecked] = useState<boolean>(false);
   const [customDataValue, setCustomDataValue] = useState<string>();
   const [isValueInputVisible, setIsValueInputVisible] = useState(false);
 
@@ -145,18 +147,18 @@ export const Builder = ({
     (e: any) => {
       setCustomDataValue(e.target.value);
       if (services.web3 && services.web3.utils.isHexStrict(e.target.value)) {
-        setAddCustomDataError(undefined);
+        setAddCustomTxDataError(undefined);
       } else {
-        setAddCustomDataError(getCustomDataError(e.target.value));
+        setAddCustomTxDataError(getCustomDataError(e.target.value));
       }
     },
     [services.web3],
   );
 
   const handleCustomDataSwitchChange = useCallback(() => {
-    setIsShowCustomDataChecked(!isShowCustomDataChecked);
-    setAddCustomDataError(undefined);
-  }, [isShowCustomDataChecked]);
+    setShowCustomDataChecked(!showCustomDataChecked);
+    setAddCustomTxDataError(undefined);
+  }, [showCustomDataChecked]);
 
   const getTxData = useCallback(() => {
     let description = '';
@@ -206,9 +208,9 @@ export const Builder = ({
       return;
     }
 
-    if (isShowCustomDataChecked) {
+    if (showCustomDataChecked) {
       if (services.web3 && !services.web3.utils.isHexStrict(customDataValue as string)) {
-        setAddCustomDataError(getCustomDataError(customDataValue));
+        setAddCustomTxDataError(getCustomDataError(customDataValue));
         return;
       }
 
@@ -247,7 +249,7 @@ export const Builder = ({
       setValueInput('');
       setCustomDataValue('');
       setAddTxError('');
-      setAddCustomDataError('');
+      setAddCustomTxDataError('');
     } catch (e) {
       setAddTxError('There was an error trying to add the transaction.');
       console.error(e);
@@ -305,14 +307,14 @@ export const Builder = ({
   }, [transactions]);
 
   useEffect(() => {
-    if (isShowCustomDataChecked) {
+    if (showCustomDataChecked) {
       setCustomDataValue('');
       try {
         const txData = getTxData();
 
         if (txData) {
           if (services.web3 && !services.web3.utils.isHexStrict(txData.data as string)) {
-            setAddCustomDataError(getCustomDataError(txData.data));
+            setAddCustomTxDataError(getCustomDataError(txData.data));
           }
           setCustomDataValue(txData.data);
         }
@@ -320,7 +322,7 @@ export const Builder = ({
         return;
       }
     }
-  }, [isShowCustomDataChecked, getTxData, services.web3]);
+  }, [showCustomDataChecked, getTxData, services.web3]);
 
   if (!contract && !isValueInputVisible) {
     return null;
@@ -360,7 +362,7 @@ export const Builder = ({
       )}
 
       {/* Contract Inputs */}
-      {!isShowCustomDataChecked && contract?.methods.length && (
+      {!showCustomDataChecked && contract?.methods.length && (
         <>
           <StyledSelect
             items={contract.methods.map((method, index) => ({
@@ -419,18 +421,18 @@ export const Builder = ({
       )}
 
       {/* hex encoded switcher*/}
-      {isShowCustomDataChecked && (
+      {showCustomDataChecked && (
         <StyledTextAreaField
           label="Data (hex encoded)*"
           hiddenLabel={false}
           value={customDataValue}
-          error={addCustomDataError}
+          error={addCustomTxDataError}
           onChange={handleCustomDataInputChange}
         />
       )}
 
       <Text size="lg">
-        <Switch checked={isShowCustomDataChecked} onChange={handleCustomDataSwitchChange} />
+        <Switch checked={showCustomDataChecked} onChange={handleCustomDataSwitchChange} />
         Use custom data (hex encoded)
       </Text>
 
