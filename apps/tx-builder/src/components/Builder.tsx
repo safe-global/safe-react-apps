@@ -20,7 +20,7 @@ import { ProposedTransaction } from '../typings/models';
 import { ModalBody } from './ModalBody';
 import { Examples } from './Examples';
 import AddressContractField from './fields/AddressContractField';
-import { parseInputValue, getInputHelper, isInputValueValid } from '../utils';
+import { parseInputValue, getInputHelper, isInputValueValid, getCustomDataError } from '../utils';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -186,8 +186,8 @@ export const Builder = ({
     }
 
     if (isShowCustomDataChecked) {
-      if (services.web3 && !services.web3.utils.isHexStrict(customDataValue as string | number)) {
-        setAddCustomDataError('Has to be a valid strict hex data (it must start with 0x)');
+      if (services.web3 && !services.web3.utils.isHexStrict(customDataValue as string)) {
+        setAddCustomDataError(getCustomDataError(customDataValue));
         return;
       }
 
@@ -290,8 +290,8 @@ export const Builder = ({
         const txData = getTxData();
 
         if (txData) {
-          if (services.web3 && !services.web3.utils.isHexStrict(txData.data as string | number)) {
-            setAddCustomDataError('Has to be a valid strict hex data (it must start with 0x)');
+          if (services.web3 && !services.web3.utils.isHexStrict(txData.data as string)) {
+            setAddCustomDataError(getCustomDataError(txData.data));
           }
           setCustomDataValue(txData.data);
         }

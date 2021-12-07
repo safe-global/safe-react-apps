@@ -80,3 +80,7 @@ export const isInputValueValid = (val: string) => {
 
   return true;
 };
+
+export const getCustomDataError = (value: string | undefined) => {
+  return `Has to be a valid strict hex data ${!value?.startsWith('0x') ? '(it must start with 0x)' : ''}`;
+};

@@ -1,5 +1,5 @@
-import { Link } from '@material-ui/core';
 import { useState, SyntheticEvent } from 'react';
+import { Link } from '@gnosis.pm/safe-react-components';
 
 type ShowMoreTextProps = {
   children: string;
@@ -24,10 +24,14 @@ export const ShowMoreText = ({
     setExpanded(!expanded);
   };
 
+  if (children.length < splitIndex) {
+    return <span>{children}</span>;
+  }
+
   return (
     <>
       {expanded ? `${children}  ` : `${children.substr(0, splitIndex)}  ...  `}
-      <Link onClick={handleToggle}>{expanded ? moreLabel : lessLabel}</Link>
+      <Link onClick={handleToggle}>{expanded ? lessLabel : moreLabel}</Link>
     </>
   );
 };
