@@ -63,6 +63,7 @@ const StyledAddressInput = styled(AddressInput)`
     }
   }
 `;
+
 const StyledTextAreaField = (props: any) => {
   return <StyledTextField {...props} multiline rows={4} />;
 };
@@ -112,19 +113,19 @@ export const Builder = ({
   const [selectedMethodIndex, setSelectedMethodIndex] = useState(0);
   const [showExamples, setShowExamples] = useState(false);
   const [addTxError, setAddTxError] = useState<string | undefined>();
-  const [addCustomTxDataError, setAddCustomTxDataError] = useState<string | undefined>();
   const [valueError, setValueError] = useState<string | undefined>();
   const [inputCache, setInputCache] = useState<string[]>([]);
+  const [isValueInputVisible, setIsValueInputVisible] = useState(false);
   const [showCustomDataChecked, setShowCustomDataChecked] = useState<boolean>(false);
   const [customDataValue, setCustomDataValue] = useState<string>();
-  const [isValueInputVisible, setIsValueInputVisible] = useState(false);
+  const [addCustomTxDataError, setAddCustomTxDataError] = useState<string | undefined>();
 
   const handleMethod = async (methodIndex: number) => {
     if (!contract || contract.methods.length <= methodIndex) return;
     setSelectedMethodIndex(methodIndex);
   };
 
-  const onChangeContractInput = useCallback((index: number, value: string) => {
+  const handleChangeContractInput = useCallback((index: number, value: string) => {
     setAddTxError(undefined);
     setInputCache((inputCache) => {
       inputCache[index] = value;
@@ -350,7 +351,7 @@ export const Builder = ({
       {/* ValueInput */}
       {isValueInputVisible && (
         <StyledTextField
-          name="value-input"
+          name="token-value"
           style={{ marginTop: 10, marginBottom: 10 }}
           value={valueInput}
           label={`${nativeCurrencySymbol} value`}
@@ -390,7 +391,7 @@ export const Builder = ({
                 {isAddressField ? (
                   <AddressContractField
                     label={`${input.name || ''}(${getInputHelper(input)})`}
-                    onChangeContractInput={onChangeContractInput}
+                    onChangeContractInput={handleChangeContractInput}
                     input={input}
                     index={index}
                     isValidAddress={isValidAddress}
@@ -405,7 +406,9 @@ export const Builder = ({
                     label={`${input.name || ''}(${getInputHelper(input)})`}
                     hiddenLabel={false}
                     showErrorsInTheLabel
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeContractInput(index, e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleChangeContractInput(index, e.target.value)
+                    }
                   />
                 )}
                 <br />
@@ -442,7 +445,7 @@ export const Builder = ({
           size="md"
           color="primary"
           disabled={!isValidAddress(toInput) && !contract?.methods.length}
-          onClick={() => addTransaction()}
+          onClick={addTransaction}
         >
           Add transaction
         </Button>
