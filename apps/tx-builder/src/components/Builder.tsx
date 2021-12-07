@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, ReactElement, useCallback } from 'react';
 import {
   Button,
   Text,
@@ -137,7 +137,9 @@ export const Builder = ({
     setReviewing(false);
   };
 
-  const getData = useCallback(() => {
+  const getTxData = useCallback(() => {
+    let description = '';
+    let data = '';
     const web3 = services.web3;
 
     if (!web3 || !contract?.methods) {
@@ -161,7 +163,13 @@ export const Builder = ({
         inputDescription[index] = `${input.name || input.type}: ${cleanValue}`;
       });
       try {
-        return web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs as any[]);
+        description = `${method.name} (${inputDescription.join(', ')})`;
+        data = web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs as any[]);
+
+        return {
+          data,
+          description,
+        };
       } catch (error) {
         throw error;
       }
@@ -170,7 +178,7 @@ export const Builder = ({
 
   const addTransaction = async () => {
     let description = '';
-    let data: string | undefined = '';
+    let data = '';
     const web3 = services.web3;
 
     if (!web3) {
@@ -183,11 +191,16 @@ export const Builder = ({
         return;
       }
 
-      data = customDataValue;
+      data = customDataValue || '';
       description = customDataValue || '';
     } else if (contract && contract.methods.length > selectedMethodIndex) {
       try {
-        data = getData();
+        const txData = getTxData();
+
+        if (txData) {
+          data = txData.data;
+          description = txData.description;
+        }
       } catch (error) {
         setAddTxError((error as Error).message);
         return;
@@ -274,16 +287,19 @@ export const Builder = ({
     if (isShowCustomDataChecked) {
       setCustomDataValue('');
       try {
-        const data = getData();
-        if (data && services.web3 && !services.web3.utils.isHexStrict(data as string | number)) {
-          setAddCustomDataError('Has to be a valid strict hex data (it must start with 0x)');
+        const txData = getTxData();
+
+        if (txData) {
+          if (services.web3 && !services.web3.utils.isHexStrict(txData.data as string | number)) {
+            setAddCustomDataError('Has to be a valid strict hex data (it must start with 0x)');
+          }
+          setCustomDataValue(txData.data);
         }
-        setCustomDataValue(data);
       } catch (error) {
         return;
       }
     }
-  }, [isShowCustomDataChecked, getData, services.web3]);
+  }, [isShowCustomDataChecked, getTxData, services.web3]);
 
   if (!contract && !isValueInputVisible) {
     return null;
