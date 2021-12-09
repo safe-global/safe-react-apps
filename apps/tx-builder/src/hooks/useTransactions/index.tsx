@@ -28,7 +28,7 @@ export default function useTransactions() {
     }
 
     try {
-      await sdk.txs.send({ txs: transactions.map((transaction) => transaction.raw) }).catch(console.error);
+      await sdk.txs.send({ txs: transactions.map((transaction) => transaction.raw) });
       setTransactions([]);
     } catch (e) {
       console.error('Error sending transactions:', e);
