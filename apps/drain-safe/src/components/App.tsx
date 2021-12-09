@@ -2,6 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Title, TextField, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import web3Utils from 'web3-utils';
+import Web3 from 'web3';
+import { BigNumber } from 'bignumber.js';
+
 import useBalances, { BalancesType } from '../hooks/use-balances';
 import { tokenToTx } from '../utils/sdk-helpers';
 import FormContainer from './FormContainer';
@@ -10,6 +13,7 @@ import Logo from './Logo';
 import Balances from './Balances';
 import SubmitButton from './SubmitButton';
 import CancelButton from './CancelButton';
+import { CHAINS, rpcUrlGetterByNetwork } from '../utils/chains';
 
 const App: React.FC = () => {
   const { sdk, safe } = useSafeAppsSDK();
@@ -23,6 +27,8 @@ const App: React.FC = () => {
   const [toAddress, setToAddress] = useState<string>('');
   const [isFinished, setFinished] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [web3, setWeb3] = useState<Web3 | undefined>();
+  const [gasPrice, setGasPrice] = useState<BigNumber>(new BigNumber(0));
 
   const onError = (userMsg: string, err: Error) => {
     setError(`${userMsg}: ${err.message}`);
@@ -108,13 +114,52 @@ const App: React.FC = () => {
     }
   }, [balancesError]);
 
+  useEffect(() => {
+    const setWeb3Instance = async () => {
+      const chainInfo = await sdk.safe.getChainInfo();
+
+      if (!chainInfo) {
+        return;
+      }
+
+      const rpcUrlGetter = rpcUrlGetterByNetwork[chainInfo.chainId as CHAINS];
+
+      if (!rpcUrlGetter) {
+        throw Error(`RPC URL not defined for ${chainInfo.chainName} chain`);
+      }
+
+      const rpcUrl = rpcUrlGetter(process.env.REACT_APP_RPC_TOKEN);
+
+      const web3Instance = new Web3(rpcUrl);
+
+      setWeb3(web3Instance);
+    };
+
+    setWeb3Instance();
+  }, [sdk.safe]);
+
+  useEffect(() => {
+    sdk.eth.getGasPrice().then((gasPrice) => {
+      setGasPrice(new BigNumber(gasPrice));
+    });
+  }, [sdk.eth]);
+
+  const ethFiatPrice = Number(assets[0]?.fiatConversion || 0);
+
   return (
     <FormContainer onSubmit={onSubmit} onReset={onCancel}>
       <Flex>
         <Logo />
         <Title size="md">Drain Account</Title>
       </Flex>
-      <Balances assets={assets} exclude={excludedTokens} onExcludeChange={handleExcludeChange} />
+      <Balances
+        ethFiatPrice={ethFiatPrice}
+        gasPrice={gasPrice}
+        web3={web3}
+        assets={assets}
+        exclude={excludedTokens}
+        onExcludeChange={handleExcludeChange}
+      />
       {error && <Text size="lg">{error}</Text>}
       {isFinished && (
         <Text size="lg">
