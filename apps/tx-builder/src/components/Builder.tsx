@@ -116,7 +116,7 @@ export const Builder = ({
   const [valueError, setValueError] = useState<string | undefined>();
   const [inputCache, setInputCache] = useState<string[]>([]);
   const [isValueInputVisible, setIsValueInputVisible] = useState(false);
-  const [showCustomDataChecked, setShowCustomDataChecked] = useState<boolean>(false);
+  const [showCustomData, setShowCustomData] = useState<boolean>(false);
   const [customDataValue, setCustomDataValue] = useState<string>();
   const [addCustomTxDataError, setAddCustomTxDataError] = useState<string | undefined>();
 
@@ -157,9 +157,9 @@ export const Builder = ({
   );
 
   const handleCustomDataSwitchChange = useCallback(() => {
-    setShowCustomDataChecked(!showCustomDataChecked);
+    setShowCustomData(!showCustomData);
     setAddCustomTxDataError(undefined);
-  }, [showCustomDataChecked]);
+  }, [showCustomData]);
 
   const getTxData = useCallback(() => {
     let description = '';
@@ -209,7 +209,7 @@ export const Builder = ({
       return;
     }
 
-    if (showCustomDataChecked) {
+    if (showCustomData) {
       if (services.web3 && !services.web3.utils.isHexStrict(customDataValue as string)) {
         setAddCustomTxDataError(getCustomDataError(customDataValue));
         return;
@@ -289,17 +289,13 @@ export const Builder = ({
 
   // set when inputValue is visible
   useEffect(() => {
-    const isVisible = async () => {
-      if (contract) {
-        const method = getContractMethod();
-        setIsValueInputVisible(method?.payable || false);
-      } else {
-        setIsValueInputVisible(true);
-      }
-    };
-
-    isVisible();
-  }, [getContractMethod, contract, services, toInput]);
+    if (showCustomData || !contract) {
+      setIsValueInputVisible(true);
+    } else if (contract) {
+      const method = getContractMethod();
+      setIsValueInputVisible(method?.payable || false);
+    }
+  }, [getContractMethod, showCustomData, contract, services, toInput]);
 
   useEffect(() => {
     if (transactions.length === 0) {
@@ -308,7 +304,7 @@ export const Builder = ({
   }, [transactions]);
 
   useEffect(() => {
-    if (showCustomDataChecked) {
+    if (showCustomData) {
       setCustomDataValue('');
       try {
         const txData = getTxData();
@@ -323,7 +319,7 @@ export const Builder = ({
         return;
       }
     }
-  }, [showCustomDataChecked, getTxData, services.web3]);
+  }, [showCustomData, getTxData, services.web3]);
 
   if (!contract && !isValueInputVisible) {
     return null;
@@ -363,7 +359,7 @@ export const Builder = ({
       )}
 
       {/* Contract Inputs */}
-      {!showCustomDataChecked && contract?.methods.length && (
+      {!showCustomData && contract?.methods.length && (
         <>
           <StyledSelect
             items={contract.methods.map((method, index) => ({
@@ -424,7 +420,7 @@ export const Builder = ({
       )}
 
       {/* hex encoded switcher*/}
-      {showCustomDataChecked && (
+      {showCustomData && (
         <StyledTextAreaField
           label="Data (hex encoded)*"
           hiddenLabel={false}
@@ -435,7 +431,7 @@ export const Builder = ({
       )}
 
       <Text size="lg">
-        <Switch checked={showCustomDataChecked} onChange={handleCustomDataSwitchChange} />
+        <Switch checked={showCustomData} onChange={handleCustomDataSwitchChange} />
         Use custom data (hex encoded)
       </Text>
 
