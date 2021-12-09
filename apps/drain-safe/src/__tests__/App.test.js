@@ -157,7 +157,7 @@ describe('<App />', () => {
       expect(within(makerRow).getByText(/maker/i)).toBeDefined();
       expect(within(makerRow).queryByTitle(warningTooltip)).toBeInTheDocument();
 
-      // warning only should NOT be present in other tokens
+      // warning should NOT be present in other rows
       expect(within(tableRows[0]).queryByTitle(warningTooltip)).not.toBeInTheDocument();
       expect(within(tableRows[1]).queryByTitle(warningTooltip)).not.toBeInTheDocument();
       expect(within(tableRows[2]).queryByTitle(warningTooltip)).not.toBeInTheDocument();
