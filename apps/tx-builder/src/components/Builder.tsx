@@ -101,6 +101,15 @@ const parseInputValue = (input: any, value: string): any => {
   return value;
 };
 
+const isInputValueValid = (val: string) => {
+  const value = Number(val);
+  if (isNaN(value) || value < 0) {
+    return false;
+  }
+
+  return true;
+};
+
 type Props = {
   contract: ContractInterface | null;
   to: string;
@@ -170,6 +179,11 @@ export const Builder = ({
       return;
     }
 
+    if (!isInputValueValid(valueInput)) {
+      setValueError(`${nativeCurrencySymbol} value`);
+      return;
+    }
+
     if (contract && contract.methods.length > selectedMethodIndex) {
       const method = contract.methods[selectedMethodIndex];
 
@@ -235,8 +249,7 @@ export const Builder = ({
 
   const onValueInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValueError(undefined);
-    const value = Number(e.target.value);
-    if (isNaN(value) || value < 0) {
+    if (!isInputValueValid(e.target.value)) {
       setValueError(`${nativeCurrencySymbol} value`);
     }
     setValueInput(e.target.value);
