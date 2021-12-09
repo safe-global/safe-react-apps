@@ -19,7 +19,7 @@ const getProviderURL = (chain: string, address: string, urlProvider: PROVIDER): 
     case PROVIDER.SOURCIFY:
       return `https://sourcify.dev/server/files/${chain}/${address}`;
     case PROVIDER.TX_SERVICE:
-      return `https://safe-transaction.${chain}.gnosis.io/api/v1/contracts/${address}`;
+      return `https://safe-client.staging.gnosisdev.com/v1/chains/${chain}/contracts/${address}`;
     default:
       throw new Error('The Provider is not supported');
   }
@@ -50,7 +50,7 @@ const getAbi = async (address: string, chainInfo: ChainInfo): Promise<any> => {
   try {
     return await getAbiFromSourcify(address, chainInfo.chainId);
   } catch {
-    return await getAbiFromTxService(address, chainInfo.chainName?.toLowerCase());
+    return await getAbiFromTxService(address, chainInfo.chainId);
   }
 };
 
