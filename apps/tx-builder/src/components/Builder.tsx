@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement, useCallback } from 'react';
+import React, { useState, useEffect, ReactElement, useCallback, ChangeEvent } from 'react';
 import {
   Button,
   Text,
@@ -21,6 +21,7 @@ import { ModalBody } from './ModalBody';
 import { Examples } from './Examples';
 import AddressContractField from './fields/AddressContractField';
 import { parseInputValue, getInputHelper, isInputValueValid, getCustomDataError } from '../utils';
+import { TextFieldInputProps } from '@gnosis.pm/safe-react-components/dist/inputs/TextFieldInput';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -64,7 +65,7 @@ const StyledAddressInput = styled(AddressInput)`
   }
 `;
 
-const StyledTextAreaField = (props: any) => {
+const StyledTextAreaField = (props: TextFieldInputProps) => {
   return <StyledTextField {...props} multiline rows={4} />;
 };
 
@@ -145,9 +146,9 @@ export const Builder = ({
   };
 
   const handleCustomDataInputChange = useCallback(
-    (e: any) => {
+    (e: ChangeEvent<HTMLInputElement>) => {
       setCustomDataValue(e.target.value);
-      if (services.web3 && services.web3.utils.isHexStrict(e.target.value)) {
+      if (services?.web3?.utils.isHexStrict(e.target.value)) {
         setAddCustomTxDataError(undefined);
       } else {
         setAddCustomTxDataError(getCustomDataError(e.target.value));
@@ -164,9 +165,8 @@ export const Builder = ({
   const getTxData = useCallback(() => {
     let description = '';
     let data = '';
-    const web3 = services.web3;
 
-    if (!web3 || !contract?.methods) {
+    if (!services?.web3 || !contract?.methods) {
       return;
     }
 
@@ -188,7 +188,7 @@ export const Builder = ({
       });
       try {
         description = `${method.name} (${inputDescription.join(', ')})`;
-        data = web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs as any[]);
+        data = services?.web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs as any[]);
 
         return {
           data,
@@ -203,14 +203,13 @@ export const Builder = ({
   const addTransaction = async () => {
     let description = '';
     let data = '';
-    const web3 = services.web3;
 
-    if (!web3) {
+    if (!services?.web3) {
       return;
     }
 
     if (showCustomData) {
-      if (services.web3 && !services.web3.utils.isHexStrict(customDataValue as string)) {
+      if (!services?.web3.utils.isHexStrict(customDataValue as string)) {
         setAddCustomTxDataError(getCustomDataError(customDataValue));
         return;
       }
@@ -232,12 +231,14 @@ export const Builder = ({
     }
 
     try {
-      const cleanTo = web3.utils.toChecksumAddress(toInput);
-      const cleanValue = web3.utils.toWei(valueInput || '0');
+      const cleanTo = services?.web3.utils.toChecksumAddress(toInput);
+      const cleanValue = services?.web3.utils.toWei(valueInput || '0');
 
       if (data?.length === 0) {
         data = '0x';
-        description = `Transfer ${web3.utils.fromWei(cleanValue.toString())} ${nativeCurrencySymbol} to ${cleanTo}`;
+        description = `Transfer ${services?.web3.utils.fromWei(
+          cleanValue.toString(),
+        )} ${nativeCurrencySymbol} to ${cleanTo}`;
       }
 
       onAddTransaction({
@@ -310,7 +311,7 @@ export const Builder = ({
         const txData = getTxData();
 
         if (txData) {
-          if (services.web3 && !services.web3.utils.isHexStrict(txData.data as string)) {
+          if (!services?.web3?.utils.isHexStrict(txData.data as string)) {
             setAddCustomTxDataError(getCustomDataError(txData.data));
           }
           setCustomDataValue(txData.data);
@@ -397,7 +398,7 @@ export const Builder = ({
                   />
                 ) : (
                   <StyledTextField
-                    name={input.name}
+                    name={'custom-data'}
                     value={inputCache[index] || ''}
                     label={`${input.name || ''}(${getInputHelper(input)})`}
                     hiddenLabel={false}
@@ -422,6 +423,7 @@ export const Builder = ({
       {/* hex encoded switcher*/}
       {showCustomData && (
         <StyledTextAreaField
+          name="customDataValue"
           label="Data (hex encoded)*"
           hiddenLabel={false}
           value={customDataValue}
