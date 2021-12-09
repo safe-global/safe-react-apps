@@ -1643,17 +1643,18 @@
     classnames "^2.2.6"
     react-media "^1.10.0"
 
-"@gnosis.pm/safe-react-components@^0.8.6":
-  version "0.8.6"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.8.6.tgz#a8275b02d41a7b0d69abef867900843a1a49bb11"
-  integrity sha512-lWHSjOQFmeck6D4cpzs6un09Zx7jptmdR3+QtUkB0obsmguU0o6fXtkK91SYE2Fm86GpmjhA03rKrOqzEeklBA==
-  dependencies:
-    react-media "^1.10.0"
-
 "@gnosis.pm/safe-react-components@^0.9.1":
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.9.1.tgz#0324f73b7b99a22e054a27394c3aa9d21fd41b29"
   integrity sha512-UE/zCwcxrYY2rDzT2f8MJywSmgdJbcpkwVroeB2VzFiLWmj3AwhBKEV47lvZCa90jycnJMZBOu++6SoIo19ojg==
+  dependencies:
+    react-media "^1.10.0"
+    web3-utils "^1.6.0"
+
+"@gnosis.pm/safe-react-components@^0.9.2":
+  version "0.9.2"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.9.2.tgz#51042b2cafd5d4e65246163080a640bd7aae94fe"
+  integrity sha512-tGX9YUgAf0WdMB/78yT2dV/4ni/T27WmhmirOvJcbANK0CamgoYq7sinYFpeWEnBrMnlV6eRcMZ9K/Dkfmr0Kg==
   dependencies:
     react-media "^1.10.0"
     web3-utils "^1.6.0"
