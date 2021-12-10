@@ -11,9 +11,11 @@ import Balances from './Balances';
 import SubmitButton from './SubmitButton';
 import CancelButton from './CancelButton';
 import AddressInput from './AddressInput';
+import useWeb3 from '../hooks/useWeb3';
 
 const App: React.FC = () => {
   const { sdk, safe } = useSafeAppsSDK();
+  const { web3 } = useWeb3();
   const {
     assets,
     excludedTokens,
@@ -151,7 +153,7 @@ const App: React.FC = () => {
           onChangeAddress={onToAddressChange}
           hiddenLabel={false}
           address={toAddress}
-          // getAddressFromDomainName={getAddressFromEnsDomainName}
+          getAddressFromDomain={web3?.eth.ens.getAddress || Promise.resolve}
         />
       )}
 
