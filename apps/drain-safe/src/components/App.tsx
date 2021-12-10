@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Title, TextField, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import web3Utils from 'web3-utils';
-import Web3 from 'web3';
 import { BigNumber } from 'bignumber.js';
 
 import useBalances, { BalancesType } from '../hooks/use-balances';
@@ -13,10 +12,11 @@ import Logo from './Logo';
 import Balances from './Balances';
 import SubmitButton from './SubmitButton';
 import CancelButton from './CancelButton';
-import { CHAINS, rpcUrlGetterByNetwork } from '../utils/chains';
+import useWeb3 from '../hooks/useWeb3';
 
 const App: React.FC = () => {
   const { sdk, safe } = useSafeAppsSDK();
+  const { web3 } = useWeb3();
   const {
     assets,
     excludedTokens,
@@ -27,7 +27,6 @@ const App: React.FC = () => {
   const [toAddress, setToAddress] = useState<string>('');
   const [isFinished, setFinished] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [web3, setWeb3] = useState<Web3 | undefined>();
   const [gasPrice, setGasPrice] = useState<BigNumber>(new BigNumber(0));
 
   const onError = (userMsg: string, err: Error) => {
@@ -113,30 +112,6 @@ const App: React.FC = () => {
       onError('Failed fetching balances', balancesError);
     }
   }, [balancesError]);
-
-  useEffect(() => {
-    const setWeb3Instance = async () => {
-      const chainInfo = await sdk.safe.getChainInfo();
-
-      if (!chainInfo) {
-        return;
-      }
-
-      const rpcUrlGetter = rpcUrlGetterByNetwork[chainInfo.chainId as CHAINS];
-
-      if (!rpcUrlGetter) {
-        throw Error(`RPC URL not defined for ${chainInfo.chainName} chain`);
-      }
-
-      const rpcUrl = rpcUrlGetter(process.env.REACT_APP_RPC_TOKEN);
-
-      const web3Instance = new Web3(rpcUrl);
-
-      setWeb3(web3Instance);
-    };
-
-    setWeb3Instance();
-  }, [sdk.safe]);
 
   useEffect(() => {
     sdk.eth.getGasPrice().then((gasPrice) => {
