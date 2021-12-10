@@ -19,7 +19,7 @@ const getProviderURL = (chain: string, address: string, urlProvider: PROVIDER): 
     case PROVIDER.SOURCIFY:
       return `https://sourcify.dev/server/files/${chain}/${address}`;
     case PROVIDER.TX_SERVICE:
-      return `https://safe-client.staging.gnosisdev.com/v1/chains/${chain}/contracts/${address}`;
+      return `https://safe-client.gnosis.io/v1/chains/${chain}/contracts/${address}`;
     default:
       throw new Error('The Provider is not supported');
   }
