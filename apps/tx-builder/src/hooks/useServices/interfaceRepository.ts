@@ -41,7 +41,9 @@ const abiUrlGetterByNetwork: {
     `https://explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
   [CHAINS.ARBITRUM]: (address: string) =>
     `https://api.arbiscan.io/api?module=contract&action=getabi&address=${address}`,
-  [CHAINS.VOLTA]: (address: string) =>
+  [CHAINS.AVALANCHE]: (address: string) =>
+  `https://api.snowtrace.io/api?module=contract&action=getabi&address=${address}`,
+  [CHAINS.VOLTA]: (address: string) => 
     `https://volta-explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
 };
 

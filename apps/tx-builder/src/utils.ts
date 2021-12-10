@@ -12,6 +12,7 @@ export enum CHAINS {
   POLYGON = 137,
   ENERGY_WEB_CHAIN = 246,
   ARBITRUM = 42161,
+  AVALANCHE = 43114,
   VOLTA = 73799,
 }
 
@@ -29,6 +30,7 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.POLYGON]: () => 'https://rpc-mainnet.matic.network',
   [CHAINS.ENERGY_WEB_CHAIN]: () => 'https://rpc.energyweb.org',
   [CHAINS.ARBITRUM]: () => 'https://arb1.arbitrum.io/rpc',
+  [CHAINS.AVALANCHE]: () => 'https://api.avax.network/ext/bc/C/rpc',
   [CHAINS.VOLTA]: () => 'https://volta-rpc.energyweb.org',
 };
 
