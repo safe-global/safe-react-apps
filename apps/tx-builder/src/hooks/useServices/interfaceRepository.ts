@@ -3,8 +3,14 @@ import memoize from 'lodash/memoize';
 
 import { CHAINS } from '../../utils';
 
+export interface ContractInput {
+  internalType: string;
+  name: string;
+  type: string;
+}
+
 interface ContractMethod {
-  inputs: any[];
+  inputs: ContractInput[];
   name: string;
   payable: boolean;
 }
@@ -18,20 +24,23 @@ const getAbi = memoize(async (apiUrl: string) => axios.get(apiUrl));
 const abiUrlGetterByNetwork: {
   [key in CHAINS]?: ((address: string) => string) | null;
 } = {
-  [CHAINS.MAINNET]: (address: string) => `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  [CHAINS.MAINNET]: (address: string) =>
+    `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}`,
   [CHAINS.MORDEN]: null,
   [CHAINS.ROPSTEN]: null,
-  [CHAINS.RINKEBY]: (address: string) => `https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=${address}`,
+  [CHAINS.RINKEBY]: (address: string) =>
+    `https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=${address}`,
   [CHAINS.GOERLI]: null,
   [CHAINS.KOVAN]: null,
   [CHAINS.BSC]: (address: string) => `https://api.bscscan.com/api?module=contract&action=getabi&address=${address}`,
-  [CHAINS.XDAI]: (address: string) => `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
+  [CHAINS.XDAI]: (address: string) =>
+    `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
   [CHAINS.POLYGON]: (address: string) =>
     `https://api.polygonscan.com/api?module=contract&action=getabi&address=${address}`,
   [CHAINS.ENERGY_WEB_CHAIN]: (address: string) =>
     `https://explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
   [CHAINS.ARBITRUM]: (address: string) =>
-    `https://api.arbiscan.io/api?module=contract&action=getabi&address=${address}`,  
+    `https://api.arbiscan.io/api?module=contract&action=getabi&address=${address}`,
   [CHAINS.VOLTA]: (address: string) =>
     `https://volta-explorer.energyweb.org/api?module=contract&action=getabi&address=${address}`,
 };

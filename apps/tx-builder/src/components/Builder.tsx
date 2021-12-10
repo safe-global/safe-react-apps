@@ -14,7 +14,7 @@ import {
 import styled from 'styled-components';
 import { AbiItem } from 'web3-utils';
 
-import { ContractInterface } from '../hooks/useServices/interfaceRepository';
+import { ContractInterface, ContractInput } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import { ProposedTransaction } from '../typings/models';
 import { ModalBody } from './ModalBody';
@@ -178,7 +178,7 @@ export const Builder = ({
     const method = contract.methods[selectedMethodIndex];
 
     if (!['receive', 'fallback'].includes(method.name)) {
-      const parsedInputs: any[] = [];
+      const parsedInputs: string[] = [];
       const inputDescription: string[] = [];
 
       method.inputs.forEach((input, index) => {
@@ -188,7 +188,7 @@ export const Builder = ({
       });
       try {
         description = `${method.name} (${inputDescription.join(', ')})`;
-        data = services?.web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs as any[]);
+        data = services?.web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs);
 
         return {
           data,
@@ -381,8 +381,9 @@ export const Builder = ({
             {showExamples && <Examples />}
           </StyledExamples>
 
-          {getContractMethod()?.inputs.map((input, index) => {
+          {getContractMethod()?.inputs.map((input: ContractInput, index: number) => {
             const isAddressField = input.internalType === 'address' || input.type === 'address';
+
             return (
               <div key={index} style={{ marginTop: 10 }}>
                 {isAddressField ? (

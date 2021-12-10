@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import React, { useCallback } from 'react';
 import { AddressInput } from '@gnosis.pm/safe-react-components';
+import { ContractInput } from '../../hooks/useServices/interfaceRepository';
 
 type AddressContractFieldTypes = {
   onChangeContractInput: (index: number, value: string) => void;
   index: number;
-  input: any;
+  input: ContractInput;
   label: string;
   isValidAddress: (address: string | null) => boolean | undefined;
   inputCache: string[];
