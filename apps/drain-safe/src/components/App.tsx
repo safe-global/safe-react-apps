@@ -106,6 +106,11 @@ const App: React.FC = () => {
     return `Transfer ${assetsToTransferCount} asset${assetsToTransferCount > 1 ? 's' : ''}`;
   }, [assets.length, excludedTokens.length]);
 
+  const getAddressFromDomain = useCallback(
+    (address: string) => web3?.eth.ens.getAddress(address) || Promise.resolve(address),
+    [web3],
+  );
+
   useEffect(() => {
     if (balancesError) {
       onError('Failed fetching balances', balancesError);
@@ -153,7 +158,7 @@ const App: React.FC = () => {
           onChangeAddress={onToAddressChange}
           hiddenLabel={false}
           address={toAddress}
-          getAddressFromDomain={web3?.eth.ens.getAddress || Promise.resolve}
+          getAddressFromDomain={getAddressFromDomain}
         />
       )}
 
