@@ -147,7 +147,7 @@ describe('<App />', () => {
     renderWithProviders(<App />);
 
     const warningTooltip =
-      /Beware that the cost of this token transfer could be higher than its current market value. Estimated transfer cost: /i;
+      /Beware that the cost of this token transfer could be higher than its current market value \(Estimated transfer cost: /i;
 
     await waitFor(() => {
       const tableRows = document.querySelectorAll('tbody tr');
