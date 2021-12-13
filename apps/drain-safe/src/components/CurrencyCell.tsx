@@ -54,7 +54,7 @@ function CurrencyCell({
   const showWarningIcon =
     ethFiatPrice > 0 && gasPrice.toNumber() > 0 && transferCostInFiat.toNumber() >= Number(item.fiatBalance);
 
-  const warningTooltip = `Beware that the cost of this token transfer could be higher than its current market value. Estimated transfer cost: ${formatCurrencyValue(
+  const warningTooltip = `Beware that the cost of this token transfer could be higher than its current market value (Estimated transfer cost: ${formatCurrencyValue(
     transferCostInFiat.toString(),
     currency,
   )})`;
