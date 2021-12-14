@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement, useCallback } from 'react';
+import React, { useState, useEffect, ReactElement, useCallback, useMemo } from 'react';
 import {
   Button,
   Text,
@@ -328,6 +328,17 @@ export const Builder = ({
     );
   };
 
+  const showAddressInput = useMemo(() => {
+    let isAddress;
+
+    try {
+      isAddress = services?.web3?.utils.isAddress(to);
+    } catch {
+      isAddress = false;
+    }
+    return (isAddress && toInput) || !isAddress;
+  }, [services?.web3?.utils, to, toInput]);
+
   if (!contract && !isValueInputVisible) {
     return null;
   }
@@ -338,7 +349,7 @@ export const Builder = ({
 
       {contract && !contract?.methods.length && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
 
-      {to.length > 0 && toInput && (
+      {showAddressInput && (
         <StyledAddressInput
           id={'to-address-input'}
           name="toAddress"
