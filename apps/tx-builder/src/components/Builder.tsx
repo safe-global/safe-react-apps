@@ -110,11 +110,16 @@ const isInputValueValid = (val: string) => {
   return true;
 };
 
+const BOOLEAN_ITEMS = [
+  { id: 'true', label: 'True' },
+  { id: 'false', label: 'False' },
+];
+
 type Props = {
   contract: ContractInterface | null;
   to: string;
-  chainId: number;
-  nativeCurrencySymbol: string;
+  chainId: string | undefined;
+  nativeCurrencySymbol: string | undefined;
   transactions: ProposedTransaction[];
   onAddTransaction: (transaction: ProposedTransaction) => void;
   onRemoveTransaction: (index: number) => void;
@@ -135,7 +140,7 @@ export const Builder = ({
   networkPrefix,
   getAddressFromDomain,
 }: Props): ReactElement | null => {
-  const services = useServices(chainId);
+  const services = useServices();
   const [toInput, setToInput] = useState('');
   const [valueInput, setValueInput] = useState('');
   const [reviewing, setReviewing] = useState(false);
@@ -281,6 +286,48 @@ export const Builder = ({
     }
   }, [transactions]);
 
+  const renderInput = (input: any, index: number) => {
+    const isAddressField = input.internalType === 'address' || input.type === 'address';
+    const isBoolean = input.type === 'bool';
+
+    if (isAddressField) {
+      return (
+        <AddressContractField
+          label={`${input.name || ''}(${getInputHelper(input)})`}
+          onChangeContractInput={onChangeContractInput}
+          input={input}
+          index={index}
+          isValidAddress={isValidAddress}
+          inputCache={inputCache}
+          networkPrefix={networkPrefix}
+          getAddressFromDomain={getAddressFromDomain}
+        />
+      );
+    }
+
+    if (isBoolean) {
+      inputCache[index] = inputCache[index] || 'true';
+
+      return (
+        <StyledSelect
+          items={BOOLEAN_ITEMS}
+          activeItemId={inputCache[index]}
+          onItemClick={(id: string) => {
+            onChangeContractInput(index, id);
+          }}
+        />
+      );
+    }
+
+    return (
+      <StyledTextField
+        value={inputCache[index] || ''}
+        label={`${input.name || ''}(${getInputHelper(input)})`}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeContractInput(index, e.target.value)}
+      />
+    );
+  };
+
   if (!contract && !isValueInputVisible) {
     return null;
   }
@@ -291,7 +338,7 @@ export const Builder = ({
 
       {contract && !contract?.methods.length && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
 
-      {to.length > 0 && (
+      {to.length > 0 && toInput && (
         <StyledAddressInput
           id={'to-address-input'}
           name="toAddress"
@@ -340,27 +387,9 @@ export const Builder = ({
           </StyledExamples>
 
           {getContractMethod()?.inputs.map((input, index) => {
-            const isAddressField = input.internalType === 'address' || input.type === 'address';
             return (
               <div key={index} style={{ marginTop: 10 }}>
-                {isAddressField ? (
-                  <AddressContractField
-                    label={`${input.name || ''}(${getInputHelper(input)})`}
-                    onChangeContractInput={onChangeContractInput}
-                    input={input}
-                    index={index}
-                    isValidAddress={isValidAddress}
-                    inputCache={inputCache}
-                    networkPrefix={networkPrefix}
-                    getAddressFromDomain={getAddressFromDomain}
-                  />
-                ) : (
-                  <StyledTextField
-                    value={inputCache[index] || ''}
-                    label={`${input.name || ''}(${getInputHelper(input)})`}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeContractInput(index, e.target.value)}
-                  />
-                )}
+                {renderInput(input, index)}
                 <br />
               </div>
             );

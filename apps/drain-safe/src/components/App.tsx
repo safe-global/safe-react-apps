@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Title, TextField, Text } from '@gnosis.pm/safe-react-components';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { Title, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import web3Utils from 'web3-utils';
 import { BigNumber } from 'bignumber.js';
@@ -12,6 +12,7 @@ import Logo from './Logo';
 import Balances from './Balances';
 import SubmitButton from './SubmitButton';
 import CancelButton from './CancelButton';
+import AddressInput from './AddressInput';
 import useWeb3 from '../hooks/useWeb3';
 
 const App: React.FC = () => {
@@ -28,6 +29,7 @@ const App: React.FC = () => {
   const [isFinished, setFinished] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [gasPrice, setGasPrice] = useState<BigNumber>(new BigNumber(0));
+  const [networkPrefix, setNetworkPrefix] = useState<string>('');
 
   const onError = (userMsg: string, err: Error) => {
     setError(`${userMsg}: ${err.message}`);
@@ -81,10 +83,10 @@ const App: React.FC = () => {
     setSubmitting(false);
   };
 
-  const onToAddressChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setToAddress(e.target.value);
+  const onToAddressChange = useCallback((address: string): void => {
+    setToAddress(address);
     resetMessages();
-  };
+  }, []);
 
   const handleExcludeChange = (tokenAddress: string, checked: boolean): void => {
     if (checked) {
@@ -107,6 +109,11 @@ const App: React.FC = () => {
     return `Transfer ${assetsToTransferCount} asset${assetsToTransferCount > 1 ? 's' : ''}`;
   }, [assets.length, excludedTokens.length]);
 
+  const getAddressFromDomain = useCallback(
+    (address: string) => web3?.eth.ens.getAddress(address) || Promise.resolve(address),
+    [web3],
+  );
+
   useEffect(() => {
     if (balancesError) {
       onError('Failed fetching balances', balancesError);
@@ -120,6 +127,19 @@ const App: React.FC = () => {
   }, [sdk.eth]);
 
   const ethFiatPrice = Number(assets[0]?.fiatConversion || 0);
+
+  useEffect(() => {
+    const getChainInfo = async () => {
+      try {
+        const { shortName } = await sdk.safe.getChainInfo();
+        setNetworkPrefix(shortName);
+      } catch (e) {
+        console.error('Unable to get chain info:', e);
+      }
+    };
+
+    getChainInfo();
+  }, [sdk]);
 
   return (
     <FormContainer onSubmit={onSubmit} onReset={onCancel}>
@@ -146,7 +166,19 @@ const App: React.FC = () => {
           Refresh the app when it’s executed.
         </Text>
       )}
-      {!submitting && <TextField onChange={onToAddressChange} value={toAddress} label="Recipient" />}
+      {!submitting && (
+        <AddressInput
+          id="recipient"
+          name="toAddress"
+          label="Recipient"
+          networkPrefix={networkPrefix}
+          showNetworkPrefix={!!networkPrefix}
+          onChangeAddress={onToAddressChange}
+          hiddenLabel={false}
+          address={toAddress}
+          getAddressFromDomain={getAddressFromDomain}
+        />
+      )}
 
       {submitting ? (
         <CancelButton>Cancel</CancelButton>
