@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { AddressInput } from '@gnosis.pm/safe-react-components';
 import { ContractInput } from '../../hooks/useServices/interfaceRepository';
 

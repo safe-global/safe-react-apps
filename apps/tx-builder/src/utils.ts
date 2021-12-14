@@ -1,19 +1,19 @@
 import { toBN } from 'web3-utils';
 
 export enum CHAINS {
-  MAINNET = 1,
-  MORDEN = 2,
-  ROPSTEN = 3,
-  RINKEBY = 4,
-  GOERLI = 5,
-  KOVAN = 42,
-  BSC = 56,
-  XDAI = 100,
-  POLYGON = 137,
-  ENERGY_WEB_CHAIN = 246,
-  ARBITRUM = 42161,
-  AVALANCHE = 43114,
-  VOLTA = 73799,
+  MAINNET = '1',
+  MORDEN = '2',
+  ROPSTEN = '3',
+  RINKEBY = '4',
+  GOERLI = '5',
+  KOVAN = '42',
+  BSC = '56',
+  XDAI = '100',
+  POLYGON = '137',
+  ENERGY_WEB_CHAIN = '246',
+  AVALANCHE = '43114',
+  ARBITRUM = '42161',
+  VOLTA = '73799',
 }
 
 export const rpcUrlGetterByNetwork: {
