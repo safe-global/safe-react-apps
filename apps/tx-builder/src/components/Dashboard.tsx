@@ -7,7 +7,7 @@ import CheckCircle from '@material-ui/icons/CheckCircle';
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import { Builder } from './Builder';
-import { ProposedTransaction } from '../typings/models';
+import useTransactions from '../hooks/useTransactions';
 
 const Wrapper = styled.div`
   display: flex;
@@ -51,44 +51,13 @@ const StyledAddressInput = styled(AddressInput)`
 `;
 
 const Dashboard = (): ReactElement => {
-  const { sdk, web3, interfaceRepo, chainInfo } = useServices();
+  const { web3, interfaceRepo, chainInfo } = useServices();
   const services = useServices();
+  const { transactions, handleAddTransaction, handleRemoveTransaction, handleSubmitTransactions } = useTransactions();
   const [addressOrAbi, setAddressOrAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadContractError, setLoadContractError] = useState('');
-  const [transactions, setTransactions] = useState<ProposedTransaction[]>([]);
-
-  const handleAddTransaction = useCallback(
-    (tx: ProposedTransaction) => {
-      setTransactions([...transactions, tx]);
-    },
-    [transactions],
-  );
-
-  const handleRemoveTransaction = useCallback(
-    (index: number) => {
-      const newTxs = transactions.slice();
-      newTxs.splice(index, 1);
-      setTransactions(newTxs);
-    },
-    [transactions],
-  );
-
-  const handleSubmitTransactions = useCallback(async () => {
-    if (!transactions.length) {
-      return;
-    }
-
-    try {
-      await sdk.txs
-        .send({ txs: transactions.map((transaction: ProposedTransaction) => transaction.raw) })
-        .catch(console.error);
-      setTransactions([]);
-    } catch (e) {
-      console.error('Error sending transactions:', e);
-    }
-  }, [sdk.txs, transactions]);
 
   // Load contract from address or ABI
   useEffect(() => {

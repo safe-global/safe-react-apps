@@ -1,8 +1,14 @@
 import { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
 import getAbi from './getAbi';
 
+export interface ContractInput {
+  internalType: string;
+  name: string;
+  type: string;
+}
+
 interface ContractMethod {
-  inputs: any[];
+  inputs: ContractInput[];
   name: string;
   payable: boolean;
 }
