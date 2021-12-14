@@ -1,8 +1,6 @@
-import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
 import { within } from '@testing-library/dom';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import useBalances from '../hooks/use-balances';
 import { mockTxsRequest, mockInitialBalances, renderWithProviders } from '../utils/test-helpers';
 import App from '../components/App';
 
@@ -58,14 +56,14 @@ jest.mock('web3', () => {
 
 describe('<App />', () => {
   it('should render the tokens in the safe balance', async () => {
-    const { container } = renderWithProviders(<App />);
+    renderWithProviders(<App />);
 
     expect(await screen.findByText(/ether/i)).toBeInTheDocument();
     expect(await screen.findByText(/0.949938510499549077/)).toBeInTheDocument();
   });
 
   it('should drain the safe when submit button is clicked', async () => {
-    const { container } = renderWithProviders(<App />);
+    renderWithProviders(<App />);
     const { sdk } = useSafeAppsSDK();
 
     await screen.findByText(/chainlink token/i);
@@ -75,7 +73,7 @@ describe('<App />', () => {
   });
 
   it('should drain the safe when submit button is clicked removing the tokens excluded by the user', async () => {
-    const { container } = renderWithProviders(<App />);
+    renderWithProviders(<App />);
     const { sdk } = useSafeAppsSDK();
     const checkboxes = await screen.findAllByRole('checkbox');
 
@@ -93,7 +91,7 @@ describe('<App />', () => {
   });
 
   it('should show an error if no recipient address is entered', async () => {
-    const { container } = renderWithProviders(<App />);
+    renderWithProviders(<App />);
 
     await screen.findByText(/chainLink token/i);
     fireEvent.click(screen.getByText(/transfer everything/i));
@@ -102,7 +100,7 @@ describe('<App />', () => {
   });
 
   it('should allow to order token by string prop', async () => {
-    const { container } = renderWithProviders(<App />);
+    renderWithProviders(<App />);
 
     await screen.findByText(/chainlink token/i);
     const assetColumnHeaderElement = screen.getByText(/asset/i);
@@ -124,7 +122,7 @@ describe('<App />', () => {
   });
 
   it('should allow to order token by numeric prop', async () => {
-    const { container } = renderWithProviders(<App />);
+    renderWithProviders(<App />);
 
     await screen.findByText(/chainLink token/i);
     const amountColumnHeaderElement = screen.getByText(/amount/i);
@@ -142,6 +140,27 @@ describe('<App />', () => {
       const tableRows = document.querySelectorAll('tbody tr');
       expect(within(tableRows[4]).getByText(/dai/i)).toBeDefined();
       expect(within(tableRows[0]).getByText(/maker/i)).toBeDefined();
+    });
+  });
+
+  it('Shows a Warning icon when token transfer cost is higher than its current market value ', async () => {
+    renderWithProviders(<App />);
+
+    const warningTooltip =
+      /Beware that the cost of this token transfer could be higher than its current market value \(Estimated transfer cost: /i;
+
+    await waitFor(() => {
+      const tableRows = document.querySelectorAll('tbody tr');
+
+      // warning only should be present in Maker (MKR) row
+      const makerRow = tableRows[3];
+      expect(within(makerRow).getByText(/maker/i)).toBeDefined();
+      expect(within(makerRow).queryByTitle(warningTooltip)).toBeInTheDocument();
+
+      // warning should NOT be present in other rows
+      expect(within(tableRows[0]).queryByTitle(warningTooltip)).not.toBeInTheDocument();
+      expect(within(tableRows[1]).queryByTitle(warningTooltip)).not.toBeInTheDocument();
+      expect(within(tableRows[2]).queryByTitle(warningTooltip)).not.toBeInTheDocument();
     });
   });
 });

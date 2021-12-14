@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Title, Text } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import web3Utils from 'web3-utils';
+import { BigNumber } from 'bignumber.js';
+
 import useBalances, { BalancesType } from '../hooks/use-balances';
 import { tokenToTx } from '../utils/sdk-helpers';
 import FormContainer from './FormContainer';
@@ -26,6 +28,7 @@ const App: React.FC = () => {
   const [toAddress, setToAddress] = useState<string>('');
   const [isFinished, setFinished] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [gasPrice, setGasPrice] = useState<BigNumber>(new BigNumber(0));
   const [networkPrefix, setNetworkPrefix] = useState<string>('');
 
   const onError = (userMsg: string, err: Error) => {
@@ -118,6 +121,14 @@ const App: React.FC = () => {
   }, [balancesError]);
 
   useEffect(() => {
+    sdk.eth.getGasPrice().then((gasPrice) => {
+      setGasPrice(new BigNumber(gasPrice));
+    });
+  }, [sdk.eth]);
+
+  const ethFiatPrice = Number(assets[0]?.fiatConversion || 0);
+
+  useEffect(() => {
     const getChainInfo = async () => {
       try {
         const { shortName } = await sdk.safe.getChainInfo();
@@ -136,7 +147,14 @@ const App: React.FC = () => {
         <Logo />
         <Title size="md">Drain Account</Title>
       </Flex>
-      <Balances assets={assets} exclude={excludedTokens} onExcludeChange={handleExcludeChange} />
+      <Balances
+        ethFiatPrice={ethFiatPrice}
+        gasPrice={gasPrice}
+        web3={web3}
+        assets={assets}
+        exclude={excludedTokens}
+        onExcludeChange={handleExcludeChange}
+      />
       {error && <Text size="lg">{error}</Text>}
       {isFinished && (
         <Text size="lg">
