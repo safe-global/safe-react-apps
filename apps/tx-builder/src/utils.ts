@@ -34,10 +34,17 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.VOLTA]: () => 'https://volta-rpc.energyweb.org',
 };
 
-export const getInputHelper = (input: any) => {
+type InputType = {
+  internalType: string;
+  name: string;
+  type: string;
+  components: InputType[];
+};
+
+export const getInputHelper = (input: InputType) => {
   // This code renders a helper for the input text.
   if (input.type.startsWith('tuple')) {
-    return `tuple(${input.components.map((c: any) => c.internalType).toString()})${
+    return `tuple(${input.components.map((c: InputType) => c.internalType).toString()})${
       input.type.endsWith('[]') ? '[]' : ''
     }`;
   } else {
