@@ -118,8 +118,8 @@ const BOOLEAN_ITEMS = [
 type Props = {
   contract: ContractInterface | null;
   to: string;
-  chainId: number;
-  nativeCurrencySymbol: string;
+  chainId: string | undefined;
+  nativeCurrencySymbol: string | undefined;
   transactions: ProposedTransaction[];
   onAddTransaction: (transaction: ProposedTransaction) => void;
   onRemoveTransaction: (index: number) => void;
@@ -140,7 +140,7 @@ export const Builder = ({
   networkPrefix,
   getAddressFromDomain,
 }: Props): ReactElement | null => {
-  const services = useServices(chainId);
+  const services = useServices();
   const [toInput, setToInput] = useState('');
   const [valueInput, setValueInput] = useState('');
   const [reviewing, setReviewing] = useState(false);
@@ -338,7 +338,7 @@ export const Builder = ({
 
       {contract && !contract?.methods.length && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
 
-      {to.length > 0 && (
+      {to.length > 0 && toInput && (
         <StyledAddressInput
           id={'to-address-input'}
           name="toAddress"
