@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Table, Checkbox, TableSortDirection } from '@gnosis.pm/safe-react-components';
+import { Table, Checkbox, TableSortDirection, DataTable } from '@gnosis.pm/safe-react-components';
+import { GridColDef, GridRowsProp } from '@mui/x-data-grid';
 import { TokenBalance, TokenInfo } from '@gnosis.pm/safe-apps-sdk';
 import BigNumber from 'bignumber.js';
 import Web3 from 'web3';
@@ -118,14 +119,99 @@ function Balances({
     [assets, exclude, handleExclusion, order, orderBy, ethFiatPrice, gasPrice, web3],
   );
 
+  const dataGridColumns: GridColDef[] = [
+    {
+      field: 'asset',
+      headerName: 'Asset',
+      flex: 1,
+      sortComparator: (val1, val2, api1: any, api2: any) => {
+        if (api1.value.name < api2.value.name) {
+          return -1;
+        }
+
+        if (api1.value.name > api2.value.name) {
+          return 1;
+        }
+
+        return 0;
+      },
+      renderCell: (params: any) => {
+        const { logoUri, symbol, name } = params.value;
+
+        return (
+          <>
+            <Icon logoUri={logoUri} symbol={symbol} />
+            {name}
+          </>
+        );
+      },
+    },
+    {
+      field: 'amount',
+      headerName: 'Amount',
+      flex: 1,
+      sortComparator: (val1, val2, api1: any, api2: any) => {
+        return api1.value - api2.value;
+      },
+    },
+    {
+      field: 'value',
+      headerName: 'Value',
+      flex: 1,
+      sortComparator: (val1, val2, api1: any, api2: any) => {
+        return api1.value.fiatBalance - api2.value.fiatBalance;
+      },
+      renderCell: (params: any) => (
+        <CurrencyCell
+          web3={web3}
+          ethFiatPrice={ethFiatPrice}
+          gasPrice={gasPrice}
+          item={params.value}
+          currency={CURRENCY}
+        />
+      ),
+    },
+  ];
+
+  const dataGridRows: GridRowsProp = useMemo(
+    () =>
+      assets.slice().map((item: TokenBalance) => {
+        const token = item.tokenInfo || ethToken;
+
+        return {
+          id: token.address,
+          asset: token,
+          amount: formatTokenValue(item.balance, token.decimals),
+          value: item,
+        };
+      }),
+    [assets],
+  );
+
   return (
-    <Table
-      headers={HEADERS}
-      rows={rows}
-      sortedByHeaderId={orderBy}
-      sortDirection={order}
-      onHeaderClick={handleHeaderClick}
-    />
+    <>
+      <Table
+        headers={HEADERS}
+        rows={rows}
+        sortedByHeaderId={orderBy}
+        sortDirection={order}
+        onHeaderClick={handleHeaderClick}
+      />
+      <DataTable
+        sortingOrder={['desc', 'asc']}
+        headerHeight={70}
+        rows={dataGridRows}
+        columns={dataGridColumns}
+        hideFooter
+        disableColumnMenu
+        checkboxSelection
+        disableSelectionOnClick
+        autoHeight
+        onSelectionModelChange={(newSelectionModel) => {
+          console.log(newSelectionModel);
+        }}
+      />
+    </>
   );
 }
 
