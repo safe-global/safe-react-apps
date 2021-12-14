@@ -1,14 +1,12 @@
-import { useCallback, useMemo, useState } from 'react';
-import { Table, Checkbox, TableSortDirection, DataTable } from '@gnosis.pm/safe-react-components';
-import { GridColDef, GridRowsProp } from '@mui/x-data-grid';
+import { useMemo, useState, useEffect } from 'react';
+import { DataTable } from '@gnosis.pm/safe-react-components';
+import { GridColDef, GridRowsProp, GridSelectionModel } from '@mui/x-data-grid';
 import { TokenBalance, TokenInfo } from '@gnosis.pm/safe-apps-sdk';
 import BigNumber from 'bignumber.js';
 import Web3 from 'web3';
 
 import { formatTokenValue } from '../utils/formatters';
 import Icon from './Icon';
-import Flex from './Flex';
-import { getComparator } from '../utils/sort-helpers';
 import CurrencyCell from './CurrencyCell';
 
 const CURRENCY = 'USD';
@@ -22,102 +20,24 @@ const ethToken: TokenInfo = {
   address: '',
 };
 
-const HEADERS = [
-  { id: 'tokenInfo.name', label: 'Asset' },
-  { id: 'balance', label: 'Amount' },
-  { id: 'fiatBalance', label: `Value, ${CURRENCY}` },
-  { id: 'transfer', label: 'Transfer', hideSortIcon: true },
-];
-
 function Balances({
   assets,
-  exclude,
-  onExcludeChange,
+  onSelectionChange,
   gasPrice,
   ethFiatPrice,
   web3,
 }: {
   assets: TokenBalance[];
-  exclude: string[];
   ethFiatPrice: number;
   web3: Web3 | undefined;
-  onExcludeChange: (address: string, checked: boolean) => void;
+  onSelectionChange: (addresses: string[]) => void;
   gasPrice: BigNumber;
 }): JSX.Element {
-  const [orderBy, setOrderBy] = useState<string | undefined>();
-  const [order, setOrder] = useState<TableSortDirection>(TableSortDirection.asc);
+  const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
 
-  const handleHeaderClick = useCallback(
-    (headerId: string) => {
-      if (headerId === 'transfer') {
-        return;
-      }
-
-      const newDirection =
-        orderBy === headerId && order === TableSortDirection.asc ? TableSortDirection.desc : TableSortDirection.asc;
-
-      setOrder(newDirection);
-      setOrderBy(headerId);
-    },
-    [order, orderBy],
-  );
-
-  const handleExclusion = useCallback(
-    (rowId: string) => {
-      const isRowChecked = exclude.includes(rowId);
-      onExcludeChange(rowId, isRowChecked);
-    },
-    [onExcludeChange, exclude],
-  );
-
-  const rows = useMemo(
-    () =>
-      assets
-        .slice()
-        .sort(getComparator(order, orderBy))
-        .map((item: TokenBalance) => {
-          const token = item.tokenInfo || ethToken;
-
-          return {
-            id: item.tokenInfo.address,
-            cells: [
-              {
-                content: (
-                  <Flex>
-                    <Icon logoUri={token.logoUri} symbol={token.symbol} />
-                    {token.name}
-                  </Flex>
-                ),
-              },
-
-              { content: formatTokenValue(item.balance, token.decimals) },
-              {
-                content: (
-                  <CurrencyCell
-                    web3={web3}
-                    ethFiatPrice={ethFiatPrice}
-                    gasPrice={gasPrice}
-                    item={item}
-                    currency={CURRENCY}
-                  />
-                ),
-              },
-
-              {
-                content: (
-                  <Checkbox
-                    label=""
-                    name="transfer"
-                    checked={!exclude.includes(item.tokenInfo.address)}
-                    onChange={() => handleExclusion(item.tokenInfo.address)}
-                  />
-                ),
-              },
-            ],
-          };
-        }),
-    [assets, exclude, handleExclusion, order, orderBy, ethFiatPrice, gasPrice, web3],
-  );
+  useEffect(() => {
+    setSelectionModel(assets.map((item) => item.tokenInfo.address));
+  }, [assets]);
 
   const dataGridColumns: GridColDef[] = [
     {
@@ -189,29 +109,22 @@ function Balances({
   );
 
   return (
-    <>
-      <Table
-        headers={HEADERS}
-        rows={rows}
-        sortedByHeaderId={orderBy}
-        sortDirection={order}
-        onHeaderClick={handleHeaderClick}
-      />
-      <DataTable
-        sortingOrder={['desc', 'asc']}
-        headerHeight={70}
-        rows={dataGridRows}
-        columns={dataGridColumns}
-        hideFooter
-        disableColumnMenu
-        checkboxSelection
-        disableSelectionOnClick
-        autoHeight
-        onSelectionModelChange={(newSelectionModel) => {
-          console.log(newSelectionModel);
-        }}
-      />
-    </>
+    <DataTable
+      sortingOrder={['desc', 'asc']}
+      headerHeight={70}
+      rows={dataGridRows}
+      columns={dataGridColumns}
+      hideFooter
+      disableColumnMenu
+      checkboxSelection
+      disableSelectionOnClick
+      autoHeight
+      selectionModel={selectionModel}
+      onSelectionModelChange={(newSelection: GridSelectionModel) => {
+        setSelectionModel(newSelection);
+        onSelectionChange(newSelection as string[]);
+      }}
+    />
   );
 }
 

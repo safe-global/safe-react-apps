@@ -20,8 +20,8 @@ const App: React.FC = () => {
   const { web3 } = useWeb3();
   const {
     assets,
-    excludedTokens,
-    setExcludedTokens,
+    selectedTokens,
+    setSelectedTokens,
     error: balancesError,
   }: BalancesType = useBalances(safe.safeAddress, safe.chainId);
   const [submitting, setSubmitting] = useState(false);
@@ -43,7 +43,7 @@ const App: React.FC = () => {
 
   const sendTxs = async (): Promise<string> => {
     const txs = assets
-      .filter((item) => !excludedTokens.includes(item.tokenInfo.address))
+      .filter((item) => selectedTokens.includes(item.tokenInfo.address))
       .map((item) => tokenToTx(toAddress, item));
     const data = await sdk.txs.send({ txs });
 
@@ -70,7 +70,7 @@ const App: React.FC = () => {
     setSubmitting(false);
     setFinished(true);
     setToAddress('');
-    setExcludedTokens([]);
+    setSelectedTokens(assets.map((token) => token.tokenInfo.address));
   };
 
   const onSubmit = (e: React.FormEvent) => {
@@ -88,26 +88,18 @@ const App: React.FC = () => {
     resetMessages();
   }, []);
 
-  const handleExcludeChange = (tokenAddress: string, checked: boolean): void => {
-    if (checked) {
-      setExcludedTokens(excludedTokens.filter((address) => address !== tokenAddress));
-    } else {
-      setExcludedTokens([...excludedTokens, tokenAddress]);
-    }
-  };
-
   const transferStatusText = useMemo(() => {
-    if (assets.length === excludedTokens.length) {
+    if (!selectedTokens.length) {
       return 'No tokens selected';
     }
 
-    if (excludedTokens.length === 0) {
+    if (selectedTokens.length === assets.length) {
       return 'Transfer everything';
     }
 
-    const assetsToTransferCount = assets.length - excludedTokens.length;
+    const assetsToTransferCount = selectedTokens.length;
     return `Transfer ${assetsToTransferCount} asset${assetsToTransferCount > 1 ? 's' : ''}`;
-  }, [assets.length, excludedTokens.length]);
+  }, [assets, selectedTokens]);
 
   const getAddressFromDomain = useCallback(
     (address: string) => web3?.eth.ens.getAddress(address) || Promise.resolve(address),
@@ -121,7 +113,7 @@ const App: React.FC = () => {
   }, [balancesError]);
 
   useEffect(() => {
-    sdk.eth.getGasPrice().then((gasPrice) => {
+    sdk.eth.getGasPrice().then((gasPrice: any) => {
       setGasPrice(new BigNumber(gasPrice));
     });
   }, [sdk.eth]);
@@ -152,8 +144,7 @@ const App: React.FC = () => {
         gasPrice={gasPrice}
         web3={web3}
         assets={assets}
-        exclude={excludedTokens}
-        onExcludeChange={handleExcludeChange}
+        onSelectionChange={setSelectedTokens}
       />
       {error && <Text size="lg">{error}</Text>}
       {isFinished && (
@@ -183,7 +174,7 @@ const App: React.FC = () => {
       {submitting ? (
         <CancelButton>Cancel</CancelButton>
       ) : (
-        <SubmitButton disabled={assets.length === excludedTokens.length}>{transferStatusText}</SubmitButton>
+        <SubmitButton disabled={!selectedTokens.length}>{transferStatusText}</SubmitButton>
       )}
     </FormContainer>
   );
