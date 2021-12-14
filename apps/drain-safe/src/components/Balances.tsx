@@ -1,10 +1,14 @@
-import { Table, Checkbox, TableSortDirection } from '@gnosis.pm/safe-react-components';
-import { formatTokenValue, formatCurrencyValue } from '../utils/formatters';
-import Icon from './Icon';
-import { TokenBalance, TokenInfo } from '@gnosis.pm/safe-apps-sdk';
-import Flex from './Flex';
 import { useCallback, useMemo, useState } from 'react';
+import { Table, Checkbox, TableSortDirection } from '@gnosis.pm/safe-react-components';
+import { TokenBalance, TokenInfo } from '@gnosis.pm/safe-apps-sdk';
+import BigNumber from 'bignumber.js';
+import Web3 from 'web3';
+
+import { formatTokenValue } from '../utils/formatters';
+import Icon from './Icon';
+import Flex from './Flex';
 import { getComparator } from '../utils/sort-helpers';
+import CurrencyCell from './CurrencyCell';
 
 const CURRENCY = 'USD';
 
@@ -28,10 +32,16 @@ function Balances({
   assets,
   exclude,
   onExcludeChange,
+  gasPrice,
+  ethFiatPrice,
+  web3,
 }: {
   assets: TokenBalance[];
   exclude: string[];
+  ethFiatPrice: number;
+  web3: Web3 | undefined;
   onExcludeChange: (address: string, checked: boolean) => void;
+  gasPrice: BigNumber;
 }): JSX.Element {
   const [orderBy, setOrderBy] = useState<string | undefined>();
   const [order, setOrder] = useState<TableSortDirection>(TableSortDirection.asc);
@@ -80,7 +90,17 @@ function Balances({
               },
 
               { content: formatTokenValue(item.balance, token.decimals) },
-              { content: formatCurrencyValue(item.fiatBalance, CURRENCY) },
+              {
+                content: (
+                  <CurrencyCell
+                    web3={web3}
+                    ethFiatPrice={ethFiatPrice}
+                    gasPrice={gasPrice}
+                    item={item}
+                    currency={CURRENCY}
+                  />
+                ),
+              },
 
               {
                 content: (
@@ -95,7 +115,7 @@ function Balances({
             ],
           };
         }),
-    [assets, exclude, handleExclusion, order, orderBy],
+    [assets, exclude, handleExclusion, order, orderBy, ethFiatPrice, gasPrice, web3],
   );
 
   return (
