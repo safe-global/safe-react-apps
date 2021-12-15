@@ -44,12 +44,12 @@ function Balances({
       field: 'asset',
       headerName: 'Asset',
       flex: 1,
-      sortComparator: (val1, val2, api1: any, api2: any) => {
-        if (api1.value.name < api2.value.name) {
+      sortComparator: (v1, v2, param1: any, param2: any) => {
+        if (param1.value.name < param2.value.name) {
           return -1;
         }
 
-        if (api1.value.name > api2.value.name) {
+        if (param1.value.name > param2.value.name) {
           return 1;
         }
 
@@ -70,16 +70,16 @@ function Balances({
       field: 'amount',
       headerName: 'Amount',
       flex: 1,
-      sortComparator: (val1, val2, api1: any, api2: any) => {
-        return api1.value - api2.value;
+      sortComparator: (v1, v2, param1: any, param2: any) => {
+        return param1.value - param2.value;
       },
     },
     {
       field: 'value',
       headerName: 'Value',
       flex: 1,
-      sortComparator: (val1, val2, api1: any, api2: any) => {
-        return api1.value.fiatBalance - api2.value.fiatBalance;
+      sortComparator: (v1, v2, param1: any, param2: any) => {
+        return param1.value.fiatBalance - param2.value.fiatBalance;
       },
       renderCell: (params: any) => (
         <CurrencyCell
