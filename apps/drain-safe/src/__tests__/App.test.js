@@ -144,18 +144,17 @@ describe('<App />', () => {
       expect(within(tableRows[0]).getByText(/maker/i)).toBeDefined();
     });
   });
-  function timeout(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+
   it('Shows a Warning icon when token transfer cost is higher than its current market value ', async () => {
-    const { debug } = renderWithProviders(<App />);
+    renderWithProviders(<App />);
 
     await screen.findByText(/maker/i);
 
     const warningTooltip =
       /Beware that the cost of this token transfer could be higher than its current market value \(Estimated transfer cost: /i;
+
     const tableRows = document.querySelectorAll('.MuiDataGrid-row');
-    debug(tableRows[3].querySelectorAll('.MuiDataGrid-cell')[3]);
+
     await waitFor(() => {
       const tableRows = document.querySelectorAll('.MuiDataGrid-row');
 
@@ -165,9 +164,9 @@ describe('<App />', () => {
       expect(within(makerRow).queryByTitle(warningTooltip)).toBeInTheDocument();
 
       // warning should NOT be present in other rows
-      // expect(within(tableRows[0]).queryByTitle(warningTooltip)).not.toBeInTheDocument();
-      // expect(within(tableRows[1]).queryByTitle(warningTooltip)).not.toBeInTheDocument();
-      // expect(within(tableRows[2]).queryByTitle(warningTooltip)).not.toBeInTheDocument();
+      expect(within(tableRows[0]).queryByTitle(warningTooltip)).not.toBeInTheDocument();
+      expect(within(tableRows[1]).queryByTitle(warningTooltip)).not.toBeInTheDocument();
+      expect(within(tableRows[2]).queryByTitle(warningTooltip)).not.toBeInTheDocument();
     });
   });
 });

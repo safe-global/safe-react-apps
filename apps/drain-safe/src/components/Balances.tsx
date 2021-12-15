@@ -117,6 +117,7 @@ function Balances({
       disableColumnMenu
       checkboxSelection
       autoHeight
+      disableVirtualization /* https://github.com/mui-org/material-ui-x/issues/1519 */
       selectionModel={selectionModel}
       density={GridDensityTypes.Comfortable}
       onSelectionModelChange={(newSelection: GridSelectionModel) => {
