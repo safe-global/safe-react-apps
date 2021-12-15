@@ -113,7 +113,7 @@ const App: React.FC = () => {
   }, [balancesError]);
 
   useEffect(() => {
-    sdk.eth.getGasPrice().then((gasPrice: any) => {
+    sdk.eth.getGasPrice().then((gasPrice: string) => {
       setGasPrice(new BigNumber(gasPrice));
     });
   }, [sdk.eth]);
