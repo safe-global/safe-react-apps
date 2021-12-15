@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { DataTable } from '@gnosis.pm/safe-react-components';
-import { GridColDef, GridRowsProp, GridSelectionModel } from '@mui/x-data-grid';
+import { GridColDef, GridRowsProp, GridSelectionModel, GridDensityTypes } from '@mui/x-data-grid';
 import { TokenBalance, TokenInfo } from '@gnosis.pm/safe-apps-sdk';
 import BigNumber from 'bignumber.js';
 import Web3 from 'web3';
@@ -111,15 +111,14 @@ function Balances({
   return (
     <DataTable
       sortingOrder={['desc', 'asc']}
-      headerHeight={70}
       rows={dataGridRows}
       columns={dataGridColumns}
       hideFooter
       disableColumnMenu
       checkboxSelection
-      disableSelectionOnClick
       autoHeight
       selectionModel={selectionModel}
+      density={GridDensityTypes.Comfortable}
       onSelectionModelChange={(newSelection: GridSelectionModel) => {
         setSelectionModel(newSelection);
         onSelectionChange(newSelection as string[]);

@@ -1658,9 +1658,9 @@
     react-media "^1.10.0"
     web3-utils "^1.6.0"
 
-"@gnosis.pm/safe-react-components@https://github.com/gnosis/safe-react-components.git#2366ba83848199e1a003cbb0e0342a8ecff50327":
+"@gnosis.pm/safe-react-components@https://github.com/gnosis/safe-react-components.git#67ba069e60836b0e52d48142eaa5e81fde1573da":
   version "0.9.2"
-  resolved "https://github.com/gnosis/safe-react-components.git#2366ba83848199e1a003cbb0e0342a8ecff50327"
+  resolved "https://github.com/gnosis/safe-react-components.git#67ba069e60836b0e52d48142eaa5e81fde1573da"
   dependencies:
     react-media "^1.10.0"
     web3-utils "^1.6.0"
