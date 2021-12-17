@@ -163,4 +163,21 @@ describe('<App />', () => {
       expect(within(tableRows[2]).queryByTitle(warningTooltip)).not.toBeInTheDocument();
     });
   });
+
+  it('Filter native token without value', async () => {
+    let balances = mockInitialBalances;
+    balances[0].fiatBalance = '0.00000';
+    const { sdk } = useSafeAppsSDK();
+    sdk.safe.experimental_getBalances = jest.fn().mockImplementationOnce(() =>
+      Promise.resolve({
+        items: balances,
+      }),
+    );
+
+    renderWithProviders(<App />);
+
+    await screen.findByText(/maker/i);
+
+    expect(document.querySelectorAll('tbody tr').length).toEqual(4);
+  });
 });
