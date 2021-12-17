@@ -189,7 +189,7 @@ const App: React.FC = () => {
           )}
         </>
       ) : (
-        <Text size="xl">You don't have any assets that can be transferred</Text>
+        <Text size="xl">You don't have any transferable assets</Text>
       )}
     </FormContainer>
   );
