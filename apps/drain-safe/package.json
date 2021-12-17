@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@gnosis.pm/safe-react-components": "https://github.com/gnosis/safe-react-components.git#67ba069e60836b0e52d48142eaa5e81fde1573da",
+    "@gnosis.pm/safe-react-components": "https://github.com/gnosis/safe-react-components.git#ea0f79cd74236af6b8b6129974c5dc804e4e651d",
     "@material-ui/core": "^4.12.3",
     "@mui/x-data-grid": "4.0.2",
     "bignumber.js": "^9.0.1",
