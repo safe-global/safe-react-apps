@@ -121,7 +121,7 @@ const App: React.FC = () => {
   }, [balancesError]);
 
   useEffect(() => {
-    sdk.eth.getGasPrice().then((gasPrice) => {
+    sdk.eth.getGasPrice().then((gasPrice: string) => {
       setGasPrice(new BigNumber(gasPrice));
     });
   }, [sdk.eth]);
@@ -147,43 +147,49 @@ const App: React.FC = () => {
         <Logo />
         <Title size="md">Drain Account</Title>
       </Flex>
-      <Balances
-        ethFiatPrice={ethFiatPrice}
-        gasPrice={gasPrice}
-        web3={web3}
-        assets={assets}
-        exclude={excludedTokens}
-        onExcludeChange={handleExcludeChange}
-      />
-      {error && <Text size="lg">{error}</Text>}
-      {isFinished && (
-        <Text size="lg">
-          The transaction has been created.{' '}
-          <span role="img" aria-label="success">
-            ✅
-          </span>
-          <br />
-          Refresh the app when it’s executed.
-        </Text>
-      )}
-      {!submitting && (
-        <AddressInput
-          id="recipient"
-          name="toAddress"
-          label="Recipient"
-          networkPrefix={networkPrefix}
-          showNetworkPrefix={!!networkPrefix}
-          onChangeAddress={onToAddressChange}
-          hiddenLabel={false}
-          address={toAddress}
-          getAddressFromDomain={getAddressFromDomain}
-        />
-      )}
+      {assets.length ? (
+        <>
+          <Balances
+            ethFiatPrice={ethFiatPrice}
+            gasPrice={gasPrice}
+            web3={web3}
+            assets={assets}
+            exclude={excludedTokens}
+            onExcludeChange={handleExcludeChange}
+          />
+          {error && <Text size="lg">{error}</Text>}
+          {isFinished && (
+            <Text size="lg">
+              The transaction has been created.{' '}
+              <span role="img" aria-label="success">
+                ✅
+              </span>
+              <br />
+              Refresh the app when it’s executed.
+            </Text>
+          )}
+          {!submitting && (
+            <AddressInput
+              id="recipient"
+              name="toAddress"
+              label="Recipient"
+              networkPrefix={networkPrefix}
+              showNetworkPrefix={!!networkPrefix}
+              onChangeAddress={onToAddressChange}
+              hiddenLabel={false}
+              address={toAddress}
+              getAddressFromDomain={getAddressFromDomain}
+            />
+          )}
 
-      {submitting ? (
-        <CancelButton>Cancel</CancelButton>
+          {submitting ? (
+            <CancelButton>Cancel</CancelButton>
+          ) : (
+            <SubmitButton disabled={assets.length === excludedTokens.length}>{transferStatusText}</SubmitButton>
+          )}
+        </>
       ) : (
-        <SubmitButton disabled={assets.length === excludedTokens.length}>{transferStatusText}</SubmitButton>
+        <Text size="xl">You don't have any assets that can be transferred</Text>
       )}
     </FormContainer>
   );
