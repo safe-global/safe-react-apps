@@ -153,8 +153,6 @@ describe('<App />', () => {
     const warningTooltip =
       /Beware that the cost of this token transfer could be higher than its current market value \(Estimated transfer cost: /i;
 
-    const tableRows = document.querySelectorAll('.MuiDataGrid-row');
-
     await waitFor(() => {
       const tableRows = document.querySelectorAll('.MuiDataGrid-row');
 
