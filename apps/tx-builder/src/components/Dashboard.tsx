@@ -1,6 +1,5 @@
-import { Text, Title, Link, AddressInput } from '@gnosis.pm/safe-react-components';
 import React, { ReactElement, useState, useCallback, useEffect } from 'react';
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
+import { Text, Title, Link, AddressInput } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import { InputAdornment } from '@material-ui/core';
 import CheckCircle from '@material-ui/icons/CheckCircle';
@@ -8,7 +7,7 @@ import CheckCircle from '@material-ui/icons/CheckCircle';
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import { Builder } from './Builder';
-import { ProposedTransaction } from '../typings/models';
+import useTransactions from '../hooks/useTransactions';
 
 const Wrapper = styled.div`
   display: flex;
@@ -52,64 +51,13 @@ const StyledAddressInput = styled(AddressInput)`
 `;
 
 const Dashboard = (): ReactElement => {
-  const { sdk, safe } = useSafeAppsSDK();
-
-  const services = useServices(safe.chainId);
-
+  const { web3, interfaceRepo, chainInfo } = useServices();
+  const services = useServices();
+  const { transactions, handleAddTransaction, handleRemoveTransaction, handleSubmitTransactions } = useTransactions();
   const [addressOrAbi, setAddressOrAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
-
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadContractError, setLoadContractError] = useState('');
-
-  const [transactions, setTransactions] = useState<ProposedTransaction[]>([]);
-  const [nativeCurrencySymbol, setNativeCurrencySymbol] = useState<string>('');
-  const [networkPrefix, setNetworkPrefix] = useState<string>('');
-
-  const handleAddTransaction = useCallback(
-    (tx: ProposedTransaction) => {
-      setTransactions([...transactions, tx]);
-    },
-    [transactions],
-  );
-
-  const handleRemoveTransaction = useCallback(
-    (index: number) => {
-      const newTxs = transactions.slice();
-      newTxs.splice(index, 1);
-      setTransactions(newTxs);
-    },
-    [transactions],
-  );
-
-  const handleSubmitTransactions = useCallback(async () => {
-    if (!transactions.length) {
-      return;
-    }
-
-    try {
-      await sdk.txs
-        .send({ txs: transactions.map((transaction: ProposedTransaction) => transaction.raw) })
-        .catch(console.error);
-      setTransactions([]);
-    } catch (e) {
-      console.error('Error sending transactions:', e);
-    }
-  }, [sdk.txs, transactions]);
-
-  useEffect(() => {
-    const getChainInfo = async () => {
-      try {
-        const { nativeCurrency: { symbol = '' } = {}, shortName } = await sdk.safe.getChainInfo();
-        setNativeCurrencySymbol(symbol);
-        setNetworkPrefix(shortName);
-      } catch (e) {
-        console.error('Unable to get chain info:', e);
-      }
-    };
-
-    getChainInfo();
-  }, [sdk.safe]);
 
   // Load contract from address or ABI
   useEffect(() => {
@@ -117,13 +65,13 @@ const Dashboard = (): ReactElement => {
       setContract(null);
       setLoadContractError('');
 
-      if (!addressOrAbi || !services.web3 || !services.interfaceRepo) {
+      if (!addressOrAbi || !web3 || !interfaceRepo) {
         return;
       }
 
       try {
         setIsABILoading(true);
-        const contract = await services.interfaceRepo.loadAbi(addressOrAbi);
+        const contract = await interfaceRepo.loadAbi(addressOrAbi);
         setContract(contract);
       } catch (e) {
         setContract(null);
@@ -134,7 +82,7 @@ const Dashboard = (): ReactElement => {
     };
 
     loadContract(addressOrAbi);
-  }, [addressOrAbi, services.interfaceRepo, services.web3]);
+  }, [addressOrAbi, interfaceRepo, web3]);
 
   const getAddressFromDomain = (name: string): Promise<string> => {
     return services?.web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
@@ -145,9 +93,9 @@ const Dashboard = (): ReactElement => {
       if (!address) {
         return false;
       }
-      return services?.web3?.utils.isAddress(address);
+      return web3?.utils.isAddress(address);
     },
-    [services.web3],
+    [web3],
   );
 
   const isValidAddressOrContract = (isValidAddress(addressOrAbi) || contract) && !isABILoading;
@@ -175,8 +123,8 @@ const Dashboard = (): ReactElement => {
         label="Enter Address, ENS Name or ABI"
         hiddenLabel={false}
         address={addressOrAbi}
-        showNetworkPrefix={!!networkPrefix}
-        networkPrefix={networkPrefix}
+        showNetworkPrefix={!!chainInfo?.shortName}
+        networkPrefix={chainInfo?.shortName}
         error={!isValidAddressOrContract ? loadContractError : ''}
         showLoadingSpinner={isABILoading}
         getAddressFromDomain={getAddressFromDomain}
@@ -202,13 +150,13 @@ const Dashboard = (): ReactElement => {
         <Builder
           contract={contract}
           to={addressOrAbi}
-          chainId={safe.chainId}
-          nativeCurrencySymbol={nativeCurrencySymbol}
+          chainId={chainInfo?.chainId}
+          nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
           transactions={transactions}
           onAddTransaction={handleAddTransaction}
           onRemoveTransaction={handleRemoveTransaction}
           onSubmitTransactions={handleSubmitTransactions}
-          networkPrefix={networkPrefix}
+          networkPrefix={chainInfo?.shortName}
           getAddressFromDomain={getAddressFromDomain}
         />
       )}

@@ -1,8 +1,8 @@
-import React from 'react';
 import { Button, Text } from '@gnosis.pm/safe-react-components';
 import Box from '@material-ui/core/Box';
 import styled from 'styled-components';
 import { ProposedTransaction } from '../typings/models';
+import { ShowMoreText } from './ShowMoreText';
 
 type Props = { txs: Array<ProposedTransaction>; deleteTx: (index: number) => void };
 
@@ -26,7 +26,9 @@ export const ModalBody = ({ txs, deleteTx }: Props) => {
           <Button size="md" variant="outlined" iconType="delete" color="error" onClick={() => deleteTx(index)}>
             {''}
           </Button>
-          <WrappedText size="lg">{tx.description}</WrappedText>
+          <WrappedText size="lg">
+            {tx.description.startsWith('0x') ? <ShowMoreText>{tx.description}</ShowMoreText> : tx.description}
+          </WrappedText>
         </Box>
       ))}
     </>

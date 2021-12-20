@@ -1,17 +1,18 @@
-import React, { useState, useEffect, ReactElement, useCallback } from 'react';
+import React, { useState, useEffect, ReactElement, useCallback, useMemo, ChangeEvent } from 'react';
 import {
   Button,
   Text,
   Title,
-  TextField,
+  TextFieldInput,
   GenericModal,
   Select,
   ModalFooterConfirmation,
   ButtonLink,
   AddressInput,
+  Switch,
 } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
-import { AbiItem, toBN } from 'web3-utils';
+import { AbiItem } from 'web3-utils';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
@@ -19,6 +20,8 @@ import { ProposedTransaction } from '../typings/models';
 import { ModalBody } from './ModalBody';
 import { Examples } from './Examples';
 import AddressContractField from './fields/AddressContractField';
+import { parseInputValue, getInputHelper, isInputValueValid, getCustomDataError } from '../utils';
+import { TextFieldInputProps } from '@gnosis.pm/safe-react-components/dist/inputs/TextFieldInput';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -26,10 +29,24 @@ const ButtonContainer = styled.div`
   margin-top: 15px;
 `;
 
-const StyledTextField = styled(TextField)`
+const StyledTextField = styled(TextFieldInput)`
   && {
     width: 520px;
     margin-bottom: 10px;
+
+    .MuiFormLabel-root {
+      color: #0000008a;
+    }
+
+    .MuiFormLabel-root.Mui-focused {
+      color: #008c73;
+    }
+
+    textarea {
+      &.MuiInputBase-input {
+        padding: 0;
+      }
+    }
   }
 `;
 
@@ -48,6 +65,10 @@ const StyledAddressInput = styled(AddressInput)`
   }
 `;
 
+const StyledTextAreaField = (props: TextFieldInputProps) => {
+  return <StyledTextField {...props} multiline rows={4} />;
+};
+
 const StyledSelect = styled(Select)`
   margin-top: 10px;
   width: 520px;
@@ -61,60 +82,16 @@ const StyledExamples = styled.div`
   }
 `;
 
-const getInputHelper = (input: any) => {
-  // This code renders a helper for the input text.
-  if (input.type.startsWith('tuple')) {
-    return `tuple(${input.components.map((c: any) => c.internalType).toString()})${
-      input.type.endsWith('[]') ? '[]' : ''
-    }`;
-  } else {
-    return input.type;
-  }
-};
-
-// Same regex used for web3@1.3.6
-const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/);
-
-// This function is used to apply some parsing to some value types
-const parseInputValue = (input: any, value: string): any => {
-  // If there is a match with this regular expression we get an array value like the following
-  // ex: ['uint16', 'uint', '16']. If no match, null is returned
-  const isNumberInput = paramTypeNumber.test(input.type);
-  const isBooleanInput = input.type === 'bool';
-
-  if (value.charAt(0) === '[') {
-    return JSON.parse(value.replace(/"/g, '"'));
-  }
-
-  if (isBooleanInput) {
-    return value.toLowerCase() === 'true';
-  }
-
-  if (isNumberInput) {
-    // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
-    // To fix that we pad the numeric values here as the encode function is expecting a string
-    // more info here https://github.com/ChainSafe/web3.js/issues/3772
-    const bitWidth = input.type.match(paramTypeNumber)[2];
-    return toBN(value).toString(10, bitWidth);
-  }
-
-  return value;
-};
-
-const isInputValueValid = (val: string) => {
-  const value = Number(val);
-  if (isNaN(value) || value < 0) {
-    return false;
-  }
-
-  return true;
-};
+const BOOLEAN_ITEMS = [
+  { id: 'true', label: 'True' },
+  { id: 'false', label: 'False' },
+];
 
 type Props = {
   contract: ContractInterface | null;
   to: string;
-  chainId: number;
-  nativeCurrencySymbol: string;
+  chainId: string | undefined;
+  nativeCurrencySymbol: string | undefined;
   transactions: ProposedTransaction[];
   onAddTransaction: (transaction: ProposedTransaction) => void;
   onRemoveTransaction: (index: number) => void;
@@ -135,7 +112,7 @@ export const Builder = ({
   networkPrefix,
   getAddressFromDomain,
 }: Props): ReactElement | null => {
-  const services = useServices(chainId);
+  const services = useServices();
   const [toInput, setToInput] = useState('');
   const [valueInput, setValueInput] = useState('');
   const [reviewing, setReviewing] = useState(false);
@@ -145,6 +122,9 @@ export const Builder = ({
   const [valueError, setValueError] = useState<string | undefined>();
   const [inputCache, setInputCache] = useState<string[]>([]);
   const [isValueInputVisible, setIsValueInputVisible] = useState(false);
+  const [showCustomData, setShowCustomData] = useState<boolean>(false);
+  const [customDataValue, setCustomDataValue] = useState<string>();
+  const [addCustomTxDataError, setAddCustomTxDataError] = useState<string | undefined>();
 
   const handleMethod = async (methodIndex: number) => {
     if (!contract || contract.methods.length <= methodIndex) return;
@@ -170,12 +150,28 @@ export const Builder = ({
     setReviewing(false);
   };
 
-  const addTransaction = async () => {
+  const handleCustomDataInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setCustomDataValue(e.target.value);
+      if (services?.web3?.utils.isHexStrict(e.target.value)) {
+        setAddCustomTxDataError(undefined);
+      } else {
+        setAddCustomTxDataError(getCustomDataError(e.target.value));
+      }
+    },
+    [services.web3],
+  );
+
+  const handleCustomDataSwitchChange = useCallback(() => {
+    setShowCustomData(!showCustomData);
+    setAddCustomTxDataError(undefined);
+  }, [showCustomData]);
+
+  const getTxData = useCallback(() => {
     let description = '';
     let data = '';
-    const web3 = services.web3;
 
-    if (!web3) {
+    if (!services?.web3 || !contract?.methods) {
       return;
     }
 
@@ -184,37 +180,70 @@ export const Builder = ({
       return;
     }
 
-    if (contract && contract.methods.length > selectedMethodIndex) {
-      const method = contract.methods[selectedMethodIndex];
+    const method = contract.methods[selectedMethodIndex];
 
-      if (!['receive', 'fallback'].includes(method.name)) {
-        const parsedInputs: any[] = [];
-        const inputDescription: string[] = [];
+    if (!['receive', 'fallback'].includes(method.name)) {
+      const parsedInputs: string[] = [];
+      const inputDescription: string[] = [];
 
-        try {
-          method.inputs.forEach((input, index) => {
-            const cleanValue = inputCache[index] || '';
-            parsedInputs[index] = parseInputValue(input, cleanValue);
-            inputDescription[index] = `${input.name || input.type}: ${cleanValue}`;
-          });
+      method.inputs.forEach((input, index) => {
+        const cleanValue = inputCache[index] || '';
+        parsedInputs[index] = parseInputValue(input, cleanValue);
+        inputDescription[index] = `${input.name || input.type}: ${cleanValue}`;
+      });
+      try {
+        description = `${method.name} (${inputDescription.join(', ')})`;
+        data = services?.web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs);
 
-          description = `${method.name} (${inputDescription.join(', ')})`;
+        return {
+          data,
+          description,
+        };
+      } catch (error) {
+        throw error;
+      }
+    }
+  }, [contract, inputCache, nativeCurrencySymbol, selectedMethodIndex, services.web3, valueInput]);
 
-          data = web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs as any[]);
-        } catch (error) {
-          setAddTxError((error as Error).message);
-          return;
+  const addTransaction = async () => {
+    let description = '';
+    let data = '';
+
+    if (!services?.web3) {
+      return;
+    }
+
+    if (showCustomData) {
+      if (!services?.web3.utils.isHexStrict(customDataValue as string)) {
+        setAddCustomTxDataError(getCustomDataError(customDataValue));
+        return;
+      }
+
+      data = customDataValue || '';
+      description = customDataValue || '';
+    } else if (contract && contract.methods.length > selectedMethodIndex) {
+      try {
+        const txData = getTxData();
+
+        if (txData) {
+          data = txData.data;
+          description = txData.description;
         }
+      } catch (error) {
+        setAddTxError((error as Error).message);
+        return;
       }
     }
 
     try {
-      const cleanTo = web3.utils.toChecksumAddress(toInput);
-      const cleanValue = web3.utils.toWei(valueInput || '0');
+      const cleanTo = services?.web3.utils.toChecksumAddress(toInput);
+      const cleanValue = services?.web3.utils.toWei(valueInput || '0');
 
-      if (data.length === 0) {
+      if (data?.length === 0) {
         data = '0x';
-        description = `Transfer ${web3.utils.fromWei(cleanValue.toString())} ${nativeCurrencySymbol} to ${cleanTo}`;
+        description = `Transfer ${services?.web3.utils.fromWei(
+          cleanValue.toString(),
+        )} ${nativeCurrencySymbol} to ${cleanTo}`;
       }
 
       onAddTransaction({
@@ -225,6 +254,9 @@ export const Builder = ({
       setInputCache([]);
       setSelectedMethodIndex(0);
       setValueInput('');
+      setCustomDataValue('');
+      setAddTxError('');
+      setAddCustomTxDataError('');
     } catch (e) {
       setAddTxError('There was an error trying to add the transaction.');
       console.error(e);
@@ -263,23 +295,93 @@ export const Builder = ({
 
   // set when inputValue is visible
   useEffect(() => {
-    const isVisible = async () => {
-      if (contract) {
-        const method = getContractMethod();
-        setIsValueInputVisible(method?.payable || false);
-      } else {
-        setIsValueInputVisible(true);
-      }
-    };
-
-    isVisible();
-  }, [getContractMethod, contract, services, toInput]);
+    if (showCustomData || !contract) {
+      setIsValueInputVisible(true);
+    } else if (contract) {
+      const method = getContractMethod();
+      setIsValueInputVisible(method?.payable || false);
+    }
+  }, [getContractMethod, showCustomData, contract, services, toInput]);
 
   useEffect(() => {
     if (transactions.length === 0) {
       setReviewing(false);
     }
   }, [transactions]);
+
+  useEffect(() => {
+    if (showCustomData) {
+      setCustomDataValue('');
+      try {
+        const txData = getTxData();
+
+        if (txData) {
+          if (!services?.web3?.utils.isHexStrict(txData.data as string)) {
+            setAddCustomTxDataError(getCustomDataError(txData.data));
+          }
+          setCustomDataValue(txData.data);
+        }
+      } catch (error) {
+        return;
+      }
+    }
+  }, [showCustomData, getTxData, services.web3]);
+
+  const renderInput = (input: any, index: number) => {
+    const isAddressField = input.internalType === 'address' || input.type === 'address';
+    const isBoolean = input.type === 'bool';
+
+    if (isAddressField) {
+      return (
+        <AddressContractField
+          label={`${input.name || ''}(${getInputHelper(input)})`}
+          onChangeContractInput={onChangeContractInput}
+          input={input}
+          index={index}
+          isValidAddress={isValidAddress}
+          inputCache={inputCache}
+          networkPrefix={networkPrefix}
+          getAddressFromDomain={getAddressFromDomain}
+        />
+      );
+    }
+
+    if (isBoolean) {
+      inputCache[index] = inputCache[index] || 'true';
+
+      return (
+        <StyledSelect
+          items={BOOLEAN_ITEMS}
+          activeItemId={inputCache[index]}
+          onItemClick={(id: string) => {
+            onChangeContractInput(index, id);
+          }}
+        />
+      );
+    }
+
+    return (
+      <StyledTextField
+        name={'custom-data'}
+        value={inputCache[index] || ''}
+        label={`${input.name || ''}(${getInputHelper(input)})`}
+        hiddenLabel={false}
+        showErrorsInTheLabel
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeContractInput(index, e.target.value)}
+      />
+    );
+  };
+
+  const showAddressInput = useMemo(() => {
+    let isAddress;
+
+    try {
+      isAddress = services?.web3?.utils.isAddress(to);
+    } catch {
+      isAddress = false;
+    }
+    return (isAddress && toInput) || !isAddress;
+  }, [services?.web3?.utils, to, toInput]);
 
   if (!contract && !isValueInputVisible) {
     return null;
@@ -288,10 +390,9 @@ export const Builder = ({
   return (
     <>
       <Title size="xs">Transaction information</Title>
-
       {contract && !contract?.methods.length && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
 
-      {to.length > 0 && (
+      {showAddressInput && (
         <StyledAddressInput
           id={'to-address-input'}
           name="toAddress"
@@ -309,16 +410,19 @@ export const Builder = ({
       {/* ValueInput */}
       {isValueInputVisible && (
         <StyledTextField
+          name="token-value"
           style={{ marginTop: 10, marginBottom: 10 }}
           value={valueInput}
           label={`${nativeCurrencySymbol} value`}
-          meta={{ error: valueError ?? undefined }}
+          hiddenLabel={false}
+          showErrorsInTheLabel
+          error={valueError ?? undefined}
           onChange={onValueInputChange}
         />
       )}
 
       {/* Contract Inputs */}
-      {contract?.methods.length && (
+      {!showCustomData && contract?.methods.length && (
         <>
           <StyledSelect
             items={contract.methods.map((method, index) => ({
@@ -340,32 +444,13 @@ export const Builder = ({
           </StyledExamples>
 
           {getContractMethod()?.inputs.map((input, index) => {
-            const isAddressField = input.internalType === 'address' || input.type === 'address';
             return (
               <div key={index} style={{ marginTop: 10 }}>
-                {isAddressField ? (
-                  <AddressContractField
-                    label={`${input.name || ''}(${getInputHelper(input)})`}
-                    onChangeContractInput={onChangeContractInput}
-                    input={input}
-                    index={index}
-                    isValidAddress={isValidAddress}
-                    inputCache={inputCache}
-                    networkPrefix={networkPrefix}
-                    getAddressFromDomain={getAddressFromDomain}
-                  />
-                ) : (
-                  <StyledTextField
-                    value={inputCache[index] || ''}
-                    label={`${input.name || ''}(${getInputHelper(input)})`}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeContractInput(index, e.target.value)}
-                  />
-                )}
+                {renderInput(input, index)}
                 <br />
               </div>
             );
           })}
-
           {addTxError && (
             <Text size="lg" color="error">
               {addTxError}
@@ -374,13 +459,30 @@ export const Builder = ({
         </>
       )}
 
+      {/* hex encoded switcher*/}
+      {showCustomData && (
+        <StyledTextAreaField
+          name="customDataValue"
+          label="Data (hex encoded)*"
+          hiddenLabel={false}
+          value={customDataValue}
+          error={addCustomTxDataError}
+          onChange={handleCustomDataInputChange}
+        />
+      )}
+
+      <Text size="lg">
+        <Switch checked={showCustomData} onChange={handleCustomDataSwitchChange} />
+        Use custom data (hex encoded)
+      </Text>
+
       {/* Actions */}
       <ButtonContainer>
         <Button
           size="md"
           color="primary"
           disabled={!isValidAddress(toInput) && !contract?.methods.length}
-          onClick={() => addTransaction()}
+          onClick={addTransaction}
         >
           Add transaction
         </Button>
