@@ -23,6 +23,7 @@ const abiUrlGetterByNetwork: {
   [CHAINS.ROPSTEN]: null,
   [CHAINS.RINKEBY]: (address: string) => `https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=${address}`,
   [CHAINS.GOERLI]: null,
+  [CHAINS.OPTIMISM]: (address: string) => `https://api-optimistic.etherscan.io/api?module=contract&action=getabi&address=${address}`,
   [CHAINS.KOVAN]: null,
   [CHAINS.BSC]: (address: string) => `https://api.bscscan.com/api?module=contract&action=getabi&address=${address}`,
   [CHAINS.XDAI]: (address: string) => `https://blockscout.com/poa/xdai/api?module=contract&action=getabi&address=${address}`,
