@@ -7,7 +7,7 @@ import { AbiItem } from 'web3-utils';
 import { Button, Select, Title, Section, Text, TextField, Divider, Loader } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import styled from 'styled-components';
-
+import CompBalance from './components/CompBalance';
 import { rpc_token, getTokenList, TokenItem } from './config';
 import { WidgetWrapper, SelectContainer, DaiInfo, ButtonContainer } from './components';
 import { getTokenInteractions, parseEvents } from './tokensTransfers';
@@ -15,6 +15,7 @@ import { networkByChainId, CHAINS } from './utils/networks';
 
 import cERC20Abi from './abis/CErc20';
 import cWEthAbi from './abis/CWEth';
+import useComptroller from './hooks/useComptroller';
 
 const blocksPerDay = 5760;
 
@@ -42,6 +43,7 @@ const CompoundWidget = () => {
 
   const [inputValue, setInputValue] = useState<string>('');
   const [inputError, setInputError] = useState<string | undefined>();
+  const { compAccrued, claimComp } = useComptroller(safeInfo?.safeAddress, web3);
 
   // set web3 instance
   useEffect(() => {
@@ -314,6 +316,8 @@ const CompoundWidget = () => {
           <Divider />
         </DaiInfo>
       </Section>
+
+      <CompBalance balance={compAccrued} onCollect={claimComp} />
 
       <Title size="xs">Withdraw or Supply balance</Title>
 
