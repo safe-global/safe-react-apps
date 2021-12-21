@@ -1,13 +1,12 @@
-import { useCallback, useMemo, useState } from 'react';
-import { Table, Checkbox, TableSortDirection } from '@gnosis.pm/safe-react-components';
+import { useMemo, useState, useEffect } from 'react';
+import { DataTable } from '@gnosis.pm/safe-react-components';
+import { GridColDef, GridRowsProp, GridSelectionModel, GridDensityTypes } from '@mui/x-data-grid';
 import { TokenBalance, TokenInfo } from '@gnosis.pm/safe-apps-sdk';
 import BigNumber from 'bignumber.js';
 import Web3 from 'web3';
 
 import { formatTokenValue } from '../utils/formatters';
 import Icon from './Icon';
-import Flex from './Flex';
-import { getComparator } from '../utils/sort-helpers';
 import CurrencyCell from './CurrencyCell';
 
 const CURRENCY = 'USD';
@@ -21,110 +20,110 @@ const ethToken: TokenInfo = {
   address: '',
 };
 
-const HEADERS = [
-  { id: 'tokenInfo.name', label: 'Asset' },
-  { id: 'balance', label: 'Amount' },
-  { id: 'fiatBalance', label: `Value, ${CURRENCY}` },
-  { id: 'transfer', label: 'Transfer', hideSortIcon: true },
-];
-
 function Balances({
   assets,
-  exclude,
-  onExcludeChange,
+  onSelectionChange,
   gasPrice,
   ethFiatPrice,
   web3,
 }: {
   assets: TokenBalance[];
-  exclude: string[];
   ethFiatPrice: number;
   web3: Web3 | undefined;
-  onExcludeChange: (address: string, checked: boolean) => void;
+  onSelectionChange: (addresses: string[]) => void;
   gasPrice: BigNumber;
 }): JSX.Element {
-  const [orderBy, setOrderBy] = useState<string | undefined>();
-  const [order, setOrder] = useState<TableSortDirection>(TableSortDirection.asc);
+  const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
 
-  const handleHeaderClick = useCallback(
-    (headerId: string) => {
-      if (headerId === 'transfer') {
-        return;
-      }
+  useEffect(() => {
+    setSelectionModel(assets.map((item) => item.tokenInfo.address));
+  }, [assets]);
 
-      const newDirection =
-        orderBy === headerId && order === TableSortDirection.asc ? TableSortDirection.desc : TableSortDirection.asc;
+  const dataGridColumns: GridColDef[] = [
+    {
+      field: 'asset',
+      headerName: 'Asset',
+      flex: 1,
+      sortComparator: (v1, v2, param1: any, param2: any) => {
+        if (param1.value.name < param2.value.name) {
+          return -1;
+        }
 
-      setOrder(newDirection);
-      setOrderBy(headerId);
+        if (param1.value.name > param2.value.name) {
+          return 1;
+        }
+
+        return 0;
+      },
+      renderCell: (params: any) => {
+        const { logoUri, symbol, name } = params.value;
+
+        return (
+          <>
+            <Icon logoUri={logoUri} symbol={symbol} />
+            {name}
+          </>
+        );
+      },
     },
-    [order, orderBy],
-  );
-
-  const handleExclusion = useCallback(
-    (rowId: string) => {
-      const isRowChecked = exclude.includes(rowId);
-      onExcludeChange(rowId, isRowChecked);
+    {
+      field: 'amount',
+      headerName: 'Amount',
+      flex: 1,
+      sortComparator: (v1, v2, param1: any, param2: any) => {
+        return param1.value - param2.value;
+      },
     },
-    [onExcludeChange, exclude],
-  );
+    {
+      field: 'value',
+      headerName: 'Value',
+      flex: 1,
+      sortComparator: (v1, v2, param1: any, param2: any) => {
+        return param1.value.fiatBalance - param2.value.fiatBalance;
+      },
+      renderCell: (params: any) => (
+        <CurrencyCell
+          web3={web3}
+          ethFiatPrice={ethFiatPrice}
+          gasPrice={gasPrice}
+          item={params.value}
+          currency={CURRENCY}
+        />
+      ),
+    },
+  ];
 
-  const rows = useMemo(
+  const dataGridRows: GridRowsProp = useMemo(
     () =>
-      assets
-        .slice()
-        .sort(getComparator(order, orderBy))
-        .map((item: TokenBalance) => {
-          const token = item.tokenInfo || ethToken;
+      assets.slice().map((item: TokenBalance) => {
+        const token = item.tokenInfo || ethToken;
 
-          return {
-            id: item.tokenInfo.address,
-            cells: [
-              {
-                content: (
-                  <Flex>
-                    <Icon logoUri={token.logoUri} symbol={token.symbol} />
-                    {token.name}
-                  </Flex>
-                ),
-              },
-
-              { content: formatTokenValue(item.balance, token.decimals) },
-              {
-                content: (
-                  <CurrencyCell
-                    web3={web3}
-                    ethFiatPrice={ethFiatPrice}
-                    gasPrice={gasPrice}
-                    item={item}
-                    currency={CURRENCY}
-                  />
-                ),
-              },
-
-              {
-                content: (
-                  <Checkbox
-                    label=""
-                    name="transfer"
-                    checked={!exclude.includes(item.tokenInfo.address)}
-                    onChange={() => handleExclusion(item.tokenInfo.address)}
-                  />
-                ),
-              },
-            ],
-          };
-        }),
-    [assets, exclude, handleExclusion, order, orderBy, ethFiatPrice, gasPrice, web3],
+        return {
+          id: token.address,
+          asset: token,
+          amount: formatTokenValue(item.balance, token.decimals),
+          value: item,
+        };
+      }),
+    [assets],
   );
 
   return (
-    <Table
-      headers={HEADERS}
-      rows={rows}
-      sortedByHeaderId={orderBy}
-      sortDirection={order}
-      onHeaderClick={handleHeaderClick}
+    <DataTable
+      sortingOrder={['desc', 'asc']}
+      rows={dataGridRows}
+      columns={dataGridColumns}
+      hideFooter
+      disableColumnMenu
+      checkboxSelection
+      autoHeight
+      disableVirtualization /* https://github.com/mui-org/material-ui-x/issues/1519 */
+      selectionModel={selectionModel}
+      density={GridDensityTypes.Comfortable}
+      onSelectionModelChange={(newSelection: GridSelectionModel) => {
+        setSelectionModel(newSelection);
+        onSelectionChange(newSelection as string[]);
+      }}
     />
   );
 }
