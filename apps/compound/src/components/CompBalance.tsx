@@ -19,11 +19,11 @@ export default function CompBalance({ balance, onCollect }: Props): React.ReactE
 
   return (
     <DaiInfo>
-      <Title size="xs">COMP Balance</Title>
+      <Title size="xs">Compound Token Balance</Title>
       <div>
-        <Text size="lg">Your balance</Text>
+        <Text size="lg">Your COMP balance</Text>
         <Text size="lg">
-          {balance} COMP <Link onClick={handleOnCollect}>Collect</Link>
+          {balance} <Link onClick={handleOnCollect}>Collect</Link>
         </Text>
       </div>
     </DaiInfo>

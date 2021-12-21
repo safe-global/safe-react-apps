@@ -47,6 +47,7 @@ export default function useComptroller(safeAddress: string, web3Instance: Web3 |
   };
 
   return {
+    comptrollerInstance,
     compAccrued,
     claimComp,
   };

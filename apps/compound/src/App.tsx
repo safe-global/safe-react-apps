@@ -16,6 +16,7 @@ import { networkByChainId, CHAINS } from './utils/networks';
 import cERC20Abi from './abis/CErc20';
 import cWEthAbi from './abis/CWEth';
 import useComptroller from './hooks/useComptroller';
+import UniSwapAnchoredViewABI from './abis/UniSwapAnchoredViewABI';
 
 const blocksPerDay = 5760;
 
@@ -35,6 +36,7 @@ const CompoundWidget = () => {
   const [selectedToken, setSelectedToken] = useState<TokenItem>();
   const [cTokenInstance, setCTokenInstance] = useState<any>();
   const [tokenInstance, setTokenInstance] = useState<any>();
+  const [opfInstance, setOpfInstance] = useState<any>();
 
   const [cTokenSupplyAPY, setCTokenSupplyAPY] = useState('0');
   const [interestEarn, setInterestEarn] = useState('0');
@@ -43,7 +45,7 @@ const CompoundWidget = () => {
 
   const [inputValue, setInputValue] = useState<string>('');
   const [inputError, setInputError] = useState<string | undefined>();
-  const { compAccrued, claimComp } = useComptroller(safeInfo?.safeAddress, web3);
+  const { comptrollerInstance, compAccrued, claimComp } = useComptroller(safeInfo?.safeAddress, web3);
 
   // set web3 instance
   useEffect(() => {
@@ -102,6 +104,9 @@ const CompoundWidget = () => {
     setInputError(undefined);
 
     setTokenInstance(new web3.eth.Contract(cERC20Abi as AbiItem[], selectedToken.tokenAddr));
+    setOpfInstance(
+      new web3.eth.Contract(UniSwapAnchoredViewABI as AbiItem[], '0x046728da7cb8272284238bd3e47909823d63a58d'),
+    );
     if (selectedToken.id === 'ETH') {
       setCTokenInstance(new web3.eth.Contract(cWEthAbi as AbiItem[], selectedToken.cTokenAddr));
     } else {
@@ -279,6 +284,64 @@ const CompoundWidget = () => {
     setInputError(undefined);
     setInputValue(value);
   };
+
+  useEffect(() => {
+    if (!cTokenInstance || !comptrollerInstance || !opfInstance || !selectedToken) {
+      return;
+    }
+
+    // wait until cToken is correctly updated
+    if (selectedToken.cTokenAddr.toLocaleLowerCase() !== cTokenInstance?._address.toLocaleLowerCase()) {
+      return;
+    }
+
+    // wait until token is correctly updated
+    if (selectedToken.tokenAddr.toLocaleLowerCase() !== tokenInstance?._address.toLocaleLowerCase()) {
+      return;
+    }
+
+    console.log(selectedToken);
+    const ethMantissa = 1e18;
+    const blocksPerDay = 6570; // 13.15 seconds per block
+    const daysPerYear = 365;
+
+    // Calculate Supply APY
+    (async () => {
+      const supplyRatePerBlock = await cTokenInstance.methods.supplyRatePerBlock().call();
+      const supplyApy = (Math.pow((supplyRatePerBlock / ethMantissa) * blocksPerDay + 1, daysPerYear) - 1) * 100;
+      console.log(`Supply APY  ${supplyApy} %`);
+    })();
+
+    // Calculate Distribution APY
+    (async () => {
+      let compSpeedSupply = await comptrollerInstance?.methods?.compSupplySpeeds(selectedToken.cTokenAddr).call();
+      let compPrice = await opfInstance?.methods?.price('COMP').call();
+      let assetPrice = await opfInstance?.methods?.price(selectedToken.id).call();
+      let totalSupply = await cTokenInstance?.methods?.totalSupply().call();
+      let exchangeRate = await cTokenInstance?.methods?.exchangeRateCurrent().call();
+
+      // Total supply needs to be converted from cTokens
+      const apxBlockSpeedInSeconds = 13.15;
+      exchangeRate = +exchangeRate.toString() / Math.pow(10, selectedToken.decimals);
+
+      compSpeedSupply = compSpeedSupply / 1e18; // COMP has 18 decimal places
+      compPrice = compPrice / 1e6; // price feed is USD price with 6 decimal places
+      assetPrice = assetPrice / 1e6;
+      totalSupply = (+totalSupply.toString() * exchangeRate) / Math.pow(10, 18);
+
+      console.log('compSpeedSupply:', compSpeedSupply);
+      console.log('compPrice:', compPrice);
+      console.log('assetPrice:', assetPrice);
+      console.log('totalSupply:', totalSupply);
+      console.log('exchangeRate:', exchangeRate);
+
+      const compPerDaySupply = compSpeedSupply * ((60 * 60 * 24) / apxBlockSpeedInSeconds);
+
+      const compSupplyApy = 100 * (Math.pow(1 + (compPrice * compPerDaySupply) / (totalSupply * assetPrice), 365) - 1);
+
+      console.log(`Distribution APY  ${compSupplyApy} %`);
+    })();
+  }, [cTokenInstance, comptrollerInstance, opfInstance, selectedToken, tokenInstance]);
 
   if (!selectedToken || !connected) {
     return <Loader size="md" />;
