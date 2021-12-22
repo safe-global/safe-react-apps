@@ -1,3 +1,4 @@
+import { TextField, Title } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 
 export const SelectContainer = styled.div`
@@ -23,4 +24,18 @@ export const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-around;
   margin-top: 15px;
+
+  button:not(:first-child) {
+    margin-left: 10px;
+  }
+`;
+
+export const StyledTextField = styled(TextField)`
+  &.MuiTextField-root {
+    width: 100%;
+  }
+`;
+
+export const StyledTitle = styled(Title)`
+  margin-top: 0;
 `;

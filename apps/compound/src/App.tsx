@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Big from 'big.js';
-import { BigNumberInput } from 'big-number-input';
-import { Button, Select, Title, Section, Text, TextField, Loader } from '@gnosis.pm/safe-react-components';
+import { Button, Select, Title, Section, Text, Loader } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import styled from 'styled-components';
 import { getTokenList, TokenItem } from './config';
-import { SelectContainer, InfoContainer, ButtonContainer } from './styles';
+import { SelectContainer, InfoContainer, ButtonContainer, StyledTitle, StyledTextField } from './styles';
 import { getTokenInteractions, parseEvents } from './tokensTransfers';
 import useComptroller from './hooks/useComptroller';
 import useWeb3 from './hooks/useWeb3';
@@ -13,12 +11,9 @@ import useCToken from './hooks/useCToken';
 import CompBalance from './components/CompBalance';
 import InfoRow from './components/InfoRow';
 import WidgetWrapper from './components/WidgetWrapper';
+import { BigNumberInput } from 'big-number-input';
 
 type Operation = 'lock' | 'withdraw';
-
-const StyledTitle = styled(Title)`
-  margin-top: 0;
-`;
 
 const CompoundWidget = () => {
   const [ethBalance, setEthBalance] = useState('0');
@@ -268,7 +263,9 @@ const CompoundWidget = () => {
         decimals={selectedToken.decimals}
         onChange={onInputChange}
         value={inputValue}
-        renderInput={(props: any) => <TextField label="Amount" meta={{ error: inputError }} {...props} />}
+        renderInput={(props: any) => (
+          <StyledTextField width={'100%'} label="Amount" meta={{ error: inputError }} {...props} />
+        )}
       />
 
       <ButtonContainer>
