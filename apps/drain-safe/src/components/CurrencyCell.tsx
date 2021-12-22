@@ -31,10 +31,11 @@ function CurrencyCell({
       try {
         const sendTokenTx = tokenToTx(safe.safeAddress, item);
 
-        // TODO: Check value and []
-        const estimatedTransferGas = await sdk.eth.getEstimateGas([
-          { ...sendTokenTx, value: '0x0', from: safe.safeAddress },
-        ]);
+        const estimatedTransferGas = await sdk.eth.getEstimateGas({
+          ...sendTokenTx,
+          value: '0x0',
+          from: safe.safeAddress,
+        });
 
         const gasCostInWei = gasPrice.multipliedBy(estimatedTransferGas || 21000);
         const gasCostInEther = new BigNumber(web3Utils.fromWei(gasCostInWei.toString(), 'ether'));
