@@ -12,7 +12,7 @@ import CompoundLensABI from '../abis/CompoundLens';
 const COMPOUND_ADDRESS = '0xc00e94cb662c3520282e6f5717214004a7f26888';
 const COMPOUND_LENS_ADDRESS = '0xdCbDb7306c6Ff46f77B349188dC18cEd9DF30299';
 
-export default function useComptroller(safeAddress: string, selectedToken: TokenItem | undefined) {
+export default function useComp(safeAddress: string, selectedToken: TokenItem | undefined) {
   const { sdk } = useSafeAppsSDK();
   const { web3 } = useWeb3();
   const [comptrollerInstance, setComptrollerInstance] = useState<Contract>();

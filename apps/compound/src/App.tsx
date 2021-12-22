@@ -5,7 +5,7 @@ import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { getTokenList, TokenItem } from './config';
 import { SelectContainer, InfoContainer, ButtonContainer, StyledTitle, StyledTextField } from './styles';
 import { getTokenInteractions, parseEvents } from './tokensTransfers';
-import useComptroller from './hooks/useComptroller';
+import useComp from './hooks/useComp';
 import useWeb3 from './hooks/useWeb3';
 import useCToken from './hooks/useCToken';
 import CompBalance from './components/CompBalance';
@@ -27,7 +27,7 @@ const CompoundWidget = () => {
   const [inputError, setInputError] = useState<string | undefined>();
   const { web3 } = useWeb3();
   const { sdk: appsSdk, safe: safeInfo, connected } = useSafeAppsSDK();
-  const { cTokenSupplyAPY, cDistributionTokenSupplyAPY, compAccrued, claimComp } = useComptroller(
+  const { cTokenSupplyAPY, cDistributionTokenSupplyAPY, compAccrued, claimComp } = useComp(
     safeInfo?.safeAddress,
     selectedToken,
   );
