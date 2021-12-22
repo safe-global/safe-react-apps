@@ -113,11 +113,7 @@ export default function useComptroller(safeAddress: string, selectedToken: Token
       },
     ];
 
-    try {
-      sdk.txs.send({ txs });
-    } catch {
-      console.log('Transactions rejected');
-    }
+    sdk.txs.send({ txs });
   }, [comptrollerInstance, safeAddress, sdk]);
 
   return {
