@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import Web3 from 'web3';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 
+// TODO: REMOVE THIS FILE
+
 function useWeb3() {
   const [web3, setWeb3] = useState<Web3 | undefined>();
 

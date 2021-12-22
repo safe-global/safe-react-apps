@@ -101,6 +101,7 @@ const App: React.FC = () => {
     return `Transfer ${assetsToTransferCount} asset${assetsToTransferCount > 1 ? 's' : ''}`;
   }, [assets, selectedTokens]);
 
+  // TODO: REMOVE ENS
   const getAddressFromDomain = useCallback(
     (address: string) => web3?.eth.ens.getAddress(address) || Promise.resolve(address),
     [web3],
@@ -142,7 +143,6 @@ const App: React.FC = () => {
       <Balances
         ethFiatPrice={ethFiatPrice}
         gasPrice={gasPrice}
-        web3={web3}
         assets={assets}
         onSelectionChange={setSelectedTokens}
       />

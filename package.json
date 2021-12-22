@@ -16,8 +16,8 @@
     "apps/*"
   ],
   "dependencies": {
-    "@gnosis.pm/safe-apps-react-sdk": "4.0.8",
-    "@gnosis.pm/safe-apps-sdk": "6.1.1",
+    "@gnosis.pm/safe-apps-react-sdk": "/Users/dani/safe-apps-sdk/packages/safe-apps-react-sdk",
+    "@gnosis.pm/safe-apps-sdk": "/Users/dani/safe-apps-sdk/packages/safe-apps-sdk",
     "@material-ui/icons": "^4.11.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
