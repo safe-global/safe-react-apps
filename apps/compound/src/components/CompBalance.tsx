@@ -1,7 +1,6 @@
 import { SyntheticEvent, useCallback } from 'react';
 import { Title, Text, Link } from '@gnosis.pm/safe-react-components';
 import { DaiInfo } from '../components';
-import { Divider } from '@material-ui/core';
 
 type Props = {
   balance: number;

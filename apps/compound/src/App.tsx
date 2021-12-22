@@ -1,22 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import Big from 'big.js';
 import { BigNumberInput } from 'big-number-input';
-import Web3 from 'web3';
-import { AbiItem } from 'web3-utils';
-
 import { Button, Select, Title, Section, Text, TextField, Divider, Loader } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import styled from 'styled-components';
 import CompBalance from './components/CompBalance';
-import { rpc_token, getTokenList, TokenItem } from './config';
+import { getTokenList, TokenItem } from './config';
 import { WidgetWrapper, SelectContainer, DaiInfo, ButtonContainer } from './components';
 import { getTokenInteractions, parseEvents } from './tokensTransfers';
-import { networkByChainId, CHAINS } from './utils/networks';
-
-import cERC20Abi from './abis/CErc20';
-import cWEthAbi from './abis/CWEth';
 import useComptroller from './hooks/useComptroller';
-import UniSwapAnchoredViewABI from './abis/UniSwapAnchoredViewABI';
+import useWeb3 from './hooks/useWeb3';
+import useCToken from './hooks/useCToken';
 
 type Operation = 'lock' | 'withdraw';
 
@@ -25,36 +19,21 @@ const StyledTitle = styled(Title)`
 `;
 
 const CompoundWidget = () => {
-  const [web3, setWeb3] = useState<Web3 | undefined>();
-  const { sdk: appsSdk, safe: safeInfo, connected } = useSafeAppsSDK();
   const [ethBalance, setEthBalance] = useState('0');
-
   const [tokenList, setTokenList] = useState<Array<TokenItem>>();
-
   const [selectedToken, setSelectedToken] = useState<TokenItem>();
-  const [cTokenInstance, setCTokenInstance] = useState<any>();
-  const [tokenInstance, setTokenInstance] = useState<any>();
-  const [opfInstance, setOpfInstance] = useState<any>();
-
-  const [cTokenSupplyAPY, setCTokenSupplyAPY] = useState('0');
-  const [cDistributionTokenSupplyAPY, setCDistributionTokenSupplyAPY] = useState('0');
+  const { cTokenInstance, tokenInstance } = useCToken(selectedToken);
   const [interestEarn, setInterestEarn] = useState('0');
   const [tokenBalance, setTokenBalance] = useState<string>('0');
   const [underlyingBalance, setUnderlyingBalance] = useState<string>('0');
-
   const [inputValue, setInputValue] = useState<string>('');
   const [inputError, setInputError] = useState<string | undefined>();
-  const { comptrollerInstance, compAccrued, claimComp } = useComptroller(safeInfo?.safeAddress, web3);
-
-  // set web3 instance
-  useEffect(() => {
-    if (!safeInfo) {
-      return;
-    }
-    const chainId = safeInfo.chainId as CHAINS;
-    const web3Instance = new Web3(`https://${networkByChainId[chainId]}.infura.io/v3/${rpc_token}`);
-    setWeb3(web3Instance);
-  }, [safeInfo]);
+  const { web3 } = useWeb3();
+  const { sdk: appsSdk, safe: safeInfo, connected } = useSafeAppsSDK();
+  const { cTokenSupplyAPY, cDistributionTokenSupplyAPY, compAccrued, claimComp } = useComptroller(
+    safeInfo?.safeAddress,
+    selectedToken,
+  );
 
   // fetch eth balance
   useEffect(() => {
@@ -95,23 +74,11 @@ const CompoundWidget = () => {
       return;
     }
 
-    setCTokenSupplyAPY('0');
-    setCDistributionTokenSupplyAPY('0');
     setInterestEarn('0');
     setTokenBalance('0');
     setUnderlyingBalance('0');
     setInputValue('');
     setInputError(undefined);
-
-    setTokenInstance(new web3.eth.Contract(cERC20Abi as AbiItem[], selectedToken.tokenAddr));
-    setOpfInstance(
-      new web3.eth.Contract(UniSwapAnchoredViewABI as AbiItem[], '0x046728da7cb8272284238bd3e47909823d63a58d'),
-    );
-    if (selectedToken.id === 'ETH') {
-      setCTokenInstance(new web3.eth.Contract(cWEthAbi as AbiItem[], selectedToken.cTokenAddr));
-    } else {
-      setCTokenInstance(new web3.eth.Contract(cERC20Abi as AbiItem[], selectedToken.cTokenAddr));
-    }
   }, [selectedToken, web3]);
 
   useEffect(() => {
@@ -276,64 +243,6 @@ const CompoundWidget = () => {
     setInputError(undefined);
     setInputValue(value);
   };
-
-  useEffect(() => {
-    if (!cTokenInstance || !comptrollerInstance || !opfInstance || !selectedToken) {
-      return;
-    }
-
-    // wait until cToken is correctly updated
-    if (selectedToken.cTokenAddr.toLocaleLowerCase() !== cTokenInstance?._address.toLocaleLowerCase()) {
-      return;
-    }
-
-    // wait until token is correctly updated
-    if (selectedToken.tokenAddr.toLocaleLowerCase() !== tokenInstance?._address.toLocaleLowerCase()) {
-      return;
-    }
-
-    console.log(selectedToken);
-    const ethMantissa = 1e18;
-    const blocksPerDay = 6570; // 13.15 seconds per block
-    const daysPerYear = 365;
-
-    // Calculate Supply APY
-    (async () => {
-      const supplyRatePerBlock = await cTokenInstance.methods.supplyRatePerBlock().call();
-      const supplyApy = (Math.pow((supplyRatePerBlock / ethMantissa) * blocksPerDay + 1, daysPerYear) - 1) * 100;
-      setCTokenSupplyAPY((Math.round(supplyApy * 100) / 100).toString());
-    })();
-
-    // Calculate Distribution APY
-    (async () => {
-      let compSpeedSupply = await comptrollerInstance?.methods?.compSupplySpeeds(selectedToken.cTokenAddr).call();
-      let compPrice = await opfInstance?.methods?.price('COMP').call();
-      let assetPrice = await opfInstance?.methods?.price(selectedToken.id).call();
-      let totalSupply = await cTokenInstance?.methods?.totalSupply().call();
-      let exchangeRate = await cTokenInstance?.methods?.exchangeRateCurrent().call();
-
-      // Total supply needs to be converted from cTokens
-      const apxBlockSpeedInSeconds = 13.15;
-      exchangeRate = +exchangeRate.toString() / Math.pow(10, selectedToken.decimals);
-
-      compSpeedSupply = compSpeedSupply / 1e18; // COMP has 18 decimal places
-      compPrice = compPrice / 1e6; // price feed is USD price with 6 decimal places
-      assetPrice = assetPrice / 1e6;
-      totalSupply = (+totalSupply.toString() * exchangeRate) / Math.pow(10, 18);
-
-      console.log('compSpeedSupply:', compSpeedSupply);
-      console.log('compPrice:', compPrice);
-      console.log('assetPrice:', assetPrice);
-      console.log('totalSupply:', totalSupply);
-      console.log('exchangeRate:', exchangeRate);
-
-      const compPerDaySupply = compSpeedSupply * ((60 * 60 * 24) / apxBlockSpeedInSeconds);
-
-      const compSupplyApy = 100 * (Math.pow(1 + (compPrice * compPerDaySupply) / (totalSupply * assetPrice), 365) - 1);
-
-      setCDistributionTokenSupplyAPY((Math.round(compSupplyApy * 100) / 100).toString());
-    })();
-  }, [cTokenInstance, comptrollerInstance, opfInstance, selectedToken, tokenInstance]);
 
   if (!selectedToken || !connected) {
     return <Loader size="md" />;
