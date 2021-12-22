@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AbiItem } from 'web3-utils';
+import { Contract } from 'web3-eth-contract';
 import CErc20ABI from '../abis/CErc20';
 import CWethABI from '../abis/CWEth';
 import { TokenItem } from '../config';
@@ -7,8 +8,8 @@ import useWeb3 from './useWeb3';
 
 export default function useCToken(selectedToken: TokenItem | undefined) {
   const { web3 } = useWeb3();
-  const [cTokenInstance, setCTokenInstance] = useState<any>();
-  const [tokenInstance, setTokenInstance] = useState<any>();
+  const [cTokenInstance, setCTokenInstance] = useState<Contract>();
+  const [tokenInstance, setTokenInstance] = useState<Contract>();
 
   useEffect(() => {
     if (!selectedToken || !web3) {

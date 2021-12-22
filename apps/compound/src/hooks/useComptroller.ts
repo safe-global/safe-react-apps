@@ -1,6 +1,7 @@
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AbiItem } from 'web3-utils';
+import { Contract } from 'web3-eth-contract';
 import ComptrollerABI from '../abis/Comptroller';
 import { TokenItem } from '../config';
 import useCToken from './useCToken';
@@ -10,58 +11,37 @@ import useWeb3 from './useWeb3';
 export default function useComptroller(safeAddress: string, selectedToken: TokenItem | undefined) {
   const { sdk } = useSafeAppsSDK();
   const { web3 } = useWeb3();
-  const [comptrollerInstance, setComptrollerInstance] = useState<any>();
-  const [compAccrued, setCompAccrued] = useState<any>();
-  const [comptrollerAddress, setComptrollerAddress] = useState<any>();
-  const [cTokenSupplyAPY, setCTokenSupplyAPY] = useState('0');
-  const [cDistributionTokenSupplyAPY, setCDistributionTokenSupplyAPY] = useState('0');
+  const [comptrollerInstance, setComptrollerInstance] = useState<Contract>();
+  const [compAccrued, setCompAccrued] = useState<number>();
+  const [comptrollerAddress, setComptrollerAddress] = useState<string>();
+  const [cTokenSupplyAPY, setCTokenSupplyAPY] = useState<string>();
+  const [cDistributionTokenSupplyAPY, setCDistributionTokenSupplyAPY] = useState<string>();
   const { opfInstance } = usePriceFeed();
   const { cTokenInstance, tokenInstance } = useCToken(selectedToken);
 
   useEffect(() => {
-    if (!selectedToken || !web3 || !cTokenInstance) {
-      return;
-    }
-
     (async () => {
-      const address = await cTokenInstance.methods.comptroller().call();
+      const address = await cTokenInstance?.methods.comptroller().call();
       setComptrollerAddress(address);
     })();
   }, [cTokenInstance, selectedToken, web3]);
 
   useEffect(() => {
-    if (!selectedToken || !web3 || !comptrollerAddress) {
+    if (!web3 || !comptrollerAddress) {
       return;
     }
 
     (async () => {
       setComptrollerInstance(new web3.eth.Contract(ComptrollerABI as AbiItem[], comptrollerAddress));
     })();
-  }, [selectedToken, web3, comptrollerAddress]);
+  }, [web3, comptrollerAddress]);
 
   useEffect(() => {
     (async () => {
-      if (!safeAddress || !comptrollerInstance) {
-        return;
-      }
-
       const accrued = await comptrollerInstance?.methods?.compAccrued(safeAddress).call();
-
       setCompAccrued(accrued);
     })();
   }, [comptrollerInstance, safeAddress]);
-
-  const claimComp = async () => {
-    const txs = [
-      {
-        to: safeAddress,
-        value: '0',
-        data: comptrollerInstance.methods.claimComp(safeAddress).encodeABI(),
-      },
-    ];
-
-    sdk.txs.send({ txs });
-  };
 
   useEffect(() => {
     if (!cTokenInstance || !comptrollerInstance || !opfInstance || !selectedToken || !tokenInstance) {
@@ -69,16 +49,15 @@ export default function useComptroller(safeAddress: string, selectedToken: Token
     }
 
     // wait until cToken is correctly updated
-    if (selectedToken.cTokenAddr.toLocaleLowerCase() !== cTokenInstance?._address.toLocaleLowerCase()) {
+    if (selectedToken.cTokenAddr.toLocaleLowerCase() !== cTokenInstance?.['_address'].toLocaleLowerCase()) {
       return;
     }
 
     // wait until token is correctly updated
-    if (selectedToken.tokenAddr.toLocaleLowerCase() !== tokenInstance?._address.toLocaleLowerCase()) {
+    if (selectedToken.tokenAddr.toLocaleLowerCase() !== tokenInstance?.['_address'].toLocaleLowerCase()) {
       return;
     }
 
-    console.log(selectedToken);
     const ethMantissa = 1e18;
     const blocksPerDay = 6570; // 13.15 seconds per block
     const daysPerYear = 365;
@@ -107,12 +86,6 @@ export default function useComptroller(safeAddress: string, selectedToken: Token
       assetPrice = assetPrice / 1e6;
       totalSupply = (+totalSupply.toString() * exchangeRate) / Math.pow(10, 18);
 
-      console.log('compSpeedSupply:', compSpeedSupply);
-      console.log('compPrice:', compPrice);
-      console.log('assetPrice:', assetPrice);
-      console.log('totalSupply:', totalSupply);
-      console.log('exchangeRate:', exchangeRate);
-
       const compPerDaySupply = compSpeedSupply * ((60 * 60 * 24) / apxBlockSpeedInSeconds);
 
       const compSupplyApy = 100 * (Math.pow(1 + (compPrice * compPerDaySupply) / (totalSupply * assetPrice), 365) - 1);
@@ -120,6 +93,18 @@ export default function useComptroller(safeAddress: string, selectedToken: Token
       setCDistributionTokenSupplyAPY((Math.round(compSupplyApy * 100) / 100).toString());
     })();
   }, [cTokenInstance, comptrollerInstance, opfInstance, selectedToken, tokenInstance]);
+
+  const claimComp = useCallback(async () => {
+    const txs = [
+      {
+        to: safeAddress,
+        value: '0',
+        data: comptrollerInstance?.methods.claimComp(safeAddress).encodeABI(),
+      },
+    ];
+
+    sdk.txs.send({ txs });
+  }, [comptrollerInstance, safeAddress, sdk]);
 
   return {
     comptrollerInstance,

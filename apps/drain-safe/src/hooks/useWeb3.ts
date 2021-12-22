@@ -4,7 +4,6 @@ import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 
 function useWeb3() {
   const [web3, setWeb3] = useState<Web3 | undefined>();
-
   const { sdk } = useSafeAppsSDK();
 
   useEffect(() => {

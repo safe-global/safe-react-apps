@@ -87,16 +87,6 @@ const CompoundWidget = () => {
         return;
       }
 
-      // wait until cToken is correctly updated
-      if (selectedToken.cTokenAddr.toLocaleLowerCase() !== cTokenInstance?._address.toLocaleLowerCase()) {
-        return;
-      }
-
-      // wait until token is correctly updated
-      if (selectedToken.tokenAddr.toLocaleLowerCase() !== tokenInstance?._address.toLocaleLowerCase()) {
-        return;
-      }
-
       // get token Balance
       let tokenBalance;
       if (selectedToken.id === 'ETH') {
@@ -167,7 +157,7 @@ const CompoundWidget = () => {
         {
           to: selectedToken.cTokenAddr,
           value: supplyParameter,
-          data: cTokenInstance.methods.mint().encodeABI(),
+          data: cTokenInstance?.methods.mint().encodeABI(),
         },
       ];
     } else {
@@ -175,12 +165,12 @@ const CompoundWidget = () => {
         {
           to: selectedToken.tokenAddr,
           value: '0',
-          data: tokenInstance.methods.approve(selectedToken.cTokenAddr, supplyParameter).encodeABI(),
+          data: tokenInstance?.methods.approve(selectedToken.cTokenAddr, supplyParameter).encodeABI(),
         },
         {
           to: selectedToken.cTokenAddr,
           value: '0',
-          data: cTokenInstance.methods.mint(supplyParameter).encodeABI(),
+          data: cTokenInstance?.methods.mint(supplyParameter).encodeABI(),
         },
       ];
     }
@@ -200,7 +190,7 @@ const CompoundWidget = () => {
       {
         to: selectedToken.cTokenAddr,
         value: '0',
-        data: cTokenInstance.methods.redeemUnderlying(supplyParameter).encodeABI(),
+        data: cTokenInstance?.methods.redeemUnderlying(supplyParameter).encodeABI(),
       },
     ];
     appsSdk.txs.send({ txs });

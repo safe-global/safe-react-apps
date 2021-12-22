@@ -3,7 +3,7 @@ import { Title, Text, Link } from '@gnosis.pm/safe-react-components';
 import { DaiInfo } from '../components';
 
 type Props = {
-  balance: number;
+  balance: number | undefined;
   onCollect: () => void;
 };
 

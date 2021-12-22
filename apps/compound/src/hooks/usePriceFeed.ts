@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { AbiItem } from 'web3-utils';
+import { Contract } from 'web3-eth-contract';
 import useWeb3 from './useWeb3';
 import UniSwapAnchoredViewABI from '../abis/UniSwapAnchoredViewABI';
 
 export default function usePriceFeed() {
-  const [opfInstance, setOpfInstance] = useState<any>();
+  const [opfInstance, setOpfInstance] = useState<Contract>();
   const { web3 } = useWeb3();
 
   useEffect(() => {
