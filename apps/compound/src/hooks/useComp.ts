@@ -117,7 +117,11 @@ export default function useComp(safeAddress: string, selectedToken: TokenItem | 
       },
     ];
 
-    sdk.txs.send({ txs });
+    try {
+      await sdk.txs.send({ txs });
+    } catch {
+      console.error('Collect COMP: Transaction rejected or failed');
+    }
   }, [comptrollerAddress, comptrollerInstance, safeAddress, sdk]);
 
   return {

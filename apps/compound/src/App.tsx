@@ -140,7 +140,7 @@ const CompoundWidget = () => {
     return true;
   };
 
-  const lock = () => {
+  const lock = async () => {
     if (!selectedToken || !validateInputValue('lock') || !web3) {
       return;
     }
@@ -172,12 +172,16 @@ const CompoundWidget = () => {
       ];
     }
 
-    appsSdk.txs.send({ txs });
+    try {
+      await appsSdk.txs.send({ txs });
+    } catch {
+      console.error('Lock: Transaction rejected or failed');
+    }
 
     setInputValue('');
   };
 
-  const withdraw = () => {
+  const withdraw = async () => {
     if (!selectedToken || !validateInputValue('withdraw') || !web3) {
       return;
     }
@@ -190,7 +194,12 @@ const CompoundWidget = () => {
         data: cTokenInstance?.methods.redeemUnderlying(supplyParameter).encodeABI(),
       },
     ];
-    appsSdk.txs.send({ txs });
+
+    try {
+      await appsSdk.txs.send({ txs });
+    } catch {
+      console.error('Withdraw: Transaction rejected or failed');
+    }
 
     setInputValue('');
   };
