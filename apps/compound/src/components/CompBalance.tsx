@@ -21,7 +21,7 @@ export default function CompBalance({ balance, onCollect }: Props): React.ReactE
     <InfoContainer>
       <Title size="xs">Compound Token Balance</Title>
       <InfoRow
-        label="Your COMP balance"
+        label="Your COMP"
         data={
           <>
             {balance}{' '}
