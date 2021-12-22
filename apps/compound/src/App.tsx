@@ -18,8 +18,6 @@ import cWEthAbi from './abis/CWEth';
 import useComptroller from './hooks/useComptroller';
 import UniSwapAnchoredViewABI from './abis/UniSwapAnchoredViewABI';
 
-const blocksPerDay = 5760;
-
 type Operation = 'lock' | 'withdraw';
 
 const StyledTitle = styled(Title)`
@@ -39,6 +37,7 @@ const CompoundWidget = () => {
   const [opfInstance, setOpfInstance] = useState<any>();
 
   const [cTokenSupplyAPY, setCTokenSupplyAPY] = useState('0');
+  const [cDistributionTokenSupplyAPY, setCDistributionTokenSupplyAPY] = useState('0');
   const [interestEarn, setInterestEarn] = useState('0');
   const [tokenBalance, setTokenBalance] = useState<string>('0');
   const [underlyingBalance, setUnderlyingBalance] = useState<string>('0');
@@ -97,6 +96,7 @@ const CompoundWidget = () => {
     }
 
     setCTokenSupplyAPY('0');
+    setCDistributionTokenSupplyAPY('0');
     setInterestEarn('0');
     setTokenBalance('0');
     setUnderlyingBalance('0');
@@ -130,9 +130,6 @@ const CompoundWidget = () => {
         return;
       }
 
-      // get supplyRate
-      const cTokenSupplyRate = await cTokenInstance.methods.supplyRatePerBlock().call();
-
       // get token Balance
       let tokenBalance;
       if (selectedToken.id === 'ETH') {
@@ -143,10 +140,6 @@ const CompoundWidget = () => {
 
       // get token Locked amount
       const underlyingBalance = await cTokenInstance.methods.balanceOfUnderlying(safeInfo.safeAddress).call();
-
-      // get APR
-      const dailyRate = new Big(cTokenSupplyRate).times(blocksPerDay).div(10 ** 18);
-      const apy = dailyRate.plus(1).pow(365).minus(1).times(100).toFixed(2);
 
       // get interest earned
       const tokenEvents = await getTokenInteractions(
@@ -164,7 +157,6 @@ const CompoundWidget = () => {
 
       // update all the values in a row to avoid UI flickers
       selectedToken.id === 'ETH' ? setInterestEarn('-') : setInterestEarn(underlyingEarned);
-      setCTokenSupplyAPY(apy.toString());
       setTokenBalance(tokenBalance);
       setUnderlyingBalance(underlyingBalance);
     };
@@ -309,7 +301,7 @@ const CompoundWidget = () => {
     (async () => {
       const supplyRatePerBlock = await cTokenInstance.methods.supplyRatePerBlock().call();
       const supplyApy = (Math.pow((supplyRatePerBlock / ethMantissa) * blocksPerDay + 1, daysPerYear) - 1) * 100;
-      console.log(`Supply APY  ${supplyApy} %`);
+      setCTokenSupplyAPY((Math.round(supplyApy * 100) / 100).toString());
     })();
 
     // Calculate Distribution APY
@@ -339,7 +331,7 @@ const CompoundWidget = () => {
 
       const compSupplyApy = 100 * (Math.pow(1 + (compPrice * compPerDaySupply) / (totalSupply * assetPrice), 365) - 1);
 
-      console.log(`Distribution APY  ${compSupplyApy} %`);
+      setCDistributionTokenSupplyAPY((Math.round(compSupplyApy * 100) / 100).toString());
     })();
   }, [cTokenInstance, comptrollerInstance, opfInstance, selectedToken, tokenInstance]);
 
@@ -373,10 +365,14 @@ const CompoundWidget = () => {
           </div>
           <Divider />
           <div>
-            <Text size="lg">Current interest rate</Text>
-            <Text size="lg">{cTokenSupplyAPY}% APR</Text>
+            <Text size="lg">Supply APY</Text>
+            <Text size="lg">{cTokenSupplyAPY}%</Text>
           </div>
           <Divider />
+          <div>
+            <Text size="lg">Distribution APY</Text>
+            <Text size="lg">{cDistributionTokenSupplyAPY}%</Text>
+          </div>
         </DaiInfo>
       </Section>
 
