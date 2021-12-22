@@ -1,6 +1,7 @@
 import { SyntheticEvent, useCallback } from 'react';
-import { Title, Text, Link } from '@gnosis.pm/safe-react-components';
-import { DaiInfo } from '../components';
+import { Title, Link } from '@gnosis.pm/safe-react-components';
+import { InfoContainer } from '../styles';
+import InfoRow from './InfoRow';
 
 type Props = {
   balance: number | undefined;
@@ -17,14 +18,16 @@ export default function CompBalance({ balance, onCollect }: Props): React.ReactE
   );
 
   return (
-    <DaiInfo>
+    <InfoContainer>
       <Title size="xs">Compound Token Balance</Title>
-      <div>
-        <Text size="lg">Your COMP balance</Text>
-        <Text size="lg">
-          {balance} <Link onClick={handleOnCollect}>Collect</Link>
-        </Text>
-      </div>
-    </DaiInfo>
+      <InfoRow
+        label="Your COMP balance"
+        data={
+          <>
+            {balance} <Link onClick={handleOnCollect}>Collect</Link>
+          </>
+        }
+      />
+    </InfoContainer>
   );
 }

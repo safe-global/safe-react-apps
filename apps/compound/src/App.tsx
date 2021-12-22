@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import Big from 'big.js';
 import { BigNumberInput } from 'big-number-input';
-import { Button, Select, Title, Section, Text, TextField, Divider, Loader } from '@gnosis.pm/safe-react-components';
+import { Button, Select, Title, Section, Text, TextField, Loader } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import styled from 'styled-components';
-import CompBalance from './components/CompBalance';
 import { getTokenList, TokenItem } from './config';
-import { WidgetWrapper, SelectContainer, DaiInfo, ButtonContainer } from './components';
+import { SelectContainer, InfoContainer, ButtonContainer } from './styles';
 import { getTokenInteractions, parseEvents } from './tokensTransfers';
 import useComptroller from './hooks/useComptroller';
 import useWeb3 from './hooks/useWeb3';
 import useCToken from './hooks/useCToken';
+import CompBalance from './components/CompBalance';
+import InfoRow from './components/InfoRow';
+import WidgetWrapper from './components/WidgetWrapper';
 
 type Operation = 'lock' | 'withdraw';
 
@@ -250,29 +252,12 @@ const CompoundWidget = () => {
       </SelectContainer>
 
       <Section>
-        <DaiInfo>
-          <div>
-            <Text size="lg">Supplied {selectedToken.label}</Text>
-            <Text size="lg">~ {bNumberToHumanFormat(underlyingBalance)}</Text>
-          </div>
-          <Divider />
-          <div>
-            <Text size="lg">Interest earned</Text>
-            <Text size="lg">
-              ~ {interestEarn} {selectedToken.label}
-            </Text>
-          </div>
-          <Divider />
-          <div>
-            <Text size="lg">Supply APY</Text>
-            <Text size="lg">{cTokenSupplyAPY}%</Text>
-          </div>
-          <Divider />
-          <div>
-            <Text size="lg">Distribution APY</Text>
-            <Text size="lg">{cDistributionTokenSupplyAPY}%</Text>
-          </div>
-        </DaiInfo>
+        <InfoContainer>
+          <InfoRow label={`Supplied ${selectedToken.label}`} data={bNumberToHumanFormat(underlyingBalance)} />
+          <InfoRow label="Interest earned" data={`~ ${interestEarn} ${selectedToken.label}`} />
+          <InfoRow label="Supply APY" data={cTokenSupplyAPY && `${cTokenSupplyAPY}%`} />
+          <InfoRow label="Distribution APY" data={cDistributionTokenSupplyAPY && `${cDistributionTokenSupplyAPY}%`} />
+        </InfoContainer>
       </Section>
 
       <CompBalance balance={compAccrued} onCollect={claimComp} />

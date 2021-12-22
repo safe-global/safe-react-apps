@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 export const SelectContainer = styled.div`
@@ -13,17 +12,11 @@ export const SelectContainer = styled.div`
   }
 `;
 
-export const DaiInfo = styled.div`
+export const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: left;
   width: 100%;
-
-  > * {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-  }
 `;
 
 export const ButtonContainer = styled.div`
@@ -31,15 +24,3 @@ export const ButtonContainer = styled.div`
   justify-content: space-around;
   margin-top: 15px;
 `;
-
-const Card = styled.div`
-  display: flex;
-  justify-content: left;
-  padding: 24px;
-`;
-
-export const WidgetWrapper: React.FC = ({ children }) => (
-  <Card>
-    <div>{children}</div>
-  </Card>
-);
