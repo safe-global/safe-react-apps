@@ -84,6 +84,16 @@ const CompoundWidget = () => {
         return;
       }
 
+      // wait until cToken is correctly updated
+      if (selectedToken.cTokenAddr.toLocaleLowerCase() !== cTokenInstance?.['_address'].toLocaleLowerCase()) {
+        return;
+      }
+
+      // wait until token is correctly updated
+      if (selectedToken.tokenAddr.toLocaleLowerCase() !== tokenInstance?.['_address'].toLocaleLowerCase()) {
+        return;
+      }
+
       // get token Balance
       let tokenBalance;
       if (selectedToken.id === 'ETH') {
