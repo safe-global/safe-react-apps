@@ -24,7 +24,7 @@ export default function CompBalance({ balance, onCollect }: Props): React.ReactE
         label="Your COMP"
         data={
           <>
-            {balance}{' '}
+            {Number.isNaN(balance) ? 0 : balance}{' '}
             <Link size="lg" onClick={handleOnCollect}>
               Collect
             </Link>
