@@ -24,7 +24,10 @@ export default function CompBalance({ balance, onCollect }: Props): React.ReactE
         label="Your COMP balance"
         data={
           <>
-            {balance} <Link onClick={handleOnCollect}>Collect</Link>
+            {balance}{' '}
+            <Link size="lg" onClick={handleOnCollect}>
+              Collect
+            </Link>
           </>
         }
       />
