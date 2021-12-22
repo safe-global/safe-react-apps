@@ -105,16 +105,20 @@ export default function useComptroller(safeAddress: string, selectedToken: Token
   }, [cTokenInstance, comptrollerInstance, opfInstance, selectedToken, tokenInstance]);
 
   const claimComp = useCallback(async () => {
+    if (!comptrollerAddress) {
+      return;
+    }
+
     const txs = [
       {
-        to: safeAddress,
+        to: comptrollerAddress,
         value: '0',
         data: comptrollerInstance?.methods.claimComp(safeAddress).encodeABI(),
       },
     ];
 
     sdk.txs.send({ txs });
-  }, [comptrollerInstance, safeAddress, sdk]);
+  }, [comptrollerAddress, comptrollerInstance, safeAddress, sdk]);
 
   return {
     comptrollerInstance,
