@@ -13,11 +13,9 @@ import Balances from './Balances';
 import SubmitButton from './SubmitButton';
 import CancelButton from './CancelButton';
 import AddressInput from './AddressInput';
-import useWeb3 from '../hooks/useWeb3';
 
 const App: React.FC = () => {
   const { sdk, safe } = useSafeAppsSDK();
-  const { web3 } = useWeb3();
   const {
     assets,
     selectedTokens,
@@ -101,10 +99,9 @@ const App: React.FC = () => {
     return `Transfer ${assetsToTransferCount} asset${assetsToTransferCount > 1 ? 's' : ''}`;
   }, [assets, selectedTokens]);
 
-  // TODO: REMOVE ENS
   const getAddressFromDomain = useCallback(
-    (address: string) => web3?.eth.ens.getAddress(address) || Promise.resolve(address),
-    [web3],
+    (address: string) => sdk.eth.ens?.getAddress(address) || Promise.resolve(address),
+    [sdk],
   );
 
   useEffect(() => {
@@ -140,12 +137,7 @@ const App: React.FC = () => {
         <Logo />
         <Title size="md">Drain Account</Title>
       </Flex>
-      <Balances
-        ethFiatPrice={ethFiatPrice}
-        gasPrice={gasPrice}
-        assets={assets}
-        onSelectionChange={setSelectedTokens}
-      />
+      <Balances ethFiatPrice={ethFiatPrice} gasPrice={gasPrice} assets={assets} onSelectionChange={setSelectedTokens} />
       {error && <Text size="lg">{error}</Text>}
       {isFinished && (
         <Text size="lg">
