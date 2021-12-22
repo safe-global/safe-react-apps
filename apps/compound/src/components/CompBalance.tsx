@@ -12,9 +12,11 @@ export default function CompBalance({ balance, onCollect }: Props): React.ReactE
   const handleOnCollect = useCallback(
     (event: SyntheticEvent) => {
       event.preventDefault();
-      onCollect();
+      if (balance && balance > 0) {
+        onCollect();
+      }
     },
-    [onCollect],
+    [balance, onCollect],
   );
 
   return (
