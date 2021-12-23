@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Big from 'big.js';
 import { Button, Select, Title, Section, Text, Loader } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
@@ -28,6 +28,7 @@ const CompoundWidget = () => {
   const { web3 } = useWeb3();
   const { sdk: appsSdk, safe: safeInfo, connected } = useSafeAppsSDK();
   const { cTokenSupplyAPY, cDistributionTokenSupplyAPY, compAccrued, claimComp } = useComp(selectedToken);
+  const isMainnet = useRef(false);
 
   // fetch eth balance
   useEffect(() => {
@@ -55,7 +56,7 @@ const CompoundWidget = () => {
     }
 
     const tokenListRes = getTokenList(safeInfo.chainId);
-
+    isMainnet.current = safeInfo.chainId === 1;
     setTokenList(tokenListRes);
 
     const findDaiRes = tokenListRes.find((t) => t.id === 'DAI');
@@ -267,11 +268,13 @@ const CompoundWidget = () => {
           <InfoRow label={`Supplied ${selectedToken.label}`} data={bNumberToHumanFormat(underlyingBalance)} />
           <InfoRow label="Interest earned" data={`~ ${interestEarn} ${selectedToken.label}`} />
           <InfoRow label="Supply APY" data={cTokenSupplyAPY && `${cTokenSupplyAPY}%`} />
-          <InfoRow label="Distribution APY" data={cDistributionTokenSupplyAPY && `${cDistributionTokenSupplyAPY}%`} />
+          {isMainnet.current && (
+            <InfoRow label="Distribution APY" data={cDistributionTokenSupplyAPY && `${cDistributionTokenSupplyAPY}%`} />
+          )}
         </InfoContainer>
       </Section>
 
-      <CompBalance balance={compAccrued} onCollect={claimComp} />
+      {isMainnet.current && <CompBalance balance={compAccrued} onCollect={claimComp} />}
 
       <Title size="xs">Withdraw or Supply balance</Title>
 
