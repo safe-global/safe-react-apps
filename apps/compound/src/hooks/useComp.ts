@@ -5,7 +5,7 @@ import { Contract } from 'web3-eth-contract';
 import ComptrollerABI from '../abis/Comptroller';
 import { TokenItem } from '../config';
 import useCToken from './useCToken';
-import usePriceFeed from './usePriceFeed';
+import usePriceFeed from './useOpenPriceFeed';
 import useWeb3 from './useWeb3';
 import CompoundLensABI from '../abis/CompoundLens';
 import useBalances from './useBalances';
@@ -43,6 +43,9 @@ export default function useComp(selectedToken: TokenItem | undefined) {
   }, [web3, comptrollerAddress]);
 
   useEffect(() => {
+    // Using getCompBalanceMetadataExt for get the COMP value allowed to collect
+    // https://gist.github.com/ajb413/f1cf80c988ed679092cff4e4b01e3d94
+
     if (!comptrollerInstance) {
       return;
     }
@@ -61,6 +64,9 @@ export default function useComp(selectedToken: TokenItem | undefined) {
   }, [compoundLensInstance, comptrollerInstance, comptrollerAddress, safe]);
 
   useEffect(() => {
+    // Calculate APYs
+    // https://gist.github.com/ajb413/d32442edae9251ad395436d5b80d4480
+
     if (!cTokenInstance || !comptrollerInstance || !opfInstance || !selectedToken || !tokenInstance) {
       return;
     }
