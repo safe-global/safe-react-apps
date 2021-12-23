@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement, useCallback, useMemo, ChangeEvent } from 'react';
+import React, { useState, useEffect, ReactElement, useCallback, ChangeEvent } from 'react';
 import {
   Button,
   Text,
@@ -103,7 +103,6 @@ type Props = {
 export const Builder = ({
   contract,
   to,
-  chainId,
   nativeCurrencySymbol,
   transactions,
   onAddTransaction,
@@ -372,17 +371,6 @@ export const Builder = ({
     );
   };
 
-  const showAddressInput = useMemo(() => {
-    let isAddress;
-
-    try {
-      isAddress = services?.web3?.utils.isAddress(to);
-    } catch {
-      isAddress = false;
-    }
-    return (isAddress && toInput) || !isAddress;
-  }, [services?.web3?.utils, to, toInput]);
-
   if (!contract && !isValueInputVisible) {
     return null;
   }
@@ -392,20 +380,19 @@ export const Builder = ({
       <Title size="xs">Transaction information</Title>
       {contract && !contract?.methods.length && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
 
-      {showAddressInput && (
-        <StyledAddressInput
-          id={'to-address-input'}
-          name="toAddress"
-          label="To Address"
-          address={toInput}
-          showNetworkPrefix={!!networkPrefix}
-          networkPrefix={networkPrefix}
-          error={toInput && !isValidAddress(toInput) ? 'Invalid Address' : ''}
-          getAddressFromDomain={getAddressFromDomain}
-          onChangeAddress={onChangeToAddress}
-          hiddenLabel={false}
-        />
-      )}
+      <StyledAddressInput
+        id={'to-address-input'}
+        name="toAddress"
+        label="To Address"
+        address={toInput}
+        showNetworkPrefix={!!networkPrefix}
+        networkPrefix={networkPrefix}
+        error={toInput && !isValidAddress(toInput) ? 'Invalid Address' : ''}
+        getAddressFromDomain={getAddressFromDomain}
+        onChangeAddress={onChangeToAddress}
+        hiddenLabel={false}
+        inputProps={{ value: toInput }}
+      />
 
       {/* ValueInput */}
       {isValueInputVisible && (
