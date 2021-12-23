@@ -8,8 +8,7 @@ import useCToken from './useCToken';
 import usePriceFeed from './useOpenPriceFeed';
 import useWeb3 from './useWeb3';
 import CompoundLensABI from '../abis/CompoundLens';
-import useBalances from './useBalances';
-import { TokenBalance } from '@gnosis.pm/safe-apps-sdk';
+import { getMarketAddressesForSafeAccount } from '../http/compoundApi';
 
 const COMPOUND_LENS_ADDRESS = '0xdCbDb7306c6Ff46f77B349188dC18cEd9DF30299';
 
@@ -24,7 +23,6 @@ export default function useComp(selectedToken: TokenItem | undefined) {
   const [cDistributionTokenSupplyAPY, setCDistributionTokenSupplyAPY] = useState<string>();
   const { opfInstance } = usePriceFeed();
   const { cTokenInstance, tokenInstance } = useCToken(selectedToken);
-  const { assets } = useBalances(safe?.safeAddress, safe?.chainId);
 
   useEffect(() => {
     (async () => {
@@ -122,13 +120,8 @@ export default function useComp(selectedToken: TokenItem | undefined) {
       return;
     }
 
-    const allMarkets: string[] = assets.reduce((acc: string[], asset: TokenBalance): string[] => {
-      if (asset.tokenInfo.name.includes('Compound') && asset.tokenInfo.symbol.startsWith('c')) {
-        acc.push(asset.tokenInfo.address);
-      }
-
-      return acc;
-    }, []);
+    // Get all the cToken addresses the safe account is using
+    const allMarkets: string[] = await getMarketAddressesForSafeAccount(safe.safeAddress);
 
     if (allMarkets.length) {
       const txs = [
@@ -145,7 +138,7 @@ export default function useComp(selectedToken: TokenItem | undefined) {
         console.error('Collect COMP: Transaction rejected or failed');
       }
     }
-  }, [assets, comptrollerAddress, comptrollerInstance, safe, sdk]);
+  }, [comptrollerAddress, comptrollerInstance, safe, sdk]);
 
   return {
     comptrollerInstance,
