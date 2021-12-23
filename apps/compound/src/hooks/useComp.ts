@@ -9,7 +9,6 @@ import usePriceFeed from './usePriceFeed';
 import useWeb3 from './useWeb3';
 import CompoundLensABI from '../abis/CompoundLens';
 
-const COMPOUND_ADDRESS = '0xc00e94cb662c3520282e6f5717214004a7f26888';
 const COMPOUND_LENS_ADDRESS = '0xdCbDb7306c6Ff46f77B349188dC18cEd9DF30299';
 
 export default function useComp(safeAddress: string, selectedToken: TokenItem | undefined) {
@@ -41,17 +40,22 @@ export default function useComp(safeAddress: string, selectedToken: TokenItem | 
   }, [web3, comptrollerAddress]);
 
   useEffect(() => {
+    if (!comptrollerInstance) {
+      return;
+    }
+
     (async () => {
       try {
+        const compAddress = await comptrollerInstance?.methods?.getCompAddress().call();
         const accrued = await compoundLensInstance?.methods
-          ?.getCompBalanceMetadataExt(COMPOUND_ADDRESS, comptrollerAddress, safeAddress)
+          ?.getCompBalanceMetadataExt(compAddress, comptrollerAddress, safeAddress)
           .call();
         setCompAccrued(accrued?.allocated / 10 ** 18);
       } catch (e) {
         console.error(e);
       }
     })();
-  }, [compoundLensInstance, comptrollerAddress, safeAddress]);
+  }, [compoundLensInstance, comptrollerInstance, comptrollerAddress, safeAddress]);
 
   useEffect(() => {
     if (!cTokenInstance || !comptrollerInstance || !opfInstance || !selectedToken || !tokenInstance) {
