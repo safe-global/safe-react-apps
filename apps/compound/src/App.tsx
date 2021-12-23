@@ -27,10 +27,7 @@ const CompoundWidget = () => {
   const [inputError, setInputError] = useState<string | undefined>();
   const { web3 } = useWeb3();
   const { sdk: appsSdk, safe: safeInfo, connected } = useSafeAppsSDK();
-  const { cTokenSupplyAPY, cDistributionTokenSupplyAPY, compAccrued, claimComp } = useComp(
-    safeInfo?.safeAddress,
-    selectedToken,
-  );
+  const { cTokenSupplyAPY, cDistributionTokenSupplyAPY, compAccrued, claimComp } = useComp(selectedToken);
 
   // fetch eth balance
   useEffect(() => {

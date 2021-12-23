@@ -8,11 +8,13 @@ import useCToken from './useCToken';
 import usePriceFeed from './usePriceFeed';
 import useWeb3 from './useWeb3';
 import CompoundLensABI from '../abis/CompoundLens';
+import useBalances from './useBalances';
+import { TokenBalance } from '@gnosis.pm/safe-apps-sdk';
 
 const COMPOUND_LENS_ADDRESS = '0xdCbDb7306c6Ff46f77B349188dC18cEd9DF30299';
 
-export default function useComp(safeAddress: string, selectedToken: TokenItem | undefined) {
-  const { sdk } = useSafeAppsSDK();
+export default function useComp(selectedToken: TokenItem | undefined) {
+  const { sdk, safe } = useSafeAppsSDK();
   const { web3 } = useWeb3();
   const [comptrollerInstance, setComptrollerInstance] = useState<Contract>();
   const [compoundLensInstance, setCompoundLensInstance] = useState<Contract>();
@@ -22,6 +24,7 @@ export default function useComp(safeAddress: string, selectedToken: TokenItem | 
   const [cDistributionTokenSupplyAPY, setCDistributionTokenSupplyAPY] = useState<string>();
   const { opfInstance } = usePriceFeed();
   const { cTokenInstance, tokenInstance } = useCToken(selectedToken);
+  const { assets } = useBalances(safe?.safeAddress, safe?.chainId);
 
   useEffect(() => {
     (async () => {
@@ -48,14 +51,14 @@ export default function useComp(safeAddress: string, selectedToken: TokenItem | 
       try {
         const compAddress = await comptrollerInstance?.methods?.getCompAddress().call();
         const accrued = await compoundLensInstance?.methods
-          ?.getCompBalanceMetadataExt(compAddress, comptrollerAddress, safeAddress)
+          ?.getCompBalanceMetadataExt(compAddress, comptrollerAddress, safe?.safeAddress)
           .call();
         setCompAccrued(accrued?.allocated / 10 ** 18);
       } catch (e) {
         console.error(e);
       }
     })();
-  }, [compoundLensInstance, comptrollerInstance, comptrollerAddress, safeAddress]);
+  }, [compoundLensInstance, comptrollerInstance, comptrollerAddress, safe]);
 
   useEffect(() => {
     if (!cTokenInstance || !comptrollerInstance || !opfInstance || !selectedToken || !tokenInstance) {
@@ -113,20 +116,30 @@ export default function useComp(safeAddress: string, selectedToken: TokenItem | 
       return;
     }
 
-    const txs = [
-      {
-        to: comptrollerAddress,
-        value: '0',
-        data: comptrollerInstance?.methods.claimComp(safeAddress).encodeABI(),
-      },
-    ];
+    const allMarkets: string[] = assets.reduce((acc: string[], asset: TokenBalance): string[] => {
+      if (asset.tokenInfo.name.includes('Compound') && asset.tokenInfo.symbol.startsWith('c')) {
+        acc.push(asset.tokenInfo.address);
+      }
 
-    try {
-      await sdk.txs.send({ txs });
-    } catch {
-      console.error('Collect COMP: Transaction rejected or failed');
+      return acc;
+    }, []);
+
+    if (allMarkets.length) {
+      const txs = [
+        {
+          to: comptrollerAddress,
+          value: '0',
+          data: comptrollerInstance?.methods.claimComp(safe?.safeAddress, allMarkets).encodeABI(),
+        },
+      ];
+
+      try {
+        await sdk.txs.send({ txs });
+      } catch {
+        console.error('Collect COMP: Transaction rejected or failed');
+      }
     }
-  }, [comptrollerAddress, comptrollerInstance, safeAddress, sdk]);
+  }, [assets, comptrollerAddress, comptrollerInstance, safe, sdk]);
 
   return {
     comptrollerInstance,
