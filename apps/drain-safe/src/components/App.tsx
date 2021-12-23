@@ -13,9 +13,11 @@ import Balances from './Balances';
 import SubmitButton from './SubmitButton';
 import CancelButton from './CancelButton';
 import AddressInput from './AddressInput';
+import useWeb3 from '../hooks/useWeb3';
 
 const App: React.FC = () => {
   const { sdk, safe } = useSafeAppsSDK();
+  const { web3 } = useWeb3();
   const {
     assets,
     selectedTokens,
@@ -100,8 +102,8 @@ const App: React.FC = () => {
   }, [assets, selectedTokens]);
 
   const getAddressFromDomain = useCallback(
-    (address: string) => sdk.eth.ens?.getAddress(address) || Promise.resolve(address),
-    [sdk],
+    (address: string) => web3?.eth.ens.getAddress(address) || Promise.resolve(address),
+    [web3],
   );
 
   useEffect(() => {
