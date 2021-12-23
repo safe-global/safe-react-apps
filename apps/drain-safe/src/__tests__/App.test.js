@@ -182,6 +182,6 @@ describe('<App />', () => {
 
     await screen.findByText(/maker/i);
 
-    expect(document.querySelectorAll('tbody tr').length).toEqual(4);
+    expect(document.querySelectorAll('.MuiDataGrid-row').length).toEqual(4);
   });
 });
