@@ -27,7 +27,7 @@ const CompoundWidget = () => {
   const [inputError, setInputError] = useState<string | undefined>();
   const { web3 } = useWeb3();
   const { sdk: appsSdk, safe: safeInfo, connected } = useSafeAppsSDK();
-  const { cTokenSupplyAPY, cDistributionTokenSupplyAPY, compAccrued, claimComp } = useComp(selectedToken);
+  const { cTokenSupplyAPY, cDistributionTokenSupplyAPY, claimableComp, claimComp } = useComp(selectedToken);
   const isMainnet = useRef(false);
 
   // fetch eth balance
@@ -274,7 +274,7 @@ const CompoundWidget = () => {
         </InfoContainer>
       </Section>
 
-      {isMainnet.current && <CompBalance balance={compAccrued} onCollect={claimComp} />}
+      {isMainnet.current && <CompBalance balance={claimableComp} onCollect={claimComp} />}
 
       <Title size="xs">Withdraw or Supply balance</Title>
 

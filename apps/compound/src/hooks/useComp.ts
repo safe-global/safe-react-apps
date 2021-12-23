@@ -17,7 +17,7 @@ export default function useComp(selectedToken: TokenItem | undefined) {
   const { web3 } = useWeb3();
   const [comptrollerInstance, setComptrollerInstance] = useState<Contract>();
   const [compoundLensInstance, setCompoundLensInstance] = useState<Contract>();
-  const [compAccrued, setCompAccrued] = useState<number>();
+  const [claimableComp, setClaimableComp] = useState<number>();
   const [comptrollerAddress, setComptrollerAddress] = useState<string>();
   const [cTokenSupplyAPY, setCTokenSupplyAPY] = useState<string>();
   const [cDistributionTokenSupplyAPY, setCDistributionTokenSupplyAPY] = useState<string>();
@@ -54,7 +54,7 @@ export default function useComp(selectedToken: TokenItem | undefined) {
         const accrued = await compoundLensInstance?.methods
           ?.getCompBalanceMetadataExt(compAddress, comptrollerAddress, safe?.safeAddress)
           .call();
-        setCompAccrued(accrued?.allocated / 10 ** 18);
+        setClaimableComp(accrued?.allocated / 10 ** 18);
       } catch (e) {
         console.error(e);
       }
@@ -142,7 +142,7 @@ export default function useComp(selectedToken: TokenItem | undefined) {
 
   return {
     comptrollerInstance,
-    compAccrued,
+    claimableComp,
     claimComp,
     cTokenSupplyAPY,
     cDistributionTokenSupplyAPY,
