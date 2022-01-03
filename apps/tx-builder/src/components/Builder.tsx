@@ -53,7 +53,7 @@ const StyledTextField = styled(TextFieldInput)`
 const StyledAddressInput = styled(AddressInput)`
   && {
     width: 520px;
-    margin-bottom: 10px;
+    margin-bottom: 1px;
 
     .MuiFormLabel-root {
       color: #0000008a;
@@ -75,7 +75,7 @@ const StyledSelect = styled(Select)`
 `;
 
 const StyledExamples = styled.div`
-  margin-bottom: 10px;
+  margin: 5px 0 10px 0;
 
   button {
     padding: 0;
@@ -281,7 +281,7 @@ export const Builder = ({
   const onValueInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValueError(undefined);
     if (!isInputValueValid(e.target.value)) {
-      setValueError(`${nativeCurrencySymbol} value`);
+      setValueError(`Invalid ${nativeCurrencySymbol} value`);
     }
     setValueInput(e.target.value);
   };
