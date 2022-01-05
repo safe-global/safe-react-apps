@@ -17,6 +17,10 @@ type Operation = 'lock' | 'withdraw';
 
 const WITHDRAW = 'withdraw';
 const SUPPLY = 'supply';
+const TABS = [
+  { id: SUPPLY, label: 'Supply' },
+  { id: WITHDRAW, label: 'Withdraw' },
+];
 
 const CompoundWidget = () => {
   const [ethBalance, setEthBalance] = useState('0');
@@ -251,13 +255,20 @@ const CompoundWidget = () => {
     setInputValue(value);
   };
 
+  const handleTabsChange = (selected: string) => {
+    setSelectedTab(selected);
+    setInputValue('');
+  };
+
+  const handleMaxInputValue = () => setInputValue(selectedTab === SUPPLY ? tokenBalance : underlyingBalance);
+
   if (!selectedToken || !connected) {
     return <Loader size="md" />;
   }
 
   return (
     <WidgetWrapper>
-      <StyledTitle size="xs">Your Compound balance</StyledTitle>
+      <StyledTitle size="sm">Compound</StyledTitle>
 
       <SelectContainer>
         <Select items={tokenList || []} activeItemId={selectedToken.id} onItemClick={onSelectItem} />
@@ -266,19 +277,7 @@ const CompoundWidget = () => {
         </Text>
       </SelectContainer>
 
-      <Tab
-        onChange={(selected) => {
-          setSelectedTab(selected);
-          setInputValue('');
-        }}
-        selectedTab={selectedTab}
-        variant="outlined"
-        fullWidth
-        items={[
-          { id: SUPPLY, label: 'Supply' },
-          { id: WITHDRAW, label: 'Withdraw' },
-        ]}
-      />
+      <Tab onChange={handleTabsChange} selectedTab={selectedTab} variant="outlined" fullWidth items={TABS} />
 
       <InfoContainer>
         <InfoRow label={`Supplied ${selectedToken.label}`} data={bNumberToHumanFormat(underlyingBalance)} />
@@ -300,10 +299,7 @@ const CompoundWidget = () => {
             meta={{ error: inputError }}
             {...props}
             endAdornment={
-              <ButtonLink
-                color="primary"
-                onClick={() => setInputValue(selectedTab === SUPPLY ? tokenBalance : underlyingBalance)}
-              >
+              <ButtonLink color="primary" onClick={handleMaxInputValue}>
                 MAX
               </ButtonLink>
             }
@@ -324,6 +320,7 @@ const CompoundWidget = () => {
             Withdraw
           </Button>
         )}
+
         {selectedTab === SUPPLY && (
           <Button size="lg" color="primary" variant="contained" onClick={lock} disabled={isSupplyDisabled()} fullWidth>
             Supply
