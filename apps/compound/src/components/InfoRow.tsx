@@ -6,7 +6,7 @@ type Props = {
   data: string | React.ReactElement | undefined;
 };
 
-export default function InfoRow({ label, data }: Props): React.ReactElement | null {
+export default function InfoRow({ label, data }: Props): React.ReactElement {
   return (
     <>
       <InfoRowContainer>

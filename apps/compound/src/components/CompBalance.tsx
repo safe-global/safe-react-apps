@@ -1,5 +1,6 @@
 import { SyntheticEvent, useCallback } from 'react';
-import { Title, Link } from '@gnosis.pm/safe-react-components';
+import { Title, ButtonLink } from '@gnosis.pm/safe-react-components';
+import styled from 'styled-components';
 import { InfoContainer } from '../styles';
 import InfoRow from './InfoRow';
 
@@ -27,12 +28,16 @@ export default function CompBalance({ balance, onCollect }: Props): React.ReactE
         data={
           <>
             {Number.isNaN(balance) ? 0 : balance?.toFixed(18)}{' '}
-            <Link size="lg" onClick={handleOnCollect}>
+            <Button color="primary" onClick={handleOnCollect}>
               Collect
-            </Link>
+            </Button>
           </>
         }
       />
     </InfoContainer>
   );
 }
+
+const Button = styled(ButtonLink)`
+  display: inline-block;
+`;

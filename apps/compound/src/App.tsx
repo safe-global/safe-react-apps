@@ -182,8 +182,9 @@ const CompoundWidget = () => {
 
     try {
       await appsSdk.txs.send({ txs });
-    } catch {
-      console.error('Lock: Transaction rejected or failed');
+      o;
+    } catch (error) {
+      console.error('Lock: Transaction rejected or failed: ', error);
     }
 
     setInputValue('');
@@ -205,8 +206,8 @@ const CompoundWidget = () => {
 
     try {
       await appsSdk.txs.send({ txs });
-    } catch {
-      console.error('Withdraw: Transaction rejected or failed');
+    } catch (error) {
+      console.error('Withdraw: Transaction rejected or failed: ', error);
     }
 
     setInputValue('');
