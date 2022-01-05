@@ -182,7 +182,6 @@ const CompoundWidget = () => {
 
     try {
       await appsSdk.txs.send({ txs });
-      o;
     } catch (error) {
       console.error('Lock: Transaction rejected or failed: ', error);
     }
