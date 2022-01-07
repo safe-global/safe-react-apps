@@ -317,13 +317,13 @@ const CompoundWidget = () => {
             disabled={isWithdrawDisabled()}
             fullWidth
           >
-            Withdraw
+            {parseFloat(underlyingBalance) > 0 ? 'Withdraw' : 'No balance to withdraw'}
           </Button>
         )}
 
         {selectedTab === SUPPLY && (
           <Button size="lg" color="primary" variant="contained" onClick={lock} disabled={isSupplyDisabled()} fullWidth>
-            Supply
+            {parseFloat(tokenBalance) ? 'Supply' : 'No balance to supply'}
           </Button>
         )}
       </ButtonContainer>
