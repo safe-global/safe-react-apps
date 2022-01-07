@@ -294,7 +294,6 @@ const CompoundWidget = () => {
         value={inputValue}
         renderInput={(props: any) => (
           <StyledTextField
-            width={'100%'}
             label="Amount"
             meta={{ error: inputError }}
             {...props}
@@ -323,7 +322,7 @@ const CompoundWidget = () => {
 
         {selectedTab === SUPPLY && (
           <Button size="lg" color="primary" variant="contained" onClick={lock} disabled={isSupplyDisabled()} fullWidth>
-            {parseFloat(tokenBalance) ? 'Supply' : 'No balance to supply'}
+            {parseFloat(tokenBalance) > 0 ? 'Supply' : 'No balance to supply'}
           </Button>
         )}
       </ButtonContainer>
