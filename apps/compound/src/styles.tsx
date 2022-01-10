@@ -1,4 +1,4 @@
-import React from 'react';
+import { TextField, Title } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 
 export const SelectContainer = styled.div`
@@ -13,33 +13,29 @@ export const SelectContainer = styled.div`
   }
 `;
 
-export const DaiInfo = styled.div`
+export const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: left;
   width: 100%;
-
-  > * {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-  }
 `;
 
 export const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-around;
   margin-top: 15px;
+
+  button:not(:first-child) {
+    margin-left: 10px;
+  }
 `;
 
-const Card = styled.div`
-  display: flex;
-  justify-content: left;
-  padding: 24px;
+export const StyledTextField = styled(TextField)`
+  &.MuiTextField-root {
+    width: 100%;
+  }
 `;
 
-export const WidgetWrapper: React.FC = ({ children }) => (
-  <Card>
-    <div>{children}</div>
-  </Card>
-);
+export const StyledTitle = styled(Title)`
+  margin-top: 0;
+`;
