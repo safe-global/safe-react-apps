@@ -139,36 +139,44 @@ const App: React.FC = () => {
         <Logo />
         <Title size="md">Drain Account</Title>
       </Flex>
-      <Balances ethFiatPrice={ethFiatPrice} gasPrice={gasPrice} assets={assets} onSelectionChange={setSelectedTokens} />
-      {error && <Text size="lg">{error}</Text>}
-      {isFinished && (
-        <Text size="lg">
-          The transaction has been created.{' '}
-          <span role="img" aria-label="success">
-            ✅
-          </span>
-          <br />
-          Refresh the app when it’s executed.
-        </Text>
-      )}
-      {!submitting && (
-        <AddressInput
-          id="recipient"
-          name="toAddress"
-          label="Recipient"
-          networkPrefix={networkPrefix}
-          showNetworkPrefix={!!networkPrefix}
-          onChangeAddress={onToAddressChange}
-          hiddenLabel={false}
-          address={toAddress}
-          getAddressFromDomain={getAddressFromDomain}
-        />
-      )}
+      {assets.length ? (
+        <>
+          <Balances
+            ethFiatPrice={ethFiatPrice}
+            gasPrice={gasPrice}
+            assets={assets}
+            onSelectionChange={setSelectedTokens}
+          />
+          {error && <Text size="lg">{error}</Text>}
+          {isFinished && (
+            <Text size="lg">
+              The transaction has been created. ✅<span role="img" aria-label="success"></span>
+              <br />
+              Refresh the app when it’s executed.
+            </Text>
+          )}
+          {!submitting && (
+            <AddressInput
+              id="recipient"
+              name="toAddress"
+              label="Recipient"
+              networkPrefix={networkPrefix}
+              address={toAddress}
+              hiddenLabel={false}
+              onChangeAddress={onToAddressChange}
+              showNetworkPrefix={!!networkPrefix}
+              getAddressFromDomain={getAddressFromDomain}
+            />
+          )}
 
-      {submitting ? (
-        <CancelButton>Cancel</CancelButton>
+          {submitting ? (
+            <CancelButton>Cancel</CancelButton>
+          ) : (
+            <SubmitButton disabled={!selectedTokens.length}>{transferStatusText}</SubmitButton>
+          )}
+        </>
       ) : (
-        <SubmitButton disabled={!selectedTokens.length}>{transferStatusText}</SubmitButton>
+        <Text size="xl">You don't have any transferable assets</Text>
       )}
     </FormContainer>
   );
