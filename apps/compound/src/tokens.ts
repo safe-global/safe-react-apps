@@ -1,57 +1,67 @@
-// reference
-// https://github.com/compound-finance/compound-protocol/tree/f33865017e15bd3e5b49d5cb34affcc572eebea3/networks
-
-const tokens = {
-  4: {
-    DAI: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
-    cDAI: '0x6D7F0754FFeb405d23C51CE938289d4835bE3b14',
-
-    BAT: '0xbf7a7169562078c96f0ec1a8afd6ae50f12e5a99',
-    cBAT: '0xEBf1A11532b93a529b5bC942B4bAA98647913002',
-
-    ETH: '0xc778417e063141139fce010982780140aa0cd5ab',
-    cETH: '0xd6801a1DfFCd0a410336Ef88DeF4320D6DF1883e',
-
-    REP: '0x6e894660985207feb7cf89Faf048998c71E8EE89',
-    cREP: '0xEBe09eB3411D18F4FF8D859e096C533CAC5c6B60',
-
-    USDC: '0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b',
-    cUSDC: '0x5B281A6DdA0B271e91ae35DE655Ad301C976edb1',
-
-    USDT: '0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02',
-    cUSDT: '0x2fB298BDbeF468638AD6653FF8376575ea41e768',
-
-    WBTC: '0x577D296678535e4903D59A4C929B718e1D575e0A',
-    cWBTC: '0x0014F450B8Ae7708593F4A46F8fa6E5D50620F96',
-
-    ZRX: '0xddea378A6dDC8AfeC82C36E9b0078826bf9e68B6',
-    cZRX: '0x52201ff1720134bBbBB2f6BC97Bf3715490EC19B',
-  },
-  1: {
-    DAI: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-    cDAI: '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643',
-
-    BAT: '0x0D8775F648430679A709E98d2b0Cb6250d2887EF',
-    cBAT: '0x6C8c6b02E7b2BE14d4fA6022Dfd6d75921D90E4E',
-
-    ETH: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-    cETH: '0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5',
-
-    REP: '0x1985365e9f78359a9B6AD760e32412f4a445E862',
-    cREP: '0x158079Ee67Fce2f58472A96584A73C7Ab9AC95c1',
-
-    USDC: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    cUSDC: '0x39AA39c021dfbaE8faC545936693aC917d5E7563',
-
-    USDT: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-    cUSDT: '0xf650C3d88D12dB855b8bf7D11Be6C55A4e07dCC9',
-
-    WBTC: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-    cWBTC: '0xC11b1268C1A384e55C48c2391d8d480264A3A7F4',
-
-    ZRX: '0xE41d2489571d322189246DaFA5ebDe1F4699F498',
-    cZRX: '0xB3319f5D18Bc0D84dD1b4825Dcde5d5f7266d407',
-  },
+const TOKENS = {
+  DAI: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
+  cDAI: '0x6D7F0754FFeb405d23C51CE938289d4835bE3b14',
+  BAT: '0xbf7a7169562078c96f0ec1a8afd6ae50f12e5a99',
+  cBAT: '0xEBf1A11532b93a529b5bC942B4bAA98647913002',
+  ETH: '0xc778417e063141139fce010982780140aa0cd5ab',
+  cETH: '0xd6801a1DfFCd0a410336Ef88DeF4320D6DF1883e',
+  USDC: '0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b',
+  cUSDC: '0x5B281A6DdA0B271e91ae35DE655Ad301C976edb1',
+  USDT: '0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02',
+  cUSDT: '0x2fB298BDbeF468638AD6653FF8376575ea41e768',
+  WBTC: '0x577D296678535e4903D59A4C929B718e1D575e0A',
+  cWBTC: '0x0014F450B8Ae7708593F4A46F8fa6E5D50620F96',
 };
 
-export default tokens;
+const STATIC_CONFIG = [
+  {
+    id: 'DAI',
+    label: 'DAI',
+    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_DAI.svg',
+    decimals: 18,
+    tokenAddr: TOKENS.DAI,
+    cTokenAddr: TOKENS.cDAI,
+  },
+  {
+    id: 'BAT',
+    label: 'BAT',
+    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_BAT.svg',
+    decimals: 18,
+    tokenAddr: TOKENS.BAT,
+    cTokenAddr: TOKENS.cBAT,
+  },
+  {
+    id: 'ETH',
+    label: 'ETH',
+    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_ETH.svg',
+    decimals: 18,
+    tokenAddr: TOKENS.ETH,
+    cTokenAddr: TOKENS.cETH,
+  },
+  {
+    id: 'USDC',
+    label: 'USDC',
+    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_USDC.svg',
+    decimals: 6,
+    tokenAddr: TOKENS.USDC,
+    cTokenAddr: TOKENS.cUSDC,
+  },
+  {
+    id: 'USDT',
+    label: 'USDT',
+    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_USDT.svg',
+    decimals: 6,
+    tokenAddr: TOKENS.USDT,
+    cTokenAddr: TOKENS.cUSDT,
+  },
+  {
+    id: 'WBTC',
+    label: 'WBTC',
+    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_BTC.svg',
+    decimals: 8,
+    tokenAddr: TOKENS.WBTC,
+    cTokenAddr: TOKENS.cWBTC,
+  },
+];
+
+export default STATIC_CONFIG;

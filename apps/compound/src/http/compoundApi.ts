@@ -5,6 +5,9 @@ export type cToken = {
   token_address: string;
   underlying_symbol: string;
   underlying_address: string;
+  cash: {
+    value: string;
+  };
 };
 
 export async function getMarketAddressesForSafeAccount(safeAddress: string): Promise<string[]> {
