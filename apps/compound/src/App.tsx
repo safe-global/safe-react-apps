@@ -57,19 +57,17 @@ const CompoundWidget = () => {
     fetchEthBalance();
   }, [web3, safeInfo.safeAddress]);
 
-  // load tokens list and initialize with DAI
   useEffect(() => {
-    if (!safeInfo) {
-      return;
-    }
+    (async () => {
+      if (!safeInfo) {
+        return;
+      }
 
-    const tokenListRes = getTokenList(safeInfo.chainId);
-    setTokenList(tokenListRes);
-
-    const findDaiRes = tokenListRes.find((t) => t.id === 'DAI');
-    setSelectedToken(findDaiRes);
+      const tokenListRes = await getTokenList(safeInfo.chainId);
+      setTokenList(tokenListRes);
+      setSelectedToken(tokenListRes.find((t) => t.id === 'ETH'));
+    })();
   }, [safeInfo]);
-
   // on selectedToken
   useEffect(() => {
     if (!selectedToken || !web3) {
