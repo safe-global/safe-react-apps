@@ -1619,13 +1619,17 @@
     "@ethersproject/properties" "^5.5.0"
     "@ethersproject/strings" "^5.5.0"
 
-"@gnosis.pm/safe-apps-react-sdk@file:../safe-apps-sdk/packages/safe-apps-react-sdk":
+"@gnosis.pm/safe-apps-react-sdk@4.0.8":
   version "4.0.8"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-4.0.8.tgz#76012a4aa00c6e00bab7decc1536f0dabc125a57"
+  integrity sha512-P/1pcBleg5RJJYJWS5gSzNpqeWNqYZsT3m2/hIwdv1jtodXlBBsp4OhSaknlFCtwQlhBhc+cVYnk9AMljMLuow==
   dependencies:
-    "@gnosis.pm/safe-apps-sdk" "file:../safe-apps-sdk/packages/safe-apps-sdk"
+    "@gnosis.pm/safe-apps-sdk" "6.1.1"
 
-"@gnosis.pm/safe-apps-sdk@file:../safe-apps-sdk/packages/safe-apps-sdk":
+"@gnosis.pm/safe-apps-sdk@6.1.1":
   version "6.1.1"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-6.1.1.tgz#6a4e19c475967a0d04a8c04559e05703484e2ca8"
+  integrity sha512-MI2gIdQUlu1NrDt5rF47xey1LSiQoy5Nb+vqn16PM5qVc3FjR+nPNG8+1yGlL96di31z+kyS2J8DzHiea7+TMA==
   dependencies:
     "@gnosis.pm/safe-react-gateway-sdk" "^2.5.6"
     ethers "^5.4.7"

@@ -12,7 +12,8 @@ import {
   Switch,
 } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
-import { AbiItem } from 'web3-utils';
+import web3Utils, { AbiItem, isHexStrict, toChecksumAddress, toWei, fromWei } from 'web3-utils';
+import abiCoder, { AbiCoder } from 'web3-eth-abi';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
@@ -150,17 +151,14 @@ export const Builder = ({
     setReviewing(false);
   };
 
-  const handleCustomDataInputChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setCustomDataValue(e.target.value);
-      if (services?.web3?.utils.isHexStrict(e.target.value)) {
-        setAddCustomTxDataError(undefined);
-      } else {
-        setAddCustomTxDataError(getCustomDataError(e.target.value));
-      }
-    },
-    [services.web3],
-  );
+  const handleCustomDataInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setCustomDataValue(e.target.value);
+    if (isHexStrict(e.target.value)) {
+      setAddCustomTxDataError(undefined);
+    } else {
+      setAddCustomTxDataError(getCustomDataError(e.target.value));
+    }
+  }, []);
 
   const handleCustomDataSwitchChange = useCallback(() => {
     setShowCustomData(!showCustomData);
@@ -171,7 +169,7 @@ export const Builder = ({
     let description = '';
     let data = '';
 
-    if (!services?.web3 || !contract?.methods) {
+    if (!contract?.methods) {
       return;
     }
 
@@ -193,7 +191,8 @@ export const Builder = ({
       });
       try {
         description = `${method.name} (${inputDescription.join(', ')})`;
-        data = services?.web3.eth.abi.encodeFunctionCall(method as AbiItem, parsedInputs);
+        const abi = abiCoder as unknown; // a bug in the web3-eth-abi types
+        data = (abi as AbiCoder).encodeFunctionCall(method as AbiItem, parsedInputs);
 
         return {
           data,
@@ -203,18 +202,14 @@ export const Builder = ({
         throw error;
       }
     }
-  }, [contract, inputCache, nativeCurrencySymbol, selectedMethodIndex, services.web3, valueInput]);
+  }, [contract, inputCache, nativeCurrencySymbol, selectedMethodIndex, valueInput]);
 
   const addTransaction = async () => {
     let description = '';
     let data = '';
 
-    if (!services?.web3) {
-      return;
-    }
-
     if (showCustomData) {
-      if (!services?.web3.utils.isHexStrict(customDataValue as string)) {
+      if (!isHexStrict(customDataValue as string)) {
         setAddCustomTxDataError(getCustomDataError(customDataValue));
         return;
       }
@@ -236,14 +231,12 @@ export const Builder = ({
     }
 
     try {
-      const cleanTo = services?.web3.utils.toChecksumAddress(toInput);
-      const cleanValue = services?.web3.utils.toWei(valueInput || '0');
+      const cleanTo = toChecksumAddress(toInput);
+      const cleanValue = toWei(valueInput || '0');
 
       if (data?.length === 0) {
         data = '0x';
-        description = `Transfer ${services?.web3.utils.fromWei(
-          cleanValue.toString(),
-        )} ${nativeCurrencySymbol} to ${cleanTo}`;
+        description = `Transfer ${fromWei(cleanValue.toString())} ${nativeCurrencySymbol} to ${cleanTo}`;
       }
 
       onAddTransaction({
@@ -267,15 +260,12 @@ export const Builder = ({
     onRemoveTransaction(inputIndex);
   };
 
-  const isValidAddress = useCallback(
-    (address: string | null) => {
-      if (!address) {
-        return false;
-      }
-      return services?.web3?.utils.isAddress(address);
-    },
-    [services.web3],
-  );
+  const isValidAddress = useCallback((address: string | null) => {
+    if (!address) {
+      return false;
+    }
+    return web3Utils.isAddress(address);
+  }, []);
 
   const onChangeToAddress = useCallback((address: string) => setToInput(address), []);
 
@@ -316,7 +306,7 @@ export const Builder = ({
         const txData = getTxData();
 
         if (txData) {
-          if (!services?.web3?.utils.isHexStrict(txData.data as string)) {
+          if (!isHexStrict(txData.data as string)) {
             setAddCustomTxDataError(getCustomDataError(txData.data));
           }
           setCustomDataValue(txData.data);
@@ -325,7 +315,7 @@ export const Builder = ({
         return;
       }
     }
-  }, [showCustomData, getTxData, services.web3]);
+  }, [showCustomData, getTxData]);
 
   const renderInput = (input: any, index: number) => {
     const isAddressField = input.internalType === 'address' || input.type === 'address';
@@ -376,12 +366,12 @@ export const Builder = ({
     let isAddress;
 
     try {
-      isAddress = services?.web3?.utils.isAddress(to);
+      isAddress = web3Utils.isAddress(to);
     } catch {
       isAddress = false;
     }
     return (isAddress && toInput) || !isAddress;
-  }, [services?.web3?.utils, to, toInput]);
+  }, [to, toInput]);
 
   if (!contract && !isValueInputVisible) {
     return null;

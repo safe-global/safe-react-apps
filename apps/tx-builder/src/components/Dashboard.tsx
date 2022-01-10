@@ -3,6 +3,7 @@ import { Text, Title, Link, AddressInput } from '@gnosis.pm/safe-react-component
 import styled from 'styled-components';
 import { InputAdornment } from '@material-ui/core';
 import CheckCircle from '@material-ui/icons/CheckCircle';
+import web3Utils from 'web3-utils';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
@@ -52,7 +53,6 @@ const StyledAddressInput = styled(AddressInput)`
 
 const Dashboard = (): ReactElement => {
   const { web3, interfaceRepo, chainInfo } = useServices();
-  const services = useServices();
   const { transactions, handleAddTransaction, handleRemoveTransaction, handleSubmitTransactions } = useTransactions();
   const [addressOrAbi, setAddressOrAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
@@ -65,7 +65,7 @@ const Dashboard = (): ReactElement => {
       setContract(null);
       setLoadContractError('');
 
-      if (!addressOrAbi || !web3 || !interfaceRepo) {
+      if (!addressOrAbi || !interfaceRepo) {
         return;
       }
 
@@ -82,21 +82,18 @@ const Dashboard = (): ReactElement => {
     };
 
     loadContract(addressOrAbi);
-  }, [addressOrAbi, interfaceRepo, web3]);
+  }, [addressOrAbi, interfaceRepo]);
 
   const getAddressFromDomain = (name: string): Promise<string> => {
-    return services?.web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
+    return web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
   };
 
-  const isValidAddress = useCallback(
-    (address: string | null) => {
-      if (!address) {
-        return false;
-      }
-      return web3?.utils.isAddress(address);
-    },
-    [web3],
-  );
+  const isValidAddress = useCallback((address: string | null) => {
+    if (!address) {
+      return false;
+    }
+    return web3Utils.isAddress(address);
+  }, []);
 
   const isValidAddressOrContract = (isValidAddress(addressOrAbi) || contract) && !isABILoading;
 

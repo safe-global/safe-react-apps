@@ -1,4 +1,5 @@
 import { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
+import { isAddress } from 'web3-utils';
 import getAbi from './getAbi';
 
 export interface ContractInput {
@@ -19,11 +20,9 @@ export interface ContractInterface {
 
 class InterfaceRepository {
   chainInfo: ChainInfo;
-  web3: any;
 
-  constructor(chainInfo: ChainInfo, web3: any) {
+  constructor(chainInfo: ChainInfo) {
     this.chainInfo = chainInfo;
-    this.web3 = web3;
   }
 
   private async _loadAbiFromBlockExplorer(address: string): Promise<string> {
@@ -33,9 +32,7 @@ class InterfaceRepository {
   private _isMethodPayable = (m: any) => m.payable || m.stateMutability === 'payable';
 
   async loadAbi(addressOrAbi: string): Promise<ContractInterface> {
-    const abi = this.web3.utils.isAddress(addressOrAbi)
-      ? await this._loadAbiFromBlockExplorer(addressOrAbi)
-      : JSON.parse(addressOrAbi);
+    const abi = isAddress(addressOrAbi) ? await this._loadAbiFromBlockExplorer(addressOrAbi) : JSON.parse(addressOrAbi);
 
     const methods = abi
       .filter((e: any) => {
