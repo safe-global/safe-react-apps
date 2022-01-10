@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement, useCallback, useMemo, ChangeEvent } from 'react';
+import React, { useState, useEffect, ReactElement, useCallback, ChangeEvent } from 'react';
 import {
   Button,
   Text,
@@ -53,7 +53,7 @@ const StyledTextField = styled(TextFieldInput)`
 const StyledAddressInput = styled(AddressInput)`
   && {
     width: 520px;
-    margin-bottom: 10px;
+    margin-bottom: 1px;
 
     .MuiFormLabel-root {
       color: #0000008a;
@@ -75,7 +75,7 @@ const StyledSelect = styled(Select)`
 `;
 
 const StyledExamples = styled.div`
-  margin-bottom: 10px;
+  margin: 5px 0 10px 0;
 
   button {
     padding: 0;
@@ -103,7 +103,6 @@ type Props = {
 export const Builder = ({
   contract,
   to,
-  chainId,
   nativeCurrencySymbol,
   transactions,
   onAddTransaction,
@@ -282,7 +281,7 @@ export const Builder = ({
   const onValueInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValueError(undefined);
     if (!isInputValueValid(e.target.value)) {
-      setValueError(`${nativeCurrencySymbol} value`);
+      setValueError(`Invalid ${nativeCurrencySymbol} value`);
     }
     setValueInput(e.target.value);
   };
@@ -372,17 +371,6 @@ export const Builder = ({
     );
   };
 
-  const showAddressInput = useMemo(() => {
-    let isAddress;
-
-    try {
-      isAddress = services?.web3?.utils.isAddress(to);
-    } catch {
-      isAddress = false;
-    }
-    return (isAddress && toInput) || !isAddress;
-  }, [services?.web3?.utils, to, toInput]);
-
   if (!contract && !isValueInputVisible) {
     return null;
   }
@@ -392,20 +380,19 @@ export const Builder = ({
       <Title size="xs">Transaction information</Title>
       {contract && !contract?.methods.length && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
 
-      {showAddressInput && (
-        <StyledAddressInput
-          id={'to-address-input'}
-          name="toAddress"
-          label="To Address"
-          address={toInput}
-          showNetworkPrefix={!!networkPrefix}
-          networkPrefix={networkPrefix}
-          error={toInput && !isValidAddress(toInput) ? 'Invalid Address' : ''}
-          getAddressFromDomain={getAddressFromDomain}
-          onChangeAddress={onChangeToAddress}
-          hiddenLabel={false}
-        />
-      )}
+      <StyledAddressInput
+        id={'to-address-input'}
+        name="toAddress"
+        label="To Address"
+        address={toInput}
+        showNetworkPrefix={!!networkPrefix}
+        networkPrefix={networkPrefix}
+        error={toInput && !isValidAddress(toInput) ? 'Invalid Address' : ''}
+        getAddressFromDomain={getAddressFromDomain}
+        onChangeAddress={onChangeToAddress}
+        hiddenLabel={false}
+        inputProps={{ value: toInput }}
+      />
 
       {/* ValueInput */}
       {isValueInputVisible && (
