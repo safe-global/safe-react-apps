@@ -3,7 +3,7 @@ import abiCoder, { AbiCoder } from 'web3-eth-abi';
 import { BaseTransaction, TokenBalance } from '@gnosis.pm/safe-apps-sdk';
 import erc20 from '../abis/erc20';
 
-const NATIVE_TOKEN = 'NATIVE_TOKEN';
+export const NATIVE_TOKEN = 'NATIVE_TOKEN';
 
 export function encodeTxData(method: AbiItem, recipient: string, amount: string): string {
   const abi = abiCoder as unknown; // a bug in the web3-eth-abi types
