@@ -94,7 +94,7 @@ export default function useComp(selectedToken: TokenItem | undefined) {
     (async () => {
       let compSpeedSupply = await comptrollerInstance?.methods?.compSupplySpeeds(selectedToken.cTokenAddr).call();
       let compPrice = await opfInstance?.methods?.price('COMP').call();
-      let assetPrice = await opfInstance?.methods?.price(selectedToken.id).call();
+      let assetPrice = await opfInstance?.methods?.price(selectedToken.id === 'WBTC' ? 'BTC' : selectedToken.id).call();
       let totalSupply = await cTokenInstance?.methods?.totalSupply().call();
       let exchangeRate = await cTokenInstance?.methods?.exchangeRateCurrent().call();
 
