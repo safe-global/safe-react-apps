@@ -7,10 +7,8 @@ const TOKENS = {
   cETH: '0xd6801a1DfFCd0a410336Ef88DeF4320D6DF1883e',
   USDC: '0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b',
   cUSDC: '0x5B281A6DdA0B271e91ae35DE655Ad301C976edb1',
-  USDT: '0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02',
-  cUSDT: '0x2fB298BDbeF468638AD6653FF8376575ea41e768',
-  WBTC: '0x577D296678535e4903D59A4C929B718e1D575e0A',
-  cWBTC: '0x0014F450B8Ae7708593F4A46F8fa6E5D50620F96',
+  ZRX: '0xddea378A6dDC8AfeC82C36E9b0078826bf9e68B6',
+  cZRX: '0x52201ff1720134bBbBB2f6BC97Bf3715490EC19B',
 };
 
 const STATIC_CONFIG = [
@@ -47,20 +45,12 @@ const STATIC_CONFIG = [
     cTokenAddr: TOKENS.cUSDC,
   },
   {
-    id: 'USDT',
-    label: 'USDT',
-    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_USDT.svg',
-    decimals: 6,
-    tokenAddr: TOKENS.USDT,
-    cTokenAddr: TOKENS.cUSDT,
-  },
-  {
-    id: 'WBTC',
-    label: 'WBTC',
-    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_BTC.svg',
+    id: 'ZRX',
+    label: 'ZRX',
+    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_ZRX.svg',
     decimals: 8,
-    tokenAddr: TOKENS.WBTC,
-    cTokenAddr: TOKENS.cWBTC,
+    tokenAddr: TOKENS.ZRX,
+    cTokenAddr: TOKENS.cZRX,
   },
 ];
 
