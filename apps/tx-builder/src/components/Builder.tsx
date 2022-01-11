@@ -208,7 +208,7 @@ export const Builder = ({
     let description = '';
     let data = '';
 
-    if (!services?.web3) {
+    if (!services?.web3 || valueError) {
       return;
     }
 
