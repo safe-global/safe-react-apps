@@ -1,9 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import Big from 'big.js';
-import { Button, Select, Text, Loader, Tab, ButtonLink } from '@gnosis.pm/safe-react-components';
+import { Button, Select, Text, Tab, Loader, ButtonLink } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { getTokenList, TokenItem } from './config';
-import { SelectContainer, InfoContainer, ButtonContainer, StyledTitle, StyledTextField } from './styles';
+import {
+  SelectContainer,
+  InfoContainer,
+  ButtonContainer,
+  StyledTitle,
+  StyledTextField,
+  LoaderContainer,
+} from './styles';
 import { getTokenInteractions, parseEvents } from './tokensTransfers';
 import useComp from './hooks/useComp';
 import useWeb3 from './hooks/useWeb3';
@@ -261,7 +268,11 @@ const CompoundWidget = () => {
   const handleMaxInputValue = () => setInputValue(selectedTab === SUPPLY ? tokenBalance : underlyingBalance);
 
   if (!selectedToken || !connected) {
-    return <Loader size="md" />;
+    return (
+      <LoaderContainer>
+        <Loader size="md" />
+      </LoaderContainer>
+    );
   }
 
   return (

@@ -40,3 +40,12 @@ export const StyledTextField = styled(TextField)`
 export const StyledTitle = styled(Title)`
   margin-top: 0;
 `;
+
+export const LoaderContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: calc(100vw - 50px);
+  height: calc(100vh);
+`;
