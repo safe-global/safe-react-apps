@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Big from 'big.js';
-import { Button, Select, Title, Section, Text, Loader } from '@gnosis.pm/safe-react-components';
+import { Button, Select, Text, Loader, Tab, ButtonLink } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { getTokenList, TokenItem } from './config';
 import { SelectContainer, InfoContainer, ButtonContainer, StyledTitle, StyledTextField } from './styles';
@@ -15,11 +15,19 @@ import { BigNumberInput } from 'big-number-input';
 
 type Operation = 'lock' | 'withdraw';
 
+const WITHDRAW = 'withdraw';
+const SUPPLY = 'supply';
+const TABS = [
+  { id: SUPPLY, label: 'Supply' },
+  { id: WITHDRAW, label: 'Withdraw' },
+];
+
 const CompoundWidget = () => {
   const [ethBalance, setEthBalance] = useState('0');
   const [tokenList, setTokenList] = useState<Array<TokenItem>>();
   const [selectedToken, setSelectedToken] = useState<TokenItem>();
   const { cTokenInstance, tokenInstance } = useCToken(selectedToken);
+  const [selectedTab, setSelectedTab] = useState(SUPPLY);
   const [interestEarn, setInterestEarn] = useState('0');
   const [tokenBalance, setTokenBalance] = useState<string>('0');
   const [underlyingBalance, setUnderlyingBalance] = useState<string>('0');
@@ -247,13 +255,20 @@ const CompoundWidget = () => {
     setInputValue(value);
   };
 
+  const handleTabsChange = (selected: string) => {
+    setSelectedTab(selected);
+    setInputValue('');
+  };
+
+  const handleMaxInputValue = () => setInputValue(selectedTab === SUPPLY ? tokenBalance : underlyingBalance);
+
   if (!selectedToken || !connected) {
     return <Loader size="md" />;
   }
 
   return (
     <WidgetWrapper>
-      <StyledTitle size="xs">Your Compound balance</StyledTitle>
+      <StyledTitle size="sm">Compound</StyledTitle>
 
       <SelectContainer>
         <Select items={tokenList || []} activeItemId={selectedToken.id} onItemClick={onSelectItem} />
@@ -262,38 +277,57 @@ const CompoundWidget = () => {
         </Text>
       </SelectContainer>
 
-      <Section>
-        <InfoContainer>
-          <InfoRow label={`Supplied ${selectedToken.label}`} data={bNumberToHumanFormat(underlyingBalance)} />
-          <InfoRow label="Interest earned" data={`~ ${interestEarn} ${selectedToken.label}`} />
-          <InfoRow label="Supply APY" data={cTokenSupplyAPY && `${cTokenSupplyAPY}%`} />
-          {isMainnet && (
-            <InfoRow label="Distribution APY" data={cDistributionTokenSupplyAPY && `${cDistributionTokenSupplyAPY}%`} />
-          )}
-        </InfoContainer>
-      </Section>
+      <Tab onChange={handleTabsChange} selectedTab={selectedTab} variant="outlined" fullWidth items={TABS} />
 
-      {isMainnet && <CompBalance balance={claimableComp} onCollect={claimComp} />}
-
-      <Title size="xs">Withdraw or Supply balance</Title>
+      <InfoContainer>
+        <InfoRow label={`Supplied ${selectedToken.label}`} data={bNumberToHumanFormat(underlyingBalance)} />
+        <InfoRow label="Interest earned" data={`~ ${interestEarn} ${selectedToken.label}`} />
+        <InfoRow label="Supply APY" data={cTokenSupplyAPY && `${cTokenSupplyAPY}%`} />
+        {isMainnet && (
+          <InfoRow label="Distribution APY" data={cDistributionTokenSupplyAPY && `${cDistributionTokenSupplyAPY}%`} />
+        )}
+      </InfoContainer>
 
       <BigNumberInput
         decimals={selectedToken.decimals}
         onChange={onInputChange}
         value={inputValue}
         renderInput={(props: any) => (
-          <StyledTextField width={'100%'} label="Amount" meta={{ error: inputError }} {...props} />
+          <StyledTextField
+            label="Amount"
+            meta={{ error: inputError }}
+            {...props}
+            endAdornment={
+              <ButtonLink color="primary" onClick={handleMaxInputValue}>
+                MAX
+              </ButtonLink>
+            }
+          />
         )}
       />
 
       <ButtonContainer>
-        <Button size="lg" color="secondary" variant="contained" onClick={withdraw} disabled={isWithdrawDisabled()}>
-          Withdraw
-        </Button>
-        <Button size="lg" color="primary" variant="contained" onClick={lock} disabled={isSupplyDisabled()}>
-          Supply
-        </Button>
+        {selectedTab === WITHDRAW && (
+          <Button
+            size="lg"
+            color="secondary"
+            variant="contained"
+            onClick={withdraw}
+            disabled={isWithdrawDisabled()}
+            fullWidth
+          >
+            {parseFloat(underlyingBalance) > 0 ? 'Withdraw' : 'No balance to withdraw'}
+          </Button>
+        )}
+
+        {selectedTab === SUPPLY && (
+          <Button size="lg" color="primary" variant="contained" onClick={lock} disabled={isSupplyDisabled()} fullWidth>
+            {parseFloat(tokenBalance) > 0 ? 'Supply' : 'No balance to supply'}
+          </Button>
+        )}
       </ButtonContainer>
+
+      {isMainnet && <CompBalance balance={claimableComp} onCollect={claimComp} />}
     </WidgetWrapper>
   );
 };

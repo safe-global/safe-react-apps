@@ -14,6 +14,7 @@ export const SelectContainer = styled.div`
 `;
 
 export const InfoContainer = styled.div`
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: left;
