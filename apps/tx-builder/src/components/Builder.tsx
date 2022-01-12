@@ -420,6 +420,7 @@ export const Builder = ({
             onItemClick={(id: string) => {
               setAddTxError(undefined);
               handleMethod(Number(id));
+              setInputCache([]);
             }}
           />
           <StyledExamples>
