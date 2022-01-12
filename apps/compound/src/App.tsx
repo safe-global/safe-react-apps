@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import Big from 'big.js';
-import { Button, Select, Text, Tab, Loader, ButtonLink } from '@gnosis.pm/safe-react-components';
+import { Button, Select, Text, Loader, Tab, ButtonLink } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { getTokenList, TokenItem } from './config';
 import {
