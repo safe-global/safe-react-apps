@@ -16,10 +16,12 @@ const ETH_UNDERLYING_ADDRESS: { [key: number]: string } = {
   4: '0xc778417e063141139fce010982780140aa0cd5ab',
 };
 
+const EXCLUDE_TOKENS = ['cWBTC', 'cSAI', 'cREP'];
+
 const getSymbolIconUrl = (symbol: string) =>
   `https://app.compound.finance/compound-components/assets/asset_${symbol === 'WBTC' ? 'BTC' : symbol}.svg`;
 
-const filterTokens = (token: cToken) => token.symbol !== 'cWBTC';
+const filterTokens = (token: cToken) => !EXCLUDE_TOKENS.includes(token.symbol);
 const orderTokensBySymbol = (a: cToken, b: cToken) => ('' + a.underlying_symbol).localeCompare(b.underlying_symbol);
 const transformFromCompoundResponse = (token: cToken, chainId: number) => {
   return {
