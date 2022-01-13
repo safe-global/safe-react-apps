@@ -43,6 +43,10 @@ const SafeApp = (): React.ReactElement => {
     return chainInfo && Object.keys(ASSETS_BY_CHAIN).includes(chainInfo.chainId);
   }, [chainInfo]);
 
+  const getRampWidgetUrl = () => {
+    return chainInfo?.chainId === '4' ? 'https://ri-widget-staging.firebaseapp.com/' : '';
+  };
+
   if (!chainInfo) {
     return <Loader size="lg" />;
   }
@@ -51,11 +55,7 @@ const SafeApp = (): React.ReactElement => {
     <Container>
       {!isChainSupported && <Title size="lg">Network not supported</Title>}
       {isChainSupported && (
-        <RampWidget
-          url={chainInfo.chainId === '4' ? 'https://ri-widget-staging.firebaseapp.com/' : ''}
-          address={safe.safeAddress}
-          assets={ASSETS_BY_CHAIN[chainInfo.chainId]}
-        />
+        <RampWidget url={getRampWidgetUrl()} address={safe.safeAddress} assets={ASSETS_BY_CHAIN[chainInfo.chainId]} />
       )}
     </Container>
   );
