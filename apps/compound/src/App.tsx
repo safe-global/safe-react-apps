@@ -1,57 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Big from 'big.js';
-import { BigNumberInput } from 'big-number-input';
-import Web3 from 'web3';
-import { AbiItem } from 'web3-utils';
-
-import { Button, Select, Title, Section, Text, TextField, Divider, Loader } from '@gnosis.pm/safe-react-components';
+import { Button, Select, Text, Loader, Tab, ButtonLink } from '@gnosis.pm/safe-react-components';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import styled from 'styled-components';
-
-import { rpc_token, getTokenList, TokenItem } from './config';
-import { WidgetWrapper, SelectContainer, DaiInfo, ButtonContainer } from './components';
+import { getTokenList, TokenItem } from './config';
+import {
+  SelectContainer,
+  InfoContainer,
+  ButtonContainer,
+  StyledTitle,
+  StyledTextField,
+  LoaderContainer,
+} from './styles';
 import { getTokenInteractions, parseEvents } from './tokensTransfers';
-import { networkByChainId, CHAINS } from './utils/networks';
-
-import cERC20Abi from './abis/CErc20';
-import cWEthAbi from './abis/CWEth';
-
-const blocksPerDay = 5760;
+import useComp from './hooks/useComp';
+import useWeb3 from './hooks/useWeb3';
+import useCToken from './hooks/useCToken';
+import CompBalance from './components/CompBalance';
+import InfoRow from './components/InfoRow';
+import WidgetWrapper from './components/WidgetWrapper';
+import { BigNumberInput } from 'big-number-input';
 
 type Operation = 'lock' | 'withdraw';
 
-const StyledTitle = styled(Title)`
-  margin-top: 0;
-`;
+const WITHDRAW = 'withdraw';
+const SUPPLY = 'supply';
+const TABS = [
+  { id: SUPPLY, label: 'Supply' },
+  { id: WITHDRAW, label: 'Withdraw' },
+];
 
 const CompoundWidget = () => {
-  const [web3, setWeb3] = useState<Web3 | undefined>();
-  const { sdk: appsSdk, safe: safeInfo, connected } = useSafeAppsSDK();
   const [ethBalance, setEthBalance] = useState('0');
-
   const [tokenList, setTokenList] = useState<Array<TokenItem>>();
-
   const [selectedToken, setSelectedToken] = useState<TokenItem>();
-  const [cTokenInstance, setCTokenInstance] = useState<any>();
-  const [tokenInstance, setTokenInstance] = useState<any>();
-
-  const [cTokenSupplyAPY, setCTokenSupplyAPY] = useState('0');
+  const { cTokenInstance, tokenInstance } = useCToken(selectedToken);
+  const [selectedTab, setSelectedTab] = useState(SUPPLY);
   const [interestEarn, setInterestEarn] = useState('0');
   const [tokenBalance, setTokenBalance] = useState<string>('0');
   const [underlyingBalance, setUnderlyingBalance] = useState<string>('0');
-
   const [inputValue, setInputValue] = useState<string>('');
   const [inputError, setInputError] = useState<string | undefined>();
-
-  // set web3 instance
-  useEffect(() => {
-    if (!safeInfo) {
-      return;
-    }
-    const chainId = safeInfo.chainId as CHAINS;
-    const web3Instance = new Web3(`https://${networkByChainId[chainId]}.infura.io/v3/${rpc_token}`);
-    setWeb3(web3Instance);
-  }, [safeInfo]);
+  const { web3 } = useWeb3();
+  const { sdk: appsSdk, safe: safeInfo, connected } = useSafeAppsSDK();
+  const { cTokenSupplyAPY, cDistributionTokenSupplyAPY, claimableComp, claimComp } = useComp(selectedToken);
+  const isMainnet = useMemo(() => safeInfo.chainId === 1, [safeInfo.chainId]);
 
   // fetch eth balance
   useEffect(() => {
@@ -72,39 +64,28 @@ const CompoundWidget = () => {
     fetchEthBalance();
   }, [web3, safeInfo.safeAddress]);
 
-  // load tokens list and initialize with DAI
   useEffect(() => {
-    if (!safeInfo) {
-      return;
-    }
+    (async () => {
+      if (!safeInfo) {
+        return;
+      }
 
-    const tokenListRes = getTokenList(safeInfo.chainId);
-
-    setTokenList(tokenListRes);
-
-    const findDaiRes = tokenListRes.find((t) => t.id === 'DAI');
-    setSelectedToken(findDaiRes);
+      const tokenListRes = await getTokenList(safeInfo.chainId);
+      setTokenList(tokenListRes);
+      setSelectedToken(tokenListRes.find((t) => t.id === 'ETH'));
+    })();
   }, [safeInfo]);
-
   // on selectedToken
   useEffect(() => {
     if (!selectedToken || !web3) {
       return;
     }
 
-    setCTokenSupplyAPY('0');
     setInterestEarn('0');
     setTokenBalance('0');
     setUnderlyingBalance('0');
     setInputValue('');
     setInputError(undefined);
-
-    setTokenInstance(new web3.eth.Contract(cERC20Abi as AbiItem[], selectedToken.tokenAddr));
-    if (selectedToken.id === 'ETH') {
-      setCTokenInstance(new web3.eth.Contract(cWEthAbi as AbiItem[], selectedToken.cTokenAddr));
-    } else {
-      setCTokenInstance(new web3.eth.Contract(cERC20Abi as AbiItem[], selectedToken.cTokenAddr));
-    }
   }, [selectedToken, web3]);
 
   useEffect(() => {
@@ -114,17 +95,14 @@ const CompoundWidget = () => {
       }
 
       // wait until cToken is correctly updated
-      if (selectedToken.cTokenAddr.toLocaleLowerCase() !== cTokenInstance?._address.toLocaleLowerCase()) {
+      if (selectedToken.cTokenAddr.toLocaleLowerCase() !== cTokenInstance?.['_address'].toLocaleLowerCase()) {
         return;
       }
 
       // wait until token is correctly updated
-      if (selectedToken.tokenAddr.toLocaleLowerCase() !== tokenInstance?._address.toLocaleLowerCase()) {
+      if (selectedToken.tokenAddr.toLocaleLowerCase() !== tokenInstance?.['_address'].toLocaleLowerCase()) {
         return;
       }
-
-      // get supplyRate
-      const cTokenSupplyRate = await cTokenInstance.methods.supplyRatePerBlock().call();
 
       // get token Balance
       let tokenBalance;
@@ -136,10 +114,6 @@ const CompoundWidget = () => {
 
       // get token Locked amount
       const underlyingBalance = await cTokenInstance.methods.balanceOfUnderlying(safeInfo.safeAddress).call();
-
-      // get APR
-      const dailyRate = new Big(cTokenSupplyRate).times(blocksPerDay).div(10 ** 18);
-      const apy = dailyRate.plus(1).pow(365).minus(1).times(100).toFixed(2);
 
       // get interest earned
       const tokenEvents = await getTokenInteractions(
@@ -157,7 +131,6 @@ const CompoundWidget = () => {
 
       // update all the values in a row to avoid UI flickers
       selectedToken.id === 'ETH' ? setInterestEarn('-') : setInterestEarn(underlyingEarned);
-      setCTokenSupplyAPY(apy.toString());
       setTokenBalance(tokenBalance);
       setUnderlyingBalance(underlyingBalance);
     };
@@ -187,7 +160,7 @@ const CompoundWidget = () => {
     return true;
   };
 
-  const lock = () => {
+  const lock = async () => {
     if (!selectedToken || !validateInputValue('lock') || !web3) {
       return;
     }
@@ -201,7 +174,7 @@ const CompoundWidget = () => {
         {
           to: selectedToken.cTokenAddr,
           value: supplyParameter,
-          data: cTokenInstance.methods.mint().encodeABI(),
+          data: cTokenInstance?.methods.mint().encodeABI(),
         },
       ];
     } else {
@@ -209,22 +182,26 @@ const CompoundWidget = () => {
         {
           to: selectedToken.tokenAddr,
           value: '0',
-          data: tokenInstance.methods.approve(selectedToken.cTokenAddr, supplyParameter).encodeABI(),
+          data: tokenInstance?.methods.approve(selectedToken.cTokenAddr, supplyParameter).encodeABI(),
         },
         {
           to: selectedToken.cTokenAddr,
           value: '0',
-          data: cTokenInstance.methods.mint(supplyParameter).encodeABI(),
+          data: cTokenInstance?.methods.mint(supplyParameter).encodeABI(),
         },
       ];
     }
 
-    appsSdk.txs.send({ txs });
+    try {
+      await appsSdk.txs.send({ txs });
+    } catch (error) {
+      console.error('Lock: Transaction rejected or failed: ', error);
+    }
 
     setInputValue('');
   };
 
-  const withdraw = () => {
+  const withdraw = async () => {
     if (!selectedToken || !validateInputValue('withdraw') || !web3) {
       return;
     }
@@ -234,10 +211,15 @@ const CompoundWidget = () => {
       {
         to: selectedToken.cTokenAddr,
         value: '0',
-        data: cTokenInstance.methods.redeemUnderlying(supplyParameter).encodeABI(),
+        data: cTokenInstance?.methods.redeemUnderlying(supplyParameter).encodeABI(),
       },
     ];
-    appsSdk.txs.send({ txs });
+
+    try {
+      await appsSdk.txs.send({ txs });
+    } catch (error) {
+      console.error('Withdraw: Transaction rejected or failed: ', error);
+    }
 
     setInputValue('');
   };
@@ -278,13 +260,24 @@ const CompoundWidget = () => {
     setInputValue(value);
   };
 
+  const handleTabsChange = (selected: string) => {
+    setSelectedTab(selected);
+    setInputValue('');
+  };
+
+  const handleMaxInputValue = () => setInputValue(selectedTab === SUPPLY ? tokenBalance : underlyingBalance);
+
   if (!selectedToken || !connected) {
-    return <Loader size="md" />;
+    return (
+      <LoaderContainer>
+        <Loader size="md" />
+      </LoaderContainer>
+    );
   }
 
   return (
     <WidgetWrapper>
-      <StyledTitle size="xs">Your Compound balance</StyledTitle>
+      <StyledTitle size="sm">Compound</StyledTitle>
 
       <SelectContainer>
         <Select items={tokenList || []} activeItemId={selectedToken.id} onItemClick={onSelectItem} />
@@ -293,45 +286,57 @@ const CompoundWidget = () => {
         </Text>
       </SelectContainer>
 
-      <Section>
-        <DaiInfo>
-          <div>
-            <Text size="lg">Supplied {selectedToken.label}</Text>
-            <Text size="lg">~ {bNumberToHumanFormat(underlyingBalance)}</Text>
-          </div>
-          <Divider />
-          <div>
-            <Text size="lg">Interest earned</Text>
-            <Text size="lg">
-              ~ {interestEarn} {selectedToken.label}
-            </Text>
-          </div>
-          <Divider />
-          <div>
-            <Text size="lg">Current interest rate</Text>
-            <Text size="lg">{cTokenSupplyAPY}% APR</Text>
-          </div>
-          <Divider />
-        </DaiInfo>
-      </Section>
+      <Tab onChange={handleTabsChange} selectedTab={selectedTab} variant="outlined" fullWidth items={TABS} />
 
-      <Title size="xs">Withdraw or Supply balance</Title>
+      <InfoContainer>
+        <InfoRow label={`Supplied ${selectedToken.label}`} data={bNumberToHumanFormat(underlyingBalance)} />
+        <InfoRow label="Interest earned" data={`~ ${interestEarn} ${selectedToken.label}`} />
+        <InfoRow label="Supply APY" data={cTokenSupplyAPY && `${cTokenSupplyAPY}%`} />
+        {isMainnet && (
+          <InfoRow label="Distribution APY" data={cDistributionTokenSupplyAPY && `${cDistributionTokenSupplyAPY}%`} />
+        )}
+      </InfoContainer>
 
       <BigNumberInput
         decimals={selectedToken.decimals}
         onChange={onInputChange}
         value={inputValue}
-        renderInput={(props: any) => <TextField label="Amount" meta={{ error: inputError }} {...props} />}
+        renderInput={(props: any) => (
+          <StyledTextField
+            label="Amount"
+            meta={{ error: inputError }}
+            {...props}
+            endAdornment={
+              <ButtonLink color="primary" onClick={handleMaxInputValue}>
+                MAX
+              </ButtonLink>
+            }
+          />
+        )}
       />
 
       <ButtonContainer>
-        <Button size="lg" color="secondary" variant="contained" onClick={withdraw} disabled={isWithdrawDisabled()}>
-          Withdraw
-        </Button>
-        <Button size="lg" color="primary" variant="contained" onClick={lock} disabled={isSupplyDisabled()}>
-          Supply
-        </Button>
+        {selectedTab === WITHDRAW && (
+          <Button
+            size="lg"
+            color="secondary"
+            variant="contained"
+            onClick={withdraw}
+            disabled={isWithdrawDisabled()}
+            fullWidth
+          >
+            {parseFloat(underlyingBalance) > 0 ? 'Withdraw' : 'No balance to withdraw'}
+          </Button>
+        )}
+
+        {selectedTab === SUPPLY && (
+          <Button size="lg" color="primary" variant="contained" onClick={lock} disabled={isSupplyDisabled()} fullWidth>
+            {parseFloat(tokenBalance) > 0 ? 'Supply' : 'No balance to supply'}
+          </Button>
+        )}
       </ButtonContainer>
+
+      {isMainnet && <CompBalance balance={claimableComp} onCollect={claimComp} />}
     </WidgetWrapper>
   );
 };
