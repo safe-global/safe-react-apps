@@ -7,6 +7,7 @@ import { TextFieldInput, Button, Text, Title, Icon, Loader } from '@gnosis.pm/sa
 import Dialog from '@material-ui/core/Dialog';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { blobToImageData } from './utils/images';
 import { Wrapper } from './components/layout';
@@ -101,9 +102,11 @@ const App = () => {
         InputProps={{
           endAdornment: (
             <StyledQRCodeAdorment position="end">
-              <IconButton onClick={() => setOpenDialog((open) => !open)}>
-                <Icon size="md" type="qrCode" />
-              </IconButton>
+              <Tooltip title="Show scan QR code dialog" aria-label="Show scan QR code dialog">
+                <IconButton onClick={() => setOpenDialog((open) => !open)}>
+                  <Icon size="md" type="qrCode" />
+                </IconButton>
+              </Tooltip>
             </StyledQRCodeAdorment>
           ),
         }}
