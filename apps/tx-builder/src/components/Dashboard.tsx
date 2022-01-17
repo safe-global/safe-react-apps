@@ -1,14 +1,14 @@
-import React, { ReactElement, useState, useCallback, useEffect } from 'react';
+import React, { ReactElement, useState, useEffect } from 'react';
 import { Text, Title, Link, AddressInput } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import { InputAdornment } from '@material-ui/core';
 import CheckCircle from '@material-ui/icons/CheckCircle';
-import web3Utils from 'web3-utils';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import { Builder } from './Builder';
 import useTransactions from '../hooks/useTransactions';
+import { isValidAddress } from '../utils';
 
 const Wrapper = styled.div`
   display: flex;
@@ -86,13 +86,6 @@ const Dashboard = (): ReactElement => {
   const getAddressFromDomain = (name: string): Promise<string> => {
     return web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
   };
-
-  const isValidAddress = useCallback((address: string | null) => {
-    if (!address) {
-      return false;
-    }
-    return web3Utils.isAddress(address);
-  }, []);
 
   const isValidAddressOrContract = (isValidAddress(addressOrAbi) || contract) && !isABILoading;
 

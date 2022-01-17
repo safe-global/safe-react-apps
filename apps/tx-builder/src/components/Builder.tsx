@@ -12,7 +12,7 @@ import {
   Switch,
 } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
-import web3Utils, { AbiItem, isHexStrict, toChecksumAddress, toWei, fromWei } from 'web3-utils';
+import { AbiItem, isHexStrict, toChecksumAddress, toWei, fromWei } from 'web3-utils';
 import abiCoder, { AbiCoder } from 'web3-eth-abi';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
@@ -21,7 +21,7 @@ import { ProposedTransaction } from '../typings/models';
 import { ModalBody } from './ModalBody';
 import { Examples } from './Examples';
 import AddressContractField from './fields/AddressContractField';
-import { parseInputValue, getInputHelper, isInputValueValid, getCustomDataError } from '../utils';
+import { parseInputValue, getInputHelper, isInputValueValid, getCustomDataError, isValidAddress } from '../utils';
 import { TextFieldInputProps } from '@gnosis.pm/safe-react-components/dist/inputs/TextFieldInput';
 
 const ButtonContainer = styled.div`
@@ -263,13 +263,6 @@ export const Builder = ({
     onRemoveTransaction(inputIndex);
   };
 
-  const isValidAddress = useCallback((address: string | null) => {
-    if (!address) {
-      return false;
-    }
-    return web3Utils.isAddress(address);
-  }, []);
-
   const onChangeToAddress = useCallback((address: string) => setToInput(address), []);
 
   const onValueInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -284,7 +277,7 @@ export const Builder = ({
   useEffect(() => {
     const value = isValidAddress(to) ? (to as string) : '';
     setToInput(value);
-  }, [to, isValidAddress]);
+  }, [to]);
 
   // set when inputValue is visible
   useEffect(() => {
