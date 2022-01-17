@@ -17,9 +17,13 @@ const useWalletConnect = () => {
   const localStorageSessionKey = useRef(`session_${safe.safeAddress}`);
 
   const wcDisconnect = useCallback(async () => {
-    await connector?.killSession();
-    setConnector(undefined);
-    setWcClientData(null);
+    try {
+      await connector?.killSession();
+      setConnector(undefined);
+      setWcClientData(null);
+    } catch (error) {
+      console.log('Error trying to close WC session: ', error);
+    }
   }, [connector]);
 
   const wcConnect = useCallback(

@@ -1634,14 +1634,6 @@
     "@gnosis.pm/safe-react-gateway-sdk" "^2.5.6"
     ethers "^5.4.7"
 
-"@gnosis.pm/safe-react-components@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.6.0.tgz#9e6b34c3e02373d5116d66e67688d149c4a14239"
-  integrity sha512-L5ExDY9T5a/W4R1E2R5QUAHuiIJ3gNo7fs4XRPZ1vkf8vg9qgR4HOsy7gGrehKQhIxXDyZRNvNGq1lSb/DSoKw==
-  dependencies:
-    classnames "^2.2.6"
-    react-media "^1.10.0"
-
 "@gnosis.pm/safe-react-components@^0.9.1":
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.9.1.tgz#0324f73b7b99a22e054a27394c3aa9d21fd41b29"
@@ -4370,11 +4362,6 @@ class-utils@^0.3.5:
     define-property "^0.2.5"
     isobject "^3.0.0"
     static-extend "^0.1.1"
-
-classnames@^2.2.6:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
-  integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
 
 clean-css@^4.2.3:
   version "4.2.3"
