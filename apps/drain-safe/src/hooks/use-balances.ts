@@ -26,8 +26,10 @@ function useBalances(safeAddress: string, chainId: number): BalancesType {
 
     try {
       const balances = await sdk.safe.experimental_getBalances({ currency: 'USD' });
-      setAssets(balances.items.filter(transferableTokens));
-      setSelectedTokens(balances.items.map((token: any) => token.tokenInfo.address));
+      const assets = balances.items.filter(transferableTokens);
+
+      setAssets(assets);
+      setSelectedTokens(assets.map((token: TokenBalance) => token.tokenInfo.address));
     } catch (err) {
       setError(err as Error);
     }
