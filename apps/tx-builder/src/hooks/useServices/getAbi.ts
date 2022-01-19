@@ -13,6 +13,7 @@ type SourcifyResponse = {
 };
 
 const METADATA_FILE = 'metadata.json';
+const DEFAULT_TIMEOUT = 10000;
 
 const getProviderURL = (chain: string, address: string, urlProvider: PROVIDER): string => {
   switch (urlProvider) {
@@ -26,7 +27,9 @@ const getProviderURL = (chain: string, address: string, urlProvider: PROVIDER): 
 };
 
 const getAbiFromSourcify = async (address: string, chainId: string): Promise<any> => {
-  const { data } = await axios.get<SourcifyResponse[]>(getProviderURL(chainId, address, PROVIDER.SOURCIFY));
+  const { data } = await axios.get<SourcifyResponse[]>(getProviderURL(chainId, address, PROVIDER.SOURCIFY), {
+    timeout: DEFAULT_TIMEOUT,
+  });
 
   if (data.length) {
     const metadata = data.find((item: SourcifyResponse) => item.name === METADATA_FILE);
@@ -37,7 +40,9 @@ const getAbiFromSourcify = async (address: string, chainId: string): Promise<any
 };
 
 const getAbiFromGateway = async (address: string, chainName: string): Promise<any> => {
-  const { data } = await axios.get(getProviderURL(chainName, address, PROVIDER.GATEWAY));
+  const { data } = await axios.get(getProviderURL(chainName, address, PROVIDER.GATEWAY), {
+    timeout: DEFAULT_TIMEOUT,
+  });
 
   if (data) {
     return data?.contractAbi?.abi;
