@@ -139,14 +139,14 @@ const App = () => {
     <>
       {/* WalletConnect */}
       {wcClientData && (
-        <StyledParagraph size="sm">
+        <StyledWrapper>
           <Text color="white" size="xl">
             You need to have this WalletConnect Safe app open for transactions to pop up.
           </Text>
           <Text color="white" size="xl">
             You will not receive transaction requests when you don't have it open.
           </Text>
-        </StyledParagraph>
+        </StyledWrapper>
       )}
       <Wrapper>
         <WCContent>
@@ -179,7 +179,7 @@ const StyledText = styled(Text)`
   margin-bottom: 8px;
 `;
 
-const StyledParagraph = styled(Text)`
+const StyledWrapper = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;

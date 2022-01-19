@@ -42,7 +42,7 @@ function ScanCode({ wcConnect, wcClientData }: Props) {
       />
       {errorConnectingWebcam && (
         <StyledErrorContainer>
-          <Title size="sm">Please check browser permissions</Title>
+          <StyledErrorTitle size="sm">Please check browser permissions</StyledErrorTitle>
           <img src={ErrorImg} alt="camera permission error" />
         </StyledErrorContainer>
       )}
@@ -100,6 +100,10 @@ const StyledLoaderText = styled(Text)`
 
 const StyledErrorContainer = styled.div`
   padding: 20px;
+`;
+
+const StyledErrorTitle = styled(Title)`
+  margin-top: 0;
 `;
 
 type WcConnectProps = {
