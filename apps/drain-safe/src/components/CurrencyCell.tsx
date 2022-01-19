@@ -4,8 +4,6 @@ import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import web3Utils from 'web3-utils';
-import Web3 from 'web3';
-
 import { formatCurrencyValue } from '../utils/formatters';
 import { tokenToTx } from '../utils/sdk-helpers';
 import Flex from './Flex';
@@ -16,18 +14,16 @@ function CurrencyCell({
   currency,
   gasPrice,
   ethFiatPrice,
-  web3,
 }: {
   item: TokenBalance;
   currency: string;
   gasPrice: BigNumber;
   ethFiatPrice: number;
-  web3: Web3 | undefined;
 }) {
   const label = formatCurrencyValue(item.fiatBalance, currency);
   const [transferCostInFiat, setTransferCostInFiat] = useState(new BigNumber(0));
 
-  const { safe } = useSafeAppsSDK();
+  const { safe, sdk } = useSafeAppsSDK();
 
   // Transfer cost estimation
   useEffect(() => {
@@ -35,9 +31,13 @@ function CurrencyCell({
       try {
         const sendTokenTx = tokenToTx(safe.safeAddress, item);
 
-        const estimatedTransferGas = await web3?.eth.estimateGas({ ...sendTokenTx, from: safe.safeAddress });
+        const estimatedTransferGas = await sdk.eth.getEstimateGas({
+          ...sendTokenTx,
+          value: item.tokenInfo.type === 'NATIVE_TOKEN' ? `0x${Number(sendTokenTx.value).toString(16)}` : undefined,
+          from: safe.safeAddress,
+        });
 
-        const gasCostInWei = gasPrice.multipliedBy(estimatedTransferGas || 21000);
+        const gasCostInWei = gasPrice.multipliedBy(estimatedTransferGas);
         const gasCostInEther = new BigNumber(web3Utils.fromWei(gasCostInWei.toString(), 'ether'));
 
         const transferCostInFiat = gasCostInEther.multipliedBy(ethFiatPrice);
@@ -48,7 +48,7 @@ function CurrencyCell({
       }
     };
     estimateTransferCost();
-  }, [gasPrice, ethFiatPrice, item, web3, safe]);
+  }, [gasPrice, ethFiatPrice, item, sdk, safe]);
 
   // if transfer cost is higher than token market value, we show a warning icon & tooltip in the cell
   const showWarningIcon =

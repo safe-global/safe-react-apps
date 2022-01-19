@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useCallback, useEffect } from 'react';
+import React, { ReactElement, useState, useEffect } from 'react';
 import { Text, Title, Link, AddressInput } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import { InputAdornment } from '@material-ui/core';
@@ -8,6 +8,7 @@ import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import { Builder } from './Builder';
 import useTransactions from '../hooks/useTransactions';
+import { isValidAddress } from '../utils';
 
 const Wrapper = styled.div`
   display: flex;
@@ -51,7 +52,6 @@ const StyledAddressInput = styled(AddressInput)`
 
 const Dashboard = (): ReactElement => {
   const { web3, interfaceRepo, chainInfo } = useServices();
-  const services = useServices();
   const { transactions, handleAddTransaction, handleRemoveTransaction, handleSubmitTransactions } = useTransactions();
   const [addressOrAbi, setAddressOrAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
@@ -64,7 +64,7 @@ const Dashboard = (): ReactElement => {
       setContract(null);
       setLoadContractError('');
 
-      if (!addressOrAbi || !web3 || !interfaceRepo) {
+      if (!addressOrAbi || !interfaceRepo) {
         return;
       }
 
@@ -81,21 +81,11 @@ const Dashboard = (): ReactElement => {
     };
 
     loadContract(addressOrAbi);
-  }, [addressOrAbi, interfaceRepo, web3]);
+  }, [addressOrAbi, interfaceRepo]);
 
   const getAddressFromDomain = (name: string): Promise<string> => {
-    return services?.web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
+    return web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
   };
-
-  const isValidAddress = useCallback(
-    (address: string | null) => {
-      if (!address) {
-        return false;
-      }
-      return web3?.utils.isAddress(address);
-    },
-    [web3],
-  );
 
   const isValidAddressOrContract = (isValidAddress(addressOrAbi) || contract) && !isABILoading;
 

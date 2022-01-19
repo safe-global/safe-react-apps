@@ -140,7 +140,6 @@ const App: React.FC = () => {
           <Balances
             ethFiatPrice={ethFiatPrice}
             gasPrice={gasPrice}
-            web3={web3}
             assets={assets}
             onSelectionChange={setSelectedTokens}
           />
