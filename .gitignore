@@ -8,7 +8,7 @@ yalc.lock
 .yalc
 
 # testing
-/coverage
+**/coverage
 .eslintcache
 
 # production
