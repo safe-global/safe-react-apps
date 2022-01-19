@@ -32,7 +32,7 @@ export default function useServices(): Services {
     const rpcUrl = rpcUrlGetter(process.env.REACT_APP_RPC_TOKEN);
 
     const web3Instance = new Web3(rpcUrl);
-    const interfaceRepo = new InterfaceRepository(chainInfo, web3Instance);
+    const interfaceRepo = new InterfaceRepository(chainInfo);
 
     setWeb3(web3Instance);
     setInterfaceRepo(interfaceRepo);
