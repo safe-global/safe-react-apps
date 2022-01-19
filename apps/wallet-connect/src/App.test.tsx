@@ -37,6 +37,14 @@ jest.mock('@walletconnect/client', () => {
   };
 });
 
+jest.mock('jsqr', () => {
+  return function () {
+    return {
+      data: 'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.gnosis.io&key=xxxxxxxxxxx',
+    };
+  };
+});
+
 describe('WalletConnect unit tests', () => {
   it('Renders Wallet Connect Safe App', () => {
     renderWithProviders(<App />);
@@ -126,15 +134,63 @@ describe('WalletConnect unit tests', () => {
     });
   });
 
-  // describe('Scan QR code connection', () => {
-  //   it('Connects via webcam a valid QR code', async () => {
-  //     renderWithProviders(<App />);
+  describe('Scan QR code connection', () => {
+    it('Shows scan QR dialog', async () => {
+      renderWithProviders(<App />);
 
-  //     // TODO: connect with QR scan code
+      const openDialogNode = screen.getByRole('button');
 
-  //     // const openDialogNode = screen.getByRole('button');
-  //   });
-  // });
+      fireEvent.click(openDialogNode);
+
+      const scanQRCodeDialog = await screen.findByRole('dialog');
+
+      expect(scanQRCodeDialog).toBeInTheDocument();
+    });
+
+    it('shows Permissions error image', async () => {
+      Object.defineProperty(window.HTMLMediaElement.prototype, 'play', {
+        writable: true,
+        value: jest.fn().mockImplementationOnce(() => {
+          throw 'Expected error, testing camera permission error...';
+        }),
+      });
+
+      renderWithProviders(<App />);
+
+      const openDialogNode = screen.getByRole('button');
+
+      fireEvent.click(openDialogNode);
+
+      const scanQRCodeDialog = await screen.findByRole('dialog');
+
+      expect(scanQRCodeDialog).toBeInTheDocument();
+
+      const permissionErrorTitle = screen.getByText('Please check browser permissions');
+      expect(permissionErrorTitle).toBeInTheDocument();
+
+      const permissionErrorImg = screen.getByAltText('camera permission error');
+      expect(permissionErrorImg).toBeInTheDocument();
+    });
+
+    it('scans valid QR code', async () => {
+      renderWithProviders(<App />);
+
+      const openDialogNode = screen.getByRole('button');
+
+      fireEvent.click(openDialogNode);
+
+      const scanQRCodeDialog = await screen.findByRole('dialog');
+
+      expect(scanQRCodeDialog).toBeInTheDocument();
+
+      const dappNameNode = await screen.findByText('Test name');
+      expect(dappNameNode).toBeInTheDocument();
+
+      const dappImgNode = await screen.findByRole('img');
+      expect(dappImgNode).toBeInTheDocument();
+      expect(dappImgNode).toHaveStyle("background-image: url('https://cowswap.exchange/./favicon.png')");
+    });
+  });
 
   describe('Disconnect WC', () => {
     it('Disconnects if user clicks on Disconnect button', () => {

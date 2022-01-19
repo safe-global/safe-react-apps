@@ -34,7 +34,7 @@ function useQRCode({ videoRef, errorConnectingWebcam }: Props) {
 export default useQRCode;
 
 function getQRCode(video: HTMLVideoElement, canvas: HTMLCanvasElement) {
-  const currentFrame = getCurrentVideoFrame(video, canvas);
+  const currentFrame = video && getCurrentVideoFrame(video, canvas);
   if (currentFrame) {
     const QRCode = jsQR(currentFrame.data, currentFrame.width, currentFrame.height, {
       inversionAttempts: 'dontInvert',
