@@ -3,7 +3,6 @@ import { DataTable } from '@gnosis.pm/safe-react-components';
 import { GridColDef, GridRowsProp, GridSelectionModel, GridDensityTypes } from '@mui/x-data-grid';
 import { TokenBalance, TokenInfo } from '@gnosis.pm/safe-apps-sdk';
 import BigNumber from 'bignumber.js';
-import Web3 from 'web3';
 
 import { formatTokenValue } from '../utils/formatters';
 import Icon from './Icon';
@@ -25,11 +24,9 @@ function Balances({
   onSelectionChange,
   gasPrice,
   ethFiatPrice,
-  web3,
 }: {
   assets: TokenBalance[];
   ethFiatPrice: number;
-  web3: Web3 | undefined;
   onSelectionChange: (addresses: string[]) => void;
   gasPrice: BigNumber;
 }): JSX.Element {
@@ -82,13 +79,7 @@ function Balances({
         return param1.value.fiatBalance - param2.value.fiatBalance;
       },
       renderCell: (params: any) => (
-        <CurrencyCell
-          web3={web3}
-          ethFiatPrice={ethFiatPrice}
-          gasPrice={gasPrice}
-          item={params.value}
-          currency={CURRENCY}
-        />
+        <CurrencyCell ethFiatPrice={ethFiatPrice} gasPrice={gasPrice} item={params.value} currency={CURRENCY} />
       ),
     },
   ];

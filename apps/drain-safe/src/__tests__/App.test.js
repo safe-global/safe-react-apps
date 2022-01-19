@@ -30,6 +30,7 @@ jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
       },
       eth: {
         getGasPrice: () => Promise.resolve(0x3b9aca0b),
+        getEstimateGas: () => Promise.resolve(21000),
       },
     },
     safe: {
@@ -41,16 +42,6 @@ jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
   return {
     ...originalModule,
     useSafeAppsSDK: () => sdk,
-  };
-});
-
-jest.mock('web3', () => {
-  return function () {
-    return {
-      eth: {
-        estimateGas: () => Promise.resolve(21000),
-      },
-    };
   };
 });
 
