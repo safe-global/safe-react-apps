@@ -35,8 +35,7 @@ const RampWidget = ({ url, assets, address, onClose }: Props) => {
         }
       })
       .show();
-    // eslint-disable-next-line
-  }, []);
+  }, [address, assets, onClose, url]);
 
   return <div id="ramp-widget-container"></div>;
 };
