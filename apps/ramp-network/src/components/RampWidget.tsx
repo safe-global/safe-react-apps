@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk';
+import { RampInstantSDK, RampInstantEvent } from '@ramp-network/ramp-instant-sdk';
 
 type Props = {
   url?: string;
@@ -23,7 +23,7 @@ const RampWidget = ({ url, assets, address, onClose }: Props) => {
       userAddress: address,
       containerNode: containerNode.current || undefined,
     })
-      .on('*', (event: any) => {
+      .on('*', (event: RampInstantEvent) => {
         if (event.type === WIDGET_CLOSE_EVENT) {
           onClose?.();
         }
