@@ -22,7 +22,7 @@ const RampWidget = ({ url, assets, address, onClose }: Props) => {
       userAddress: address,
       containerNode: containerNode.current || undefined,
     })
-      .on('*', (event) => {
+      .on('*', (event: any) => {
         if (event.type === WIDGET_CLOSE_EVENT) {
           onClose?.();
         }
