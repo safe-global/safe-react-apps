@@ -9,6 +9,7 @@ type Props = {
 };
 
 const WIDGET_CLOSE_EVENT = 'WIDGET_CLOSE';
+const PURCHASE_CREATED_EVENT = 'PURCHASE_CREATED';
 
 const RampWidget = ({ url, assets, address, onClose }: Props) => {
   const containerNode = useRef(null);
@@ -25,6 +26,12 @@ const RampWidget = ({ url, assets, address, onClose }: Props) => {
       .on('*', (event: any) => {
         if (event.type === WIDGET_CLOSE_EVENT) {
           onClose?.();
+        }
+
+        if (event.type === PURCHASE_CREATED_EVENT) {
+          // TODO: Send Analytics when the infra is ready
+          // https://github.com/gnosis/safe-apps-sdk/issues/255
+          console.log('PURCHASE_CREATED_EVENT', event);
         }
       })
       .show();
