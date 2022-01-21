@@ -7,7 +7,7 @@ function useWebcam() {
   const [errorConnectingWebcam, setErrorConnectingWebcam] = useState(false);
 
   useEffect(() => {
-    let stream: MediaStream;
+    let stream: MediaStream | null;
     async function getUserWebcam() {
       setIsLoadingWebcam(true);
       try {
@@ -31,7 +31,7 @@ function useWebcam() {
 
     // closing webcam connection on unmount
     return () => {
-      stream.getTracks().forEach((track: MediaStreamTrack) => {
+      stream?.getTracks().forEach((track: MediaStreamTrack) => {
         track.stop();
       });
     };

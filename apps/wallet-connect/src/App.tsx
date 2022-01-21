@@ -92,7 +92,6 @@ const App = () => {
         name="wc-uri"
         label="Paste WalletConnect QR code or connection URI"
         hiddenLabel={false}
-        placeholder="Paste WalletConnect QR or connection URI"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onPaste={onPaste}
@@ -212,6 +211,13 @@ const WCContent = styled.div`
 const StyledTextField = styled(TextFieldInput)`
   && {
     width: 430px;
+    .MuiInputLabel-filled {
+      color: #0000008a;
+    }
+
+    .MuiInputLabel-shrink {
+      color: #008c73;
+    }
   }
 `;
 

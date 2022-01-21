@@ -53,7 +53,7 @@ describe('WalletConnect unit tests', () => {
 
     expect(titleNode).toBeInTheDocument();
 
-    const inputNode = screen.getByPlaceholderText('Paste WalletConnect QR or connection URI');
+    const inputNode = screen.getByLabelText('Paste WalletConnect QR code or connection URI');
     expect(inputNode).toBeInTheDocument();
 
     const instructionsNode = screen.getByText('How to connect to a Dapp');
@@ -69,7 +69,7 @@ describe('WalletConnect unit tests', () => {
 
       expect(instructionsNode).toBeInTheDocument();
 
-      const inputNode = screen.getByPlaceholderText('Paste WalletConnect QR or connection URI');
+      const inputNode = screen.getByLabelText('Paste WalletConnect QR code or connection URI');
 
       const URIPasteEvent = {
         clipboardData: {
@@ -111,7 +111,7 @@ describe('WalletConnect unit tests', () => {
 
       expect(instructionsNode).toBeInTheDocument();
 
-      const inputNode = screen.getByPlaceholderText('Paste WalletConnect QR or connection URI');
+      const inputNode = screen.getByLabelText('Paste WalletConnect QR code or connection URI');
 
       const URIPasteEvent = {
         clipboardData: {
@@ -165,7 +165,7 @@ describe('WalletConnect unit tests', () => {
 
       expect(scanQRCodeDialog).toBeInTheDocument();
 
-      const permissionErrorTitle = screen.getByText('Please check browser permissions');
+      const permissionErrorTitle = screen.getByText('Check browser permissions');
       expect(permissionErrorTitle).toBeInTheDocument();
 
       const permissionErrorImg = screen.getByAltText('camera permission error');
@@ -258,7 +258,7 @@ describe('WalletConnect unit tests', () => {
 
       expect(instructionsNode).toBeInTheDocument();
 
-      const inputNode = screen.getByPlaceholderText('Paste WalletConnect QR or connection URI');
+      const inputNode = screen.getByLabelText('Paste WalletConnect QR code or connection URI');
 
       const URIPasteEvent = {
         clipboardData: {
