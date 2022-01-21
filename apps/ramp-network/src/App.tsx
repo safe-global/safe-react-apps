@@ -1,15 +1,35 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import { Title, Loader } from '@gnosis.pm/safe-react-components';
+import { Title, Loader, Text } from '@gnosis.pm/safe-react-components';
 import { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
-import RampWidget from './components/RampWidget';
-import { ASSETS_BY_CHAIN, getRampWidgetUrl } from './components/rampWidgetConfig';
 import { goBack } from './utils';
-import { Container } from './styles';
+import { ASSETS_BY_CHAIN, getRampWidgetUrl, initializeRampWidget } from './ramp';
+import styled from 'styled-components';
 
-const SafeApp = (): React.ReactElement => {
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 30em;
+`;
+
+const NetworkNotSupported = ({ name }: { name: string }): React.ReactElement => {
+  return (
+    <Container>
+      <Title size="md">Network not supported</Title>
+      <Text size="lg">Currently {name} is not supported</Text>
+    </Container>
+  );
+};
+
+const SafeApp = (): React.ReactElement | null => {
   const { sdk, safe } = useSafeAppsSDK();
   const [chainInfo, setChainInfo] = useState<ChainInfo>();
+
+  const isChainSupported = useMemo(() => {
+    return chainInfo && Object.keys(ASSETS_BY_CHAIN).includes(chainInfo.chainId);
+  }, [chainInfo]);
 
   useEffect(() => {
     (async () => {
@@ -22,27 +42,26 @@ const SafeApp = (): React.ReactElement => {
     })();
   }, [sdk]);
 
-  const isChainSupported = useMemo(() => {
-    return chainInfo && Object.keys(ASSETS_BY_CHAIN).includes(chainInfo.chainId);
-  }, [chainInfo]);
+  useEffect(() => {
+    if (chainInfo && safe && isChainSupported) {
+      initializeRampWidget({
+        url: getRampWidgetUrl(chainInfo),
+        address: safe.safeAddress,
+        assets: ASSETS_BY_CHAIN[chainInfo.chainId],
+        onClose: goBack,
+      });
+    }
+  }, [chainInfo, safe, isChainSupported]);
 
-  if (!chainInfo) {
+  if (!chainInfo || !safe) {
     return <Loader size="lg" />;
   }
 
-  return (
-    <Container>
-      {!isChainSupported && <Title size="lg">Network not supported</Title>}
-      {isChainSupported && (
-        <RampWidget
-          url={getRampWidgetUrl(chainInfo)}
-          address={safe.safeAddress}
-          assets={ASSETS_BY_CHAIN[chainInfo.chainId]}
-          onClose={goBack}
-        />
-      )}
-    </Container>
-  );
+  if (!isChainSupported) {
+    return <NetworkNotSupported name={chainInfo.chainName} />;
+  }
+
+  return null;
 };
 
 export default SafeApp;
