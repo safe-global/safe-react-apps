@@ -7,11 +7,12 @@ function useWebcam() {
   const [errorConnectingWebcam, setErrorConnectingWebcam] = useState(false);
 
   useEffect(() => {
+    let stream: MediaStream;
     async function getUserWebcam() {
       setIsLoadingWebcam(true);
       try {
         // see https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -27,6 +28,13 @@ function useWebcam() {
     }
 
     getUserWebcam();
+
+    // closing webcam connection on unmount
+    return () => {
+      stream.getTracks().forEach((track: MediaStreamTrack) => {
+        track.stop();
+      });
+    };
   }, []);
 
   return {

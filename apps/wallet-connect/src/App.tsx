@@ -163,6 +163,13 @@ const App = () => {
         aria-labelledby="Dialog to scan QR"
         aria-describedby="Dialog to load a QR code"
       >
+        <CloseDialogContainer>
+          <Tooltip title="Close scan QR code dialog" aria-label="Close scan QR code dialog">
+            <IconButton onClick={handleQRDialogClose}>
+              <Icon size="md" type="cross" color="primary" />
+            </IconButton>
+          </Tooltip>
+        </CloseDialogContainer>
         <ScanCode wcConnect={wcConnect} wcClientData={wcClientData} />
       </Dialog>
     </>
@@ -210,6 +217,13 @@ const StyledTextField = styled(TextFieldInput)`
 
 const StyledQRCodeAdorment = styled(InputAdornment)`
   cursor: pointer;
+`;
+
+const CloseDialogContainer = styled.div`
+  position: absolute;
+  z-index: 10;
+  top: 4px;
+  right: 4px;
 `;
 
 const HelpLink = () => (

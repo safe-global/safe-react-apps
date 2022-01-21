@@ -1,4 +1,4 @@
-import { screen, fireEvent, createEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, createEvent, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 
 import App from './App';
 import { renderWithProviders } from './utils/test-helpers';
@@ -147,7 +147,7 @@ describe('WalletConnect unit tests', () => {
       expect(scanQRCodeDialog).toBeInTheDocument();
     });
 
-    it('shows Permissions error image', async () => {
+    it('Shows Permissions error image', async () => {
       Object.defineProperty(window.HTMLMediaElement.prototype, 'play', {
         writable: true,
         value: jest.fn().mockImplementationOnce(() => {
@@ -172,7 +172,7 @@ describe('WalletConnect unit tests', () => {
       expect(permissionErrorImg).toBeInTheDocument();
     });
 
-    it('scans valid QR code', async () => {
+    it('Scans valid QR code', async () => {
       renderWithProviders(<App />);
 
       const openDialogNode = screen.getByRole('button');
@@ -189,6 +189,64 @@ describe('WalletConnect unit tests', () => {
       const dappImgNode = await screen.findByRole('img');
       expect(dappImgNode).toBeInTheDocument();
       expect(dappImgNode).toHaveStyle("background-image: url('https://cowswap.exchange/./favicon.png')");
+    });
+
+    it('Closes webcam connection by closing the dialog', async () => {
+      const stopWebcamSpy = jest.fn();
+
+      const openWebcamSpy = jest.fn().mockImplementation(() => ({
+        getTracks: () => [
+          {
+            stop: stopWebcamSpy,
+          },
+        ],
+      }));
+
+      Object.defineProperty(window.navigator, 'mediaDevices', {
+        writable: true,
+        value: {
+          getUserMedia: openWebcamSpy,
+        },
+      });
+
+      Object.defineProperty(window.HTMLCanvasElement.prototype, 'getContext', {
+        writable: false,
+        value: () => {
+          return {
+            drawImage: jest.fn(),
+            getImageData: jest.fn(),
+          };
+        },
+      });
+
+      renderWithProviders(<App />);
+
+      expect(openWebcamSpy).not.toHaveBeenCalled();
+      expect(stopWebcamSpy).not.toHaveBeenCalled();
+
+      const openDialogNode = screen.getByRole('button');
+
+      // we open webcam dialog
+      fireEvent.click(openDialogNode);
+
+      const scanQRCodeDialog = await screen.findByRole('dialog');
+
+      expect(scanQRCodeDialog).toBeInTheDocument();
+
+      // only webcam connection should be called at this point of the test
+      expect(openWebcamSpy).toHaveBeenCalled();
+      expect(stopWebcamSpy).not.toHaveBeenCalled();
+
+      // we close webcam dialog
+      const closeQRCodeDialogButton = screen.getByLabelText('Close scan QR code dialog');
+
+      expect(closeQRCodeDialogButton).toBeInTheDocument();
+      fireEvent.click(closeQRCodeDialogButton);
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('dialog'));
+
+      // webcam connection should be closed
+      expect(stopWebcamSpy).toHaveBeenCalled();
     });
   });
 

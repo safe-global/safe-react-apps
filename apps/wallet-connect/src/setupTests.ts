@@ -3,7 +3,14 @@ import '@testing-library/jest-dom/extend-expect';
 Object.defineProperty(window.navigator, 'mediaDevices', {
   writable: true,
   value: {
-    getUserMedia: jest.fn(),
+    getUserMedia: () => ({
+      getTracks: () => [
+        // simple MediaStreamTrack stub
+        {
+          stop: jest.fn(),
+        },
+      ],
+    }),
   },
 });
 
