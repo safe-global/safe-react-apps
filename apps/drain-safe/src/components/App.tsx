@@ -14,6 +14,7 @@ import SubmitButton from './SubmitButton';
 import CancelButton from './CancelButton';
 import AddressInput from './AddressInput';
 import useWeb3 from '../hooks/useWeb3';
+import TimedComponent from './TimedComponent';
 
 const App: React.FC = () => {
   const { sdk, safe } = useSafeAppsSDK();
@@ -36,11 +37,6 @@ const App: React.FC = () => {
     console.error(userMsg, err);
   };
 
-  const resetMessages = () => {
-    setError('');
-    setFinished(false);
-  };
-
   const sendTxs = async (): Promise<string> => {
     const txs = assets
       .filter((item) => selectedTokens.includes(item.tokenInfo.address))
@@ -56,7 +52,7 @@ const App: React.FC = () => {
       return;
     }
 
-    resetMessages();
+    setError('');
     setSubmitting(true);
 
     try {
@@ -79,13 +75,13 @@ const App: React.FC = () => {
   };
 
   const onCancel = () => {
-    resetMessages();
+    setError('');
     setSubmitting(false);
   };
 
   const onToAddressChange = useCallback((address: string): void => {
     setToAddress(address);
-    resetMessages();
+    setError('');
   }, []);
 
   const transferStatusText = useMemo(() => {
@@ -144,17 +140,18 @@ const App: React.FC = () => {
           <Balances
             ethFiatPrice={ethFiatPrice}
             gasPrice={gasPrice}
-            web3={web3}
             assets={assets}
             onSelectionChange={setSelectedTokens}
           />
           {error && <Text size="lg">{error}</Text>}
           {isFinished && (
-            <Text size="lg">
-              The transaction has been created. ✅<span role="img" aria-label="success"></span>
-              <br />
-              Refresh the app when it’s executed.
-            </Text>
+            <TimedComponent timeout={5000} onTimeout={() => setFinished(false)}>
+              <Text size="lg">
+                The transaction has been created. ✅<span role="img" aria-label="success"></span>
+                <br />
+                Refresh the app when it’s executed.
+              </Text>
+            </TimedComponent>
           )}
           {!submitting && (
             <AddressInput

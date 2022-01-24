@@ -1619,28 +1619,20 @@
     "@ethersproject/properties" "^5.5.0"
     "@ethersproject/strings" "^5.5.0"
 
-"@gnosis.pm/safe-apps-react-sdk@4.0.8":
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-4.0.8.tgz#76012a4aa00c6e00bab7decc1536f0dabc125a57"
-  integrity sha512-P/1pcBleg5RJJYJWS5gSzNpqeWNqYZsT3m2/hIwdv1jtodXlBBsp4OhSaknlFCtwQlhBhc+cVYnk9AMljMLuow==
+"@gnosis.pm/safe-apps-react-sdk@4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-4.1.0.tgz#52d60ba0a9e9594b1df0c7c24e520666566550af"
+  integrity sha512-nkQHLqMVRwmdmXXI2I2zK2+/U+m7yer38hWAt2es7cUeZ5QWaNoRmdNwA8v02WoMpVJDq8/7gtfesYK7dFdLQA==
   dependencies:
-    "@gnosis.pm/safe-apps-sdk" "6.1.1"
+    "@gnosis.pm/safe-apps-sdk" "6.2.0"
 
-"@gnosis.pm/safe-apps-sdk@6.1.1":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-6.1.1.tgz#6a4e19c475967a0d04a8c04559e05703484e2ca8"
-  integrity sha512-MI2gIdQUlu1NrDt5rF47xey1LSiQoy5Nb+vqn16PM5qVc3FjR+nPNG8+1yGlL96di31z+kyS2J8DzHiea7+TMA==
+"@gnosis.pm/safe-apps-sdk@6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-6.2.0.tgz#05751b4ae4c6cfa7e19839d3655e7d9b5fb72dfe"
+  integrity sha512-dOpVBlu+Nv7bOrOl9llTeRriEpdUnnbXEM/RgTkS1v8Q2swT6+M+WIKTuKB/cadFXbjUsBD/nd3IsihHP24b5g==
   dependencies:
     "@gnosis.pm/safe-react-gateway-sdk" "^2.5.6"
     ethers "^5.4.7"
-
-"@gnosis.pm/safe-react-components@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.6.0.tgz#9e6b34c3e02373d5116d66e67688d149c4a14239"
-  integrity sha512-L5ExDY9T5a/W4R1E2R5QUAHuiIJ3gNo7fs4XRPZ1vkf8vg9qgR4HOsy7gGrehKQhIxXDyZRNvNGq1lSb/DSoKw==
-  dependencies:
-    classnames "^2.2.6"
-    react-media "^1.10.0"
 
 "@gnosis.pm/safe-react-components@^0.9.1":
   version "0.9.1"
@@ -4382,11 +4374,6 @@ class-utils@^0.3.5:
     define-property "^0.2.5"
     isobject "^3.0.0"
     static-extend "^0.1.1"
-
-classnames@^2.2.6:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
-  integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
 
 clean-css@^4.2.3:
   version "4.2.3"

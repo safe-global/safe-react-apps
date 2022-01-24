@@ -10,15 +10,16 @@
     "start:walletconnect": "yarn workspace wallet-connect start",
     "start:drain-safe": "yarn workspace drain-safe start",
     "start:ramp": "yarn workspace ramp-network start",
-    "test": "yarn workspaces run test --watchAll=false"
+    "test": "yarn workspaces run test --watchAll=false",
+    "test:coverage": "yarn workspaces run test --coverage --watchAll=false"
   },
-  "version": "2.3.1",
+  "version": "2.4.1",
   "workspaces": [
     "apps/*"
   ],
   "dependencies": {
-    "@gnosis.pm/safe-apps-react-sdk": "4.0.8",
-    "@gnosis.pm/safe-apps-sdk": "6.1.1",
+    "@gnosis.pm/safe-apps-react-sdk": "4.1.0",
+    "@gnosis.pm/safe-apps-sdk": "6.2.0",
     "@material-ui/icons": "^4.11.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

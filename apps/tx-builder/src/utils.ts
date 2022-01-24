@@ -1,4 +1,4 @@
-import { toBN } from 'web3-utils';
+import { toBN, isAddress } from 'web3-utils';
 
 export enum CHAINS {
   MAINNET = '1',
@@ -94,4 +94,11 @@ export const isInputValueValid = (val: string) => {
 
 export const getCustomDataError = (value: string | undefined) => {
   return `Has to be a valid strict hex data ${!value?.startsWith('0x') ? '(it must start with 0x)' : ''}`;
+};
+
+export const isValidAddress = (address: string | null) => {
+  if (!address) {
+    return false;
+  }
+  return isAddress(address);
 };
