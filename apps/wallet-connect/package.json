@@ -12,7 +12,9 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "test": "react-app-rewired test --passWithNoTests"
+    "test": "react-app-rewired test --passWithNoTests",
+    "deploy:s3": "bash ../../scripts/deploy_to_s3_bucket.sh",
+    "deploy:pr": "bash ../../scripts/deploy_pr.sh"
   },
   "eslintConfig": {
     "extends": "react-app"
