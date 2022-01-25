@@ -10,6 +10,7 @@ export const ASSETS_BY_CHAIN: { [key: string]: string } = {
   '4': 'ETH_*,ERC20_*',
   '56': 'BSC_*',
   '137': 'MATIC_*',
+  '100': 'XDAI_*',
   '43114': 'AVAX_*',
 };
 
