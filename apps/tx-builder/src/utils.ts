@@ -12,9 +12,10 @@ export enum CHAINS {
   XDAI = '100',
   POLYGON = '137',
   ENERGY_WEB_CHAIN = '246',
-  AVALANCHE = '43114',
   ARBITRUM = '42161',
+  AVALANCHE = '43114',
   VOLTA = '73799',
+  AURORA = '1313161554',
 }
 
 export const rpcUrlGetterByNetwork: {
@@ -34,6 +35,7 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.ARBITRUM]: () => 'https://arb1.arbitrum.io/rpc',
   [CHAINS.AVALANCHE]: () => 'https://api.avax.network/ext/bc/C/rpc',
   [CHAINS.VOLTA]: () => 'https://volta-rpc.energyweb.org',
+  [CHAINS.AURORA]: () => 'https://mainnet.aurora.dev',
 };
 
 type InputType = {
