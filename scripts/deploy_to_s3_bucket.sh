@@ -1,19 +1,32 @@
 #!/bin/bash
 
 function deploy_app {
-  APP_PATH="./apps/$1/build"
+  BUNDLE_FOLDER="build"
+
+  PACKAGE_VERSION=$(cat package.json \
+  | grep version \
+  | head -1 \
+  | awk -F: '{ print $2 }' \
+  | sed 's/[",]//g')
   
-  aws s3 sync $APP_PATH s3://${BUCKET_NAME}/$1 --delete
+  if [ -n "$APPEND_TAG"]
+  then
+    aws s3 sync $BUNDLE_FOLDER s3://${BUCKET_NAME}/$1/$PACKAGE_VERSION --delete
+  else
+    aws s3 sync $BUNDLE_FOLDER s3://${BUCKET_NAME}/$1 --delete
+  fi
 }
 
 # Only:
-# - Pull requests
+# - Releases
 # - Security env variables are available. PR from forks don't have them.
-if [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
-  for file in ./apps/*/; do
-    if [[ -d "$file" && ! -L "$file" ]]; then
-      app="$(echo $file | cut -d '/' -f 3)"
-      deploy_app $app
-    fi; 
-  done
+if [ -n "$AWS_SECRET_ACCESS_KEY" ] && [ -n "$BUCKET_NAME" ]
+then
+  echo "Executing in $(pwd)"
+  # app name is the name of the current folder
+  APP_NAME="$(basename $(pwd))"
+  deploy_app $APP_NAME
+else
+  echo "[ERROR] App could not be deployed because of missing environment variables"
+  exit 1
 fi
