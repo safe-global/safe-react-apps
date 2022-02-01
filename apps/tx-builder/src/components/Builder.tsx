@@ -20,7 +20,6 @@ import useServices from '../hooks/useServices';
 import { ProposedTransaction } from '../typings/models';
 import { ModalBody } from './ModalBody';
 import { Examples } from './Examples';
-import AddressContractField from './fields/AddressContractField';
 import { parseInputValue, getInputHelper, isInputValueValid, getCustomDataError, isValidAddress } from '../utils';
 import { TextFieldInputProps } from '@gnosis.pm/safe-react-components/dist/inputs/TextFieldInput';
 
@@ -101,6 +100,7 @@ type Props = {
   getAddressFromDomain: (name: string) => Promise<string>;
 };
 
+// TODO: Remove this file
 export const Builder = ({
   contract,
   to,
@@ -314,23 +314,7 @@ export const Builder = ({
   }, [showCustomData, getTxData]);
 
   const renderInput = (input: any, index: number) => {
-    const isAddressField = input.internalType === 'address' || input.type === 'address';
     const isBoolean = input.type === 'bool';
-
-    if (isAddressField) {
-      return (
-        <AddressContractField
-          label={`${input.name || ''}(${getInputHelper(input)})`}
-          onChangeContractInput={onChangeContractInput}
-          input={input}
-          index={index}
-          isValidAddress={isValidAddress}
-          inputCache={inputCache}
-          networkPrefix={networkPrefix}
-          getAddressFromDomain={getAddressFromDomain}
-        />
-      );
-    }
 
     if (isBoolean) {
       inputCache[index] = inputCache[index] || 'true';

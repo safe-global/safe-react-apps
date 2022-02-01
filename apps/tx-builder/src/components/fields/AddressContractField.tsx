@@ -1,50 +1,32 @@
 import styled from 'styled-components';
-import { useCallback } from 'react';
+import { ReactElement } from 'react';
 import { AddressInput } from '@gnosis.pm/safe-react-components';
-import { ContractInput } from '../../hooks/useServices/interfaceRepository';
-
-type AddressContractFieldTypes = {
-  onChangeContractInput: (index: number, value: string) => void;
-  index: number;
-  input: ContractInput;
-  label: string;
-  isValidAddress: (address: string | null) => boolean | undefined;
-  inputCache: string[];
-  networkPrefix: string | undefined;
-  getAddressFromDomain: (name: string) => Promise<string>;
-};
 
 function AddressContractField({
-  onChangeContractInput,
-  index,
-  input,
+  id,
+  name,
+  value,
+  onChange,
   label,
-  isValidAddress,
-  inputCache,
-  networkPrefix,
+  error,
   getAddressFromDomain,
-}: AddressContractFieldTypes) {
-  const onChangeAddress = useCallback(
-    (address: string) => {
-      onChangeContractInput(index, address);
-    },
-    [onChangeContractInput, index],
-  );
-
-  const error = inputCache[index] && !isValidAddress(inputCache[index]) ? 'Invalid Address' : '';
-
+  networkPrefix,
+  onBlur,
+}: any): ReactElement {
   return (
     <StyledAddressInput
-      id={label}
-      name={input.name}
+      id={id}
+      name={name}
       label={label}
-      address={inputCache[index]}
+      address={value}
+      onBlur={onBlur}
       showNetworkPrefix={!!networkPrefix}
       networkPrefix={networkPrefix}
       hiddenLabel={false}
       error={error}
       getAddressFromDomain={getAddressFromDomain}
-      onChangeAddress={onChangeAddress}
+      onChangeAddress={onChange}
+      showErrorsInTheLabel={false}
     />
   );
 }
@@ -57,11 +39,11 @@ const StyledAddressInput = styled(AddressInput)`
     margin-bottom: 10px;
 
     .MuiFormLabel-root {
-      color: #0000008a;
+      color: ${(props) => (!!props.error ? '#f44336' : '#0000008a')};
     }
 
     .MuiFormLabel-root.Mui-focused {
-      color: #008c73;
+      color: ${(props) => (!!props.error ? '#f44336' : '#008c73')};
     }
   }
 `;

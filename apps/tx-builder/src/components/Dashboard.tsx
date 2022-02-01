@@ -9,6 +9,7 @@ import useServices from '../hooks/useServices';
 import { Builder } from './Builder';
 import useTransactions from '../hooks/useTransactions';
 import { isValidAddress } from '../utils';
+import AddNewTransactionForm from './AddNewTransactionForm';
 
 const Wrapper = styled.div`
   display: flex;
@@ -104,7 +105,6 @@ const Dashboard = (): ReactElement => {
           Learn how to use the transaction builder.
         </Link>
       </StyledText>
-
       {/* ABI or Address Input */}
       <StyledAddressInput
         id={'address-or-ABI-input'}
@@ -134,7 +134,7 @@ const Dashboard = (): ReactElement => {
         </StyledWarningText>
       )}
 
-      {/* Builder */}
+      {/* TODO: REMOVE THIS Builder */}
       {isValidAddressOrContract && (
         <Builder
           contract={contract}
@@ -147,6 +147,20 @@ const Dashboard = (): ReactElement => {
           onSubmitTransactions={handleSubmitTransactions}
           networkPrefix={chainInfo?.shortName}
           getAddressFromDomain={getAddressFromDomain}
+        />
+      )}
+
+      {isValidAddressOrContract && (
+        <AddNewTransactionForm
+          transactions={transactions}
+          onAddTransaction={handleAddTransaction}
+          contract={contract}
+          to={addressOrAbi}
+          networkPrefix={chainInfo?.shortName}
+          getAddressFromDomain={getAddressFromDomain}
+          nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
+          onRemoveTransaction={handleRemoveTransaction}
+          onSubmitTransactions={handleSubmitTransactions}
         />
       )}
     </Wrapper>
