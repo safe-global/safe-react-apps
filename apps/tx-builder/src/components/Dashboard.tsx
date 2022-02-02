@@ -6,7 +6,6 @@ import CheckCircle from '@material-ui/icons/CheckCircle';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
-import { Builder } from './Builder';
 import useTransactions from '../hooks/useTransactions';
 import { isValidAddress } from '../utils';
 import AddNewTransactionForm from './AddNewTransactionForm';
@@ -132,22 +131,6 @@ const Dashboard = (): ReactElement => {
         <StyledWarningText color="warning" size="lg">
           No ABI found for this address
         </StyledWarningText>
-      )}
-
-      {/* TODO: REMOVE THIS Builder */}
-      {isValidAddressOrContract && (
-        <Builder
-          contract={contract}
-          to={addressOrAbi}
-          chainId={chainInfo?.chainId}
-          nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
-          transactions={transactions}
-          onAddTransaction={handleAddTransaction}
-          onRemoveTransaction={handleRemoveTransaction}
-          onSubmitTransactions={handleSubmitTransactions}
-          networkPrefix={chainInfo?.shortName}
-          getAddressFromDomain={getAddressFromDomain}
-        />
       )}
 
       {isValidAddressOrContract && (
