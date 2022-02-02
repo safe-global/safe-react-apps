@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from 'react';
+import { ReactElement } from 'react';
 import { Controller } from 'react-hook-form';
 import { SelectItem } from '@gnosis.pm/safe-react-components/dist/inputs/Select';
 
@@ -14,14 +14,7 @@ import ContractTextField from './ContractTextField';
 import validateField from './validations/validations';
 import TextareaContractField from './TextareaContractField';
 
-function Field({ fieldType, control, name, showField = true, unregister, options, ...props }: any) {
-  useEffect(() => {
-    // TODO: remove this unnecesary useEffect ???? we manually unregister a field when we hide it
-    if (!showField) {
-      unregister(name);
-    }
-  }, [showField, unregister, name]);
-
+function Field({ fieldType, control, name, showField = true, shouldUnregister = true, options, ...props }: any) {
   // Component based on field type
   const Component = CUSTOM_SOLIDITY_COMPONENTS[fieldType] || ContractTextField;
 
@@ -31,8 +24,8 @@ function Field({ fieldType, control, name, showField = true, unregister, options
       <Controller
         name={name}
         control={control}
-        defaultValue={CUSTOM_DEFAULT_VALUES[fieldType]}
-        shouldUnregister
+        defaultValue={CUSTOM_DEFAULT_VALUES[fieldType] || ''}
+        shouldUnregister={shouldUnregister}
         rules={{
           required: {
             value: true,
@@ -40,17 +33,14 @@ function Field({ fieldType, control, name, showField = true, unregister, options
           },
           validate: validateField(fieldType),
         }}
-        render={({ field, fieldState, formState }) => (
+        render={({ field, fieldState }) => (
           <Component
             name={field.name}
             onChange={field.onChange}
             onBlur={field.onBlur}
             value={field.value}
-            field={field}
             options={options || DEFAULT_OPTIONS[fieldType]}
             error={fieldState.error?.message}
-            // formState={formState}
-            // fieldState={fieldState}
             {...props}
           />
         )}
@@ -70,7 +60,7 @@ const CUSTOM_SOLIDITY_COMPONENTS: CustomSolidityComponent = {
 
 const CUSTOM_DEFAULT_VALUES: CustomDefaultValueTypes = {
   [BOOLEAN_FIELD_TYPE]: 'true',
-  [CONTRACT_METHOD_FIELD_TYPE]: 0, // first contract method as default
+  [CONTRACT_METHOD_FIELD_TYPE]: '0', // first contract method as default
 };
 
 const BOOLEAN_DEFAULT_OPTIONS: SelectItem[] = [

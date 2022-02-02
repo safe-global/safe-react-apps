@@ -37,7 +37,7 @@ function AddNewTransactionForm({
 
   const initialFormValues = {
     toAddress: isValidAddress(to) ? to : '',
-    contractMethodIndex: 0,
+    contractMethodIndex: '0',
   };
 
   function onSubmit(values: Record<string, string | number | undefined>) {

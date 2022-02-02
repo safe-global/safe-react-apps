@@ -38,7 +38,7 @@ function SolidityForm({
   const [showExamples, setShowExamples] = useState<boolean>(false);
   const [showHexEncodedData, setShowHexEncodedData] = useState<boolean>(false);
 
-  const { handleSubmit, control, setValue, watch, getValues, unregister } = useForm({
+  const { handleSubmit, control, setValue, watch, getValues } = useForm({
     defaultValues: initialValues,
     mode: 'onTouched', // This option allows you to configure the validation strategy before the user submits the form
   });
@@ -59,14 +59,12 @@ function SolidityForm({
   function onClickShowHexEncodedData(checked: boolean) {
     const contractFieldsValues = getValues('contractFieldsValues');
 
-    if (checked && contractMethod && contractFieldsValues) {
+    if (checked && contractMethod) {
       const encodeData = encodeToHexData(contractMethod, contractFieldsValues);
       setValue('hexEncodedData', encodeData);
     }
     setShowHexEncodedData(checked);
   }
-
-  console.log('contractMethodIndex: ', contractMethodIndex);
 
   return (
     <form id={id} onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -81,7 +79,6 @@ function SolidityForm({
         networkPrefix={networkPrefix}
         fieldType={ADDRESS_FIELD_TYPE}
         control={control}
-        unregister={unregister}
         showErrorsInTheLabel={false}
       />
 
@@ -95,7 +92,6 @@ function SolidityForm({
         required
         showField={isValueInputVisible}
         control={control}
-        unregister={unregister}
         showErrorsInTheLabel={false}
       />
 
@@ -110,8 +106,8 @@ function SolidityForm({
         fullWidth
         required
         showField={showContractFields}
+        shouldUnregister={false}
         control={control}
-        unregister={unregister}
         showErrorsInTheLabel={false}
       />
 
@@ -138,9 +134,9 @@ function SolidityForm({
             fieldType={contractField.type}
             fullWidth
             required
+            shouldUnregister={false} // required to keep contract field values in the form state when user encode & decode data
             showField={showContractFields}
             control={control}
-            unregister={unregister}
             showErrorsInTheLabel={false}
             getAddressFromDomain={getAddressFromDomain}
             networkPrefix={networkPrefix}
@@ -158,7 +154,6 @@ function SolidityForm({
         required
         fullWidth
         control={control}
-        unregister={unregister}
         showErrorsInTheLabel={false}
       />
 
