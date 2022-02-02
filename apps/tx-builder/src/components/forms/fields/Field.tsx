@@ -7,16 +7,16 @@ import {
   BOOLEAN_FIELD_TYPE,
   CONTRACT_METHOD_FIELD_TYPE,
   HEX_ENCODED_DATA_FIELD_TYPE,
-} from './constants/fields';
+} from './fields';
 import AddressContractField from './AddressContractField';
 import SelectContractField from './SelectContractField';
-import ContractTextField from './ContractTextField';
-import validateField from './validations/validations';
 import TextareaContractField from './TextareaContractField';
+import TextContractField from './TextContractField';
+import validateField from '../validations/validateField';
 
 function Field({ fieldType, control, name, showField = true, shouldUnregister = true, options, ...props }: any) {
   // Component based on field type
-  const Component = CUSTOM_SOLIDITY_COMPONENTS[fieldType] || ContractTextField;
+  const Component = CUSTOM_SOLIDITY_COMPONENTS[fieldType] || TextContractField;
 
   return (
     showField && (

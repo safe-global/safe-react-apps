@@ -2,16 +2,16 @@ import { TextFieldInput } from '@gnosis.pm/safe-react-components';
 import { TextFieldInputProps } from '@gnosis.pm/safe-react-components/dist/inputs/TextFieldInput';
 import styled from 'styled-components';
 
-type ContractTextFieldTypes = TextFieldInputProps & {
+type TextContractFieldTypes = TextFieldInputProps & {
   networkPrefix?: undefined | string;
   getAddressFromDomain?: (name: string) => Promise<string>;
 };
 
-function ContractTextField({ getAddressFromDomain, networkPrefix, ...props }: ContractTextFieldTypes) {
+function TextContractField({ getAddressFromDomain, networkPrefix, ...props }: TextContractFieldTypes) {
   return <StyledTextField {...props} hiddenLabel={false} />;
 }
 
-export default ContractTextField;
+export default TextContractField;
 
 const StyledTextField = styled(TextFieldInput)`
   && {

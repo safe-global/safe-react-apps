@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { toChecksumAddress, toWei, fromWei } from 'web3-utils';
 
-import { ContractInterface } from '../hooks/useServices/interfaceRepository';
-import { ProposedTransaction } from '../typings/models';
-import { encodeToHexData, getTxDescription, isValidAddress } from '../utils';
-import SolidityForm from './forms/SolidityForm';
-import { ModalBody } from './ModalBody';
+import { ContractInterface } from '../../hooks/useServices/interfaceRepository';
+import { ProposedTransaction } from '../../typings/models';
+import { encodeToHexData, getTxDescription, isValidAddress } from '../../utils';
+import { ModalBody } from '../ModalBody';
+import SolidityForm from './SolidityForm';
 
 type Props = {
   contract: ContractInterface | null;

@@ -8,7 +8,7 @@ import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import useTransactions from '../hooks/useTransactions';
 import { isValidAddress } from '../utils';
-import AddNewTransactionForm from './AddNewTransactionForm';
+import AddNewTransactionForm from './forms/AddNewTransactionForm';
 
 const Wrapper = styled.div`
   display: flex;

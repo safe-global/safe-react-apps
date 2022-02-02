@@ -9,8 +9,8 @@ import {
   AMOUNT_FIELD_TYPE,
   CONTRACT_METHOD_FIELD_TYPE,
   HEX_ENCODED_DATA_FIELD_TYPE,
-} from '../fields/constants/fields';
-import Field from '../fields/Fields';
+} from './fields/fields';
+import Field from './fields/Field';
 import { Examples } from '../Examples';
 import { encodeToHexData } from '../../utils';
 

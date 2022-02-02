@@ -46,6 +46,7 @@ type InputType = {
   components: InputType[];
 };
 
+// TODO: review this or remove it ?
 export const getInputHelper = (input: InputType) => {
   // This code renders a helper for the input text.
   if (input.type.startsWith('tuple')) {
