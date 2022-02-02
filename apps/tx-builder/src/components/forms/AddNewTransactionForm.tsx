@@ -7,19 +7,14 @@ import { ContractInterface } from '../../hooks/useServices/interfaceRepository';
 import { ProposedTransaction } from '../../typings/models';
 import { encodeToHexData, getTxDescription, isValidAddress } from '../../utils';
 import { ModalBody } from '../ModalBody';
-import SolidityForm from './SolidityForm';
-
-type Props = {
-  contract: ContractInterface | null;
-  to: string;
-  transactions: ProposedTransaction[];
-  onAddTransaction: (transaction: ProposedTransaction) => void;
-  onRemoveTransaction: (index: number) => void;
-  onSubmitTransactions: () => void;
-  networkPrefix: undefined | string;
-  getAddressFromDomain: (name: string) => Promise<string>;
-  nativeCurrencySymbol: undefined | string;
-};
+import SolidityForm, {
+  CONTRACT_METHOD_INDEX_FIELD_NAME,
+  CONTRACT_VALUES_FIELD_NAME,
+  HEX_ENCODED_DATA_FIELD_NAME,
+  SolodityFormValues,
+  TOKEN_INPUT_NAME,
+  TO_ADDRESS_FIELD_NAME,
+} from './SolidityForm';
 
 function AddNewTransactionForm({
   transactions,
@@ -31,26 +26,31 @@ function AddNewTransactionForm({
   networkPrefix,
   getAddressFromDomain,
   nativeCurrencySymbol,
-}: Props) {
+}: AddNewTransactionFormProps) {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const showABIWarning = contract && !contract?.methods.length;
 
   const initialFormValues = {
-    toAddress: isValidAddress(to) ? to : '',
-    contractMethodIndex: '0',
+    [TO_ADDRESS_FIELD_NAME]: isValidAddress(to) ? to : '',
+    [CONTRACT_METHOD_INDEX_FIELD_NAME]: '0',
   };
 
-  function onSubmit(values: Record<string, string | number | undefined>) {
-    const { hexEncodedData, contractMethodIndex, contractFieldsValues, toAddress, tokenValue } = values;
+  function onSubmit(values: SolodityFormValues) {
+    const contractMethodIndex = values[CONTRACT_METHOD_INDEX_FIELD_NAME];
+    const toAddress = values[TO_ADDRESS_FIELD_NAME];
+    const tokenValue = values[TOKEN_INPUT_NAME];
+    const contractFieldsValues = values[CONTRACT_VALUES_FIELD_NAME];
+    const hexEncodedData = values[HEX_ENCODED_DATA_FIELD_NAME];
 
-    const contractMethod = contract?.methods[contractMethodIndex as number];
+    const contractMethod = contract?.methods[Number(contractMethodIndex)];
 
     const data = hexEncodedData || encodeToHexData(contractMethod, contractFieldsValues) || '0x';
-    const to = toChecksumAddress(toAddress as string);
-    const value = toWei((tokenValue as string) || '0');
+    const to = toChecksumAddress(toAddress);
+    const value = toWei(tokenValue || '0');
+
+    const contractInteractionDescription = hexEncodedData || getTxDescription(contractMethod, contractFieldsValues);
     const transferDescription = `Transfer ${fromWei(value)} ${nativeCurrencySymbol} to ${to}`;
-    const description =
-      (hexEncodedData as string) || getTxDescription(contractMethod, contractFieldsValues) || transferDescription;
+    const description = contractInteractionDescription || transferDescription;
 
     onAddTransaction({
       description,
@@ -66,7 +66,7 @@ function AddNewTransactionForm({
 
   return (
     <>
-      <Title size="xs">NEW: Transaction information</Title>
+      <Title size="xs">Transaction information</Title>
 
       {showABIWarning && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
 
@@ -80,12 +80,12 @@ function AddNewTransactionForm({
         onSubmit={onSubmit}
       >
         <ButtonContainer>
-          {/* Add transaction Btn */}
+          {/* Add transaction btn */}
           <Button size="md" color="primary" type="submit">
             Add transaction
           </Button>
 
-          {/* Send Transactions Btn */}
+          {/* Send Transactions btn */}
           <Button
             size="md"
             type="button"
@@ -121,3 +121,15 @@ const ButtonContainer = styled.div`
   justify-content: space-between;
   margin-top: 15px;
 `;
+
+type AddNewTransactionFormProps = {
+  contract: ContractInterface | null;
+  to: string;
+  transactions: ProposedTransaction[];
+  onAddTransaction: (transaction: ProposedTransaction) => void;
+  onRemoveTransaction: (index: number) => void;
+  onSubmitTransactions: () => void;
+  networkPrefix: undefined | string;
+  getAddressFromDomain: (name: string) => Promise<string>;
+  nativeCurrencySymbol: undefined | string;
+};

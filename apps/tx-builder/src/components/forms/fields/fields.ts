@@ -1,9 +1,10 @@
 // based on https://docs.soliditylang.org/en/v0.8.11/abi-spec.html#types
 export const ADDRESS_FIELD_TYPE = 'address';
 export const BOOLEAN_FIELD_TYPE = 'bool';
+export const U_INT_FIELD_TYPE = 'uint';
 
 // native token field
-export const AMOUNT_FIELD_TYPE = 'uint';
+export const AMOUNT_FIELD_TYPE = U_INT_FIELD_TYPE;
 
 // selected contract method field
 export const CONTRACT_METHOD_FIELD_TYPE = 'contractMethod';

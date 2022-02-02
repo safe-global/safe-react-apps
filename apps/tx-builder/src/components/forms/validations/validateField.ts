@@ -6,26 +6,26 @@ import validateAddressField from './validateAddressField';
 import validateAmountField from './validateAmountField';
 import validateHexEncodedDataField from './validateHexEncodedDataField';
 
-type ValidationFunction = (value: string, fieldType: string) => string | undefined;
-
-interface CustomValidationTypes {
-  [key: string]: ValidationFunction[];
-}
-
-const CUSTOM_VALIDATIONS: CustomValidationTypes = {
+const CUSTOM_VALIDATIONS: CustomValidationsType = {
   [ADDRESS_FIELD_TYPE]: [validateAddressField],
   [AMOUNT_FIELD_TYPE]: [validateAmountField],
   [HEX_ENCODED_DATA_FIELD_TYPE]: [validateHexEncodedDataField],
 };
 
-function validateField(fieldType: string): Validate<any> {
+function validateField(fieldType: string): Validate<string> {
   return (value: string): ValidateResult =>
     [...(CUSTOM_VALIDATIONS?.[fieldType] || []), basicSolidityValidation].reduce<ValidateResult>(
       (error, validation) => {
-        return error || (validation(value, fieldType) as ValidateResult);
+        return error || validation(value, fieldType);
       },
-      '',
+      undefined, // initially no error is present
     );
 }
 
 export default validateField;
+
+type ValidationFunction = (value: string, fieldType: string) => ValidateResult;
+
+interface CustomValidationsType {
+  [key: string]: ValidationFunction[];
+}

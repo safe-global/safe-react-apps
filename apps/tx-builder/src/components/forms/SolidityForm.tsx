@@ -14,17 +14,6 @@ import Field from './fields/Field';
 import { Examples } from '../Examples';
 import { encodeToHexData } from '../../utils';
 
-type SolidityFormTypes = {
-  id: string;
-  networkPrefix: undefined | string;
-  getAddressFromDomain: (name: string) => Promise<string>;
-  nativeCurrencySymbol: undefined | string;
-  contract: ContractInterface | null;
-  onSubmit: SubmitHandler<Record<string, string | number | undefined>>;
-  children: React.ReactNode;
-  initialValues: Record<string, string | number | undefined>;
-};
-
 function SolidityForm({
   id,
   onSubmit,
@@ -34,17 +23,17 @@ function SolidityForm({
   networkPrefix,
   contract,
   children,
-}: SolidityFormTypes) {
+}: SolidityFormPropsTypes) {
   const [showExamples, setShowExamples] = useState<boolean>(false);
   const [showHexEncodedData, setShowHexEncodedData] = useState<boolean>(false);
 
-  const { handleSubmit, control, setValue, watch, getValues, reset, clearErrors } = useForm({
+  const { handleSubmit, control, setValue, watch, getValues, reset, clearErrors } = useForm<SolodityFormValues>({
     defaultValues: initialValues,
     mode: 'onTouched', // This option allows you to configure the validation strategy before the user submits the form
   });
 
-  const contractMethodIndex = watch('contractMethodIndex');
-  const contractMethod = contract?.methods[contractMethodIndex as number];
+  const contractMethodIndex = watch(CONTRACT_METHOD_INDEX_FIELD_NAME);
+  const contractMethod = contract?.methods[Number(contractMethodIndex)];
   const contractFields = contractMethod?.inputs || [];
 
   const showContractFields = !!contract && !showHexEncodedData;
@@ -57,16 +46,16 @@ function SolidityForm({
   const isValueInputVisible = showHexEncodedData || !contract || isPayableMethod;
 
   function onClickShowHexEncodedData(checked: boolean) {
-    const contractFieldsValues = getValues('contractFieldsValues');
+    const contractFieldsValues = getValues(CONTRACT_VALUES_FIELD_NAME);
 
     if (checked && contractMethod) {
       const encodeData = encodeToHexData(contractMethod, contractFieldsValues);
-      setValue('hexEncodedData', encodeData);
+      setValue(HEX_ENCODED_DATA_FIELD_NAME, encodeData || '');
     }
     setShowHexEncodedData(checked);
   }
 
-  function submitAndResetForm(values: Record<string, string | number | undefined>) {
+  function submitAndResetForm(values: SolodityFormValues) {
     onSubmit(values);
     reset(initialValues);
     setTimeout(clearErrors, 0);
@@ -77,7 +66,7 @@ function SolidityForm({
       {/* To Address field */}
       <Field
         id="to-address-input"
-        name="toAddress"
+        name={TO_ADDRESS_FIELD_NAME}
         label="To Address"
         fullWidth
         required
@@ -88,10 +77,10 @@ function SolidityForm({
         showErrorsInTheLabel={false}
       />
 
-      {/* Token Amount Input */}
+      {/* Native Token Amount Input */}
       <Field
         id="token-value-input"
-        name="tokenValue"
+        name={TOKEN_INPUT_NAME}
         label={`${nativeCurrencySymbol} value`}
         fieldType={AMOUNT_FIELD_TYPE}
         fullWidth
@@ -106,7 +95,8 @@ function SolidityForm({
       {/* Contract Method Selector */}
       <Field
         id="contract-method-selector"
-        name="contractMethodIndex"
+        name={CONTRACT_METHOD_INDEX_FIELD_NAME}
+        label={'Contract Method Selector'}
         fieldType={CONTRACT_METHOD_FIELD_TYPE}
         options={contractMethodOptions}
         fullWidth
@@ -117,10 +107,10 @@ function SolidityForm({
         showErrorsInTheLabel={false}
       />
 
-      {/* Show examples link TODO: Refactor this ? */}
+      {/* Show examples link */}
       {showContractFields && (
         <StyledExamples>
-          <ButtonLink color="primary" onClick={() => setShowExamples((prev) => !prev)}>
+          <ButtonLink type="button" color="primary" onClick={() => setShowExamples((prev) => !prev)}>
             {showExamples ? 'Hide Examples' : 'Show Examples'}
           </ButtonLink>
 
@@ -130,7 +120,7 @@ function SolidityForm({
 
       {/* Contract Fields */}
       {contractFields.map((contractField, index) => {
-        const name = `contractFieldsValues.${contractField.name || index}`;
+        const name = `${CONTRACT_VALUES_FIELD_NAME}.${contractField.name || index}`;
         return (
           <Field
             key={name}
@@ -140,7 +130,7 @@ function SolidityForm({
             fieldType={contractField.type}
             fullWidth
             required
-            shouldUnregister={false} // required to keep contract field values in the form state when user encode & decode data
+            shouldUnregister={false} // required to keep contract field values in the form state when the user switches between encoding and decoding data
             showField={showContractFields}
             control={control}
             showErrorsInTheLabel={false}
@@ -150,10 +140,10 @@ function SolidityForm({
         );
       })}
 
-      {/* hex encoded textarea field */}
+      {/* Hex encoded textarea field */}
       <Field
         id="hex-encoded-data"
-        name="hexEncodedData"
+        name={HEX_ENCODED_DATA_FIELD_NAME}
         label="Data (Hex encoded)"
         fieldType={HEX_ENCODED_DATA_FIELD_TYPE}
         showField={showHexEncodedData}
@@ -163,7 +153,7 @@ function SolidityForm({
         showErrorsInTheLabel={false}
       />
 
-      {/* Switch button */}
+      {/* Switch button to encoding contract fields values to hex data */}
       <Text size="lg">
         <Switch checked={showHexEncodedData} onChange={onClickShowHexEncodedData} />
         Use custom data (hex encoded)
@@ -184,3 +174,33 @@ const StyledExamples = styled.div`
     padding: 0;
   }
 `;
+
+type SolidityFormPropsTypes = {
+  id: string;
+  networkPrefix: undefined | string;
+  getAddressFromDomain: (name: string) => Promise<string>;
+  nativeCurrencySymbol: undefined | string;
+  contract: ContractInterface | null;
+  onSubmit: SubmitHandler<SolodityFormValues>;
+  initialValues: SolodityInitialFormValues;
+  children: React.ReactNode;
+};
+
+export const TO_ADDRESS_FIELD_NAME = 'toAddress';
+export const TOKEN_INPUT_NAME = 'tokenValue';
+export const CONTRACT_METHOD_INDEX_FIELD_NAME = 'contractMethodIndex';
+export const CONTRACT_VALUES_FIELD_NAME = 'contractFieldsValues';
+export const HEX_ENCODED_DATA_FIELD_NAME = 'hexEncodedData';
+
+export type SolodityInitialFormValues = {
+  [TO_ADDRESS_FIELD_NAME]: string;
+  [CONTRACT_METHOD_INDEX_FIELD_NAME]: string;
+};
+
+export type SolodityFormValues = {
+  [TO_ADDRESS_FIELD_NAME]: string;
+  [TOKEN_INPUT_NAME]: string;
+  [CONTRACT_METHOD_INDEX_FIELD_NAME]: string;
+  [CONTRACT_VALUES_FIELD_NAME]: Record<string, string>;
+  [HEX_ENCODED_DATA_FIELD_NAME]: string;
+};

@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { Controller } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 import { SelectItem } from '@gnosis.pm/safe-react-components/dist/inputs/Select';
 
 import {
@@ -14,38 +14,40 @@ import TextareaContractField from './TextareaContractField';
 import TextContractField from './TextContractField';
 import validateField from '../validations/validateField';
 
-function Field({ fieldType, control, name, showField = true, shouldUnregister = true, options, ...props }: any) {
+function Field({ fieldType, control, name, showField = true, shouldUnregister = true, options, ...props }: FieldProps) {
   // Component based on field type
   const Component = CUSTOM_SOLIDITY_COMPONENTS[fieldType] || TextContractField;
 
   return (
-    showField && (
-      // see https://react-hook-form.com/advanced-usage#ControlledmixedwithUncontrolledComponents
-      <Controller
-        name={name}
-        control={control}
-        defaultValue={CUSTOM_DEFAULT_VALUES[fieldType] || ''}
-        shouldUnregister={shouldUnregister}
-        rules={{
-          required: {
-            value: true,
-            message: 'Required',
-          },
-          validate: validateField(fieldType),
-        }}
-        render={({ field, fieldState }) => (
-          <Component
-            name={field.name}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            value={field.value}
-            options={options || DEFAULT_OPTIONS[fieldType]}
-            error={fieldState.error?.message}
-            {...props}
-          />
-        )}
-      />
-    )
+    <>
+      {showField && (
+        // see https://react-hook-form.com/advanced-usage#ControlledmixedwithUncontrolledComponents
+        <Controller
+          name={name}
+          control={control}
+          defaultValue={CUSTOM_DEFAULT_VALUES[fieldType] || ''}
+          shouldUnregister={shouldUnregister}
+          rules={{
+            required: {
+              value: true,
+              message: 'Required',
+            },
+            validate: validateField(fieldType),
+          }}
+          render={({ field, fieldState }) => (
+            <Component
+              name={field.name}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              value={field.value}
+              options={options || DEFAULT_OPTIONS[fieldType]}
+              error={fieldState.error?.message}
+              {...props}
+            />
+          )}
+        />
+      )}
+    </>
   );
 }
 
@@ -73,7 +75,7 @@ const DEFAULT_OPTIONS: DefaultOptionTypes = {
 };
 
 interface CustomDefaultValueTypes {
-  [key: string]: string | number;
+  [key: string]: string;
 }
 
 interface CustomSolidityComponent {
@@ -83,3 +85,19 @@ interface CustomSolidityComponent {
 interface DefaultOptionTypes {
   [key: string]: SelectItem[];
 }
+
+type FieldProps = {
+  fieldType: string;
+  control: Control<any, object>;
+  id: string;
+  name: string;
+  label: string;
+  fullWidth?: boolean;
+  required?: boolean;
+  getAddressFromDomain?: (name: string) => Promise<string>;
+  networkPrefix?: string;
+  showErrorsInTheLabel?: boolean;
+  showField?: boolean;
+  shouldUnregister?: boolean;
+  options?: SelectItem[];
+};
