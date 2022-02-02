@@ -50,7 +50,7 @@ This will allow the Gnosis Safe to consume these resources like so: `https://app
 
 ## How to Develop a third-party App
 
-Documentation about how to develop and integrate your third-party app can be found [here](https://docs.gnosis.io/safe/docs/sdks_safe_apps/).
+Documentation about how to develop and integrate your third-party app can be found [here](https://docs.gnosis-safe.io/build/sdks/safe-apps).
 
 ## For developers
 
