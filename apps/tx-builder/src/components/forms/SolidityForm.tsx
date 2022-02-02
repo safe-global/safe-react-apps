@@ -38,7 +38,7 @@ function SolidityForm({
   const [showExamples, setShowExamples] = useState<boolean>(false);
   const [showHexEncodedData, setShowHexEncodedData] = useState<boolean>(false);
 
-  const { handleSubmit, control, setValue, watch, getValues } = useForm({
+  const { handleSubmit, control, setValue, watch, getValues, reset, clearErrors } = useForm({
     defaultValues: initialValues,
     mode: 'onTouched', // This option allows you to configure the validation strategy before the user submits the form
   });
@@ -66,8 +66,14 @@ function SolidityForm({
     setShowHexEncodedData(checked);
   }
 
+  function submitAndResetForm(values: Record<string, string | number | undefined>) {
+    onSubmit(values);
+    reset(initialValues);
+    setTimeout(clearErrors, 0);
+  }
+
   return (
-    <form id={id} onSubmit={handleSubmit(onSubmit)} noValidate>
+    <form id={id} onSubmit={handleSubmit(submitAndResetForm)} noValidate>
       {/* To Address field */}
       <Field
         id="to-address-input"
