@@ -91,7 +91,7 @@ function SolidityForm({
       <Field
         id="contract-method-selector"
         name={CONTRACT_METHOD_INDEX_FIELD_NAME}
-        label={'Contract Method Selector'}
+        label="Contract Method Selector"
         fieldType={CONTRACT_METHOD_FIELD_TYPE}
         showField={showContractFields}
         shouldUnregister={false}
