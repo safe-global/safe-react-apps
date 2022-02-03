@@ -7,6 +7,7 @@ import {
   INT_256_FIELD_TYPE,
   INT_32_FIELD_TYPE,
   INT_8_FIELD_TYPE,
+  BYTES_FIELD_TYPE,
 } from '../fields/fields';
 import validateAddressField from './validateAddressField';
 import validateAmountField from './validateAmountField';
@@ -357,6 +358,26 @@ describe('form validations', () => {
           const validationResult = int8Validation('127');
 
           expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+        });
+      });
+    });
+
+    describe('bytes field type', () => {
+      describe('bytes', () => {
+        it('validates a bytes valid value', () => {
+          const bytesValidation = validateField(BYTES_FIELD_TYPE);
+
+          const validationResult = bytesValidation('0x123');
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+        });
+
+        it('validates an invalid value', () => {
+          const bytesValidation = validateField(BYTES_FIELD_TYPE);
+
+          const validationResult = bytesValidation('INVALID VALUE');
+
+          expect(validationResult).toBe('format error. details: invalid arrayify value');
         });
       });
     });

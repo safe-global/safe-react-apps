@@ -9,6 +9,7 @@ export const INT_FIELD_TYPE = 'int';
 export const INT_256_FIELD_TYPE = 'int256';
 export const INT_32_FIELD_TYPE = 'int32';
 export const INT_8_FIELD_TYPE = 'int8';
+export const BYTES_FIELD_TYPE = 'bytes';
 
 // native token field
 export const AMOUNT_FIELD_TYPE = 'amount';
