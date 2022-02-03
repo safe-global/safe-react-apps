@@ -4,7 +4,7 @@ import { isInputValueValid } from '../../../utils';
 
 function validateAmountField(value: string): ValidateResult {
   if (!isInputValueValid(value)) {
-    return 'Invalid Amount';
+    return 'Invalid amount value';
   }
 }
 

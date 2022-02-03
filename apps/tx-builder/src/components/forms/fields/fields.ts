@@ -4,7 +4,7 @@ export const BOOLEAN_FIELD_TYPE = 'bool';
 export const U_INT_FIELD_TYPE = 'uint';
 
 // native token field
-export const AMOUNT_FIELD_TYPE = U_INT_FIELD_TYPE;
+export const AMOUNT_FIELD_TYPE = 'amount';
 
 // selected contract method field
 export const CONTRACT_METHOD_FIELD_TYPE = 'contractMethod';
@@ -12,4 +12,4 @@ export const CONTRACT_METHOD_FIELD_TYPE = 'contractMethod';
 // encoded hex data field
 export const HEX_ENCODED_DATA_FIELD_TYPE = 'hexEncodedData';
 
-export const NON_SOLIDITY_TYPES = [CONTRACT_METHOD_FIELD_TYPE, HEX_ENCODED_DATA_FIELD_TYPE];
+export const NON_SOLIDITY_TYPES = [AMOUNT_FIELD_TYPE, CONTRACT_METHOD_FIELD_TYPE, HEX_ENCODED_DATA_FIELD_TYPE];

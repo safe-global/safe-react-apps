@@ -92,6 +92,7 @@ const Dashboard = (): ReactElement => {
   return (
     <Wrapper>
       <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
+
       <StyledText size="sm">
         This app allows you to build a custom multisend transaction. Enter a Ethereum contract address or ABI to get
         started.{' '}
@@ -104,6 +105,7 @@ const Dashboard = (): ReactElement => {
           Learn how to use the transaction builder.
         </Link>
       </StyledText>
+
       {/* ABI or Address Input */}
       <StyledAddressInput
         id={'address-or-ABI-input'}

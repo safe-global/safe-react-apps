@@ -39,25 +39,6 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.VOLTA]: () => 'https://volta-rpc.energyweb.org',
 };
 
-type InputType = {
-  internalType: string;
-  name: string;
-  type: string;
-  components: InputType[];
-};
-
-// TODO: review this or remove it ?
-export const getInputHelper = (input: InputType) => {
-  // This code renders a helper for the input text.
-  if (input.type.startsWith('tuple')) {
-    return `tuple(${input.components.map((c: InputType) => c.internalType).toString()})${
-      input.type.endsWith('[]') ? '[]' : ''
-    }`;
-  } else {
-    return input.type;
-  }
-};
-
 // Same regex used for web3@1.3.6
 export const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/);
 
@@ -97,7 +78,7 @@ export const isInputValueValid = (val: string) => {
 };
 
 export const getCustomDataError = (value: string | undefined) => {
-  return `Has to be a valid strict hex data ${!value?.startsWith('0x') ? '(it must start with 0x)' : ''}`;
+  return `Has to be a valid strict hex data${!value?.startsWith('0x') ? ' (it must start with 0x)' : ''}`;
 };
 
 export const isValidAddress = (address: string | null) => {

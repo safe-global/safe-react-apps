@@ -35,14 +35,9 @@ function SolidityForm({
   const contractMethodIndex = watch(CONTRACT_METHOD_INDEX_FIELD_NAME);
   const contractMethod = contract?.methods[Number(contractMethodIndex)];
   const contractFields = contractMethod?.inputs || [];
-
   const showContractFields = !!contract && !showHexEncodedData;
-  const contractMethodOptions = contract?.methods.map((method, index) => ({
-    id: index.toString(),
-    label: method.name,
-  }));
-
   const isPayableMethod = !!contract && contractMethod?.payable;
+
   const isValueInputVisible = showHexEncodedData || !contract || isPayableMethod;
 
   function onClickShowHexEncodedData(checked: boolean) {
@@ -98,13 +93,14 @@ function SolidityForm({
         name={CONTRACT_METHOD_INDEX_FIELD_NAME}
         label={'Contract Method Selector'}
         fieldType={CONTRACT_METHOD_FIELD_TYPE}
-        options={contractMethodOptions}
-        fullWidth
-        required
         showField={showContractFields}
         shouldUnregister={false}
         control={control}
-        showErrorsInTheLabel={false}
+        options={contract?.methods.map((method, index) => ({
+          id: index.toString(),
+          label: method.name,
+        }))}
+        required
       />
 
       {/* Show examples link */}

@@ -59,7 +59,9 @@ function AddNewTransactionForm({
   }
 
   useEffect(() => {
-    if (transactions.length === 0) {
+    const hasTransactions = transactions.length !== 0;
+
+    if (!hasTransactions) {
       setShowReviewModal(false);
     }
   }, [transactions]);
@@ -99,7 +101,7 @@ function AddNewTransactionForm({
         </ButtonContainer>
       </SolidityForm>
 
-      {/* TXs MODAL */}
+      {/* Transactions Modal */}
       {showReviewModal && (
         <GenericModal
           body={<ModalBody txs={transactions} deleteTx={onRemoveTransaction} />}
