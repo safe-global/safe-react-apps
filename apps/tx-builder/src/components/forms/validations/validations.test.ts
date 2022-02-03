@@ -1,4 +1,13 @@
-import { ADDRESS_FIELD_TYPE, BOOLEAN_FIELD_TYPE, U_INT_FIELD_TYPE } from '../fields/fields';
+import {
+  ADDRESS_FIELD_TYPE,
+  BOOLEAN_FIELD_TYPE,
+  U_INT_256_FIELD_TYPE,
+  U_INT_32_FIELD_TYPE,
+  U_INT_8_FIELD_TYPE,
+  INT_256_FIELD_TYPE,
+  INT_32_FIELD_TYPE,
+  INT_8_FIELD_TYPE,
+} from '../fields/fields';
 import validateAddressField from './validateAddressField';
 import validateAmountField from './validateAmountField';
 import validateField from './validateField';
@@ -129,22 +138,226 @@ describe('form validations', () => {
     });
 
     describe('uint field type', () => {
-      it('validates a negative value', () => {
-        const uintValidation = validateField(U_INT_FIELD_TYPE);
+      describe('uint256', () => {
+        it('validates a decimal value', () => {
+          const uint256Validation = validateField(U_INT_256_FIELD_TYPE);
 
-        const validationResult = uintValidation('-123');
+          const validationResult = uint256Validation('123.123');
 
-        expect(validationResult).toBe('format error. details: value out-of-bounds');
+          expect(validationResult).toContain('format error.');
+        });
+
+        it('validates a invalid number value', () => {
+          const uint256Validation = validateField(U_INT_256_FIELD_TYPE);
+
+          const validationResult = uint256Validation('INVALID NUMBER VALUE');
+
+          expect(validationResult).toContain('format error.');
+        });
+
+        it('validates a negative value', () => {
+          const uint256Validation = validateField(U_INT_256_FIELD_TYPE);
+
+          const validationResult = uint256Validation('-123');
+
+          expect(validationResult).toBe('format error. details: value out-of-bounds');
+        });
+
+        it('validates a uint256 overflow value', () => {
+          const uint256Validation = validateField(U_INT_256_FIELD_TYPE);
+
+          const validationResult = uint256Validation(
+            '9999999999999999999999999999999999999999999999999999999999999999999999999999999',
+          );
+
+          expect(validationResult).toBe('format error. details: value out-of-bounds');
+        });
+
+        it('validates a uint256 valid value', () => {
+          const uint256Validation = validateField(U_INT_256_FIELD_TYPE);
+
+          const validationResult = uint256Validation('1234567891011121314');
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+        });
       });
 
-      it('validates a uint overflow value', () => {
-        const uintValidation = validateField(U_INT_FIELD_TYPE);
+      describe('uint32', () => {
+        it('validates a negative value', () => {
+          const uint32Validation = validateField(U_INT_32_FIELD_TYPE);
 
-        const validationResult = uintValidation(
-          '9999999999999999999999999999999999999999999999999999999999999999999999999999999',
-        );
+          const validationResult = uint32Validation('-123');
 
-        expect(validationResult).toBe('format error. details: value out-of-bounds');
+          expect(validationResult).toBe('format error. details: value out-of-bounds');
+        });
+
+        it('validates a uint32 overflow value', () => {
+          const uint32Validation = validateField(U_INT_32_FIELD_TYPE);
+
+          const validationResult = uint32Validation('4294967296');
+
+          expect(validationResult).toBe('format error. details: value out-of-bounds');
+        });
+
+        it('validates a uint32 valid value', () => {
+          const uint32Validation = validateField(U_INT_32_FIELD_TYPE);
+
+          const validationResult = uint32Validation('4294967295');
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+        });
+      });
+
+      describe('uint8', () => {
+        it('validates a negative value', () => {
+          const uint8Validation = validateField(U_INT_8_FIELD_TYPE);
+
+          const validationResult = uint8Validation('-123');
+
+          expect(validationResult).toBe('format error. details: value out-of-bounds');
+        });
+
+        it('validates a uint8 overflow value', () => {
+          const uint8Validation = validateField(U_INT_8_FIELD_TYPE);
+
+          const validationResult = uint8Validation('9999999');
+
+          expect(validationResult).toBe('format error. details: value out-of-bounds');
+        });
+
+        it('validates a uint8 valid value', () => {
+          const uint8Validation = validateField(U_INT_8_FIELD_TYPE);
+
+          const validationResult = uint8Validation('255');
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+        });
+      });
+    });
+
+    describe('int field type', () => {
+      describe('int256', () => {
+        it('validates a negative value', () => {
+          const int256Validation = validateField(INT_256_FIELD_TYPE);
+
+          const validationResult = int256Validation('-123');
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+        });
+
+        it('validates a decimal value', () => {
+          const int256Validation = validateField(INT_256_FIELD_TYPE);
+
+          const validationResult = int256Validation('123.123');
+
+          expect(validationResult).toContain('format error.');
+        });
+
+        it('validates a invalid number value', () => {
+          const int256Validation = validateField(INT_256_FIELD_TYPE);
+
+          const validationResult = int256Validation('INVALID NUMBER VALUE');
+
+          expect(validationResult).toContain('format error.');
+        });
+
+        it('validates a int256 overflow negative value', () => {
+          const int256Validation = validateField(INT_256_FIELD_TYPE);
+
+          const validationResult = int256Validation(
+            '-57896044618658097711785492504343953926634992332820282019728792003956564819969',
+          );
+
+          expect(validationResult).toBe('format error. details: value out-of-bounds');
+        });
+
+        it('validates a int256 overflow value', () => {
+          const int256Validation = validateField(INT_256_FIELD_TYPE);
+
+          const validationResult = int256Validation(
+            '57896044618658097711785492504343953926634992332820282019728792003956564819968',
+          );
+
+          expect(validationResult).toBe('format error. details: value out-of-bounds');
+        });
+
+        it('validates a int256 valid value', () => {
+          const int256Validation = validateField(INT_256_FIELD_TYPE);
+
+          const validationResult = int256Validation(
+            '57896044618658097711785492504343953926634992332820282019728792003956564819967',
+          );
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+        });
+      });
+
+      describe('int32', () => {
+        it('validates a negative value', () => {
+          const int32Validation = validateField(INT_32_FIELD_TYPE);
+
+          const validationResult = int32Validation('-2147483648');
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+        });
+
+        it('validates a int32 overflow negative value', () => {
+          const int32Validation = validateField(INT_32_FIELD_TYPE);
+
+          const validationResult = int32Validation('-2147483649');
+
+          expect(validationResult).toBe('format error. details: value out-of-bounds');
+        });
+
+        it('validates a int32 overflow value', () => {
+          const int32Validation = validateField(INT_32_FIELD_TYPE);
+
+          const validationResult = int32Validation('2147483648');
+
+          expect(validationResult).toBe('format error. details: value out-of-bounds');
+        });
+
+        it('validates a int32 valid value', () => {
+          const int32Validation = validateField(INT_32_FIELD_TYPE);
+
+          const validationResult = int32Validation('2147483647');
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+        });
+      });
+
+      describe('int8', () => {
+        it('validates a negative value', () => {
+          const int8Validation = validateField(INT_8_FIELD_TYPE);
+
+          const validationResult = int8Validation('-128');
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+        });
+
+        it('validates a int8 overflow negative value', () => {
+          const int8Validation = validateField(INT_8_FIELD_TYPE);
+
+          const validationResult = int8Validation('-129');
+
+          expect(validationResult).toBe('format error. details: value out-of-bounds');
+        });
+
+        it('validates a int8 overflow value', () => {
+          const int8Validation = validateField(INT_8_FIELD_TYPE);
+
+          const validationResult = int8Validation('9999999');
+
+          expect(validationResult).toBe('format error. details: value out-of-bounds');
+        });
+
+        it('validates a int8 valid value', () => {
+          const int8Validation = validateField(INT_8_FIELD_TYPE);
+
+          const validationResult = int8Validation('127');
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+        });
       });
     });
   });
