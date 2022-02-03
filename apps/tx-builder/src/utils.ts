@@ -93,7 +93,7 @@ export const isValidAddress = (address: string | null) => {
 
 const NON_VALID_CONTRACT_METHODS = ['receive', 'fallback'];
 
-export function encodeToHexData(contractMethod: ContractMethod | undefined, contractFieldsValues: any) {
+export const encodeToHexData = (contractMethod: ContractMethod | undefined, contractFieldsValues: any) => {
   const contractMethodName = contractMethod?.name;
   const contractFields = contractMethod?.inputs || [];
 
@@ -115,9 +115,9 @@ export function encodeToHexData(contractMethod: ContractMethod | undefined, cont
       console.log('Error encoding current form values to hex data: ', error);
     }
   }
-}
+};
 
-export function getTxDescription(contractMethod: ContractMethod | undefined, contractFieldsValues: any) {
+export const getTxDescription = (contractMethod: ContractMethod | undefined, contractFieldsValues: any) => {
   const contractMethodName = contractMethod?.name;
   const contractFields = contractMethod?.inputs || [];
 
@@ -133,4 +133,4 @@ export function getTxDescription(contractMethod: ContractMethod | undefined, con
 
     return `${contractMethodName} (${descriptionValues.join(', ')})`;
   }
-}
+};

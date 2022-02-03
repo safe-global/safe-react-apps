@@ -3,8 +3,8 @@ import TextContractField from './TextContractField';
 
 const DEFAULT_ROWS = 4;
 
-function TextareaContractField(props: TextFieldInputProps) {
+const TextareaContractField = (props: TextFieldInputProps) => {
   return <TextContractField {...props} multiline rows={DEFAULT_ROWS} />;
-}
+};
 
 export default TextareaContractField;

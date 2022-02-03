@@ -13,7 +13,13 @@ import validateAmountField from './validateAmountField';
 import validateBooleanField from './validateBooleanField';
 import validateHexEncodedDataField from './validateHexEncodedDataField';
 
-const uintBasicValidation = (value: string) => basicSolidityValidation(value, U_INT_FIELD_TYPE);
+type ValidationFunction = (value: string, fieldType: string) => ValidateResult;
+
+interface CustomValidationsType {
+  [key: string]: ValidationFunction[];
+}
+
+const uintBasicValidation = (value: string): ValidateResult => basicSolidityValidation(value, U_INT_FIELD_TYPE);
 
 const CUSTOM_VALIDATIONS: CustomValidationsType = {
   [ADDRESS_FIELD_TYPE]: [validateAddressField],
@@ -22,7 +28,7 @@ const CUSTOM_VALIDATIONS: CustomValidationsType = {
   [AMOUNT_FIELD_TYPE]: [validateAmountField, uintBasicValidation],
 };
 
-function validateField(fieldType: string): Validate<string> {
+const validateField = (fieldType: string): Validate<string> => {
   return (value: string): ValidateResult =>
     [...(CUSTOM_VALIDATIONS?.[fieldType] || []), basicSolidityValidation].reduce<ValidateResult>(
       (error, validation) => {
@@ -30,12 +36,6 @@ function validateField(fieldType: string): Validate<string> {
       },
       undefined, // initially no error is present
     );
-}
+};
 
 export default validateField;
-
-type ValidationFunction = (value: string, fieldType: string) => ValidateResult;
-
-interface CustomValidationsType {
-  [key: string]: ValidationFunction[];
-}

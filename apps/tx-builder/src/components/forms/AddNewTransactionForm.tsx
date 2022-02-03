@@ -16,7 +16,19 @@ import SolidityForm, {
   TO_ADDRESS_FIELD_NAME,
 } from './SolidityForm';
 
-function AddNewTransactionForm({
+type AddNewTransactionFormProps = {
+  contract: ContractInterface | null;
+  to: string;
+  transactions: ProposedTransaction[];
+  onAddTransaction: (transaction: ProposedTransaction) => void;
+  onRemoveTransaction: (index: number) => void;
+  onSubmitTransactions: () => void;
+  networkPrefix: undefined | string;
+  getAddressFromDomain: (name: string) => Promise<string>;
+  nativeCurrencySymbol: undefined | string;
+};
+
+const AddNewTransactionForm = ({
   transactions,
   onAddTransaction,
   onSubmitTransactions,
@@ -26,7 +38,7 @@ function AddNewTransactionForm({
   networkPrefix,
   getAddressFromDomain,
   nativeCurrencySymbol,
-}: AddNewTransactionFormProps) {
+}: AddNewTransactionFormProps) => {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const showABIWarning = contract && !contract?.methods.length;
 
@@ -114,7 +126,7 @@ function AddNewTransactionForm({
       )}
     </>
   );
-}
+};
 
 export default AddNewTransactionForm;
 
@@ -123,15 +135,3 @@ const ButtonContainer = styled.div`
   justify-content: space-between;
   margin-top: 15px;
 `;
-
-type AddNewTransactionFormProps = {
-  contract: ContractInterface | null;
-  to: string;
-  transactions: ProposedTransaction[];
-  onAddTransaction: (transaction: ProposedTransaction) => void;
-  onRemoveTransaction: (index: number) => void;
-  onSubmitTransactions: () => void;
-  networkPrefix: undefined | string;
-  getAddressFromDomain: (name: string) => Promise<string>;
-  nativeCurrencySymbol: undefined | string;
-};

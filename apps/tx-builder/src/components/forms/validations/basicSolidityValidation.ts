@@ -1,9 +1,10 @@
+import { ValidateResult } from 'react-hook-form';
 import abiCoder, { AbiCoder } from 'web3-eth-abi';
 
 import { parseInputValue } from '../../../utils';
 import { NON_SOLIDITY_TYPES } from '../fields/fields';
 
-function basicSolidityValidation(value: string, fieldType: string): string | undefined {
+const basicSolidityValidation = (value: string, fieldType: string): ValidateResult => {
   const isSolidityFieldType = !NON_SOLIDITY_TYPES.includes(fieldType);
   if (isSolidityFieldType) {
     try {
@@ -14,6 +15,6 @@ function basicSolidityValidation(value: string, fieldType: string): string | und
       return `format error. details: ${error.reason || error.toString()}`;
     }
   }
-}
+};
 
 export default basicSolidityValidation;

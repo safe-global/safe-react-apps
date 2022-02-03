@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { ReactElement } from 'react';
 import { AddressInput } from '@gnosis.pm/safe-react-components';
 
-function AddressContractField({
+const AddressContractField = ({
   id,
   name,
   value,
@@ -12,7 +12,7 @@ function AddressContractField({
   getAddressFromDomain,
   networkPrefix,
   onBlur,
-}: any): ReactElement {
+}: any): ReactElement => {
   return (
     <StyledAddressInput
       id={id}
@@ -30,7 +30,7 @@ function AddressContractField({
       showErrorsInTheLabel={false}
     />
   );
-}
+};
 
 export default AddressContractField;
 

@@ -7,9 +7,9 @@ type TextContractFieldTypes = TextFieldInputProps & {
   getAddressFromDomain?: (name: string) => Promise<string>;
 };
 
-function TextContractField({ getAddressFromDomain, networkPrefix, ...props }: TextContractFieldTypes) {
+const TextContractField = ({ getAddressFromDomain, networkPrefix, ...props }: TextContractFieldTypes) => {
   return <StyledTextField {...props} hiddenLabel={false} />;
-}
+};
 
 export default TextContractField;
 

@@ -14,7 +14,37 @@ import Field from './fields/Field';
 import { Examples } from '../Examples';
 import { encodeToHexData } from '../../utils';
 
-function SolidityForm({
+export const TO_ADDRESS_FIELD_NAME = 'toAddress';
+export const TOKEN_INPUT_NAME = 'tokenValue';
+export const CONTRACT_METHOD_INDEX_FIELD_NAME = 'contractMethodIndex';
+export const CONTRACT_VALUES_FIELD_NAME = 'contractFieldsValues';
+export const HEX_ENCODED_DATA_FIELD_NAME = 'hexEncodedData';
+
+type SolidityFormPropsTypes = {
+  id: string;
+  networkPrefix: undefined | string;
+  getAddressFromDomain: (name: string) => Promise<string>;
+  nativeCurrencySymbol: undefined | string;
+  contract: ContractInterface | null;
+  onSubmit: SubmitHandler<SolodityFormValues>;
+  initialValues: SolodityInitialFormValues;
+  children: React.ReactNode;
+};
+
+export type SolodityInitialFormValues = {
+  [TO_ADDRESS_FIELD_NAME]: string;
+  [CONTRACT_METHOD_INDEX_FIELD_NAME]: string;
+};
+
+export type SolodityFormValues = {
+  [TO_ADDRESS_FIELD_NAME]: string;
+  [TOKEN_INPUT_NAME]: string;
+  [CONTRACT_METHOD_INDEX_FIELD_NAME]: string;
+  [CONTRACT_VALUES_FIELD_NAME]: Record<string, string>;
+  [HEX_ENCODED_DATA_FIELD_NAME]: string;
+};
+
+const SolidityForm = ({
   id,
   onSubmit,
   getAddressFromDomain,
@@ -23,7 +53,7 @@ function SolidityForm({
   networkPrefix,
   contract,
   children,
-}: SolidityFormPropsTypes) {
+}: SolidityFormPropsTypes) => {
   const [showExamples, setShowExamples] = useState<boolean>(false);
   const [showHexEncodedData, setShowHexEncodedData] = useState<boolean>(false);
 
@@ -159,7 +189,7 @@ function SolidityForm({
       {children}
     </form>
   );
-}
+};
 
 export default SolidityForm;
 
@@ -170,33 +200,3 @@ const StyledExamples = styled.div`
     padding: 0;
   }
 `;
-
-type SolidityFormPropsTypes = {
-  id: string;
-  networkPrefix: undefined | string;
-  getAddressFromDomain: (name: string) => Promise<string>;
-  nativeCurrencySymbol: undefined | string;
-  contract: ContractInterface | null;
-  onSubmit: SubmitHandler<SolodityFormValues>;
-  initialValues: SolodityInitialFormValues;
-  children: React.ReactNode;
-};
-
-export const TO_ADDRESS_FIELD_NAME = 'toAddress';
-export const TOKEN_INPUT_NAME = 'tokenValue';
-export const CONTRACT_METHOD_INDEX_FIELD_NAME = 'contractMethodIndex';
-export const CONTRACT_VALUES_FIELD_NAME = 'contractFieldsValues';
-export const HEX_ENCODED_DATA_FIELD_NAME = 'hexEncodedData';
-
-export type SolodityInitialFormValues = {
-  [TO_ADDRESS_FIELD_NAME]: string;
-  [CONTRACT_METHOD_INDEX_FIELD_NAME]: string;
-};
-
-export type SolodityFormValues = {
-  [TO_ADDRESS_FIELD_NAME]: string;
-  [TOKEN_INPUT_NAME]: string;
-  [CONTRACT_METHOD_INDEX_FIELD_NAME]: string;
-  [CONTRACT_VALUES_FIELD_NAME]: Record<string, string>;
-  [HEX_ENCODED_DATA_FIELD_NAME]: string;
-};
