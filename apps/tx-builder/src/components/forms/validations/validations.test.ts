@@ -35,6 +35,12 @@ describe('form validations', () => {
         expect(validationResult).toBe('Invalid amount value');
       });
 
+      it('validates hexadecimal amounts', () => {
+        const validationResult = validateAmountField('0x123');
+
+        expect(validationResult).toBe('Invalid amount value');
+      });
+
       it('validates valid amounts', () => {
         const validationResult = validateAmountField('3.12');
 
@@ -127,6 +133,16 @@ describe('form validations', () => {
         const uintValidation = validateField(U_INT_FIELD_TYPE);
 
         const validationResult = uintValidation('-123');
+
+        expect(validationResult).toBe('format error. details: value out-of-bounds');
+      });
+
+      it('validates a uint overflow value', () => {
+        const uintValidation = validateField(U_INT_FIELD_TYPE);
+
+        const validationResult = uintValidation(
+          '9999999999999999999999999999999999999999999999999999999999999999999999999999999',
+        );
 
         expect(validationResult).toBe('format error. details: value out-of-bounds');
       });

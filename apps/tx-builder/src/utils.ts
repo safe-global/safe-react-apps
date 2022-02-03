@@ -70,7 +70,10 @@ export const parseInputValue = (input: any, value: string): any => {
 
 export const isInputValueValid = (val: string) => {
   const value = Number(val);
-  if (isNaN(value) || value < 0) {
+  const isHexValue = val?.startsWith?.('0x');
+  const isNegativeValue = value < 0;
+
+  if (isNaN(value) || isNegativeValue || isHexValue) {
     return false;
   }
 

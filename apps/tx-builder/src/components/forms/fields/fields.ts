@@ -2,6 +2,7 @@
 export const ADDRESS_FIELD_TYPE = 'address';
 export const BOOLEAN_FIELD_TYPE = 'bool';
 export const U_INT_FIELD_TYPE = 'uint';
+export const U_INT_256_FIELD_TYPE = 'uint256';
 
 // native token field
 export const AMOUNT_FIELD_TYPE = 'amount';
