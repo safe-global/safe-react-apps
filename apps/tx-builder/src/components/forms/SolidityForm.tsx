@@ -59,7 +59,7 @@ const SolidityForm = ({
 
   const { handleSubmit, control, setValue, watch, getValues, reset, clearErrors } = useForm<SolodityFormValues>({
     defaultValues: initialValues,
-    mode: 'all', // This option allows you to configure the validation strategy before the user submits the form
+    mode: 'onTouched', // This option allows you to configure the validation strategy before the user submits the form
   });
 
   const contractMethodIndex = watch(CONTRACT_METHOD_INDEX_FIELD_NAME);
