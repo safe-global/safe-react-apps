@@ -45,6 +45,8 @@ export type SolidityFormValuesTypes = {
   [HEX_ENCODED_DATA_FIELD_NAME]: string;
 };
 
+const isProdEnv = process.env.NODE_ENV === 'production';
+
 const SolidityForm = ({
   id,
   onSubmit,
@@ -191,8 +193,8 @@ const SolidityForm = ({
         {children}
       </form>
 
-      {/* set up the dev tool */}
-      <DevTool control={control} />
+      {/* set up the dev tool only in dev env */}
+      {!isProdEnv && <DevTool control={control} />}
     </>
   );
 };
