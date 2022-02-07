@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ButtonLink, Switch, Text } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
+import { DevTool } from '@hookform/devtools';
 
 import { ContractInterface } from '../../hooks/useServices/interfaceRepository';
 import {
@@ -43,6 +44,8 @@ export type SolidityFormValuesTypes = {
   [CONTRACT_VALUES_FIELD_NAME]: Record<string, string>;
   [HEX_ENCODED_DATA_FIELD_NAME]: string;
 };
+
+const isProdEnv = process.env.NODE_ENV === 'production';
 
 const SolidityForm = ({
   id,
@@ -87,107 +90,112 @@ const SolidityForm = ({
   }
 
   return (
-    <form id={id} onSubmit={handleSubmit(submitAndResetForm)} noValidate>
-      {/* To Address field */}
-      <Field
-        id="to-address-input"
-        name={TO_ADDRESS_FIELD_NAME}
-        label="To Address"
-        fullWidth
-        required
-        getAddressFromDomain={getAddressFromDomain}
-        networkPrefix={networkPrefix}
-        fieldType={ADDRESS_FIELD_TYPE}
-        control={control}
-        showErrorsInTheLabel={false}
-      />
+    <>
+      <form id={id} onSubmit={handleSubmit(submitAndResetForm)} noValidate>
+        {/* To Address field */}
+        <Field
+          id="to-address-input"
+          name={TO_ADDRESS_FIELD_NAME}
+          label="To Address"
+          fullWidth
+          required
+          getAddressFromDomain={getAddressFromDomain}
+          networkPrefix={networkPrefix}
+          fieldType={ADDRESS_FIELD_TYPE}
+          control={control}
+          showErrorsInTheLabel={false}
+        />
 
-      {/* Native Token Amount Input */}
-      <Field
-        id="token-value-input"
-        name={TOKEN_INPUT_NAME}
-        label={`${nativeCurrencySymbol} value`}
-        fieldType={AMOUNT_FIELD_TYPE}
-        fullWidth
-        required
-        showField={isValueInputVisible}
-        control={control}
-        showErrorsInTheLabel={false}
-      />
+        {/* Native Token Amount Input */}
+        <Field
+          id="token-value-input"
+          name={TOKEN_INPUT_NAME}
+          label={`${nativeCurrencySymbol} value`}
+          fieldType={AMOUNT_FIELD_TYPE}
+          fullWidth
+          required
+          showField={isValueInputVisible}
+          control={control}
+          showErrorsInTheLabel={false}
+        />
 
-      {/* Contract Section */}
+        {/* Contract Section */}
 
-      {/* Contract Method Selector */}
-      <Field
-        id="contract-method-selector"
-        name={CONTRACT_METHOD_INDEX_FIELD_NAME}
-        label="Contract Method Selector"
-        fieldType={CONTRACT_METHOD_FIELD_TYPE}
-        showField={showContractFields}
-        shouldUnregister={false}
-        control={control}
-        options={contract?.methods.map((method, index) => ({
-          id: index.toString(),
-          label: method.name,
-        }))}
-        required
-      />
+        {/* Contract Method Selector */}
+        <Field
+          id="contract-method-selector"
+          name={CONTRACT_METHOD_INDEX_FIELD_NAME}
+          label="Contract Method Selector"
+          fieldType={CONTRACT_METHOD_FIELD_TYPE}
+          showField={showContractFields}
+          shouldUnregister={false}
+          control={control}
+          options={contract?.methods.map((method, index) => ({
+            id: index.toString(),
+            label: method.name,
+          }))}
+          required
+        />
 
-      {/* Show examples link */}
-      {showContractFields && (
-        <StyledExamples>
-          <ButtonLink type="button" color="primary" onClick={() => setShowExamples((prev) => !prev)}>
-            {showExamples ? 'Hide Examples' : 'Show Examples'}
-          </ButtonLink>
+        {/* Show examples link */}
+        {showContractFields && (
+          <StyledExamples>
+            <ButtonLink type="button" color="primary" onClick={() => setShowExamples((prev) => !prev)}>
+              {showExamples ? 'Hide Examples' : 'Show Examples'}
+            </ButtonLink>
 
-          {showExamples && <Examples />}
-        </StyledExamples>
-      )}
+            {showExamples && <Examples />}
+          </StyledExamples>
+        )}
 
-      {/* Contract Fields */}
-      {contractFields.map((contractField, index) => {
-        const name = `${CONTRACT_VALUES_FIELD_NAME}.${contractField.name || index}`;
-        return (
-          <Field
-            key={name}
-            id={`contract-field-${contractField.name || index}`}
-            name={name}
-            label={`${contractField.name || `${index + 1}º contract field`} (${contractField.type})`}
-            fieldType={contractField.type}
-            fullWidth
-            required
-            shouldUnregister={false} // required to keep contract field values in the form state when the user switches between encoding and decoding data
-            showField={showContractFields}
-            control={control}
-            showErrorsInTheLabel={false}
-            getAddressFromDomain={getAddressFromDomain}
-            networkPrefix={networkPrefix}
-          />
-        );
-      })}
+        {/* Contract Fields */}
+        {contractFields.map((contractField, index) => {
+          const name = `${CONTRACT_VALUES_FIELD_NAME}.${contractField.name || index}`;
+          return (
+            <Field
+              key={name}
+              id={`contract-field-${contractField.name || index}`}
+              name={name}
+              label={`${contractField.name || `${index + 1}º contract field`} (${contractField.type})`}
+              fieldType={contractField.type}
+              fullWidth
+              required
+              shouldUnregister={false} // required to keep contract field values in the form state when the user switches between encoding and decoding data
+              showField={showContractFields}
+              control={control}
+              showErrorsInTheLabel={false}
+              getAddressFromDomain={getAddressFromDomain}
+              networkPrefix={networkPrefix}
+            />
+          );
+        })}
 
-      {/* Hex encoded textarea field */}
-      <Field
-        id="hex-encoded-data"
-        name={HEX_ENCODED_DATA_FIELD_NAME}
-        label="Data (Hex encoded)"
-        fieldType={HEX_ENCODED_DATA_FIELD_TYPE}
-        showField={showHexEncodedData}
-        required
-        fullWidth
-        control={control}
-        showErrorsInTheLabel={false}
-      />
+        {/* Hex encoded textarea field */}
+        <Field
+          id="hex-encoded-data"
+          name={HEX_ENCODED_DATA_FIELD_NAME}
+          label="Data (Hex encoded)"
+          fieldType={HEX_ENCODED_DATA_FIELD_TYPE}
+          showField={showHexEncodedData}
+          required
+          fullWidth
+          control={control}
+          showErrorsInTheLabel={false}
+        />
 
-      {/* Switch button to encoding contract fields values to hex data */}
-      <Text size="lg">
-        <Switch checked={showHexEncodedData} onChange={onClickShowHexEncodedData} />
-        Use custom data (hex encoded)
-      </Text>
+        {/* Switch button to encoding contract fields values to hex data */}
+        <Text size="lg">
+          <Switch checked={showHexEncodedData} onChange={onClickShowHexEncodedData} />
+          Use custom data (hex encoded)
+        </Text>
 
-      {/* action buttons as a children */}
-      {children}
-    </form>
+        {/* action buttons as a children */}
+        {children}
+      </form>
+
+      {/* set up the dev tool only in dev env */}
+      {!isProdEnv && <DevTool control={control} />}
+    </>
   );
 };
 

@@ -70,6 +70,7 @@ const Field = ({
   showField = true,
   shouldUnregister = true,
   options,
+  required = true,
   ...props
 }: FieldProps) => {
   // Component based on field type
@@ -86,7 +87,7 @@ const Field = ({
           shouldUnregister={shouldUnregister}
           rules={{
             required: {
-              value: true,
+              value: required,
               message: 'Required',
             },
             validate: validateField(fieldType),
@@ -99,6 +100,7 @@ const Field = ({
               value={field.value}
               options={options || DEFAULT_OPTIONS[fieldType]}
               error={fieldState.error?.message}
+              required={required}
               {...props}
             />
           )}

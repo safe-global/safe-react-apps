@@ -11,6 +11,9 @@
     "react-hook-form": "^7.25.3",
     "web3": "~1.6.0"
   },
+  "devDependencies": {
+    "@hookform/devtools": "^4.0.2"
+  },
   "scripts": {
     "start": "dotenv -e .env -- react-app-rewired start",
     "build": "dotenv -e .env -- react-app-rewired build",
