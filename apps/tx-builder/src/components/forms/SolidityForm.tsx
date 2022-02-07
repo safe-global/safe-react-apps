@@ -89,8 +89,6 @@ const SolidityForm = ({
     setTimeout(clearErrors, 0);
   }
 
-  console.log('re-render!');
-
   return (
     <>
       <form id={id} onSubmit={handleSubmit(submitAndResetForm)} noValidate>
