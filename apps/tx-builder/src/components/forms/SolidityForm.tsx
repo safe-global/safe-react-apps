@@ -82,7 +82,7 @@ const SolidityForm = ({
 
   function submitAndResetForm(values: SolodityFormValues) {
     onSubmit(values);
-    reset(initialValues);
+    reset({ ...initialValues, [TO_ADDRESS_FIELD_NAME]: values[TO_ADDRESS_FIELD_NAME] });
     setTimeout(clearErrors, 0);
   }
 
