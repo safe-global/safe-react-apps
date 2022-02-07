@@ -11,7 +11,7 @@ import SolidityForm, {
   CONTRACT_METHOD_INDEX_FIELD_NAME,
   CONTRACT_VALUES_FIELD_NAME,
   HEX_ENCODED_DATA_FIELD_NAME,
-  SolodityFormValues,
+  SolidityFormValuesTypes,
   TOKEN_INPUT_NAME,
   TO_ADDRESS_FIELD_NAME,
 } from './SolidityForm';
@@ -47,7 +47,7 @@ const AddNewTransactionForm = ({
     [CONTRACT_METHOD_INDEX_FIELD_NAME]: '0',
   };
 
-  function onSubmit(values: SolodityFormValues) {
+  function onSubmit(values: SolidityFormValuesTypes) {
     const contractMethodIndex = values[CONTRACT_METHOD_INDEX_FIELD_NAME];
     const toAddress = values[TO_ADDRESS_FIELD_NAME];
     const tokenValue = values[TOKEN_INPUT_NAME];
