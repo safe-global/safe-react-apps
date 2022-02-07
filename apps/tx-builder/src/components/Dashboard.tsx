@@ -54,7 +54,7 @@ const StyledAddressInput = styled(AddressInput)`
 const Dashboard = (): ReactElement => {
   const { web3, interfaceRepo, chainInfo } = useServices();
   const { transactions, handleAddTransaction, handleRemoveTransaction, handleSubmitTransactions } = useTransactions();
-  const [addressOrAbi, setAddressOrAbi] = useState('');
+  const [address, setAddress] = useState('');
   const [abi, setAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
   const [contract, setContract] = useState<ContractInterface | null>(null);
@@ -72,6 +72,7 @@ const Dashboard = (): ReactElement => {
 
       try {
         setIsABILoading(true);
+        setAbi('');
         const contract = await interfaceRepo.loadAbi(addressOrAbi);
         setContract(contract);
       } catch (e) {
@@ -82,14 +83,25 @@ const Dashboard = (): ReactElement => {
       setIsABILoading(false);
     };
 
-    loadContract(addressOrAbi);
-  }, [addressOrAbi, interfaceRepo]);
+    loadContract(address);
+  }, [address, interfaceRepo]);
+
+  useEffect(() => {
+    (async () => {
+      if (!abi || !interfaceRepo) {
+        return;
+      }
+
+      setAddress('');
+      setContract(await interfaceRepo.loadAbi(abi));
+    })();
+  }, [abi, interfaceRepo]);
 
   const getAddressFromDomain = (name: string): Promise<string> => {
     return web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
   };
 
-  const isValidAddressOrContract = (isValidAddress(addressOrAbi) || contract) && !isABILoading;
+  const isValidAddressOrContract = (isValidAddress(address) || contract) && !isABILoading;
 
   return (
     <Wrapper>
@@ -107,20 +119,20 @@ const Dashboard = (): ReactElement => {
           Learn how to use the transaction builder.
         </Link>
       </StyledText>
-
+      <p>{isValidAddressOrContract}</p>
       {/* ABI or Address Input */}
       <StyledAddressInput
         id={'address-or-ABI-input'}
         name="addressOrAbi"
         label="Enter Address, ENS Name or ABI"
         hiddenLabel={false}
-        address={addressOrAbi}
+        address={address}
         showNetworkPrefix={!!chainInfo?.shortName}
         networkPrefix={chainInfo?.shortName}
         error={!isValidAddressOrContract ? loadContractError : ''}
         showLoadingSpinner={isABILoading}
         getAddressFromDomain={getAddressFromDomain}
-        onChangeAddress={(addressOrAbi: string) => setAddressOrAbi(addressOrAbi)}
+        onChangeAddress={(addressOrAbi: string) => setAddress(addressOrAbi)}
         InputProps={{
           endAdornment: isValidAddressOrContract && (
             <InputAdornment position="end">
@@ -144,7 +156,7 @@ const Dashboard = (): ReactElement => {
           transactions={transactions}
           onAddTransaction={handleAddTransaction}
           contract={contract}
-          to={addressOrAbi}
+          to={address || abi}
           networkPrefix={chainInfo?.shortName}
           getAddressFromDomain={getAddressFromDomain}
           nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
