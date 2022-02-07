@@ -26,17 +26,17 @@ type SolidityFormPropsTypes = {
   getAddressFromDomain: (name: string) => Promise<string>;
   nativeCurrencySymbol: undefined | string;
   contract: ContractInterface | null;
-  onSubmit: SubmitHandler<SolodityFormValues>;
-  initialValues: SolodityInitialFormValues;
+  onSubmit: SubmitHandler<SolidityFormValuesTypes>;
+  initialValues: SolidityInitialFormValuesTypes;
   children: React.ReactNode;
 };
 
-export type SolodityInitialFormValues = {
+export type SolidityInitialFormValuesTypes = {
   [TO_ADDRESS_FIELD_NAME]: string;
   [CONTRACT_METHOD_INDEX_FIELD_NAME]: string;
 };
 
-export type SolodityFormValues = {
+export type SolidityFormValuesTypes = {
   [TO_ADDRESS_FIELD_NAME]: string;
   [TOKEN_INPUT_NAME]: string;
   [CONTRACT_METHOD_INDEX_FIELD_NAME]: string;
@@ -57,7 +57,7 @@ const SolidityForm = ({
   const [showExamples, setShowExamples] = useState<boolean>(false);
   const [showHexEncodedData, setShowHexEncodedData] = useState<boolean>(false);
 
-  const { handleSubmit, control, setValue, watch, getValues, reset, clearErrors } = useForm<SolodityFormValues>({
+  const { handleSubmit, control, setValue, watch, getValues, reset, clearErrors } = useForm<SolidityFormValuesTypes>({
     defaultValues: initialValues,
     mode: 'onTouched', // This option allows you to configure the validation strategy before the user submits the form
   });
@@ -80,7 +80,7 @@ const SolidityForm = ({
     setShowHexEncodedData(checked);
   }
 
-  function submitAndResetForm(values: SolodityFormValues) {
+  function submitAndResetForm(values: SolidityFormValuesTypes) {
     onSubmit(values);
     reset({ ...initialValues, [TO_ADDRESS_FIELD_NAME]: values[TO_ADDRESS_FIELD_NAME] });
     setTimeout(clearErrors, 0);

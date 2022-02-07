@@ -85,7 +85,7 @@ describe('form validations', () => {
     });
   });
 
-  describe('Solodity field types validations', () => {
+  describe('Solidity field types validations', () => {
     describe('address field type', () => {
       it('validates an invalid address', () => {
         const addressValidations = validateField(ADDRESS_FIELD_TYPE);
