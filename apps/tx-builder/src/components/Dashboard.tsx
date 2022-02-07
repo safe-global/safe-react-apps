@@ -71,8 +71,10 @@ const Dashboard = (): ReactElement => {
       }
 
       try {
-        setIsABILoading(true);
-        setAbi(JSON.stringify(await interfaceRepo.loadAbi(address)));
+        if (isValidAddress(address)) {
+          setIsABILoading(true);
+          setAbi(JSON.stringify(await interfaceRepo.loadAbi(address)));
+        }
       } catch (e) {
         setAbi('');
         setLoadContractError('No ABI found for this address');
@@ -117,8 +119,8 @@ const Dashboard = (): ReactElement => {
       <p>{isValidAddressOrContract}</p>
       {/* ABI or Address Input */}
       <StyledAddressInput
-        id={'address'}
-        name="address"
+        id={'addressOrAbi'}
+        name="addressOrAbi"
         label="Enter Address or ENS Name"
         hiddenLabel={false}
         address={address}
@@ -151,7 +153,7 @@ const Dashboard = (): ReactElement => {
           transactions={transactions}
           onAddTransaction={handleAddTransaction}
           contract={contract}
-          to={abi}
+          to={address}
           networkPrefix={chainInfo?.shortName}
           getAddressFromDomain={getAddressFromDomain}
           nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
