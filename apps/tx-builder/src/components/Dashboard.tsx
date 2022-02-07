@@ -9,6 +9,7 @@ import useServices from '../hooks/useServices';
 import useTransactions from '../hooks/useTransactions';
 import { isValidAddress } from '../utils';
 import AddNewTransactionForm from './forms/AddNewTransactionForm';
+import JsonField from './forms/fields/JsonField';
 
 const Wrapper = styled.div`
   display: flex;
@@ -54,6 +55,7 @@ const Dashboard = (): ReactElement => {
   const { web3, interfaceRepo, chainInfo } = useServices();
   const { transactions, handleAddTransaction, handleRemoveTransaction, handleSubmitTransactions } = useTransactions();
   const [addressOrAbi, setAddressOrAbi] = useState('');
+  const [abi, setAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadContractError, setLoadContractError] = useState('');
@@ -127,6 +129,8 @@ const Dashboard = (): ReactElement => {
           ),
         }}
       />
+
+      <JsonField id={'abi'} name="abi" label="Enter JSON" value={abi} onChange={setAbi} />
 
       {/* ABI Warning */}
       {isValidAddressOrContract && !contract && (
