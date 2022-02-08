@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { TokenBalance } from '@gnosis.pm/safe-apps-sdk';
-import { NATIVE_TOKEN } from '../utils/sdk-helpers';
+import { NATIVE_COIN } from '../utils/sdk-helpers';
 
 export type BalancesType = {
   error?: Error;
@@ -11,7 +11,7 @@ export type BalancesType = {
 };
 
 const transferableTokens = (item: TokenBalance) =>
-  item.tokenInfo.type !== NATIVE_TOKEN || (item.tokenInfo.type === NATIVE_TOKEN && Number(item.fiatBalance) !== 0);
+  item.tokenInfo.type !== NATIVE_COIN || (item.tokenInfo.type === NATIVE_COIN && Number(item.fiatBalance) !== 0);
 
 function useBalances(safeAddress: string, chainId: number): BalancesType {
   const { sdk } = useSafeAppsSDK();
