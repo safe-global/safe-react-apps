@@ -1,4 +1,4 @@
-import { useState, useCallback, ClipboardEvent } from 'react';
+import { useState, useCallback, useEffect, ClipboardEvent } from 'react';
 import styled from 'styled-components';
 import { Icon, TextFieldInput, Tooltip, GenericModal, Text, Button, IconTypes } from '@gnosis.pm/safe-react-components';
 import IconButton from '@material-ui/core/IconButton';
@@ -33,6 +33,7 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
 
   const changeAbi = useCallback(() => {
     onChange?.(tempAbi);
+    setIsPrettified(false);
     toggleModal();
   }, [tempAbi, onChange, toggleModal]);
 
