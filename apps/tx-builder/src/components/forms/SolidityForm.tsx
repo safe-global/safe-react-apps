@@ -107,35 +107,37 @@ const SolidityForm = ({
         />
 
         {/* Native Token Amount Input */}
-        <Field
-          id="token-value-input"
-          name={TOKEN_INPUT_NAME}
-          label={`${nativeCurrencySymbol} value`}
-          fieldType={AMOUNT_FIELD_TYPE}
-          fullWidth
-          required
-          showField={isValueInputVisible}
-          control={control}
-          showErrorsInTheLabel={false}
-        />
+        {isValueInputVisible && (
+          <Field
+            id="token-value-input"
+            name={TOKEN_INPUT_NAME}
+            label={`${nativeCurrencySymbol} value`}
+            fieldType={AMOUNT_FIELD_TYPE}
+            fullWidth
+            required
+            control={control}
+            showErrorsInTheLabel={false}
+          />
+        )}
 
         {/* Contract Section */}
 
         {/* Contract Method Selector */}
-        <Field
-          id="contract-method-selector"
-          name={CONTRACT_METHOD_INDEX_FIELD_NAME}
-          label="Contract Method Selector"
-          fieldType={CONTRACT_METHOD_FIELD_TYPE}
-          showField={showContractFields}
-          shouldUnregister={false}
-          control={control}
-          options={contract?.methods.map((method, index) => ({
-            id: index.toString(),
-            label: method.name,
-          }))}
-          required
-        />
+        {showContractFields && (
+          <Field
+            id="contract-method-selector"
+            name={CONTRACT_METHOD_INDEX_FIELD_NAME}
+            label="Contract Method Selector"
+            fieldType={CONTRACT_METHOD_FIELD_TYPE}
+            shouldUnregister={false}
+            control={control}
+            options={contract?.methods.map((method, index) => ({
+              id: index.toString(),
+              label: method.name,
+            }))}
+            required
+          />
+        )}
 
         {/* Show examples link */}
         {showContractFields && (
@@ -152,36 +154,38 @@ const SolidityForm = ({
         {contractFields.map((contractField, index) => {
           const name = `${CONTRACT_VALUES_FIELD_NAME}.${contractField.name || index}`;
           return (
-            <Field
-              key={name}
-              id={`contract-field-${contractField.name || index}`}
-              name={name}
-              label={`${contractField.name || `${index + 1}º contract field`} (${contractField.type})`}
-              fieldType={contractField.type}
-              fullWidth
-              required
-              shouldUnregister={false} // required to keep contract field values in the form state when the user switches between encoding and decoding data
-              showField={showContractFields}
-              control={control}
-              showErrorsInTheLabel={false}
-              getAddressFromDomain={getAddressFromDomain}
-              networkPrefix={networkPrefix}
-            />
+            showContractFields && (
+              <Field
+                key={name}
+                id={`contract-field-${contractField.name || index}`}
+                name={name}
+                label={`${contractField.name || `${index + 1}º contract field`} (${contractField.type})`}
+                fieldType={contractField.type}
+                fullWidth
+                required
+                shouldUnregister={false} // required to keep contract field values in the form state when the user switches between encoding and decoding data
+                control={control}
+                showErrorsInTheLabel={false}
+                getAddressFromDomain={getAddressFromDomain}
+                networkPrefix={networkPrefix}
+              />
+            )
           );
         })}
 
         {/* Hex encoded textarea field */}
-        <Field
-          id="hex-encoded-data"
-          name={HEX_ENCODED_DATA_FIELD_NAME}
-          label="Data (Hex encoded)"
-          fieldType={HEX_ENCODED_DATA_FIELD_TYPE}
-          showField={showHexEncodedData}
-          required
-          fullWidth
-          control={control}
-          showErrorsInTheLabel={false}
-        />
+        {showHexEncodedData && (
+          <Field
+            id="hex-encoded-data"
+            name={HEX_ENCODED_DATA_FIELD_NAME}
+            label="Data (Hex encoded)"
+            fieldType={HEX_ENCODED_DATA_FIELD_TYPE}
+            required
+            fullWidth
+            control={control}
+            showErrorsInTheLabel={false}
+          />
+        )}
 
         {/* Switch button to encoding contract fields values to hex data */}
         <Text size="lg">

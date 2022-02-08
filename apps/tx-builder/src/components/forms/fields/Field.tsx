@@ -58,7 +58,6 @@ type FieldProps = {
   getAddressFromDomain?: (name: string) => Promise<string>;
   networkPrefix?: string;
   showErrorsInTheLabel?: boolean;
-  showField?: boolean;
   shouldUnregister?: boolean;
   options?: SelectItem[];
 };
@@ -67,7 +66,6 @@ const Field = ({
   fieldType,
   control,
   name,
-  showField = true,
   shouldUnregister = true,
   options,
   required = true,
@@ -76,37 +74,33 @@ const Field = ({
   // Component based on field type
   const Component = CUSTOM_SOLIDITY_COMPONENTS[fieldType] || TextContractField;
 
+  // see https://react-hook-form.com/advanced-usage#ControlledmixedwithUncontrolledComponents
   return (
-    <>
-      {showField && (
-        // see https://react-hook-form.com/advanced-usage#ControlledmixedwithUncontrolledComponents
-        <Controller
-          name={name}
-          control={control}
-          defaultValue={CUSTOM_DEFAULT_VALUES[fieldType] || ''}
-          shouldUnregister={shouldUnregister}
-          rules={{
-            required: {
-              value: required,
-              message: 'Required',
-            },
-            validate: validateField(fieldType),
-          }}
-          render={({ field, fieldState }) => (
-            <Component
-              name={field.name}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              value={field.value}
-              options={options || DEFAULT_OPTIONS[fieldType]}
-              error={fieldState.error?.message}
-              required={required}
-              {...props}
-            />
-          )}
+    <Controller
+      name={name}
+      control={control}
+      defaultValue={CUSTOM_DEFAULT_VALUES[fieldType] || ''}
+      shouldUnregister={shouldUnregister}
+      rules={{
+        required: {
+          value: required,
+          message: 'Required',
+        },
+        validate: validateField(fieldType),
+      }}
+      render={({ field, fieldState }) => (
+        <Component
+          name={field.name}
+          onChange={field.onChange}
+          onBlur={field.onBlur}
+          value={field.value}
+          options={options || DEFAULT_OPTIONS[fieldType]}
+          error={fieldState.error?.message}
+          required={required}
+          {...props}
         />
       )}
-    </>
+    />
   );
 };
 
