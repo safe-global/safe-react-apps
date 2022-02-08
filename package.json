@@ -12,7 +12,7 @@
     "test": "yarn workspaces run test --watchAll=false",
     "test:coverage": "yarn workspaces run test --coverage --watchAll=false"
   },
-  "version": "2.4.1",
+  "version": "2.5.0",
   "workspaces": [
     "apps/*"
   ],
