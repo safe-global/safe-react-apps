@@ -59,7 +59,6 @@ const Dashboard = (): ReactElement => {
   // Load contract from address or ABI
   useEffect(() => {
     const loadContract = async (address: string) => {
-      setAbi('');
       setLoadContractError('');
 
       if (!address || !interfaceRepo) {
@@ -128,7 +127,7 @@ const Dashboard = (): ReactElement => {
         getAddressFromDomain={getAddressFromDomain}
         onChangeAddress={(address: string) => setAddress(address)}
         InputProps={{
-          endAdornment: contractHasMethods && (
+          endAdornment: contractHasMethods && isValidAddress(address) && (
             <InputAdornment position="end">
               <CheckIconAddressAdornment />
             </InputAdornment>

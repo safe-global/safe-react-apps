@@ -32,14 +32,19 @@ class InterfaceRepository {
   private _isMethodPayable = (m: any) => m.payable || m.stateMutability === 'payable';
 
   async loadAbi(address: string): Promise<string> {
-    return isAddress(address) ? await this._loadAbiFromBlockExplorer(address) : '';
+    return await this._loadAbiFromBlockExplorer(address);
   }
 
   getMethods(abi: string): ContractInterface {
     let json;
+
     try {
       json = JSON.parse(abi);
     } catch {
+      return { methods: [] };
+    }
+
+    if (!Array.isArray(json)) {
       return { methods: [] };
     }
 
