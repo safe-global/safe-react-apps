@@ -1,6 +1,6 @@
 import { useState, useCallback, ClipboardEvent } from 'react';
 import styled from 'styled-components';
-import { Icon, TextFieldInput, Tooltip, GenericModal, Text, Button } from '@gnosis.pm/safe-react-components';
+import { Icon, TextFieldInput, Tooltip, GenericModal, Text, Button, IconTypes } from '@gnosis.pm/safe-react-components';
 import IconButton from '@material-ui/core/IconButton';
 import { Box } from '@material-ui/core';
 
@@ -71,23 +71,16 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
           onChange={(event) => {
             onChange?.(event.target.value);
           }}
+          spellCheck={false}
           showErrorsInTheLabel={false}
         />
 
         <IconContainer>
           {!isPrettified && (
-            <Tooltip title="Prettify JSON">
-              <StyledButton size="small" color="primary" onClick={toggleFormatJSON}>
-                <Icon size="sm" type="code" />
-              </StyledButton>
-            </Tooltip>
+            <IconContainerButton tooltipLabel="Prettify JSON" iconType="code" onClick={toggleFormatJSON} />
           )}
           {isPrettified && (
-            <Tooltip title="Stringify JSON">
-              <StyledButton size="small" color="primary" onClick={toggleFormatJSON}>
-                <Icon size="sm" type="cross" />
-              </StyledButton>
-            </Tooltip>
+            <IconContainerButton tooltipLabel="Stringify JSON" iconType="cross" onClick={toggleFormatJSON} />
           )}
         </IconContainer>
       </JSONFieldContainer>
@@ -116,6 +109,22 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
     </>
   );
 };
+
+const IconContainerButton = ({
+  tooltipLabel,
+  iconType,
+  onClick,
+}: {
+  tooltipLabel: string;
+  iconType: IconTypes;
+  onClick: () => void;
+}) => (
+  <Tooltip title={tooltipLabel}>
+    <StyledButton size="small" color="primary" onClick={onClick}>
+      <Icon size="sm" type={iconType} />
+    </StyledButton>
+  </Tooltip>
+);
 
 const JSONFieldContainer = styled.div`
   position: relative;
