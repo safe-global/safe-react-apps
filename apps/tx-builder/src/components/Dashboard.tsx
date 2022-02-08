@@ -98,7 +98,7 @@ const Dashboard = (): ReactElement => {
     return web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
   };
 
-  const isValidAddressOrContract = contract && !isABILoading;
+  const isValidAddressOrContract = contract && contract.methods.length > 0 && !isABILoading;
 
   return (
     <Wrapper>

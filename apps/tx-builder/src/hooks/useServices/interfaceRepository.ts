@@ -36,7 +36,14 @@ class InterfaceRepository {
   }
 
   getMethods(abi: string): ContractInterface {
-    const methods = JSON.parse(abi)
+    let json;
+    try {
+      json = JSON.parse(abi);
+    } catch {
+      return { methods: [] };
+    }
+
+    const methods = json
       .filter((e: any) => {
         if (['pure', 'view'].includes(e.stateMutability)) {
           return false;

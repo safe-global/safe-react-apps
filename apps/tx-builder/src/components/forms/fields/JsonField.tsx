@@ -17,15 +17,17 @@ type Props = {
 const JsonField = ({ id, name, label, value, onChange }: Props) => {
   const [showReplaceModal, setShowReplaceModal] = useState(false);
   const [tempAbi, setTempAbi] = useState(value);
+  const [isPrettified, setIsPrettified] = useState(false);
 
-  const prettify = useCallback(() => {
+  const toggleFormatJSON = useCallback(() => {
     try {
-      onChange?.(JSON.stringify(JSON.parse(value), null, 2));
+      onChange?.(JSON.stringify(JSON.parse(value), null, isPrettified ? 0 : 2));
+      setIsPrettified(!isPrettified);
     } catch (e) {
       console.error(e);
       onChange(value);
     }
-  }, [onChange, value]);
+  }, [onChange, value, isPrettified]);
 
   const toggleModal = useCallback(() => setShowReplaceModal(!showReplaceModal), [showReplaceModal]);
 
@@ -73,11 +75,20 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
         />
 
         <IconContainer>
-          <Tooltip title="Format JSON">
-            <StyledButton size="small" color="primary" onClick={prettify}>
-              <Icon size="sm" type="code" />
-            </StyledButton>
-          </Tooltip>
+          {!isPrettified && (
+            <Tooltip title="Prettify JSON">
+              <StyledButton size="small" color="primary" onClick={toggleFormatJSON}>
+                <Icon size="sm" type="code" />
+              </StyledButton>
+            </Tooltip>
+          )}
+          {isPrettified && (
+            <Tooltip title="Stringify JSON">
+              <StyledButton size="small" color="primary" onClick={toggleFormatJSON}>
+                <Icon size="sm" type="cross" />
+              </StyledButton>
+            </Tooltip>
+          )}
         </IconContainer>
       </JSONFieldContainer>
 
@@ -130,6 +141,8 @@ const StyledTextField = styled(TextFieldInput)`
     }
 
     textarea {
+      font-family: monospace;
+      font-size: 12px;
       &.MuiInputBase-input {
         padding: 0;
       }
