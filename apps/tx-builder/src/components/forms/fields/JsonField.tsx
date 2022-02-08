@@ -20,6 +20,10 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
   const [isPrettified, setIsPrettified] = useState(false);
 
   const toggleFormatJSON = useCallback(() => {
+    if (!value) {
+      return;
+    }
+
     try {
       onChange?.(JSON.stringify(JSON.parse(value), null, isPrettified ? 0 : 2));
       setIsPrettified(!isPrettified);
