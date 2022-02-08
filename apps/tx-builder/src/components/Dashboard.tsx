@@ -28,10 +28,6 @@ const StyledText = styled(Text)`
   margin-bottom: 15px;
 `;
 
-const StyledWarningText = styled(Text)`
-  margin-top: 5px;
-`;
-
 const CheckIconAddressAdornment = styled(CheckCircle)`
   color: #03ae60;
   height: 20px;
@@ -88,6 +84,7 @@ const Dashboard = (): ReactElement => {
 
   useEffect(() => {
     if (!abi || !interfaceRepo) {
+      setContract(null);
       return;
     }
 
@@ -98,7 +95,7 @@ const Dashboard = (): ReactElement => {
     return web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
   };
 
-  const isValidAddressOrContract = contract && contract.methods.length > 0 && !isABILoading;
+  const contractHasMethods = contract && contract.methods.length > 0 && !isABILoading;
 
   return (
     <Wrapper>
@@ -116,7 +113,7 @@ const Dashboard = (): ReactElement => {
           Learn how to use the transaction builder.
         </Link>
       </StyledText>
-      <p>{isValidAddressOrContract}</p>
+
       {/* ABI or Address Input */}
       <StyledAddressInput
         id={'addressOrAbi'}
@@ -126,12 +123,12 @@ const Dashboard = (): ReactElement => {
         address={address}
         showNetworkPrefix={!!chainInfo?.shortName}
         networkPrefix={chainInfo?.shortName}
-        error={!isValidAddressOrContract ? loadContractError : ''}
+        error={!contractHasMethods ? loadContractError : ''}
         showLoadingSpinner={isABILoading}
         getAddressFromDomain={getAddressFromDomain}
         onChangeAddress={(address: string) => setAddress(address)}
         InputProps={{
-          endAdornment: isValidAddressOrContract && (
+          endAdornment: contractHasMethods && (
             <InputAdornment position="end">
               <CheckIconAddressAdornment />
             </InputAdornment>
@@ -141,14 +138,7 @@ const Dashboard = (): ReactElement => {
 
       <JsonField id={'abi'} name="abi" label="Enter JSON" value={abi} onChange={setAbi} />
 
-      {/* ABI Warning */}
-      {isValidAddressOrContract && !contract && (
-        <StyledWarningText color="warning" size="lg">
-          No ABI found for this address
-        </StyledWarningText>
-      )}
-
-      {isValidAddressOrContract && (
+      {(contractHasMethods || isValidAddress(address)) && !isABILoading && (
         <AddNewTransactionForm
           transactions={transactions}
           onAddTransaction={handleAddTransaction}
