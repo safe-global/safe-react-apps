@@ -9,6 +9,7 @@
     "start:tx-builder": "yarn workspace tx-builder start",
     "start:walletconnect": "yarn workspace wallet-connect start",
     "start:drain-safe": "yarn workspace drain-safe start",
+    "start:ramp": "yarn workspace ramp-network start",
     "test": "yarn workspaces run test --watchAll=false",
     "test:coverage": "yarn workspaces run test --coverage --watchAll=false"
   },
