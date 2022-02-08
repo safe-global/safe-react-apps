@@ -1,5 +1,4 @@
 import { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
-import { isAddress } from 'web3-utils';
 import getAbi from './getAbi';
 
 export interface ContractInput {

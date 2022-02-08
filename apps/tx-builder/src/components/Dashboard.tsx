@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useEffect } from 'react';
+import { ReactElement, useState, useEffect } from 'react';
 import { Text, Title, Link, AddressInput } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import { InputAdornment } from '@material-ui/core';
