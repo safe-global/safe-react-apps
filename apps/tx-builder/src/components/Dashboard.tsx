@@ -115,8 +115,8 @@ const Dashboard = (): ReactElement => {
 
       {/* ABI or Address Input */}
       <StyledAddressInput
-        id={'addressOrAbi'}
-        name="addressOrAbi"
+        id="address"
+        name="address"
         label="Enter Address or ENS Name"
         hiddenLabel={false}
         address={address}
