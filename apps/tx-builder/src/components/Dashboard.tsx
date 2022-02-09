@@ -28,6 +28,10 @@ const StyledText = styled(Text)`
   margin-bottom: 15px;
 `;
 
+const StyledWarningText = styled(Text)`
+  margin-top: 5px;
+`;
+
 const CheckIconAddressAdornment = styled(CheckCircle)`
   color: #03ae60;
   height: 20px;
@@ -96,6 +100,9 @@ const Dashboard = (): ReactElement => {
 
   const contractHasMethods = contract && contract.methods.length > 0 && !isABILoading;
 
+  const isAddressInputFieldValid =
+    address.length > 0 && !isValidAddress(address) ? 'The address is not valid' : undefined;
+
   return (
     <Wrapper>
       <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
@@ -122,7 +129,7 @@ const Dashboard = (): ReactElement => {
         address={address}
         showNetworkPrefix={!!chainInfo?.shortName}
         networkPrefix={chainInfo?.shortName}
-        error={!contractHasMethods ? loadContractError : ''}
+        error={isAddressInputFieldValid}
         showLoadingSpinner={isABILoading}
         getAddressFromDomain={getAddressFromDomain}
         onChangeAddress={(address: string) => setAddress(address)}
@@ -134,6 +141,13 @@ const Dashboard = (): ReactElement => {
           ),
         }}
       />
+
+      {/* ABI Warning */}
+      {loadContractError && (
+        <StyledWarningText color="warning" size="lg">
+          No ABI found for this address
+        </StyledWarningText>
+      )}
 
       <JsonField id={'abi'} name="abi" label="Enter ABI" value={abi} onChange={setAbi} />
 
