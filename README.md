@@ -4,6 +4,7 @@
 
 ![license](https://img.shields.io/github/license/gnosis/safe-react-apps)
 ![build](https://img.shields.io/github/workflow/status/gnosis/safe-react-apps/Deploy%20safe%20apps/main)
+![tests](https://img.shields.io/github/workflow/status/gnosis/safe-react-apps/Test/main?label=tests)
 
 This project contains apps developed by Gnosis to be consumed by Gnosis Safe.
 
@@ -33,10 +34,11 @@ yarn build
 You can also run each app locally using the following commands:
 
 ```bash
-yarn start-compound
-yarn start-drain-safe
-yarn start-tx-builder
-yarn start-wallet-connect
+yarn start:compound
+yarn start:drain-safe
+yarn start:ramp
+yarn start:tx-builder
+yarn start:wallet-connect
 ```
 
 
@@ -70,6 +72,7 @@ These apps are deployed in the following environments.
 
     [Compound](https://safe-apps.dev.gnosisdev.com/compound)
     | [Drain Account](https://safe-apps.dev.gnosisdev.com/drain-safe)
+    | [Ramp Network](https://safe-apps.dev.gnosisdev.com/ramp-network)
     | [Transaction Builder](https://safe-apps.dev.gnosisdev.com/tx-builder)
     | [WalletConnect](https://safe-apps.dev.gnosisdev.com/wallet-connect)
 
@@ -77,6 +80,7 @@ These apps are deployed in the following environments.
 
     [Compound](https://safe-apps.staging.gnosisdev.com/compound)
     | [Drain Account](https://safe-apps.staging.gnosisdev.com/drain-safe)
+    | [Ramp Network](https://safe-apps.staging.gnosisdev.com/ramp-network)
     | [Transaction Builder](https://safe-apps.staging.gnosisdev.com/tx-builder)
     | [WalletConnect](https://safe-apps.staging.gnosisdev.com/wallet-connect)
 
@@ -84,6 +88,7 @@ These apps are deployed in the following environments.
 
     [Compound](https://apps.gnosis-safe.io/compound)
     | [Drain Account](https://apps.gnosis-safe.io/drain-safe)
+    | [Ramp Network](https://apps.gnosis-safe.io/ramp-network)
     | [Transaction Builder](https://apps.gnosis-safe.io/tx-builder)
     | [WalletConnect](https://apps.gnosis-safe.io/wallet-connect)
 
