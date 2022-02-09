@@ -53,6 +53,7 @@ jobs:
             * [WalletConnect app](${{ env.REVIEW_FEATURE_URL }}/wallet-connect/)
             * [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)
             * [Drain Account App](${{ env.REVIEW_FEATURE_URL }}/drain-safe/)
+            * [RAMP Network App](${{ env.REVIEW_FEATURE_URL }}/ramp-network/)
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
         env:
