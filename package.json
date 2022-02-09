@@ -20,7 +20,6 @@
   "dependencies": {
     "@gnosis.pm/safe-apps-react-sdk": "4.2.0",
     "@gnosis.pm/safe-apps-sdk": "6.3.0",
-    "@material-ui/icons": "^4.11.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "^4.0.3",
@@ -30,7 +29,7 @@
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^26.0.20",
+    "@types/jest": "^27.4.0",
     "@types/node": "^17.0.16",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
