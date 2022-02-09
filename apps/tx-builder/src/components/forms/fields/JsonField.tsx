@@ -26,7 +26,7 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
     }
 
     try {
-      onChange?.(JSON.stringify(JSON.parse(value), null, isPrettified ? 0 : 2));
+      onChange(JSON.stringify(JSON.parse(value), null, isPrettified ? 0 : 2));
       setIsPrettified(!isPrettified);
     } catch (e) {
       console.error(e);
@@ -37,7 +37,7 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
   const toggleModal = useCallback(() => setShowReplaceModal(!showReplaceModal), [showReplaceModal]);
 
   const changeAbi = useCallback(() => {
-    onChange?.(tempAbi);
+    onChange(tempAbi);
     setIsPrettified(false);
     toggleModal();
   }, [tempAbi, onChange, toggleModal]);
@@ -75,7 +75,7 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
           hiddenLabel={false}
           onPaste={handlePaste}
           onChange={(event) => {
-            onChange?.(event.target.value);
+            onChange(event.target.value);
           }}
           spellCheck={false}
           showErrorsInTheLabel={false}
