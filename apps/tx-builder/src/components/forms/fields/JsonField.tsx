@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Icon, TextFieldInput, Tooltip, GenericModal, Text, Button, IconTypes } from '@gnosis.pm/safe-react-components';
 import IconButton from '@material-ui/core/IconButton';
 import { Box } from '@material-ui/core';
+import { errorBaseStyles } from '../styles';
 
 const DEFAULT_ROWS = 4;
 
@@ -78,6 +79,7 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
           }}
           spellCheck={false}
           showErrorsInTheLabel={false}
+          error={isValidJSON(value) ? undefined : 'Invalid JSON value'}
         />
 
         <IconContainer>
@@ -115,6 +117,18 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
   );
 };
 
+const isValidJSON = (value: string | undefined) => {
+  if (value) {
+    try {
+      JSON.parse(value);
+    } catch {
+      return false;
+    }
+  }
+
+  return true;
+};
+
 const IconContainerButton = ({
   tooltipLabel,
   iconType,
@@ -145,14 +159,7 @@ const StyledTextField = styled(TextFieldInput)`
   && {
     width: 520px;
     margin-top: 10px;
-
-    .MuiFormLabel-root {
-      color: ${(props) => (!!props.error ? '#f44336' : '#0000008a')};
-    }
-
-    .MuiFormLabel-root.Mui-focused {
-      color: ${(props) => (!!props.error ? '#f44336' : '#008c73')};
-    }
+    ${errorBaseStyles}
 
     textarea {
       font-family: monospace;

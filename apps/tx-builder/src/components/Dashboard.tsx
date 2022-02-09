@@ -10,6 +10,7 @@ import useTransactions from '../hooks/useTransactions';
 import { isValidAddress } from '../utils';
 import AddNewTransactionForm from './forms/AddNewTransactionForm';
 import JsonField from './forms/fields/JsonField';
+import { errorBaseStyles } from './forms/styles';
 
 const Wrapper = styled.div`
   display: flex;
@@ -40,14 +41,7 @@ const CheckIconAddressAdornment = styled(CheckCircle)`
 const StyledAddressInput = styled(AddressInput)`
   && {
     width: 520px;
-
-    .MuiFormLabel-root {
-      color: #0000008a;
-    }
-
-    .MuiFormLabel-root.Mui-focused {
-      color: #008c73;
-    }
+    ${errorBaseStyles}
   }
 `;
 
@@ -100,8 +94,7 @@ const Dashboard = (): ReactElement => {
 
   const contractHasMethods = contract && contract.methods.length > 0 && !isABILoading;
 
-  const isAddressInputFieldValid =
-    address.length > 0 && !isValidAddress(address) ? 'The address is not valid' : undefined;
+  const isAddressInputFieldValid = address.length > 0 && !isValidAddress(address) ? 'The address is not valid' : '';
 
   return (
     <Wrapper>
@@ -131,6 +124,7 @@ const Dashboard = (): ReactElement => {
         networkPrefix={chainInfo?.shortName}
         error={isAddressInputFieldValid}
         showLoadingSpinner={isABILoading}
+        showErrorsInTheLabel={false}
         getAddressFromDomain={getAddressFromDomain}
         onChangeAddress={(address: string) => setAddress(address)}
         InputProps={{
