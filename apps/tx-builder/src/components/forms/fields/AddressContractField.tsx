@@ -36,7 +36,7 @@ export default AddressContractField;
 
 const StyledAddressInput = styled(AddressInput)`
   && {
-    width: 520px;
+    width: 400px;
     margin-bottom: 10px;
 
     .MuiFormLabel-root {

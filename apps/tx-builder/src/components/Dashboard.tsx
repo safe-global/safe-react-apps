@@ -9,46 +9,7 @@ import useServices from '../hooks/useServices';
 import useTransactions from '../hooks/useTransactions';
 import { isValidAddress } from '../utils';
 import AddNewTransactionForm from './forms/AddNewTransactionForm';
-
-const Wrapper = styled.div`
-  display: flex;
-  justify-content: left;
-  flex-direction: column;
-  padding: 24px;
-  width: 520px;
-`;
-
-const StyledTitle = styled(Title)`
-  margin-top: 0px;
-  margin-bottom: 5px;
-`;
-
-const StyledText = styled(Text)`
-  margin-bottom: 15px;
-`;
-
-const StyledWarningText = styled(Text)`
-  margin-top: 5px;
-`;
-
-const CheckIconAddressAdornment = styled(CheckCircle)`
-  color: #03ae60;
-  height: 20px;
-`;
-
-const StyledAddressInput = styled(AddressInput)`
-  && {
-    width: 520px;
-
-    .MuiFormLabel-root {
-      color: #0000008a;
-    }
-
-    .MuiFormLabel-root.Mui-focused {
-      color: #008c73;
-    }
-  }
-`;
+import TransactionsBatchList from './TransactionsBatchList';
 
 const Dashboard = (): ReactElement => {
   const { web3, interfaceRepo, chainInfo } = useServices();
@@ -91,65 +52,124 @@ const Dashboard = (): ReactElement => {
 
   return (
     <Wrapper>
-      <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
+      {/* TODO: ADD TRANSACTION BUILDER HEADER */}
 
-      <StyledText size="sm">
-        This app allows you to build a custom multisend transaction. Enter a Ethereum contract address or ABI to get
-        started.{' '}
-        <Link
-          href="https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app"
-          size="lg"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Learn how to use the transaction builder.
-        </Link>
-      </StyledText>
+      <AddNewTransactionFormWrapper>
+        <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
 
-      {/* ABI or Address Input */}
-      <StyledAddressInput
-        id={'address-or-ABI-input'}
-        name="addressOrAbi"
-        label="Enter Address, ENS Name or ABI"
-        hiddenLabel={false}
-        address={addressOrAbi}
-        showNetworkPrefix={!!chainInfo?.shortName}
-        networkPrefix={chainInfo?.shortName}
-        error={!isValidAddressOrContract ? loadContractError : ''}
-        showLoadingSpinner={isABILoading}
-        getAddressFromDomain={getAddressFromDomain}
-        onChangeAddress={(addressOrAbi: string) => setAddressOrAbi(addressOrAbi)}
-        InputProps={{
-          endAdornment: isValidAddressOrContract && (
-            <InputAdornment position="end">
-              <CheckIconAddressAdornment />
-            </InputAdornment>
-          ),
-        }}
-      />
+        <StyledText size="sm">
+          This app allows you to build a custom multisend transaction. Enter a Ethereum contract address or ABI to get
+          started.{' '}
+          <Link
+            href="https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app"
+            size="lg"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Learn how to use the transaction builder.
+          </Link>
+        </StyledText>
 
-      {/* ABI Warning */}
-      {isValidAddressOrContract && !contract && (
-        <StyledWarningText color="warning" size="lg">
-          No ABI found for this address
-        </StyledWarningText>
-      )}
-
-      {isValidAddressOrContract && (
-        <AddNewTransactionForm
-          transactions={transactions}
-          onAddTransaction={handleAddTransaction}
-          contract={contract}
-          to={addressOrAbi}
+        {/* ABI or Address Input */}
+        <StyledAddressInput
+          id={'address-or-ABI-input'}
+          name="addressOrAbi"
+          label="Enter Address, ENS Name or ABI"
+          hiddenLabel={false}
+          address={addressOrAbi}
+          showNetworkPrefix={!!chainInfo?.shortName}
           networkPrefix={chainInfo?.shortName}
+          error={!isValidAddressOrContract ? loadContractError : ''}
+          showLoadingSpinner={isABILoading}
           getAddressFromDomain={getAddressFromDomain}
-          nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
-          onRemoveTransaction={handleRemoveTransaction}
-          onSubmitTransactions={handleSubmitTransactions}
+          onChangeAddress={(addressOrAbi: string) => setAddressOrAbi(addressOrAbi)}
+          InputProps={{
+            endAdornment: isValidAddressOrContract && (
+              <InputAdornment position="end">
+                <CheckIconAddressAdornment />
+              </InputAdornment>
+            ),
+          }}
         />
-      )}
+
+        {/* ABI Warning */}
+        {isValidAddressOrContract && !contract && (
+          <StyledWarningText color="warning" size="lg">
+            No ABI found for this address
+          </StyledWarningText>
+        )}
+
+        {isValidAddressOrContract && (
+          <AddNewTransactionForm
+            // transactions={transactions}
+            onAddTransaction={handleAddTransaction}
+            contract={contract}
+            to={addressOrAbi}
+            networkPrefix={chainInfo?.shortName}
+            getAddressFromDomain={getAddressFromDomain}
+            nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
+            // onRemoveTransaction={handleRemoveTransaction}
+            // onSubmitTransactions={handleSubmitTransactions}
+          />
+        )}
+      </AddNewTransactionFormWrapper>
+
+      <TransactionsBatchList
+        transactions={transactions}
+        onRemoveTransaction={handleRemoveTransaction}
+        onSubmitTransactions={handleSubmitTransactions}
+      />
     </Wrapper>
   );
 };
 
 export default Dashboard;
+
+// justify-content: left;
+// flex-direction: column;
+const Wrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  padding: 24px;
+`;
+
+// width: 450px;
+const AddNewTransactionFormWrapper = styled.div`
+  width: 400px;
+  padding: 24px;
+  border-radius: 8px;
+
+  background-color: white;
+`;
+
+const StyledTitle = styled(Title)`
+  margin-top: 0px;
+  margin-bottom: 5px;
+`;
+
+const StyledText = styled(Text)`
+  margin-bottom: 15px;
+`;
+
+const StyledWarningText = styled(Text)`
+  margin-top: 5px;
+`;
+
+const CheckIconAddressAdornment = styled(CheckCircle)`
+  color: #03ae60;
+  height: 20px;
+`;
+
+const StyledAddressInput = styled(AddressInput)`
+  && {
+    width: 400px;
+
+    .MuiFormLabel-root {
+      color: #0000008a;
+    }
+
+    .MuiFormLabel-root.Mui-focused {
+      color: #008c73;
+    }
+  }
+`;

@@ -1,12 +1,13 @@
-import { Text, Title, GenericModal, ModalFooterConfirmation, Button } from '@gnosis.pm/safe-react-components';
-import { useEffect, useState } from 'react';
+// import { Text, Title, GenericModal, ModalFooterConfirmation, Button } from '@gnosis.pm/safe-react-components';
+import { Text, Title, Button } from '@gnosis.pm/safe-react-components';
+// import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { toChecksumAddress, toWei, fromWei } from 'web3-utils';
 
 import { ContractInterface } from '../../hooks/useServices/interfaceRepository';
 import { ProposedTransaction } from '../../typings/models';
 import { encodeToHexData, getTxDescription, isValidAddress } from '../../utils';
-import { ModalBody } from '../ModalBody';
+// import { ModalBody } from '../ModalBody';
 import SolidityForm, {
   CONTRACT_METHOD_INDEX_FIELD_NAME,
   CONTRACT_VALUES_FIELD_NAME,
@@ -19,27 +20,27 @@ import SolidityForm, {
 type AddNewTransactionFormProps = {
   contract: ContractInterface | null;
   to: string;
-  transactions: ProposedTransaction[];
+  // transactions: ProposedTransaction[];
   onAddTransaction: (transaction: ProposedTransaction) => void;
-  onRemoveTransaction: (index: number) => void;
-  onSubmitTransactions: () => void;
+  // onRemoveTransaction: (index: number) => void;
+  // onSubmitTransactions: () => void;
   networkPrefix: undefined | string;
   getAddressFromDomain: (name: string) => Promise<string>;
   nativeCurrencySymbol: undefined | string;
 };
 
 const AddNewTransactionForm = ({
-  transactions,
+  // transactions,
   onAddTransaction,
-  onSubmitTransactions,
-  onRemoveTransaction,
+  // onSubmitTransactions,
+  // onRemoveTransaction,
   contract,
   to,
   networkPrefix,
   getAddressFromDomain,
   nativeCurrencySymbol,
 }: AddNewTransactionFormProps) => {
-  const [showReviewModal, setShowReviewModal] = useState(false);
+  // const [showReviewModal, setShowReviewModal] = useState(false);
   const showABIWarning = contract && !contract?.methods.length;
 
   const initialFormValues = {
@@ -70,13 +71,13 @@ const AddNewTransactionForm = ({
     });
   }
 
-  useEffect(() => {
-    const hasTransactions = transactions.length !== 0;
+  // useEffect(() => {
+  //   const hasTransactions = transactions.length !== 0;
 
-    if (!hasTransactions) {
-      setShowReviewModal(false);
-    }
-  }, [transactions]);
+  //   if (!hasTransactions) {
+  //     setShowReviewModal(false);
+  //   }
+  // }, [transactions]);
 
   return (
     <>
@@ -99,7 +100,7 @@ const AddNewTransactionForm = ({
             Add transaction
           </Button>
 
-          {/* Send Transactions btn */}
+          {/* TODO: REMOVE THIS Send Transactions btn
           <Button
             size="md"
             type="button"
@@ -109,12 +110,12 @@ const AddNewTransactionForm = ({
             onClick={() => setShowReviewModal(true)}
           >
             {`Send Transactions ${transactions.length ? `(${transactions.length})` : ''}`}
-          </Button>
+          </Button> */}
         </ButtonContainer>
       </SolidityForm>
 
       {/* Transactions Modal */}
-      {showReviewModal && (
+      {/* {showReviewModal && (
         <GenericModal
           body={<ModalBody txs={transactions} deleteTx={onRemoveTransaction} />}
           onClose={() => setShowReviewModal(false)}
@@ -123,7 +124,7 @@ const AddNewTransactionForm = ({
             <ModalFooterConfirmation handleOk={onSubmitTransactions} handleCancel={() => setShowReviewModal(false)} />
           }
         />
-      )}
+      )} */}
     </>
   );
 };

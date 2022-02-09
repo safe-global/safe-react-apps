@@ -3,7 +3,7 @@ import { AddressInput } from '@gnosis.pm/safe-react-components';
 
 export default styled(AddressInput)`
   && {
-    width: 520px;
+    width: 400px;
     margin-bottom: 10px;
 
     .MuiFormLabel-root {

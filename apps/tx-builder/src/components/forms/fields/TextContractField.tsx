@@ -15,7 +15,7 @@ export default TextContractField;
 
 const StyledTextField = styled(TextFieldInput)`
   && {
-    width: 520px;
+    width: 400px;
     margin-bottom: 10px;
 
     .MuiFormLabel-root {
