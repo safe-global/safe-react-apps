@@ -27,8 +27,8 @@
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^12.0.0",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.1.9",
     "@types/jest": "^26.0.20",
     "@types/node": "^16.11.11",
@@ -46,10 +46,10 @@
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.27.1",
+    "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "prettier": "^2.5.1",
     "react-app-rewired": "^2.1.6",
-    "typescript": "^4.4.3"
+    "typescript": "^4.5.5"
   }
 }
