@@ -6,10 +6,10 @@
     "lint:check": "eslint './apps/**/*.{js,jsx,ts,tsx}'",
     "lint:fix": "yarn lint:check --fix",
     "start:compound": "yarn workspace compound start",
-    "start:tx-builder": "yarn workspace tx-builder start",
-    "start:walletconnect": "yarn workspace wallet-connect start",
     "start:drain-safe": "yarn workspace drain-safe start",
     "start:ramp": "yarn workspace ramp-network start",
+    "start:tx-builder": "yarn workspace tx-builder start",
+    "start:walletconnect": "yarn workspace wallet-connect start",
     "test": "yarn workspaces run test --watchAll=false",
     "test:coverage": "yarn workspaces run test --coverage --watchAll=false"
   },
