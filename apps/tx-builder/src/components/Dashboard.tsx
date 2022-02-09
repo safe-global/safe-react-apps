@@ -135,7 +135,7 @@ const Dashboard = (): ReactElement => {
         }}
       />
 
-      <JsonField id={'abi'} name="abi" label="Enter JSON" value={abi} onChange={setAbi} />
+      <JsonField id={'abi'} name="abi" label="Enter ABI" value={abi} onChange={setAbi} />
 
       {(contractHasMethods || isValidAddress(address)) && !isABILoading && (
         <AddNewTransactionForm
