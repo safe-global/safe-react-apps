@@ -7,12 +7,13 @@
     "lint:fix": "yarn lint:check --fix",
     "start:compound": "yarn workspace compound start",
     "start:drain-safe": "yarn workspace drain-safe start",
+    "start:ramp": "yarn workspace ramp-network start",
     "start:tx-builder": "yarn workspace tx-builder start",
     "start:walletconnect": "yarn workspace wallet-connect start",
     "test": "yarn workspaces run test --watchAll=false",
     "test:coverage": "yarn workspaces run test --coverage --watchAll=false"
   },
-  "version": "2.4.1",
+  "version": "2.5.0",
   "workspaces": [
     "apps/*"
   ],
