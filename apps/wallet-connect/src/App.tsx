@@ -3,11 +3,12 @@ import jsQr from 'jsqr';
 import styled from 'styled-components';
 import format from 'date-fns/format';
 
-import { TextFieldInput, Button, Text, Title, Icon, Loader } from '@gnosis.pm/safe-react-components';
+import { TextFieldInput, Button, Text, Title, Icon, Loader, Card } from '@gnosis.pm/safe-react-components';
 import Dialog from '@material-ui/core/Dialog';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+import Container from '@material-ui/core/Container';
 
 import { blobToImageData } from './utils/images';
 import { Wrapper } from './components/layout';
@@ -15,6 +16,8 @@ import WCClientInfo from './components/WCClientInfo';
 import useWalletConnect from './hooks/useWalletConnect';
 import ScanCode from './components/ScanCode';
 import AppBar from './components/AppBar';
+import Help from './components/Help';
+import { Grid } from '@material-ui/core';
 
 const App = () => {
   const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect();
@@ -138,41 +141,53 @@ const App = () => {
   return (
     <>
       <AppBar />
-      {/* WalletConnect */}
-      {wcClientData && (
-        <StyledWrapper>
-          <Text color="white" size="xl">
-            You need to have this WalletConnect Safe app open for transactions to pop up.
-          </Text>
-          <Text color="white" size="xl">
-            You will not receive transaction requests when you don't have it open.
-          </Text>
-        </StyledWrapper>
-      )}
-      <Wrapper>
-        <WCContent>
-          <StyledTitle size="sm">Wallet Connect</StyledTitle>
-          {wcClientData ? getConnectedContent() : getDisconnectedContent()}
-        </WCContent>
-
-        {/* Instructions */}
-        <div>{wcClientData ? <ConnectedInstructions /> : <DisconnectedInstructions />}</div>
-      </Wrapper>
-      <Dialog
-        open={openDialog}
-        onClose={handleQRDialogClose}
-        aria-labelledby="Dialog to scan QR"
-        aria-describedby="Dialog to load a QR code"
-      >
-        <CloseDialogContainer>
-          <Tooltip title="Close scan QR code dialog" aria-label="Close scan QR code dialog">
-            <IconButton onClick={handleQRDialogClose}>
-              <Icon size="md" type="cross" color="primary" />
-            </IconButton>
-          </Tooltip>
-        </CloseDialogContainer>
-        <ScanCode wcConnect={wcConnect} wcClientData={wcClientData} />
-      </Dialog>
+      <StyledContainer>
+        <Grid container direction="column" alignItems="center" style={{ height: '100%', paddingTop: '45px' }}>
+          <Grid item style={{ width: '50%', marginTop: '45px' }}>
+            <Card>
+              {/* WalletConnect */}
+              {wcClientData && (
+                <StyledWrapper>
+                  <Text color="white" size="xl">
+                    You need to have this WalletConnect Safe app open for transactions to pop up.
+                  </Text>
+                  <Text color="white" size="xl">
+                    You will not receive transaction requests when you don't have it open.
+                  </Text>
+                </StyledWrapper>
+              )}
+              <Wrapper>
+                <WCContent>
+                  <StyledTitle size="sm">Wallet Connect</StyledTitle>
+                  {wcClientData ? getConnectedContent() : getDisconnectedContent()}
+                </WCContent>
+              </Wrapper>
+              <Dialog
+                open={openDialog}
+                onClose={handleQRDialogClose}
+                aria-labelledby="Dialog to scan QR"
+                aria-describedby="Dialog to load a QR code"
+              >
+                <CloseDialogContainer>
+                  <Tooltip title="Close scan QR code dialog" aria-label="Close scan QR code dialog">
+                    <IconButton onClick={handleQRDialogClose}>
+                      <Icon size="md" type="cross" color="primary" />
+                    </IconButton>
+                  </Tooltip>
+                </CloseDialogContainer>
+                <ScanCode wcConnect={wcConnect} wcClientData={wcClientData} />
+              </Dialog>
+            </Card>
+          </Grid>
+          <Grid item style={{ width: '50%', marginTop: '16px' }}>
+            {wcClientData ? (
+              <Help title={HELP_TRANSACTIONS.title} steps={HELP_TRANSACTIONS.steps} />
+            ) : (
+              <Help title={HELP_CONNECT.title} steps={HELP_CONNECT.steps} />
+            )}
+          </Grid>
+        </Grid>
+      </StyledContainer>
     </>
   );
 };
@@ -181,6 +196,17 @@ export default App;
 
 const StyledTitle = styled(Title)`
   margin-top: 0;
+`;
+
+const StyledContainer = styled(Container)`
+  && {
+    background-color: #e5e5e5;
+    display: flex;
+    height: calc(100% - 70px);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
 `;
 
 const StyledText = styled(Text)`
@@ -234,59 +260,22 @@ const CloseDialogContainer = styled.div`
   right: 4px;
 `;
 
-const HelpLink = () => (
-  <StyledHelpLink>
-    <a
-      target="_blank"
-      href="https://help.gnosis-safe.io/en/articles/4356253-how-to-use-walletconnect-with-the-gnosis-safe-multisig"
-      rel="noopener noreferrer"
-    >
-      <Text color="primary" size="lg">
-        How to use WalletConnect with the Gnosis Safe Multisig
-      </Text>
-    </a>
-    <Icon type="externalLink" color="primary" size="sm" />
-  </StyledHelpLink>
-);
+const HELP_CONNECT = {
+  title: 'How to connect to a Dapp?',
+  steps: [
+    'Open a Dapp with WalletConnect support.',
+    'Copy QR code image into clipboard (Command+Control+Shift+4 on Mac, Windows key+PrtScn on Windows).',
+    'Paste QR code image into the input field (Command+V on Mac, Ctrl+V on Windows).',
+    'WalletConnect connection is established automatically.',
+    'Now you can trigger transactions via the Dapp to your Safe.',
+  ],
+};
 
-const ConnectedInstructions = () => (
-  <>
-    <StyledTitle size="sm">How to confirm transactions</StyledTitle>
-
-    <StyledText size="lg">1) Trigger a transaction from the Dapp.</StyledText>
-
-    <StyledText size="lg">
-      2) Come back here to confirm the transaction. You will see a popup with transactions details. Review the details
-      and submit the transaction.
-    </StyledText>
-
-    <StyledText size="lg">
-      3) The transaction has to be confirmed be owners and executed just like any other Safe transaction.
-    </StyledText>
-
-    <HelpLink />
-  </>
-);
-
-const DisconnectedInstructions = () => (
-  <>
-    <StyledTitle size="sm">How to connect to a Dapp</StyledTitle>
-
-    <StyledText size="lg">1) Open a Dapp with WalletConnect support.</StyledText>
-
-    <StyledText size="lg">
-      2) Copy QR code image (Command+Control+Shift+4 on Mac, Windows key+PrtScn on Windows) or connection URI into
-      clipboard.
-    </StyledText>
-
-    <StyledText size="lg">
-      3) Paste QR code image or connection URI into the input field (Command+V on Mac, Ctrl+V on Windows)
-    </StyledText>
-
-    <StyledText size="lg">4) WalletConnect connection will be established automatically.</StyledText>
-
-    <StyledText size="lg">5) Now you can trigger transactions via the Dapp to your Safe.</StyledText>
-
-    <HelpLink />
-  </>
-);
+const HELP_TRANSACTIONS = {
+  title: 'How to confirm transactions?',
+  steps: [
+    'Trigger a transaction from the Dapp.',
+    'Come back here to confirm the transaction. You will see a popup with transaction details. Review the details and submit the transaction.',
+    'The transaction has to be confirmed by owners and executed just like any other Safe transaction',
+  ],
+};
