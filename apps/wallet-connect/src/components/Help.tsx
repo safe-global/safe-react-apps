@@ -1,4 +1,4 @@
-import { Accordion, AccordionSummary, IconText, AccordionDetails, Text } from '@gnosis.pm/safe-react-components';
+import { Accordion, AccordionSummary, IconText, AccordionDetails, Text, Dot } from '@gnosis.pm/safe-react-components';
 import { Box } from '@material-ui/core';
 import styled from 'styled-components';
 
@@ -15,34 +15,31 @@ const Help = ({ title, steps }: HelpProps): React.ReactElement => {
       </AccordionSummary>
       <StyledAccordionDetails>
         {steps.map((step, index) => (
-          <Box display="flex" alignItems="center">
-            <Dot>
+          <StyledBox display="flex" marginBottom={2} alignItems="center">
+            <StyledDot color="primary">
               <DotText size="sm">{index + 1}</DotText>
-            </Dot>
+            </StyledDot>
             <Text size="sm">{step}</Text>
-          </Box>
+          </StyledBox>
         ))}
       </StyledAccordionDetails>
     </Accordion>
   );
 };
 
+const StyledBox = styled(Box)``;
+
 const StyledAccordionDetails = styled(AccordionDetails)`
   flex-direction: column;
 `;
 
-const Dot = styled.div`
-  position: relative;
-  background: #f0efee;
-  color: #566976;
-  display: inline-block;
+const StyledDot = styled(Dot)`
+  min-width: 16px;
   width: 16px;
   height: 16px;
-  border-radius: 50%;
-  text-align: center;
-  padding: 3px;
-  font-size: 10px;
   margin-right: 16px;
+  background: #f0efee;
+  color: #566976;
 `;
 
 const DotText = styled(Text)`

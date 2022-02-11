@@ -143,7 +143,7 @@ const App = () => {
       <AppBar />
       <StyledContainer>
         <Grid container direction="column" alignItems="center" style={{ height: '100%', paddingTop: '45px' }}>
-          <Grid item style={{ width: '50%', marginTop: '45px' }}>
+          <Grid item style={{ width: '484px', marginTop: '45px' }}>
             <Card>
               {/* WalletConnect */}
               {wcClientData && (
@@ -179,7 +179,7 @@ const App = () => {
               </Dialog>
             </Card>
           </Grid>
-          <Grid item style={{ width: '50%', marginTop: '16px' }}>
+          <Grid item style={{ width: '484px', marginTop: '16px' }}>
             {wcClientData ? (
               <Help title={HELP_TRANSACTIONS.title} steps={HELP_TRANSACTIONS.steps} />
             ) : (
@@ -200,6 +200,7 @@ const StyledTitle = styled(Title)`
 
 const StyledContainer = styled(Container)`
   && {
+    max-width: 100%;
     background-color: #e5e5e5;
     display: flex;
     height: calc(100% - 70px);
