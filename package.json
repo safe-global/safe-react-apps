@@ -58,6 +58,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
+    "git-cz": "^4.8.0",
     "husky": "7.0.4",
     "prettier": "^2.5.1",
     "react-app-rewired": "^2.1.6",
