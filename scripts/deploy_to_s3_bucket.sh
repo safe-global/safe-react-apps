@@ -9,9 +9,9 @@ function deploy_app {
   | awk -F: '{ print $2 }' \
   | sed 's/[",]//g')
   
-  if [ -n "$APPEND_TAG"]
+  if [ -n "$APPEND_TAG" ]
   then
-    aws s3 sync $BUNDLE_FOLDER s3://${BUCKET_NAME}/$1/$PACKAGE_VERSION --delete
+    aws s3 sync $BUNDLE_FOLDER s3://${BUCKET_NAME}/$1/"$PACKAGE_VERSION" --delete
   else
     aws s3 sync $BUNDLE_FOLDER s3://${BUCKET_NAME}/$1 --delete
   fi
