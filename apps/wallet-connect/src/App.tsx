@@ -14,6 +14,7 @@ import { Wrapper } from './components/layout';
 import WCClientInfo from './components/WCClientInfo';
 import useWalletConnect from './hooks/useWalletConnect';
 import ScanCode from './components/ScanCode';
+import AppBar from './components/AppBar';
 
 const App = () => {
   const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect();
@@ -136,6 +137,7 @@ const App = () => {
 
   return (
     <>
+      <AppBar />
       {/* WalletConnect */}
       {wcClientData && (
         <StyledWrapper>
