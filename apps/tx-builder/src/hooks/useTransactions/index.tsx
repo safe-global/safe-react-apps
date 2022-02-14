@@ -14,6 +14,10 @@ export default function useTransactions() {
     [transactions],
   );
 
+  const handleRemoveAllTransactions = useCallback(() => {
+    setTransactions([]);
+  }, []);
+
   const handleRemoveTransaction = useCallback(
     (index: number) => {
       const newTxs = transactions.slice();
@@ -41,5 +45,6 @@ export default function useTransactions() {
     handleAddTransaction,
     handleRemoveTransaction,
     handleSubmitTransactions,
+    handleRemoveAllTransactions,
   };
 }

@@ -14,7 +14,13 @@ import CreateNewBatchCard from './CreateNewBatchCard';
 
 const Dashboard = (): ReactElement => {
   const { web3, interfaceRepo, chainInfo } = useServices();
-  const { transactions, handleAddTransaction, handleRemoveTransaction, handleSubmitTransactions } = useTransactions();
+  const {
+    transactions,
+    handleAddTransaction,
+    handleRemoveTransaction,
+    handleSubmitTransactions,
+    handleRemoveAllTransactions,
+  } = useTransactions();
   const [addressOrAbi, setAddressOrAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
   const [contract, setContract] = useState<ContractInterface | null>(null);
@@ -98,6 +104,7 @@ const Dashboard = (): ReactElement => {
           </StyledWarningText>
         )}
 
+        {/* Add New Transaction Form */}
         {isValidAddressOrContract && (
           <AddNewTransactionForm
             onAddTransaction={handleAddTransaction}
@@ -110,18 +117,16 @@ const Dashboard = (): ReactElement => {
         )}
       </AddNewTransactionFormWrapper>
 
+      {/* Transactions Batch section */}
       <TransactionsSectionWrapper>
         {transactions.length > 0 ? (
           <TransactionsBatchList
             transactions={transactions}
-            // For add batch
-            showTransactionDetails={false}
-            allowTransactionReordering
-            // // For review batch
-            // showTransactionDetails
-            // allowTransactionReordering={false}
             onRemoveTransaction={handleRemoveTransaction}
             onSubmitTransactions={handleSubmitTransactions}
+            handleRemoveAllTransactions={handleRemoveAllTransactions}
+            showTransactionDetails={false}
+            allowTransactionReordering
           />
         ) : (
           <CreateNewBatchCard />
@@ -137,6 +142,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding: 24px;
+  align-items: flex-start;
 `;
 
 const AddNewTransactionFormWrapper = styled.div`
