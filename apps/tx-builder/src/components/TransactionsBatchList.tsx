@@ -23,6 +23,7 @@ type TransactionsBatchListProps = {
   allowTransactionReordering: boolean;
   onRemoveTransaction: (index: number) => void;
   onSubmitTransactions: () => void;
+  onEditTransaction: (index: number) => void;
 };
 
 const TRANSACTION_LIST_DROPPABLE_ID = 'Transaction_List';
@@ -31,6 +32,7 @@ function TransactionsBatchList({
   transactions,
   onRemoveTransaction,
   onSubmitTransactions,
+  onEditTransaction,
   showTransactionDetails,
   // TODO: allowTransactionReordering
   allowTransactionReordering,
@@ -86,6 +88,7 @@ function TransactionsBatchList({
           {(provided: any, snapshot: any) => (
             <TransactionList {...provided.droppableProps} ref={provided.innerRef}>
               {transactions.map(({ id, description }, index) => {
+                console.log(transactions);
                 const { to } = description;
 
                 const transactionDescription = getTransactionText(description);
@@ -143,6 +146,15 @@ function TransactionsBatchList({
                               <TransactionsDescription size="lg">{transactionDescription}</TransactionsDescription>
 
                               {/* Transaction Actions */}
+                              <Tooltip title="Edit transaction" backgroundColor="primary" textColor="white" arrow>
+                                <TransactionActionButton
+                                  size="medium"
+                                  aria-label="Edit transaction"
+                                  onClick={() => onEditTransaction(index)}
+                                >
+                                  <Icon size="sm" type="edit" />
+                                </TransactionActionButton>
+                              </Tooltip>
                               <Tooltip title="Delete transaction" backgroundColor="primary" textColor="white" arrow>
                                 <TransactionActionButton size="medium" aria-label="Delete transaction">
                                   <Icon size="sm" type="delete" />

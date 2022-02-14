@@ -7,6 +7,8 @@ import {
   BOOLEAN_FIELD_TYPE,
   CONTRACT_METHOD_FIELD_TYPE,
   HEX_ENCODED_DATA_FIELD_TYPE,
+  SolidityFieldTypes,
+  CustomFieldTypes,
 } from './fields';
 import AddressContractField from './AddressContractField';
 import SelectContractField from './SelectContractField';
@@ -48,7 +50,7 @@ interface DefaultOptionTypes {
 }
 
 type FieldProps = {
-  fieldType: string;
+  fieldType: SolidityFieldTypes | CustomFieldTypes;
   control: Control<any, object>;
   id: string;
   name: string;

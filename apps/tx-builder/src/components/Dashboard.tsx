@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useEffect } from 'react';
+import { ReactElement, useState, useEffect } from 'react';
 import { Text, Title, Link, AddressInput } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -11,6 +11,7 @@ import { isValidAddress } from '../utils';
 import AddNewTransactionForm from './forms/AddNewTransactionForm';
 import TransactionsBatchList from './TransactionsBatchList';
 import CreateNewBatchCard from './CreateNewBatchCard';
+import EditTransactionModal from './EditTransactionModal';
 
 const Dashboard = (): ReactElement => {
   const { web3, interfaceRepo, chainInfo } = useServices();
@@ -19,6 +20,7 @@ const Dashboard = (): ReactElement => {
   const [isABILoading, setIsABILoading] = useState(false);
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadContractError, setLoadContractError] = useState('');
+  const [editingTransactionIndex, setEditingTransactionIndex] = useState<number | null>(null);
 
   // Load contract from address or ABI
   useEffect(() => {
@@ -50,6 +52,10 @@ const Dashboard = (): ReactElement => {
   };
 
   const isValidAddressOrContract = (isValidAddress(addressOrAbi) || contract) && !isABILoading;
+
+  if (!chainInfo) {
+    return <div />;
+  }
 
   return (
     <Wrapper>
@@ -122,11 +128,23 @@ const Dashboard = (): ReactElement => {
             // allowTransactionReordering={false}
             onRemoveTransaction={handleRemoveTransaction}
             onSubmitTransactions={handleSubmitTransactions}
+            onEditTransaction={(index) => setEditingTransactionIndex(index)}
           />
         ) : (
           <CreateNewBatchCard />
         )}
       </TransactionsSectionWrapper>
+
+      {editingTransactionIndex != null && (
+        <EditTransactionModal
+          editingTransactionIndex={editingTransactionIndex}
+          onClose={() => setEditingTransactionIndex(null)}
+          nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
+          networkPrefix={chainInfo?.shortName}
+          transaction={transactions[editingTransactionIndex]}
+          getAddressFromDomain={getAddressFromDomain}
+        />
+      )}
     </Wrapper>
   );
 };

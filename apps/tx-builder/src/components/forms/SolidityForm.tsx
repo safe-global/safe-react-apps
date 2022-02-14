@@ -7,16 +7,17 @@ import { DevTool } from '@hookform/devtools';
 import { ContractInterface } from '../../hooks/useServices/interfaceRepository';
 import {
   ADDRESS_FIELD_TYPE,
-  AMOUNT_FIELD_TYPE,
   CONTRACT_METHOD_FIELD_TYPE,
   HEX_ENCODED_DATA_FIELD_TYPE,
+  NATIVE_AMOUNT_FIELD_TYPE,
+  SolidityFieldTypes,
 } from './fields/fields';
 import Field from './fields/Field';
 import { Examples } from '../Examples';
 import { encodeToHexData } from '../../utils';
 
 export const TO_ADDRESS_FIELD_NAME = 'toAddress';
-export const TOKEN_INPUT_NAME = 'tokenValue';
+export const NATIVE_VALUE_FIELD_NAME = 'nativeAmount';
 export const CONTRACT_METHOD_INDEX_FIELD_NAME = 'contractMethodIndex';
 export const CONTRACT_VALUES_FIELD_NAME = 'contractFieldsValues';
 export const HEX_ENCODED_DATA_FIELD_NAME = 'hexEncodedData';
@@ -28,7 +29,7 @@ type SolidityFormPropsTypes = {
   nativeCurrencySymbol: undefined | string;
   contract: ContractInterface | null;
   onSubmit: SubmitHandler<SolidityFormValuesTypes>;
-  initialValues: SolidityInitialFormValuesTypes;
+  initialValues?: Partial<SolidityInitialFormValuesTypes>;
   children: React.ReactNode;
 };
 
@@ -39,7 +40,7 @@ export type SolidityInitialFormValuesTypes = {
 
 export type SolidityFormValuesTypes = {
   [TO_ADDRESS_FIELD_NAME]: string;
-  [TOKEN_INPUT_NAME]: string;
+  [NATIVE_VALUE_FIELD_NAME]: string;
   [CONTRACT_METHOD_INDEX_FIELD_NAME]: string;
   [CONTRACT_VALUES_FIELD_NAME]: Record<string, string>;
   [HEX_ENCODED_DATA_FIELD_NAME]: string;
@@ -110,9 +111,9 @@ const SolidityForm = ({
         {isValueInputVisible && (
           <Field
             id="token-value-input"
-            name={TOKEN_INPUT_NAME}
+            name={NATIVE_VALUE_FIELD_NAME}
             label={`${nativeCurrencySymbol} value`}
-            fieldType={AMOUNT_FIELD_TYPE}
+            fieldType={NATIVE_AMOUNT_FIELD_TYPE}
             fullWidth
             required
             control={control}
@@ -160,7 +161,7 @@ const SolidityForm = ({
                 id={`contract-field-${contractField.name || index}`}
                 name={name}
                 label={`${contractField.name || `${index + 1}º contract field`} (${contractField.type})`}
-                fieldType={contractField.type}
+                fieldType={contractField.type as SolidityFieldTypes}
                 fullWidth
                 required
                 shouldUnregister={false} // required to keep contract field values in the form state when the user switches between encoding and decoding data

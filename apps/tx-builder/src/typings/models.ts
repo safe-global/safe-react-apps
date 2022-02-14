@@ -1,13 +1,15 @@
-import { ContractMethod } from '../hooks/useServices/interfaceRepository';
+import { ContractMethod, ContractInterface } from '../hooks/useServices/interfaceRepository';
 
 export interface ProposedTransaction {
-  id: number | string;
+  id: number;
+  contractInterface: ContractInterface | null;
   description: {
     to: string;
     value: string;
     hexEncodedData: string;
-    contractMethod: ContractMethod | undefined;
+    contractMethod?: ContractMethod;
     contractFieldsValues: Record<string, string>;
+    contractMethodIndex: string;
   };
   raw: { to: string; value: string; data: string };
 }

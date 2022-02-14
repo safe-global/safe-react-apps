@@ -9,7 +9,6 @@ const AddressContractField = ({
   onChange,
   label,
   error,
-  getAddressFromDomain,
   networkPrefix,
   onBlur,
 }: any): ReactElement => {
@@ -25,7 +24,6 @@ const AddressContractField = ({
       networkPrefix={networkPrefix}
       hiddenLabel={false}
       error={error}
-      getAddressFromDomain={getAddressFromDomain}
       onChangeAddress={onChange}
       showErrorsInTheLabel={false}
     />

@@ -2,7 +2,7 @@ import { Validate, ValidateResult } from 'react-hook-form';
 
 import {
   ADDRESS_FIELD_TYPE,
-  AMOUNT_FIELD_TYPE,
+  NATIVE_AMOUNT_FIELD_TYPE,
   BOOLEAN_FIELD_TYPE,
   HEX_ENCODED_DATA_FIELD_TYPE,
   U_INT_FIELD_TYPE,
@@ -25,7 +25,7 @@ const CUSTOM_VALIDATIONS: CustomValidationsType = {
   [ADDRESS_FIELD_TYPE]: [validateAddressField],
   [HEX_ENCODED_DATA_FIELD_TYPE]: [validateHexEncodedDataField],
   [BOOLEAN_FIELD_TYPE]: [validateBooleanField],
-  [AMOUNT_FIELD_TYPE]: [validateAmountField, uintBasicValidation],
+  [NATIVE_AMOUNT_FIELD_TYPE]: [validateAmountField, uintBasicValidation],
 };
 
 const validateField = (fieldType: string): Validate<string> => {

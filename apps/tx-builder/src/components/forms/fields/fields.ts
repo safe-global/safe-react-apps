@@ -11,8 +11,21 @@ export const INT_32_FIELD_TYPE = 'int32';
 export const INT_8_FIELD_TYPE = 'int8';
 export const BYTES_FIELD_TYPE = 'bytes';
 
-// native token field
-export const AMOUNT_FIELD_TYPE = 'amount';
+export type SolidityFieldTypes =
+  | typeof ADDRESS_FIELD_TYPE
+  | typeof BOOLEAN_FIELD_TYPE
+  | typeof U_INT_FIELD_TYPE
+  | typeof U_INT_256_FIELD_TYPE
+  | typeof U_INT_32_FIELD_TYPE
+  | typeof U_INT_8_FIELD_TYPE
+  | typeof INT_FIELD_TYPE
+  | typeof INT_256_FIELD_TYPE
+  | typeof INT_32_FIELD_TYPE
+  | typeof INT_8_FIELD_TYPE
+  | typeof BYTES_FIELD_TYPE;
+
+// native token amount field
+export const NATIVE_AMOUNT_FIELD_TYPE = 'nativeAmount';
 
 // selected contract method field
 export const CONTRACT_METHOD_FIELD_TYPE = 'contractMethod';
@@ -20,4 +33,9 @@ export const CONTRACT_METHOD_FIELD_TYPE = 'contractMethod';
 // encoded hex data field
 export const HEX_ENCODED_DATA_FIELD_TYPE = 'hexEncodedData';
 
-export const NON_SOLIDITY_TYPES = [AMOUNT_FIELD_TYPE, CONTRACT_METHOD_FIELD_TYPE, HEX_ENCODED_DATA_FIELD_TYPE];
+export type CustomFieldTypes =
+  | typeof NATIVE_AMOUNT_FIELD_TYPE
+  | typeof CONTRACT_METHOD_FIELD_TYPE
+  | typeof HEX_ENCODED_DATA_FIELD_TYPE;
+
+export const NON_SOLIDITY_TYPES = [NATIVE_AMOUNT_FIELD_TYPE, CONTRACT_METHOD_FIELD_TYPE, HEX_ENCODED_DATA_FIELD_TYPE];

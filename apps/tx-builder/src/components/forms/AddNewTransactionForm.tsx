@@ -10,7 +10,7 @@ import SolidityForm, {
   CONTRACT_VALUES_FIELD_NAME,
   HEX_ENCODED_DATA_FIELD_NAME,
   SolidityFormValuesTypes,
-  TOKEN_INPUT_NAME,
+  NATIVE_VALUE_FIELD_NAME,
   TO_ADDRESS_FIELD_NAME,
 } from './SolidityForm';
 
@@ -18,9 +18,9 @@ type AddNewTransactionFormProps = {
   contract: ContractInterface | null;
   to: string;
   onAddTransaction: (transaction: ProposedTransaction) => void;
-  networkPrefix: undefined | string;
+  networkPrefix: string;
+  nativeCurrencySymbol: string;
   getAddressFromDomain: (name: string) => Promise<string>;
-  nativeCurrencySymbol: undefined | string;
 };
 
 const AddNewTransactionForm = ({
@@ -41,7 +41,7 @@ const AddNewTransactionForm = ({
   function onSubmit(values: SolidityFormValuesTypes) {
     const contractMethodIndex = values[CONTRACT_METHOD_INDEX_FIELD_NAME];
     const toAddress = values[TO_ADDRESS_FIELD_NAME];
-    const tokenValue = values[TOKEN_INPUT_NAME];
+    const tokenValue = values[NATIVE_VALUE_FIELD_NAME];
     const contractFieldsValues = values[CONTRACT_VALUES_FIELD_NAME];
     const hexEncodedData = values[HEX_ENCODED_DATA_FIELD_NAME];
 
@@ -53,12 +53,14 @@ const AddNewTransactionForm = ({
 
     onAddTransaction({
       id: new Date().getTime(),
+      contractInterface: contract,
       description: {
         to,
         value,
         hexEncodedData,
         contractMethod,
         contractFieldsValues,
+        contractMethodIndex,
       },
       raw: { to, value, data },
     });
