@@ -11,14 +11,13 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Container from '@material-ui/core/Container';
 
 import { blobToImageData } from './utils/images';
-import { Wrapper } from './components/layout';
 import WCClientInfo from './components/WCClientInfo';
 import useWalletConnect from './hooks/useWalletConnect';
 import ScanCode from './components/ScanCode';
 import AppBar from './components/AppBar';
 import Help from './components/Help';
-import { Grid } from '@material-ui/core';
-
+import { Box, Grid } from '@material-ui/core';
+import { ReactComponent as WalletConnectLogo } from './assets/wallet-connect-logo.svg';
 const App = () => {
   const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect();
   const [inputValue, setInputValue] = useState('');
@@ -86,47 +85,6 @@ const App = () => {
     [wcClientData, wcConnect],
   );
 
-  const getDisconnectedContent = () => {
-    if (isConnecting) {
-      return <Loader size="md" />;
-    }
-    return (
-      <StyledTextField
-        id="wc-uri"
-        name="wc-uri"
-        label="Paste WalletConnect QR code or connection URI"
-        hiddenLabel={false}
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        onPaste={onPaste}
-        autoComplete="off"
-        error={invalidQRCode ? 'Invalid QR code' : ''}
-        showErrorsInTheLabel={false}
-        InputProps={{
-          endAdornment: (
-            <StyledQRCodeAdorment position="end">
-              <Tooltip title="Show scan QR code dialog" aria-label="Show scan QR code dialog">
-                <IconButton onClick={() => setOpenDialog((open) => !open)}>
-                  <Icon size="md" type="qrCode" />
-                </IconButton>
-              </Tooltip>
-            </StyledQRCodeAdorment>
-          ),
-        }}
-      />
-    );
-  };
-
-  const getConnectedContent = () => (
-    <>
-      <WCClientInfo name={wcClientData!.name} url={wcClientData!.url} iconSrc={wcClientData!.icons[0]} />
-
-      <Button size="md" color="primary" variant="contained" onClick={() => wcDisconnect()}>
-        Disconnect
-      </Button>
-    </>
-  );
-
   // WalletConnect does not provide a loading/connecting status
   // This effects simulates a connecting status, and prevents
   // the user to initiate two connections in simultaneous.
@@ -145,7 +103,6 @@ const App = () => {
         <Grid container direction="column" alignItems="center" style={{ height: '100%', paddingTop: '45px' }}>
           <Grid item style={{ width: '484px', marginTop: '45px' }}>
             <Card>
-              {/* WalletConnect */}
               {wcClientData && (
                 <StyledWrapper>
                   <Text color="white" size="xl">
@@ -156,12 +113,63 @@ const App = () => {
                   </Text>
                 </StyledWrapper>
               )}
-              <Wrapper>
-                <WCContent>
-                  <StyledTitle size="sm">Wallet Connect</StyledTitle>
-                  {wcClientData ? getConnectedContent() : getDisconnectedContent()}
-                </WCContent>
-              </Wrapper>
+              {!wcClientData && (
+                <Box pt={6} pb={4}>
+                  <Grid container alignItems="center" justifyContent="center" spacing={3}>
+                    <Grid item>
+                      <WalletConnectLogo />
+                    </Grid>
+                    <Grid item>
+                      <StyledText size="xl">
+                        Connect your Safe to a dApp via the WalletConnect and trigger transactions
+                      </StyledText>
+                    </Grid>
+                    <Grid item>
+                      {isConnecting ? (
+                        <Loader size="md" />
+                      ) : (
+                        <StyledTextField
+                          id="wc-uri"
+                          name="wc-uri"
+                          label="QR code or connection"
+                          hiddenLabel={false}
+                          value={inputValue}
+                          onChange={(e) => setInputValue(e.target.value)}
+                          onPaste={onPaste}
+                          autoComplete="off"
+                          error={invalidQRCode ? 'Invalid QR code' : ''}
+                          showErrorsInTheLabel={false}
+                          InputProps={{
+                            endAdornment: (
+                              <StyledQRCodeAdorment position="end">
+                                <Tooltip
+                                  title="Start your camera and scan a QR"
+                                  aria-label="Start your camera and scan a QR"
+                                >
+                                  <IconButton onClick={() => setOpenDialog((open) => !open)}>
+                                    <Icon size="md" type="qrCode" />
+                                  </IconButton>
+                                </Tooltip>
+                              </StyledQRCodeAdorment>
+                            ),
+                          }}
+                        />
+                      )}
+                    </Grid>
+                  </Grid>
+                </Box>
+              )}
+              {wcClientData && (
+                <Grid container alignItems="center" justifyContent="center" spacing={3}>
+                  <Grid item>
+                    <WCClientInfo name={wcClientData!.name} url={wcClientData!.url} iconSrc={wcClientData!.icons[0]} />
+
+                    <Button size="md" color="error" variant="contained" onClick={() => wcDisconnect()}>
+                      Disconnect
+                    </Button>
+                  </Grid>
+                </Grid>
+              )}
               <Dialog
                 open={openDialog}
                 onClose={handleQRDialogClose}
@@ -194,10 +202,6 @@ const App = () => {
 
 export default App;
 
-const StyledTitle = styled(Title)`
-  margin-top: 0;
-`;
-
 const StyledContainer = styled(Container)`
   && {
     max-width: 100%;
@@ -212,6 +216,7 @@ const StyledContainer = styled(Container)`
 
 const StyledText = styled(Text)`
   margin-bottom: 8px;
+  text-align: center;
 `;
 
 const StyledWrapper = styled.div`
@@ -222,19 +227,6 @@ const StyledWrapper = styled.div`
   background: #008c73;
   padding: 18px 0 12px 0;
   border-radius: 8px;
-`;
-
-const StyledHelpLink = styled.div`
-  display: flex;
-
-  > :first-of-type {
-    margin-right: 5px;
-  }
-`;
-
-const WCContent = styled.div`
-  min-width: 430px;
-  margin-right: 20px;
 `;
 
 const StyledTextField = styled(TextFieldInput)`
