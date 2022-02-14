@@ -11,7 +11,7 @@ const GlobalStyle = createGlobalStyle`
        height: 100%;
        margin: 0px;
        padding: 0px;
-       background-color: #E5E5E5;
+       background-color: #F6F6F6;
     }
 
     #root {

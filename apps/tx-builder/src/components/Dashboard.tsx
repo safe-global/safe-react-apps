@@ -1,7 +1,7 @@
 import React, { ReactElement, useState, useEffect } from 'react';
 import { Text, Title, Link, AddressInput } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
-import { InputAdornment } from '@material-ui/core';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
@@ -10,6 +10,7 @@ import useTransactions from '../hooks/useTransactions';
 import { isValidAddress } from '../utils';
 import AddNewTransactionForm from './forms/AddNewTransactionForm';
 import TransactionsBatchList from './TransactionsBatchList';
+import CreateNewBatchCard from './CreateNewBatchCard';
 
 const Dashboard = (): ReactElement => {
   const { web3, interfaceRepo, chainInfo } = useServices();
@@ -52,8 +53,6 @@ const Dashboard = (): ReactElement => {
 
   return (
     <Wrapper>
-      {/* TODO: ADD TRANSACTION BUILDER HEADER */}
-
       <AddNewTransactionFormWrapper>
         <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
 
@@ -101,41 +100,48 @@ const Dashboard = (): ReactElement => {
 
         {isValidAddressOrContract && (
           <AddNewTransactionForm
-            // transactions={transactions}
             onAddTransaction={handleAddTransaction}
             contract={contract}
             to={addressOrAbi}
             networkPrefix={chainInfo?.shortName}
             getAddressFromDomain={getAddressFromDomain}
             nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
-            // onRemoveTransaction={handleRemoveTransaction}
-            // onSubmitTransactions={handleSubmitTransactions}
           />
         )}
       </AddNewTransactionFormWrapper>
 
-      <TransactionsBatchList
-        transactions={transactions}
-        onRemoveTransaction={handleRemoveTransaction}
-        onSubmitTransactions={handleSubmitTransactions}
-      />
+      <TransactionsSectionWrapper>
+        {transactions.length > 0 ? (
+          <TransactionsBatchList
+            transactions={transactions}
+            // For add batch
+            showTransactionDetails={false}
+            allowTransactionReordering
+            // // For review batch
+            // showTransactionDetails
+            // allowTransactionReordering={false}
+            onRemoveTransaction={handleRemoveTransaction}
+            onSubmitTransactions={handleSubmitTransactions}
+          />
+        ) : (
+          <CreateNewBatchCard />
+        )}
+      </TransactionsSectionWrapper>
     </Wrapper>
   );
 };
 
 export default Dashboard;
 
-// justify-content: left;
-// flex-direction: column;
 const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding: 24px;
 `;
 
-// width: 450px;
 const AddNewTransactionFormWrapper = styled.div`
   width: 400px;
+  margin-right: 48px;
   padding: 24px;
   border-radius: 8px;
 
@@ -172,4 +178,10 @@ const StyledAddressInput = styled(AddressInput)`
       color: #008c73;
     }
   }
+`;
+
+const TransactionsSectionWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 `;

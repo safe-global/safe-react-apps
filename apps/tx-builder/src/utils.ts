@@ -116,21 +116,3 @@ export const encodeToHexData = (contractMethod: ContractMethod | undefined, cont
     }
   }
 };
-
-export const getTxDescription = (contractMethod: ContractMethod | undefined, contractFieldsValues: any) => {
-  const contractMethodName = contractMethod?.name;
-  const contractFields = contractMethod?.inputs || [];
-
-  const isValidContractMethod = contractMethodName && !NON_VALID_CONTRACT_METHODS.includes(contractMethodName);
-
-  if (isValidContractMethod) {
-    const descriptionValues = contractFields.map((contractField: ContractInput, index) => {
-      const contractFieldName = contractField.name || index;
-      const contractFieldValue = contractFieldsValues[contractFieldName] || '';
-
-      return `${contractField.name || contractField.type}: ${contractFieldValue}`;
-    });
-
-    return `${contractMethodName} (${descriptionValues.join(', ')})`;
-  }
-};

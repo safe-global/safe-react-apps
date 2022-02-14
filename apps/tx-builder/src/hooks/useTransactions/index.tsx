@@ -1,5 +1,6 @@
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { useCallback, useState } from 'react';
+import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
+
 import { ProposedTransaction } from '../../typings/models';
 
 export default function useTransactions() {
@@ -7,8 +8,8 @@ export default function useTransactions() {
   const { sdk } = useSafeAppsSDK();
 
   const handleAddTransaction = useCallback(
-    (tx: ProposedTransaction) => {
-      setTransactions([...transactions, tx]);
+    (newTransaction: ProposedTransaction) => {
+      setTransactions([...transactions, newTransaction]);
     },
     [transactions],
   );
