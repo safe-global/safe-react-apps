@@ -1,5 +1,4 @@
-import ApolloClient from 'apollo-boost';
-import { gql } from 'apollo-boost';
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 import { CHAINS } from './utils/networks';
 
 export type TokenInteractionData = {
@@ -124,6 +123,7 @@ export async function getTokenInteractions(
 
   const client = new ApolloClient({
     uri: subgraphUri[chainId],
+    cache: new InMemoryCache()
   });
 
   const mintEventsRes = await getMintEvents(client, safeAddress, tokenAddr);

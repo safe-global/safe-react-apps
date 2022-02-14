@@ -78,7 +78,7 @@ export const mockTxsRequest = {
 export const mockInitialBalances = [
   {
     tokenInfo: {
-      type: 'NATIVE_TOKEN',
+      type: 'NATIVE_COIN',
       address: '0x0000000000000000000000000000000000000000',
       decimals: 18,
       symbol: 'ETH',
