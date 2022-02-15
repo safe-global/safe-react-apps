@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useEffect } from 'react';
+import { ReactElement, useState, useEffect } from 'react';
 import { Text, Title, Link, AddressInput } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import { InputAdornment } from '@material-ui/core';
@@ -9,6 +9,8 @@ import useServices from '../hooks/useServices';
 import useTransactions from '../hooks/useTransactions';
 import { isValidAddress } from '../utils';
 import AddNewTransactionForm from './forms/AddNewTransactionForm';
+import JsonField from './forms/fields/JsonField';
+import { errorBaseStyles } from './forms/styles';
 
 const Wrapper = styled.div`
   display: flex;
@@ -39,55 +41,60 @@ const CheckIconAddressAdornment = styled(CheckCircle)`
 const StyledAddressInput = styled(AddressInput)`
   && {
     width: 520px;
-
-    .MuiFormLabel-root {
-      color: #0000008a;
-    }
-
-    .MuiFormLabel-root.Mui-focused {
-      color: #008c73;
-    }
+    ${errorBaseStyles}
   }
 `;
 
 const Dashboard = (): ReactElement => {
   const { web3, interfaceRepo, chainInfo } = useServices();
   const { transactions, handleAddTransaction, handleRemoveTransaction, handleSubmitTransactions } = useTransactions();
-  const [addressOrAbi, setAddressOrAbi] = useState('');
+  const [address, setAddress] = useState('');
+  const [abi, setAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadContractError, setLoadContractError] = useState('');
 
   // Load contract from address or ABI
   useEffect(() => {
-    const loadContract = async (addressOrAbi: string) => {
-      setContract(null);
+    const loadContract = async (address: string) => {
       setLoadContractError('');
 
-      if (!addressOrAbi || !interfaceRepo) {
+      if (!address || !interfaceRepo) {
         return;
       }
 
       try {
-        setIsABILoading(true);
-        const contract = await interfaceRepo.loadAbi(addressOrAbi);
-        setContract(contract);
+        if (isValidAddress(address)) {
+          setIsABILoading(true);
+          setAbi(JSON.stringify(await interfaceRepo.loadAbi(address)));
+        }
       } catch (e) {
-        setContract(null);
+        setAbi('');
         setLoadContractError('No ABI found for this address');
         console.error(e);
       }
       setIsABILoading(false);
     };
 
-    loadContract(addressOrAbi);
-  }, [addressOrAbi, interfaceRepo]);
+    loadContract(address);
+  }, [address, interfaceRepo]);
+
+  useEffect(() => {
+    if (!abi || !interfaceRepo) {
+      setContract(null);
+      return;
+    }
+
+    setContract(interfaceRepo.getMethods(abi));
+  }, [abi, interfaceRepo]);
 
   const getAddressFromDomain = (name: string): Promise<string> => {
     return web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
   };
 
-  const isValidAddressOrContract = (isValidAddress(addressOrAbi) || contract) && !isABILoading;
+  const contractHasMethods = contract && contract.methods.length > 0 && !isABILoading;
+
+  const isAddressInputFieldValid = address.length > 0 && !isValidAddress(address) ? 'The address is not valid' : '';
 
   return (
     <Wrapper>
@@ -108,19 +115,20 @@ const Dashboard = (): ReactElement => {
 
       {/* ABI or Address Input */}
       <StyledAddressInput
-        id={'address-or-ABI-input'}
-        name="addressOrAbi"
-        label="Enter Address, ENS Name or ABI"
+        id="address"
+        name="address"
+        label="Enter Address or ENS Name"
         hiddenLabel={false}
-        address={addressOrAbi}
+        address={address}
         showNetworkPrefix={!!chainInfo?.shortName}
         networkPrefix={chainInfo?.shortName}
-        error={!isValidAddressOrContract ? loadContractError : ''}
+        error={isAddressInputFieldValid}
         showLoadingSpinner={isABILoading}
+        showErrorsInTheLabel={false}
         getAddressFromDomain={getAddressFromDomain}
-        onChangeAddress={(addressOrAbi: string) => setAddressOrAbi(addressOrAbi)}
+        onChangeAddress={(address: string) => setAddress(address)}
         InputProps={{
-          endAdornment: isValidAddressOrContract && (
+          endAdornment: contractHasMethods && isValidAddress(address) && (
             <InputAdornment position="end">
               <CheckIconAddressAdornment />
             </InputAdornment>
@@ -129,18 +137,20 @@ const Dashboard = (): ReactElement => {
       />
 
       {/* ABI Warning */}
-      {isValidAddressOrContract && !contract && (
+      {loadContractError && (
         <StyledWarningText color="warning" size="lg">
           No ABI found for this address
         </StyledWarningText>
       )}
 
-      {isValidAddressOrContract && (
+      <JsonField id={'abi'} name="abi" label="Enter ABI" value={abi} onChange={setAbi} />
+
+      {(contractHasMethods || isValidAddress(address)) && !isABILoading && (
         <AddNewTransactionForm
           transactions={transactions}
           onAddTransaction={handleAddTransaction}
           contract={contract}
-          to={addressOrAbi}
+          to={address}
           networkPrefix={chainInfo?.shortName}
           getAddressFromDomain={getAddressFromDomain}
           nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
