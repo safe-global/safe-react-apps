@@ -26,7 +26,7 @@ type Props = {
 const WCClientInfo = ({ name, url, iconSrc }: Props) => {
   return (
     <Wrapper>
-      <Image src={iconSrc} />
+      <Image src={iconSrc} role="img" />
       <div>
         <Wrapper>
           <Text size="xl" as="span" strong>

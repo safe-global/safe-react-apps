@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { DataTable } from '@gnosis.pm/safe-react-components';
 import { GridColDef, GridRowsProp, GridSelectionModel, GridDensityTypes } from '@mui/x-data-grid';
-import { TokenBalance, TokenInfo } from '@gnosis.pm/safe-apps-sdk';
+import { TokenBalance, TokenInfo, TokenType } from '@gnosis.pm/safe-apps-sdk';
 import BigNumber from 'bignumber.js';
 
 import { formatTokenValue } from '../utils/formatters';
@@ -15,7 +15,7 @@ const ethToken: TokenInfo = {
   symbol: 'ETH',
   name: 'Ether',
   decimals: 18,
-  type: 'NATIVE_TOKEN',
+  type: TokenType['NATIVE_COIN'],
   address: '',
 };
 

@@ -73,7 +73,7 @@ const SolidityForm = ({
 
   const isValueInputVisible = showHexEncodedData || !contract || isPayableMethod;
 
-  function onClickShowHexEncodedData(checked: boolean) {
+  const onClickShowHexEncodedData = (checked: boolean) => {
     const contractFieldsValues = getValues(CONTRACT_VALUES_FIELD_NAME);
 
     if (checked && contractMethod) {
@@ -81,13 +81,13 @@ const SolidityForm = ({
       setValue(HEX_ENCODED_DATA_FIELD_NAME, encodeData || '');
     }
     setShowHexEncodedData(checked);
-  }
+  };
 
-  function submitAndResetForm(values: SolidityFormValuesTypes) {
+  const submitAndResetForm = (values: SolidityFormValuesTypes) => {
     onSubmit(values);
     reset({ ...initialValues, [TO_ADDRESS_FIELD_NAME]: values[TO_ADDRESS_FIELD_NAME] });
     setTimeout(clearErrors, 0);
-  }
+  };
 
   return (
     <>
