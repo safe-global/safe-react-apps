@@ -1,4 +1,7 @@
-import { toBN, isAddress } from 'web3-utils';
+import { AbiItem, toBN, isAddress } from 'web3-utils';
+import abiCoder, { AbiCoder } from 'web3-eth-abi';
+
+import { ContractInput, ContractMethod } from './hooks/useServices/interfaceRepository';
 
 export enum CHAINS {
   MAINNET = '1',
@@ -38,24 +41,6 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.AURORA]: () => 'https://mainnet.aurora.dev',
 };
 
-type InputType = {
-  internalType: string;
-  name: string;
-  type: string;
-  components: InputType[];
-};
-
-export const getInputHelper = (input: InputType) => {
-  // This code renders a helper for the input text.
-  if (input.type.startsWith('tuple')) {
-    return `tuple(${input.components.map((c: InputType) => c.internalType).toString()})${
-      input.type.endsWith('[]') ? '[]' : ''
-    }`;
-  } else {
-    return input.type;
-  }
-};
-
 // Same regex used for web3@1.3.6
 export const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/);
 
@@ -87,7 +72,10 @@ export const parseInputValue = (input: any, value: string): any => {
 
 export const isInputValueValid = (val: string) => {
   const value = Number(val);
-  if (isNaN(value) || value < 0) {
+  const isHexValue = val?.startsWith?.('0x');
+  const isNegativeValue = value < 0;
+
+  if (isNaN(value) || isNegativeValue || isHexValue) {
     return false;
   }
 
@@ -95,7 +83,7 @@ export const isInputValueValid = (val: string) => {
 };
 
 export const getCustomDataError = (value: string | undefined) => {
-  return `Has to be a valid strict hex data ${!value?.startsWith('0x') ? '(it must start with 0x)' : ''}`;
+  return `Has to be a valid strict hex data${!value?.startsWith('0x') ? ' (it must start with 0x)' : ''}`;
 };
 
 export const isValidAddress = (address: string | null) => {
@@ -103,4 +91,48 @@ export const isValidAddress = (address: string | null) => {
     return false;
   }
   return isAddress(address);
+};
+
+const NON_VALID_CONTRACT_METHODS = ['receive', 'fallback'];
+
+export const encodeToHexData = (contractMethod: ContractMethod | undefined, contractFieldsValues: any) => {
+  const contractMethodName = contractMethod?.name;
+  const contractFields = contractMethod?.inputs || [];
+
+  const isValidContractMethod = contractMethodName && !NON_VALID_CONTRACT_METHODS.includes(contractMethodName);
+
+  if (isValidContractMethod) {
+    try {
+      const parsedValues = contractFields.map((contractField: ContractInput, index) => {
+        const contractFieldName = contractField.name || index;
+        const cleanValue = contractFieldsValues[contractFieldName] || '';
+
+        return parseInputValue(contractField, cleanValue);
+      });
+      const abi = abiCoder as unknown; // a bug in the web3-eth-abi types
+      const hexEncondedData = (abi as AbiCoder).encodeFunctionCall(contractMethod as AbiItem, parsedValues);
+
+      return hexEncondedData;
+    } catch (error) {
+      console.log('Error encoding current form values to hex data: ', error);
+    }
+  }
+};
+
+export const getTxDescription = (contractMethod: ContractMethod | undefined, contractFieldsValues: any) => {
+  const contractMethodName = contractMethod?.name;
+  const contractFields = contractMethod?.inputs || [];
+
+  const isValidContractMethod = contractMethodName && !NON_VALID_CONTRACT_METHODS.includes(contractMethodName);
+
+  if (isValidContractMethod) {
+    const descriptionValues = contractFields.map((contractField: ContractInput, index) => {
+      const contractFieldName = contractField.name || index;
+      const contractFieldValue = contractFieldsValues[contractFieldName] || '';
+
+      return `${contractField.name || contractField.type}: ${contractFieldValue}`;
+    });
+
+    return `${contractMethodName} (${descriptionValues.join(', ')})`;
+  }
 };

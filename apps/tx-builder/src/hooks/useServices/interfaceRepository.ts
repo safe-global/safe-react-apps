@@ -8,7 +8,7 @@ export interface ContractInput {
   type: string;
 }
 
-interface ContractMethod {
+export interface ContractMethod {
   inputs: ContractInput[];
   name: string;
   payable: boolean;
