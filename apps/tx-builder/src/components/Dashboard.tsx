@@ -6,9 +6,9 @@ import CheckCircle from '@material-ui/icons/CheckCircle';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
-import { Builder } from './Builder';
 import useTransactions from '../hooks/useTransactions';
 import { isValidAddress } from '../utils';
+import AddNewTransactionForm from './forms/AddNewTransactionForm';
 
 const Wrapper = styled.div`
   display: flex;
@@ -92,6 +92,7 @@ const Dashboard = (): ReactElement => {
   return (
     <Wrapper>
       <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
+
       <StyledText size="sm">
         This app allows you to build a custom multisend transaction. Enter a Ethereum contract address or ABI to get
         started.{' '}
@@ -134,19 +135,17 @@ const Dashboard = (): ReactElement => {
         </StyledWarningText>
       )}
 
-      {/* Builder */}
       {isValidAddressOrContract && (
-        <Builder
-          contract={contract}
-          to={addressOrAbi}
-          chainId={chainInfo?.chainId}
-          nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
+        <AddNewTransactionForm
           transactions={transactions}
           onAddTransaction={handleAddTransaction}
-          onRemoveTransaction={handleRemoveTransaction}
-          onSubmitTransactions={handleSubmitTransactions}
+          contract={contract}
+          to={addressOrAbi}
           networkPrefix={chainInfo?.shortName}
           getAddressFromDomain={getAddressFromDomain}
+          nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
+          onRemoveTransaction={handleRemoveTransaction}
+          onSubmitTransactions={handleSubmitTransactions}
         />
       )}
     </Wrapper>
