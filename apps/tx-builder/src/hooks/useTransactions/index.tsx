@@ -41,10 +41,11 @@ export default function useTransactions() {
   }, [sdk.txs, transactions]);
 
   const handleReorderTransactions = useCallback((sourceIndex, destinationIndex) => {
-    setTransactions((txs) => {
-      // Using ES6 clean syntax to perform the swap
-      [txs[sourceIndex], txs[destinationIndex]] = [txs[destinationIndex], txs[sourceIndex]];
-      return [...txs];
+    setTransactions((transactions) => {
+      const transactionToMove = transactions[sourceIndex];
+      transactions.splice(sourceIndex, 1); // we remove the transaction from the list
+      transactions.splice(destinationIndex, 0, transactionToMove); // we add the transaction in the new position
+      return transactions;
     });
   }, []);
 
