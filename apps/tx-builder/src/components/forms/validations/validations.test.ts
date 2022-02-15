@@ -51,10 +51,16 @@ describe('form validations', () => {
         expect(validationResult).toBe('Invalid amount value');
       });
 
-      it('validates valid amounts', () => {
+      it('validates valid decimal amounts', () => {
         const validationResult = validateAmountField('3.12');
 
         expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+      });
+
+      it('validates invalid decimal amounts', () => {
+        const validationResult = validateAmountField('0.000000000000000000000000000000001');
+
+        expect(validationResult).toBe('Invalid amount value');
       });
     });
 
