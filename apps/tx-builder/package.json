@@ -9,7 +9,11 @@
     "@material-ui/icons": "^4.11.0",
     "axios": "^0.24.0",
     "lodash": "^4.17.21",
+    "react-hook-form": "^7.25.3",
     "web3": "~1.7.0"
+  },
+  "devDependencies": {
+    "@hookform/devtools": "^4.0.2"
   },
   "scripts": {
     "start": "dotenv -e .env -- react-app-rewired start",
