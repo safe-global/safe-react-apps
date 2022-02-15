@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -13,10 +14,17 @@ import {
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import IconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
-import { DragDropContext, Droppable, Draggable, DroppableProvided, DragStart, DragUpdate } from 'react-beautiful-dnd';
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DroppableProvided,
+  DragStart,
+  DragUpdate,
+  DropResult,
+} from 'react-beautiful-dnd';
 
 import { ProposedTransaction } from '../typings/models';
-import { useState } from 'react';
 
 type TransactionsBatchListProps = {
   transactions: ProposedTransaction[];
@@ -25,20 +33,52 @@ type TransactionsBatchListProps = {
   onRemoveTransaction: (index: number) => void;
   handleRemoveAllTransactions: () => void;
   onSubmitTransactions: () => void;
+  handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
 };
 
 const TRANSACTION_LIST_DROPPABLE_ID = 'Transaction_List';
+const DROP_EVENT = 'DROP';
 
 function TransactionsBatchList({
   transactions,
   onRemoveTransaction,
   onSubmitTransactions,
   handleRemoveAllTransactions,
+  handleReorderTransactions,
   showTransactionDetails,
   allowTransactionReordering,
 }: TransactionsBatchListProps) {
+  // we need those states to display the correct position in each tx during the drag & drop
   const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState<number>();
   const [draggableTxIndexDestination, setDraggableTxIndexDestination] = useState<number>();
+
+  const onDragStart = ({ source }: DragStart) => {
+    setDraggableTxIndexOrigin(source.index);
+    setDraggableTxIndexDestination(source.index);
+  };
+
+  const onDragUpdate = ({ source, destination }: DragUpdate) => {
+    setDraggableTxIndexOrigin(source.index);
+    setDraggableTxIndexDestination(destination?.index);
+  };
+
+  // we only perform the reorder if its present
+  const onDragEnd = ({ reason, source, destination }: DropResult) => {
+    const sourceIndex = source.index;
+    const destinationIndex = destination?.index;
+
+    const isDropEvent = reason === DROP_EVENT; // because user can cancel the drag & drop
+    const hasTxPositionChanged = sourceIndex !== destinationIndex && destinationIndex !== undefined;
+
+    const shouldPerformTxReorder = isDropEvent && hasTxPositionChanged;
+
+    if (shouldPerformTxReorder) {
+      handleReorderTransactions(sourceIndex, destinationIndex);
+    }
+
+    setDraggableTxIndexOrigin(undefined);
+    setDraggableTxIndexDestination(undefined);
+  };
 
   return (
     <TransactionsBatchWrapper>
@@ -70,20 +110,7 @@ function TransactionsBatchList({
       </TransactionHeader>
 
       {/* Draggable Transaction List */}
-      <DragDropContext
-        onDragStart={({ source }: DragStart) => {
-          setDraggableTxIndexOrigin(source.index);
-          setDraggableTxIndexDestination(source.index);
-        }}
-        onDragUpdate={({ source, destination }: DragUpdate) => {
-          setDraggableTxIndexOrigin(source.index);
-          setDraggableTxIndexDestination(destination?.index);
-        }}
-        onDragEnd={() => {
-          setDraggableTxIndexOrigin(undefined);
-          setDraggableTxIndexDestination(undefined);
-        }}
-      >
+      <DragDropContext onDragStart={onDragStart} onDragUpdate={onDragUpdate} onDragEnd={onDragEnd}>
         <Droppable droppableId={TRANSACTION_LIST_DROPPABLE_ID}>
           {(provided: DroppableProvided) => (
             <TransactionList {...provided.droppableProps} ref={provided.innerRef}>
@@ -147,16 +174,23 @@ function TransactionsBatchList({
                               }}
                               style={{ cursor: allowTransactionReordering ? 'grab' : 'pointer' }}
                             >
-                              <Tooltip
-                                placement="top"
-                                title="Drag and Drop"
-                                backgroundColor="primary"
-                                textColor="white"
-                                arrow
-                              >
-                                <DragAndDropIndicatorIcon fontSize="small" />
-                              </Tooltip>
+                              {/* Drag & Drop Indicator */}
+                              {allowTransactionReordering && (
+                                <Tooltip
+                                  placement="top"
+                                  title="Drag and Drop"
+                                  backgroundColor="primary"
+                                  textColor="white"
+                                  arrow
+                                >
+                                  <DragAndDropIndicatorIcon fontSize="small" />
+                                </Tooltip>
+                              )}
+
+                              {/* Destination Address label */}
                               <EthHashInfo shortName="rin" hash={to} shortenHash={4} shouldShowShortName />
+
+                              {/* Transaction Description label */}
                               <TransactionsDescription size="lg">{transactionDescription}</TransactionsDescription>
 
                               {/* Transaction Actions */}
@@ -177,7 +211,7 @@ function TransactionsBatchList({
                               </Tooltip>
                             </AccordionSummary>
 
-                            {/*Transaction details will be implemented in other ticket  */}
+                            {/* Transaction details will be implemented in other ticket */}
                             <AccordionDetails>
                               <Text size="xl">Hi! I am a very cool transaction! :D</Text>
                             </AccordionDetails>
@@ -231,10 +265,13 @@ function getTransactionText(description: ProposedTransaction['description']) {
     return 'Transfer';
   }
 
-  // empty description as a fallback
+  // empty tx description as a fallback
   return '';
 }
 
+const UNKNOWN_POSITION_LABEL = '?';
+
+// tx positions can change during drag & drop
 function getDisplayedTxPosition(
   index: number,
   isDraggingThisTx: boolean,
@@ -243,7 +280,8 @@ function getDisplayedTxPosition(
 ): string {
   // we show the correct position in the transaction that is being dragged
   if (isDraggingThisTx) {
-    return draggableTxIndexDestination !== undefined ? String(draggableTxIndexDestination + 1) : '?';
+    const isAwayFromDroppableZone = draggableTxIndexDestination === undefined;
+    return isAwayFromDroppableZone ? UNKNOWN_POSITION_LABEL : String(draggableTxIndexDestination + 1);
   }
 
   // if a transaction is being dragged, we show the correct position in previous transactions
@@ -258,6 +296,7 @@ function getDisplayedTxPosition(
     return index > Number(draggableTxIndexDestination) ? `${index + 1}` : `${index}`;
   }
 
+  // otherwise we show the natural position
   return `${index + 1}`;
 }
 

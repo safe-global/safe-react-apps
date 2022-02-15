@@ -40,11 +40,20 @@ export default function useTransactions() {
     }
   }, [sdk.txs, transactions]);
 
+  const handleReorderTransactions = useCallback((sourceIndex, destinationIndex) => {
+    setTransactions((txs) => {
+      // Using ES6 clean syntax to perform the swap
+      [txs[sourceIndex], txs[destinationIndex]] = [txs[destinationIndex], txs[sourceIndex]];
+      return [...txs];
+    });
+  }, []);
+
   return {
     transactions,
     handleAddTransaction,
     handleRemoveTransaction,
     handleSubmitTransactions,
     handleRemoveAllTransactions,
+    handleReorderTransactions,
   };
 }

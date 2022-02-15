@@ -20,6 +20,7 @@ const Dashboard = (): ReactElement => {
     handleRemoveTransaction,
     handleSubmitTransactions,
     handleRemoveAllTransactions,
+    handleReorderTransactions,
   } = useTransactions();
   const [addressOrAbi, setAddressOrAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
@@ -125,6 +126,7 @@ const Dashboard = (): ReactElement => {
             onRemoveTransaction={handleRemoveTransaction}
             onSubmitTransactions={handleSubmitTransactions}
             handleRemoveAllTransactions={handleRemoveAllTransactions}
+            handleReorderTransactions={handleReorderTransactions}
             showTransactionDetails={false}
             allowTransactionReordering
           />
