@@ -47,7 +47,7 @@ const AddNewTransactionForm = ({
     [CONTRACT_METHOD_INDEX_FIELD_NAME]: '0',
   };
 
-  function onSubmit(values: SolidityFormValuesTypes) {
+  const onSubmit = (values: SolidityFormValuesTypes) => {
     const contractMethodIndex = values[CONTRACT_METHOD_INDEX_FIELD_NAME];
     const toAddress = values[TO_ADDRESS_FIELD_NAME];
     const tokenValue = values[TOKEN_INPUT_NAME];
@@ -68,7 +68,7 @@ const AddNewTransactionForm = ({
       description,
       raw: { to, value, data },
     });
-  }
+  };
 
   useEffect(() => {
     const hasTransactions = transactions.length !== 0;
