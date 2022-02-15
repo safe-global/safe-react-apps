@@ -3,30 +3,46 @@ import jsQr from 'jsqr';
 import styled from 'styled-components';
 import format from 'date-fns/format';
 
-import { TextFieldInput, Button, Text, Title, Icon, Loader, Card } from '@gnosis.pm/safe-react-components';
+import { Icon, Card } from '@gnosis.pm/safe-react-components';
 import Dialog from '@material-ui/core/Dialog';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Container from '@material-ui/core/Container';
 
 import { blobToImageData } from './utils/images';
-import WCClientInfo from './components/WCClientInfo';
 import useWalletConnect from './hooks/useWalletConnect';
 import ScanCode from './components/ScanCode';
 import AppBar from './components/AppBar';
 import Help from './components/Help';
-import { Box, Grid } from '@material-ui/core';
-import { ReactComponent as WalletConnectLogo } from './assets/wallet-connect-logo.svg';
+import { Grid } from '@material-ui/core';
+
+import Disconnected from './components/Disconnected';
+import Connected from './components/Connected';
+import { useApps } from './hooks/useApps';
+import ConnectSafeApp from './components/ConnectSafeApp';
+import useConnectionState, {
+  DISCONNECTED_STATE,
+  CONNECTING_STATE,
+  CONNECTED_STATE,
+  CONNECT_EVENT,
+  DISCONNECT_EVENT,
+} from './hooks/useConnectionState';
+
 const App = () => {
   const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect();
   const [inputValue, setInputValue] = useState('');
   const [invalidQRCode, setInvalidQRCode] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const { useWithSafe, addUseWithSafe } = useApps();
+  const { connectionStatus, changeConnectionStatus } = useConnectionState();
 
   const handleQRDialogClose = () => {
     setOpenDialog(false);
+  };
+
+  const openSafeApp = (url: string | undefined) => {
+    addUseWithSafe(url);
   };
 
   useEffect(() => {
@@ -103,72 +119,25 @@ const App = () => {
         <Grid container direction="column" alignItems="center" style={{ height: '100%', paddingTop: '45px' }}>
           <Grid item style={{ width: '484px', marginTop: '45px' }}>
             <Card>
-              {wcClientData && (
-                <StyledWrapper>
-                  <Text color="white" size="xl">
-                    You need to have this WalletConnect Safe app open for transactions to pop up.
-                  </Text>
-                  <Text color="white" size="xl">
-                    You will not receive transaction requests when you don't have it open.
-                  </Text>
-                </StyledWrapper>
+              {connectionStatus === DISCONNECTED_STATE && (
+                <Disconnected
+                  isConnecting={isConnecting}
+                  url={inputValue}
+                  onUrlChange={(url) => setInputValue(url)}
+                  onPaste={onPaste}
+                  onCameraOpen={() => setOpenDialog((open) => !open)}
+                  error={invalidQRCode ? 'Invalid QR code' : ''}
+                />
               )}
-              {!wcClientData && (
-                <Box pt={6} pb={4}>
-                  <Grid container alignItems="center" justifyContent="center" spacing={3}>
-                    <Grid item>
-                      <WalletConnectLogo />
-                    </Grid>
-                    <Grid item>
-                      <StyledText size="xl">
-                        Connect your Safe to a dApp via the WalletConnect and trigger transactions
-                      </StyledText>
-                    </Grid>
-                    <Grid item>
-                      {isConnecting ? (
-                        <Loader size="md" />
-                      ) : (
-                        <StyledTextField
-                          id="wc-uri"
-                          name="wc-uri"
-                          label="QR code or connection"
-                          hiddenLabel={false}
-                          value={inputValue}
-                          onChange={(e) => setInputValue(e.target.value)}
-                          onPaste={onPaste}
-                          autoComplete="off"
-                          error={invalidQRCode ? 'Invalid QR code' : ''}
-                          showErrorsInTheLabel={false}
-                          InputProps={{
-                            endAdornment: (
-                              <StyledQRCodeAdorment position="end">
-                                <Tooltip
-                                  title="Start your camera and scan a QR"
-                                  aria-label="Start your camera and scan a QR"
-                                >
-                                  <IconButton onClick={() => setOpenDialog((open) => !open)}>
-                                    <Icon size="md" type="qrCode" />
-                                  </IconButton>
-                                </Tooltip>
-                              </StyledQRCodeAdorment>
-                            ),
-                          }}
-                        />
-                      )}
-                    </Grid>
-                  </Grid>
-                </Box>
+              {connectionStatus === CONNECTING_STATE && (
+                <ConnectSafeApp
+                  client={wcClientData}
+                  onOpenSafeApp={() => openSafeApp(wcClientData?.url)}
+                  onKeepUsingWalletConnect={() => {}}
+                />
               )}
-              {wcClientData && (
-                <Grid container alignItems="center" justifyContent="center" spacing={3}>
-                  <Grid item>
-                    <WCClientInfo name={wcClientData!.name} url={wcClientData!.url} iconSrc={wcClientData!.icons[0]} />
-
-                    <Button size="md" color="error" variant="contained" onClick={() => wcDisconnect()}>
-                      Disconnect
-                    </Button>
-                  </Grid>
-                </Grid>
+              {connectionStatus === CONNECTED_STATE && (
+                <Connected client={wcClientData} onDisconnect={() => wcDisconnect()} />
               )}
               <Dialog
                 open={openDialog}
@@ -212,38 +181,6 @@ const StyledContainer = styled(Container)`
     align-items: center;
     flex-direction: column;
   }
-`;
-
-const StyledText = styled(Text)`
-  margin-bottom: 8px;
-  text-align: center;
-`;
-
-const StyledWrapper = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  background: #008c73;
-  padding: 18px 0 12px 0;
-  border-radius: 8px;
-`;
-
-const StyledTextField = styled(TextFieldInput)`
-  && {
-    width: 430px;
-    .MuiInputLabel-filled {
-      color: #0000008a;
-    }
-
-    .MuiInputLabel-shrink {
-      color: #008c73;
-    }
-  }
-`;
-
-const StyledQRCodeAdorment = styled(InputAdornment)`
-  cursor: pointer;
 `;
 
 const CloseDialogContainer = styled.div`
