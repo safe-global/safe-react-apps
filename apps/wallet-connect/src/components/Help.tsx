@@ -1,6 +1,6 @@
-import { Accordion, AccordionSummary, IconText, AccordionDetails, Text, Dot } from '@gnosis.pm/safe-react-components';
 import { Box } from '@material-ui/core';
 import styled from 'styled-components';
+import { Accordion, AccordionSummary, IconText, AccordionDetails, Text, Dot } from '@gnosis.pm/safe-react-components';
 
 type HelpProps = {
   title: string;
@@ -9,40 +9,60 @@ type HelpProps = {
 
 const Help = ({ title, steps }: HelpProps): React.ReactElement => {
   return (
-    <Accordion compact>
-      <AccordionSummary>
+    <StyledAccordion compact>
+      <StyledAccordionSummary>
         <IconText iconSize="sm" textSize="xl" iconType="question" text={title} />
-      </AccordionSummary>
+      </StyledAccordionSummary>
       <StyledAccordionDetails>
         {steps.map((step, index) => (
           <StyledBox key={index} display="flex" marginBottom={2} alignItems="center">
             <StyledDot color="primary">
               <DotText size="sm">{index + 1}</DotText>
             </StyledDot>
-            <Text size="sm">{step}</Text>
+            <Text size="lg">{step}</Text>
           </StyledBox>
         ))}
       </StyledAccordionDetails>
-    </Accordion>
+    </StyledAccordion>
   );
 };
 
 const StyledBox = styled(Box)``;
 
+const StyledAccordion = styled(Accordion)`
+  && {
+    border: 2px solid #e2e3e3;
+    .MuiButtonBase-root {
+      border: 0;
+    }
+  }
+`;
+
+const StyledAccordionSummary = styled(AccordionSummary)`
+  && {
+    border: 2px solid #e2e3e3;
+  }
+`;
+
 const StyledAccordionDetails = styled(AccordionDetails)`
-  flex-direction: column;
+  && {
+    flex-direction: column;
+    border-top: 2px solid #e2e3e3;
+  }
 `;
 
 const StyledDot = styled(Dot)`
-  min-width: 16px;
-  width: 16px;
-  height: 16px;
-  margin-right: 16px;
+  min-width: 20px;
+  width: 20px;
+  height: 20px;
+  margin-right: 20px;
   background: #f0efee;
   color: #566976;
 `;
 
 const DotText = styled(Text)`
   position: absolute;
+  font-size: 10px;
 `;
+
 export default Help;

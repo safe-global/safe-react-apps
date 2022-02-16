@@ -15,9 +15,11 @@ const Connected = ({ client, onDisconnect }: ConnectedProps) => {
   }
 
   return (
-    <>
-      <Grid container item alignItems="center" spacing={3}>
-        <Image src={client.icons[0] || ''} role="img" />
+    <Container container direction="column" spacing={3}>
+      <Grid container alignItems="center" spacing={3}>
+        <Grid item>
+          <Image src={client.icons[0] || ''} role="img" />
+        </Grid>
         <Grid item>
           <Text size="md" color="primary">
             CONNECTED
@@ -28,21 +30,24 @@ const Connected = ({ client, onDisconnect }: ConnectedProps) => {
         </Grid>
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item>
         <StyledDivider />
+      </Grid>
+
+      <Grid item>
         <Button size="md" color="error" variant="contained" onClick={onDisconnect}>
           Disconnect
         </Button>
       </Grid>
 
-      <StyledMessage>
+      <StyledMessage item direction="column" alignItems="center" justifyContent="center" spacing={4}>
         <Icon type="info" color="primary" size="md" />
-        <Text size="md">
+        <Text size="lg">
           You need to have this WalletConnect Safe app open for transactions to pop up. You will not receive transaction
           requests when you don't have it open.
         </Text>
       </StyledMessage>
-    </>
+    </Container>
   );
 };
 
@@ -53,20 +58,25 @@ const Image = styled.div<{ src: string }>`
   background-size: contain;
 `;
 
-const StyledMessage = styled(Grid)`
-  margin-top: 16px;
-  background: #effaf8;
-  padding: 16px;
-  text-align: center;
-
-  p {
-    text-align: center;
-    line-height: 16px;
-  }
+const StyledDivider = styled(Divider)`
+  margin: 0 8px 0 0;
 `;
 
-const StyledDivider = styled(Divider)`
-  margin-top: 16px;
+const Container = styled(Grid)`
+  padding: 16px 22px;
+`;
+
+const StyledMessage = styled(Grid)`
+  padding: 20px;
+  background: #effaf8;
+  text-align: center;
+  border-radius: 8px;
+
+  p {
+    margin-top: 8px;
+    text-align: center;
+    line-height: 20px;
+  }
 `;
 
 export default Connected;

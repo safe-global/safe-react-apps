@@ -135,7 +135,7 @@ const App = () => {
       <StyledContainer>
         <Grid container direction="column" alignItems="center" style={{ height: '100%', paddingTop: '45px' }}>
           <Grid item style={{ width: '484px', marginTop: '45px' }}>
-            <Card>
+            <StyledCard>
               {connectionStatus === DISCONNECTED_STATE && (
                 <Disconnected
                   isConnecting={isConnecting}
@@ -177,7 +177,7 @@ const App = () => {
                 </CloseDialogContainer>
                 <ScanCode wcConnect={wcConnect} wcClientData={wcClientData} />
               </Dialog>
-            </Card>
+            </StyledCard>
           </Grid>
           <Grid item style={{ width: '484px', marginTop: '16px' }}>
             {wcClientData ? (
@@ -197,7 +197,7 @@ export default App;
 const StyledContainer = styled(Container)`
   && {
     max-width: 100%;
-    background-color: #e5e5e5;
+    background-color: #f3f5f6;
     display: flex;
     height: calc(100% - 70px);
     justify-content: center;
@@ -206,6 +206,11 @@ const StyledContainer = styled(Container)`
   }
 `;
 
+const StyledCard = styled(Card)`
+  && {
+    box-shadow: none;
+  }
+`;
 const CloseDialogContainer = styled.div`
   position: absolute;
   z-index: 10;
