@@ -10489,6 +10489,11 @@ little-state-machine@^4.1.0:
   resolved "https://registry.yarnpkg.com/little-state-machine/-/little-state-machine-4.2.1.tgz#da59d8405a5aeb021d090024c181d9ff3af3b457"
   integrity sha512-dJ3GVs2WHFZ9B0tSlqXrDcp7ODj6Yw/gp8aGqFcH998QBOXVH5duO4kP+oAFy0ATfZnzYzT0bwxAV/YtiBLeow==
 
+little-state-machine@^4.1.0:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/little-state-machine/-/little-state-machine-4.2.1.tgz#da59d8405a5aeb021d090024c181d9ff3af3b457"
+  integrity sha512-dJ3GVs2WHFZ9B0tSlqXrDcp7ODj6Yw/gp8aGqFcH998QBOXVH5duO4kP+oAFy0ATfZnzYzT0bwxAV/YtiBLeow==
+
 load-json-file@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-4.0.0.tgz#2f5f45ab91e33216234fd53adab668eb4ec0993b"
