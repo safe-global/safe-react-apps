@@ -1,5 +1,5 @@
 import { Validate, ValidateResult } from 'react-hook-form';
-
+import { toWei } from 'web3-utils';
 import {
   ADDRESS_FIELD_TYPE,
   NATIVE_AMOUNT_FIELD_TYPE,
@@ -19,7 +19,8 @@ interface CustomValidationsType {
   [key: string]: ValidationFunction[];
 }
 
-const uintBasicValidation = (value: string): ValidateResult => basicSolidityValidation(value, U_INT_FIELD_TYPE);
+// added this validation to the amount field, because amount values in wei are uint
+const uintBasicValidation = (value: string): ValidateResult => basicSolidityValidation(toWei(value), U_INT_FIELD_TYPE);
 
 const CUSTOM_VALIDATIONS: CustomValidationsType = {
   [ADDRESS_FIELD_TYPE]: [validateAddressField],

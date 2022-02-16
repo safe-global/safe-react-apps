@@ -10,7 +10,7 @@
     "axios": "^0.24.0",
     "lodash": "^4.17.21",
     "react-beautiful-dnd": "^13.1.0",
-    "react-hook-form": "^7.25.3",
+    "react-hook-form": "^7.27.0",
     "web3": "~1.7.0"
   },
   "devDependencies": {

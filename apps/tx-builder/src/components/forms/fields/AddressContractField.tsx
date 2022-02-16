@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { ReactElement } from 'react';
 import { AddressInput } from '@gnosis.pm/safe-react-components';
+import { errorBaseStyles } from '../styles';
 
 const AddressContractField = ({
   id,
@@ -36,13 +37,6 @@ const StyledAddressInput = styled(AddressInput)`
   && {
     width: 400px;
     margin-bottom: 10px;
-
-    .MuiFormLabel-root {
-      color: ${(props) => (!!props.error ? '#f44336' : '#0000008a')};
-    }
-
-    .MuiFormLabel-root.Mui-focused {
-      color: ${(props) => (!!props.error ? '#f44336' : '#008c73')};
-    }
+    ${errorBaseStyles}
   }
 `;

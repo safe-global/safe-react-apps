@@ -1,17 +1,14 @@
 import { Text, Title, Button } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
-import { toChecksumAddress, toWei } from 'web3-utils';
 
 import { ContractInterface } from '../../hooks/useServices/interfaceRepository';
 import { ProposedTransaction } from '../../typings/models';
-import { encodeToHexData, isValidAddress } from '../../utils';
+import { isValidAddress } from '../../utils';
 import SolidityForm, {
   CONTRACT_METHOD_INDEX_FIELD_NAME,
-  CONTRACT_VALUES_FIELD_NAME,
-  HEX_ENCODED_DATA_FIELD_NAME,
   SolidityFormValuesTypes,
-  NATIVE_VALUE_FIELD_NAME,
   TO_ADDRESS_FIELD_NAME,
+  parseFormToProposedTransaction,
 } from './SolidityForm';
 
 type AddNewTransactionFormProps = {
@@ -38,33 +35,11 @@ const AddNewTransactionForm = ({
     [CONTRACT_METHOD_INDEX_FIELD_NAME]: '0',
   };
 
-  function onSubmit(values: SolidityFormValuesTypes) {
-    const contractMethodIndex = values[CONTRACT_METHOD_INDEX_FIELD_NAME];
-    const toAddress = values[TO_ADDRESS_FIELD_NAME];
-    const tokenValue = values[NATIVE_VALUE_FIELD_NAME];
-    const contractFieldsValues = values[CONTRACT_VALUES_FIELD_NAME];
-    const hexEncodedData = values[HEX_ENCODED_DATA_FIELD_NAME];
+  const onSubmit = (values: SolidityFormValuesTypes) => {
+    const proposedTransaction = parseFormToProposedTransaction(values, contract);
 
-    const contractMethod = contract?.methods[Number(contractMethodIndex)];
-
-    const data = hexEncodedData || encodeToHexData(contractMethod, contractFieldsValues) || '0x';
-    const to = toChecksumAddress(toAddress);
-    const value = toWei(tokenValue || '0');
-
-    onAddTransaction({
-      id: new Date().getTime(),
-      contractInterface: contract,
-      description: {
-        to,
-        value,
-        hexEncodedData,
-        contractMethod,
-        contractFieldsValues,
-        contractMethodIndex,
-      },
-      raw: { to, value, data },
-    });
-  }
+    onAddTransaction(proposedTransaction);
+  };
 
   return (
     <>

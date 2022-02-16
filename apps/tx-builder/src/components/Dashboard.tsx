@@ -12,11 +12,22 @@ import AddNewTransactionForm from './forms/AddNewTransactionForm';
 import TransactionsBatchList from './TransactionsBatchList';
 import CreateNewBatchCard from './CreateNewBatchCard';
 import EditTransactionModal from './EditTransactionModal';
+import JsonField from './forms/fields/JsonField';
+import { errorBaseStyles } from './forms/styles';
 
 const Dashboard = (): ReactElement => {
   const { web3, interfaceRepo, chainInfo } = useServices();
-  const { transactions, handleAddTransaction, handleRemoveTransaction, handleSubmitTransactions } = useTransactions();
-  const [addressOrAbi, setAddressOrAbi] = useState('');
+  const {
+    transactions,
+    handleAddTransaction,
+    handleRemoveTransaction,
+    handleSubmitTransactions,
+    handleRemoveAllTransactions,
+    handleReorderTransactions,
+    handleReplaceTransaction,
+  } = useTransactions();
+  const [address, setAddress] = useState('');
+  const [abi, setAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadContractError, setLoadContractError] = useState('');
@@ -24,34 +35,45 @@ const Dashboard = (): ReactElement => {
 
   // Load contract from address or ABI
   useEffect(() => {
-    const loadContract = async (addressOrAbi: string) => {
-      setContract(null);
+    const loadContract = async (address: string) => {
       setLoadContractError('');
 
-      if (!addressOrAbi || !interfaceRepo) {
+      if (!address || !interfaceRepo) {
         return;
       }
 
       try {
-        setIsABILoading(true);
-        const contract = await interfaceRepo.loadAbi(addressOrAbi);
-        setContract(contract);
+        if (isValidAddress(address)) {
+          setIsABILoading(true);
+          setAbi(JSON.stringify(await interfaceRepo.loadAbi(address)));
+        }
       } catch (e) {
-        setContract(null);
+        setAbi('');
         setLoadContractError('No ABI found for this address');
         console.error(e);
       }
       setIsABILoading(false);
     };
 
-    loadContract(addressOrAbi);
-  }, [addressOrAbi, interfaceRepo]);
+    loadContract(address);
+  }, [address, interfaceRepo]);
+
+  useEffect(() => {
+    if (!abi || !interfaceRepo) {
+      setContract(null);
+      return;
+    }
+
+    setContract(interfaceRepo.getMethods(abi));
+  }, [abi, interfaceRepo]);
 
   const getAddressFromDomain = (name: string): Promise<string> => {
     return web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
   };
 
-  const isValidAddressOrContract = (isValidAddress(addressOrAbi) || contract) && !isABILoading;
+  const contractHasMethods = contract && contract.methods.length > 0 && !isABILoading;
+
+  const isAddressInputFieldValid = address.length > 0 && !isValidAddress(address) ? 'The address is not valid' : '';
 
   if (!chainInfo) {
     return <div />;
@@ -77,19 +99,20 @@ const Dashboard = (): ReactElement => {
 
         {/* ABI or Address Input */}
         <StyledAddressInput
-          id={'address-or-ABI-input'}
-          name="addressOrAbi"
-          label="Enter Address, ENS Name or ABI"
+          id="address"
+          name="address"
+          label="Enter Address or ENS Name"
           hiddenLabel={false}
-          address={addressOrAbi}
+          address={address}
           showNetworkPrefix={!!chainInfo?.shortName}
           networkPrefix={chainInfo?.shortName}
-          error={!isValidAddressOrContract ? loadContractError : ''}
+          error={isAddressInputFieldValid}
           showLoadingSpinner={isABILoading}
+          showErrorsInTheLabel={false}
           getAddressFromDomain={getAddressFromDomain}
-          onChangeAddress={(addressOrAbi: string) => setAddressOrAbi(addressOrAbi)}
+          onChangeAddress={(address: string) => setAddress(address)}
           InputProps={{
-            endAdornment: isValidAddressOrContract && (
+            endAdornment: contractHasMethods && isValidAddress(address) && (
               <InputAdornment position="end">
                 <CheckIconAddressAdornment />
               </InputAdornment>
@@ -98,17 +121,19 @@ const Dashboard = (): ReactElement => {
         />
 
         {/* ABI Warning */}
-        {isValidAddressOrContract && !contract && (
+        {loadContractError && (
           <StyledWarningText color="warning" size="lg">
             No ABI found for this address
           </StyledWarningText>
         )}
 
-        {isValidAddressOrContract && (
+        <JsonField id={'abi'} name="abi" label="Enter ABI" value={abi} onChange={setAbi} />
+
+        {(contractHasMethods || isValidAddress(address)) && !isABILoading && (
           <AddNewTransactionForm
             onAddTransaction={handleAddTransaction}
             contract={contract}
-            to={addressOrAbi}
+            to={address}
             networkPrefix={chainInfo?.shortName}
             getAddressFromDomain={getAddressFromDomain}
             nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
@@ -116,19 +141,18 @@ const Dashboard = (): ReactElement => {
         )}
       </AddNewTransactionFormWrapper>
 
+      {/* Transactions Batch section */}
       <TransactionsSectionWrapper>
         {transactions.length > 0 ? (
           <TransactionsBatchList
             transactions={transactions}
-            // For add batch
-            showTransactionDetails={false}
-            allowTransactionReordering
-            // // For review batch
-            // showTransactionDetails
-            // allowTransactionReordering={false}
             onRemoveTransaction={handleRemoveTransaction}
             onSubmitTransactions={handleSubmitTransactions}
             onEditTransaction={(index) => setEditingTransactionIndex(index)}
+            handleRemoveAllTransactions={handleRemoveAllTransactions}
+            handleReorderTransactions={handleReorderTransactions}
+            showTransactionDetails={false}
+            allowTransactionReordering
           />
         ) : (
           <CreateNewBatchCard />
@@ -139,10 +163,14 @@ const Dashboard = (): ReactElement => {
         <EditTransactionModal
           editingTransactionIndex={editingTransactionIndex}
           onClose={() => setEditingTransactionIndex(null)}
+          onDelete={handleRemoveTransaction}
           nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
           networkPrefix={chainInfo?.shortName}
           transaction={transactions[editingTransactionIndex]}
           getAddressFromDomain={getAddressFromDomain}
+          onSubmit={(transaction) => {
+            handleReplaceTransaction(transaction);
+          }}
         />
       )}
     </Wrapper>
@@ -155,6 +183,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding: 24px;
+  align-items: flex-start;
 `;
 
 const AddNewTransactionFormWrapper = styled.div`
@@ -188,13 +217,7 @@ const StyledAddressInput = styled(AddressInput)`
   && {
     width: 400px;
 
-    .MuiFormLabel-root {
-      color: #0000008a;
-    }
-
-    .MuiFormLabel-root.Mui-focused {
-      color: #008c73;
-    }
+    ${errorBaseStyles}
   }
 `;
 

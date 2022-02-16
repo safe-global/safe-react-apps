@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -8,37 +9,78 @@ import {
   Title,
   Icon,
   Tooltip,
+  Button,
 } from '@gnosis.pm/safe-react-components';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import IconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DroppableProvided,
+  DragStart,
+  DragUpdate,
+  DropResult,
+} from 'react-beautiful-dnd';
 
 import { ProposedTransaction } from '../typings/models';
-import { useState } from 'react';
 
 type TransactionsBatchListProps = {
   transactions: ProposedTransaction[];
   showTransactionDetails: boolean;
   allowTransactionReordering: boolean;
   onRemoveTransaction: (index: number) => void;
+  handleRemoveAllTransactions: () => void;
   onSubmitTransactions: () => void;
   onEditTransaction: (index: number) => void;
+  handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
 };
 
 const TRANSACTION_LIST_DROPPABLE_ID = 'Transaction_List';
+const DROP_EVENT = 'DROP';
 
 function TransactionsBatchList({
   transactions,
   onRemoveTransaction,
   onSubmitTransactions,
   onEditTransaction,
+  handleRemoveAllTransactions,
+  handleReorderTransactions,
   showTransactionDetails,
-  // TODO: allowTransactionReordering
   allowTransactionReordering,
 }: TransactionsBatchListProps) {
-  const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState();
-  const [draggableTxIndexDestination, setDraggableTxIndexDestination] = useState();
+  // we need those states to display the correct position in each tx during the drag & drop
+  const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState<number>();
+  const [draggableTxIndexDestination, setDraggableTxIndexDestination] = useState<number>();
+
+  const onDragStart = ({ source }: DragStart) => {
+    setDraggableTxIndexOrigin(source.index);
+    setDraggableTxIndexDestination(source.index);
+  };
+
+  const onDragUpdate = ({ source, destination }: DragUpdate) => {
+    setDraggableTxIndexOrigin(source.index);
+    setDraggableTxIndexDestination(destination?.index);
+  };
+
+  // we only perform the reorder if its present
+  const onDragEnd = ({ reason, source, destination }: DropResult) => {
+    const sourceIndex = source.index;
+    const destinationIndex = destination?.index;
+
+    const isDropEvent = reason === DROP_EVENT; // because user can cancel the drag & drop
+    const hasTxPositionChanged = sourceIndex !== destinationIndex && destinationIndex !== undefined;
+
+    const shouldPerformTxReorder = isDropEvent && hasTxPositionChanged;
+
+    if (shouldPerformTxReorder) {
+      handleReorderTransactions(sourceIndex, destinationIndex);
+    }
+
+    setDraggableTxIndexOrigin(undefined);
+    setDraggableTxIndexDestination(undefined);
+  };
 
   return (
     <TransactionsBatchWrapper>
@@ -57,35 +99,22 @@ function TransactionsBatchList({
         </TransactionsTitle>
 
         {/* Transactions Batch Actions */}
-        <Tooltip title="Save to Library" backgroundColor="primary" textColor="white" arrow>
+        <Tooltip placement="top" title="Save to Library" backgroundColor="primary" textColor="white" arrow>
           <StyledHeaderIconButton>
             <Icon size="sm" type="importImg" color="primary" aria-label="Save to Library" />
           </StyledHeaderIconButton>
         </Tooltip>
-        <Tooltip title="Delete Batch" backgroundColor="primary" textColor="white" arrow>
-          <StyledHeaderIconButton>
+        <Tooltip placement="top" title="Delete Batch" backgroundColor="primary" textColor="white" arrow>
+          <StyledHeaderIconButton onClick={handleRemoveAllTransactions}>
             <Icon size="sm" type="delete" color="error" aria-label="Delete Batch" />
           </StyledHeaderIconButton>
         </Tooltip>
       </TransactionHeader>
 
       {/* Draggable Transaction List */}
-      <DragDropContext
-        onDragStart={({ source, destination }: any) => {
-          setDraggableTxIndexOrigin(source.index);
-          setDraggableTxIndexDestination(source.index);
-        }}
-        onDragUpdate={({ source, destination }: any) => {
-          setDraggableTxIndexOrigin(source.index);
-          setDraggableTxIndexDestination(destination?.index);
-        }}
-        onDragEnd={(...rest: any[]) => {
-          setDraggableTxIndexOrigin(undefined);
-          setDraggableTxIndexDestination(undefined);
-        }}
-      >
+      <DragDropContext onDragStart={onDragStart} onDragUpdate={onDragUpdate} onDragEnd={onDragEnd}>
         <Droppable droppableId={TRANSACTION_LIST_DROPPABLE_ID}>
-          {(provided: any, snapshot: any) => (
+          {(provided: DroppableProvided) => (
             <TransactionList {...provided.droppableProps} ref={provided.innerRef}>
               {transactions.map(({ id, description }, index) => {
                 console.log(transactions);
@@ -102,7 +131,14 @@ function TransactionsBatchList({
                     draggableId={id.toString()}
                     isDragDisabled={!allowTransactionReordering}
                   >
-                    {(provided: any, snapshot: any) => {
+                    {function DraggableTransaction(provided, snapshot) {
+                      const [isTxExpanded, setTxExpanded] = useState(false);
+
+                      function onClickShowTransactionDetails() {
+                        if (showTransactionDetails) {
+                          setTxExpanded((isTxExpanded) => !isTxExpanded);
+                        }
+                      }
                       const isThisTxBeingDragging = snapshot.isDragging;
 
                       const showArrowAdornment = !isLastTransaction && !isThisTxBeingDragging;
@@ -130,19 +166,34 @@ function TransactionsBatchList({
                           </PositionWrapper>
 
                           {/* Transacion Description */}
-                          <StyledAccordion compact>
-                            {/* <StyledAccordion compact disabled={!showTransactionDetails}> */}
+                          <StyledAccordion expanded={isTxExpanded} compact onChange={onClickShowTransactionDetails}>
                             <AccordionSummary
                               IconButtonProps={{
                                 hidden: !showTransactionDetails,
-                                style: { display: showTransactionDetails ? 'inline' : 'none', padding: 16 },
+                                style: {
+                                  display: showTransactionDetails ? 'inline' : 'none',
+                                  padding: 16,
+                                },
                               }}
+                              style={{ cursor: allowTransactionReordering ? 'grab' : 'pointer' }}
                             >
-                              <Tooltip title="Drag and Drop" backgroundColor="primary" textColor="white" arrow>
-                                {/* TODO: FIX THIS STYLES */}
-                                <DragIndicatorIcon fontSize="small" style={{ color: '#B2BBC0', marginRight: 4 }} />
-                              </Tooltip>
+                              {/* Drag & Drop Indicator */}
+                              {allowTransactionReordering && (
+                                <Tooltip
+                                  placement="top"
+                                  title="Drag and Drop"
+                                  backgroundColor="primary"
+                                  textColor="white"
+                                  arrow
+                                >
+                                  <DragAndDropIndicatorIcon fontSize="small" />
+                                </Tooltip>
+                              )}
+
+                              {/* Destination Address label */}
                               <EthHashInfo shortName="rin" hash={to} shortenHash={4} shouldShowShortName />
+
+                              {/* Transaction Description label */}
                               <TransactionsDescription size="lg">{transactionDescription}</TransactionsDescription>
 
                               {/* Transaction Actions */}
@@ -155,14 +206,24 @@ function TransactionsBatchList({
                                   <Icon size="sm" type="edit" />
                                 </TransactionActionButton>
                               </Tooltip>
-                              <Tooltip title="Delete transaction" backgroundColor="primary" textColor="white" arrow>
-                                <TransactionActionButton size="medium" aria-label="Delete transaction">
+                              <Tooltip
+                                placement="top"
+                                title="Delete transaction"
+                                backgroundColor="primary"
+                                textColor="white"
+                                arrow
+                              >
+                                <TransactionActionButton
+                                  onClick={() => onRemoveTransaction(index)}
+                                  size="medium"
+                                  aria-label="Delete transaction"
+                                >
                                   <Icon size="sm" type="delete" />
                                 </TransactionActionButton>
                               </Tooltip>
                             </AccordionSummary>
 
-                            {/*Transaction details will be implemented in other ticket  */}
+                            {/* Transaction details will be implemented in other ticket */}
                             <AccordionDetails>
                               <Text size="xl">Hi! I am a very cool transaction! :D</Text>
                             </AccordionDetails>
@@ -179,7 +240,18 @@ function TransactionsBatchList({
         </Droppable>
       </DragDropContext>
 
-      {/* TODO: ADD Create batch button */}
+      {/* Create batch button */}
+      <Button
+        size="md"
+        type="button"
+        disabled={!transactions.length}
+        style={{ marginLeft: 35 }}
+        variant="contained"
+        color="primary"
+        onClick={onSubmitTransactions}
+      >
+        Create Batch
+      </Button>
     </TransactionsBatchWrapper>
   );
 }
@@ -189,9 +261,13 @@ export default TransactionsBatchList;
 function getTransactionText(description: ProposedTransaction['description']) {
   const { contractMethod, hexEncodedData } = description;
 
-  const isCustomHexDataTx = !!hexEncodedData;
+  const isCustomHexDataTx = typeof contractMethod === 'undefined';
   const isContractInteractionTx = !!contractMethod;
-  const isTokenTransferTx = !isCustomHexDataTx && !isContractInteractionTx;
+  const isTokenTransferTx = !hexEncodedData && !isContractInteractionTx;
+
+  if (isTokenTransferTx) {
+    return 'Transfer';
+  }
 
   if (isCustomHexDataTx) {
     return 'Custom hex data';
@@ -201,14 +277,13 @@ function getTransactionText(description: ProposedTransaction['description']) {
     return contractMethod.name;
   }
 
-  if (isTokenTransferTx) {
-    return 'Transfer';
-  }
-
-  // empty description as a fallback
+  // empty tx description as a fallback
   return '';
 }
 
+const UNKNOWN_POSITION_LABEL = '?';
+
+// tx positions can change during drag & drop
 function getDisplayedTxPosition(
   index: number,
   isDraggingThisTx: boolean,
@@ -217,7 +292,8 @@ function getDisplayedTxPosition(
 ): string {
   // we show the correct position in the transaction that is being dragged
   if (isDraggingThisTx) {
-    return draggableTxIndexDestination !== undefined ? String(draggableTxIndexDestination + 1) : '?';
+    const isAwayFromDroppableZone = draggableTxIndexDestination === undefined;
+    return isAwayFromDroppableZone ? UNKNOWN_POSITION_LABEL : String(draggableTxIndexDestination + 1);
   }
 
   // if a transaction is being dragged, we show the correct position in previous transactions
@@ -232,6 +308,7 @@ function getDisplayedTxPosition(
     return index > Number(draggableTxIndexDestination) ? `${index + 1}` : `${index}`;
   }
 
+  // otherwise we show the natural position
   return `${index + 1}`;
 }
 
@@ -280,11 +357,7 @@ const TransactionListItem = styled.li`
   width: 450px;
   margin-bottom: 8px;
 `;
-// .Mui-disabled {
-//   opacity: 1;
-//   background-color: #ffffff;
-//   pointer-events: auto;
-// }
+
 const StyledAccordion = styled(Accordion)`
   flex-grow: 1;
 
@@ -363,4 +436,9 @@ const ArrowAdornment = styled.div`
 const TransactionsDescription = styled(Text)`
   flex-grow: 1;
   padding-left: 24px;
+`;
+
+const DragAndDropIndicatorIcon = styled(DragIndicatorIcon)`
+  color: #b2bbc0;
+  margin-right: 4px;
 `;
