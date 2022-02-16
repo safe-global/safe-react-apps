@@ -23,7 +23,7 @@ const Connected = ({ client, onDisconnect }: ConnectedProps) => {
             CONNECTED
           </Text>
           <Text size="xl" as="span" strong>
-            {client.name}
+            {client.name ? client.name : new URL(client.url).hostname}
           </Text>
         </Grid>
       </Grid>

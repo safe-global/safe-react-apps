@@ -15,7 +15,7 @@ const Help = ({ title, steps }: HelpProps): React.ReactElement => {
       </AccordionSummary>
       <StyledAccordionDetails>
         {steps.map((step, index) => (
-          <StyledBox display="flex" marginBottom={2} alignItems="center">
+          <StyledBox key={index} display="flex" marginBottom={2} alignItems="center">
             <StyledDot color="primary">
               <DotText size="sm">{index + 1}</DotText>
             </StyledDot>

@@ -5,13 +5,13 @@ import { Button, Link } from '@gnosis.pm/safe-react-components';
 import { Text } from '@gnosis.pm/safe-react-components';
 import { ReactComponent as SafeAppConnectLogo } from '../assets/safe-app-connect.svg';
 
-type ConnectSafeAppProps = {
+type ConnectingProps = {
   client: IClientMeta | null;
   onOpenSafeApp: () => void;
   onKeepUsingWalletConnect: () => void;
 };
 
-const ConnectSafeApp = ({ client, onOpenSafeApp, onKeepUsingWalletConnect }: ConnectSafeAppProps) => {
+const Connecting = ({ client, onOpenSafeApp, onKeepUsingWalletConnect }: ConnectingProps) => {
   if (!client) {
     return null;
   }
@@ -45,7 +45,7 @@ const ConnectSafeApp = ({ client, onOpenSafeApp, onKeepUsingWalletConnect }: Con
             </AppTitle>
           </Grid>
           <Grid item>
-            <Text size="lg">{client.name}</Text>
+            <Text size="lg">{client.name ? client.name : new URL(client.url).hostname}</Text>
           </Grid>
         </Grid>
       </SafeApp>
@@ -102,4 +102,4 @@ const StyledLink = styled(Link)`
   font-size: 0.8em;
 `;
 
-export default ConnectSafeApp;
+export default Connecting;

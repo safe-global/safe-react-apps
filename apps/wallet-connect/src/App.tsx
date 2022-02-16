@@ -19,7 +19,7 @@ import { Grid } from '@material-ui/core';
 import Disconnected from './components/Disconnected';
 import Connected from './components/Connected';
 import { useApps } from './hooks/useApps';
-import ConnectSafeApp from './components/ConnectSafeApp';
+import Connecting from './components/Connecting';
 import useConnectionState, {
   DISCONNECTED_STATE,
   CONNECTING_STATE,
@@ -34,7 +34,7 @@ const App = () => {
   const [invalidQRCode, setInvalidQRCode] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const { useWithSafe, addUseWithSafe } = useApps();
+  const { findSafeApp } = useApps();
   const { connectionStatus, changeConnectionStatus } = useConnectionState();
 
   const handleQRDialogClose = () => {
@@ -42,14 +42,31 @@ const App = () => {
   };
 
   const openSafeApp = (url: string | undefined) => {
-    addUseWithSafe(url);
+    // TODO. How can I get the safe-react URL in order to navigate to it?
+    console.log(url);
   };
 
   useEffect(() => {
     if (wcClientData) {
       setOpenDialog(false);
+      changeConnectionStatus(CONNECT_EVENT);
     }
-  }, [wcClientData]);
+  }, [wcClientData, changeConnectionStatus]);
+
+  useEffect(() => {
+    if (!wcClientData) {
+      changeConnectionStatus(DISCONNECT_EVENT);
+      return;
+    }
+
+    if (connectionStatus === CONNECTING_STATE) {
+      const safeApp = findSafeApp(wcClientData.url);
+      console.log(safeApp);
+      if (!safeApp) {
+        changeConnectionStatus(CONNECT_EVENT);
+      }
+    }
+  }, [connectionStatus, findSafeApp, wcClientData, changeConnectionStatus]);
 
   const onPaste = React.useCallback(
     (event: React.ClipboardEvent) => {
@@ -130,14 +147,20 @@ const App = () => {
                 />
               )}
               {connectionStatus === CONNECTING_STATE && (
-                <ConnectSafeApp
+                <Connecting
                   client={wcClientData}
                   onOpenSafeApp={() => openSafeApp(wcClientData?.url)}
-                  onKeepUsingWalletConnect={() => {}}
+                  onKeepUsingWalletConnect={() => changeConnectionStatus(CONNECT_EVENT)}
                 />
               )}
               {connectionStatus === CONNECTED_STATE && (
-                <Connected client={wcClientData} onDisconnect={() => wcDisconnect()} />
+                <Connected
+                  client={wcClientData}
+                  onDisconnect={() => {
+                    changeConnectionStatus(DISCONNECT_EVENT);
+                    wcDisconnect();
+                  }}
+                />
               )}
               <Dialog
                 open={openDialog}

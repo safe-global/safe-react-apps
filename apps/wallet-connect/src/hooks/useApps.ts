@@ -7,7 +7,6 @@ const BASE_URL = 'https://safe-client.gnosis.io';
 export function useApps() {
   const { sdk } = useSafeAppsSDK();
   const [safeAppsList, setSafeAppsList] = useState<SafeAppsResponse>([]);
-  const [useWithSafe, setUseWithSafe] = useState<string[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -23,17 +22,12 @@ export function useApps() {
 
   const findSafeApp = useCallback(
     (url: string) => {
-      return safeAppsList.find((safeApp) => safeApp.url === url);
+      let { hostname } = new URL(url);
+
+      return safeAppsList.find((safeApp) => safeApp.url.includes(hostname));
     },
     [safeAppsList],
   );
 
-  const addUseWithSafe = useCallback(
-    (appId) => {
-      setUseWithSafe([...useWithSafe, appId]);
-    },
-    [useWithSafe],
-  );
-
-  return { useWithSafe, findSafeApp, addUseWithSafe };
+  return { findSafeApp };
 }
