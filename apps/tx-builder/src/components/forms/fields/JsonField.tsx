@@ -99,15 +99,15 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
               <Text size="lg">Do you want to replace the current ABI?</Text>
             </Box>
           }
-          onClose={() => toggleModal}
+          onClose={toggleModal}
           title="Replace ABI"
           footer={
             <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
-              <Button size="md" color="primary" onClick={changeAbi}>
-                Accept
-              </Button>
               <Button size="md" color="secondary" onClick={toggleModal}>
                 Cancel
+              </Button>
+              <Button size="md" color="primary" onClick={changeAbi}>
+                Accept
               </Button>
             </Box>
           }

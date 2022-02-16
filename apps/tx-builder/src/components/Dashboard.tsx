@@ -90,7 +90,7 @@ const Dashboard = (): ReactElement => {
           </Link>
         </StyledText>
 
-        {/* ABI or Address Input */}
+        {/* Address Input */}
         <StyledAddressInput
           id="address"
           name="address"

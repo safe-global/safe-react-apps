@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -10,7 +10,9 @@ import {
   Icon,
   Tooltip,
   Button,
+  GenericModal,
 } from '@gnosis.pm/safe-react-components';
+import Box from '@material-ui/core/Box';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import IconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
@@ -38,6 +40,7 @@ type TransactionsBatchListProps = {
 
 const TRANSACTION_LIST_DROPPABLE_ID = 'Transaction_List';
 const DROP_EVENT = 'DROP';
+const DELETE_ALL_BATCH = 'ALL_BATCH';
 
 function TransactionsBatchList({
   transactions,
@@ -51,6 +54,27 @@ function TransactionsBatchList({
   // we need those states to display the correct position in each tx during the drag & drop
   const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState<number>();
   const [draggableTxIndexDestination, setDraggableTxIndexDestination] = useState<number>();
+
+  // modal states
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [txToRemove, setTxToRemove] = useState<string>(); // ALL_BATCH, 0, 1, ...
+  const deleteAllBatch = txToRemove === DELETE_ALL_BATCH;
+  const openDeleteModal = useCallback((txToRemove?: string) => {
+    setShowDeleteModal(true);
+    setTxToRemove(txToRemove);
+  }, []);
+  const closeDeleteModal = useCallback(() => {
+    setShowDeleteModal(false);
+    setTxToRemove(undefined);
+  }, []);
+  const onClickModalDelete = () => {
+    if (deleteAllBatch) {
+      handleRemoveAllTransactions();
+    } else {
+      onRemoveTransaction(Number(txToRemove));
+    }
+    closeDeleteModal();
+  };
 
   const onDragStart = ({ source }: DragStart) => {
     setDraggableTxIndexOrigin(source.index);
@@ -81,166 +105,203 @@ function TransactionsBatchList({
   };
 
   return (
-    <TransactionsBatchWrapper>
-      {/* Transactions Batch Header */}
-      <TransactionHeader>
-        {/* Transactions Batch Counter */}
-        <TransactionCounterDot color="tag">
-          <Text size="xl" color="white">
-            {transactions.length}
-          </Text>
-        </TransactionCounterDot>
+    <>
+      <TransactionsBatchWrapper>
+        {/* Transactions Batch Header */}
+        <TransactionHeader>
+          {/* Transactions Batch Counter */}
+          <TransactionCounterDot color="tag">
+            <Text size="xl" color="white">
+              {transactions.length}
+            </Text>
+          </TransactionCounterDot>
 
-        {/* Transactions Batch Title */}
-        <TransactionsTitle withoutMargin size="lg">
-          Transactions Batch
-        </TransactionsTitle>
+          {/* Transactions Batch Title */}
+          <TransactionsTitle withoutMargin size="lg">
+            Transactions Batch
+          </TransactionsTitle>
 
-        {/* Transactions Batch Actions */}
-        <Tooltip placement="top" title="Save to Library" backgroundColor="primary" textColor="white" arrow>
-          <StyledHeaderIconButton>
-            <Icon size="sm" type="importImg" color="primary" aria-label="Save to Library" />
-          </StyledHeaderIconButton>
-        </Tooltip>
-        <Tooltip placement="top" title="Delete Batch" backgroundColor="primary" textColor="white" arrow>
-          <StyledHeaderIconButton onClick={handleRemoveAllTransactions}>
-            <Icon size="sm" type="delete" color="error" aria-label="Delete Batch" />
-          </StyledHeaderIconButton>
-        </Tooltip>
-      </TransactionHeader>
+          {/* Transactions Batch Actions */}
+          <Tooltip placement="top" title="Save to Library" backgroundColor="primary" textColor="white" arrow>
+            <StyledHeaderIconButton>
+              <Icon size="sm" type="importImg" color="primary" aria-label="Save to Library" />
+            </StyledHeaderIconButton>
+          </Tooltip>
+          <Tooltip placement="top" title="Delete Batch" backgroundColor="primary" textColor="white" arrow>
+            <StyledHeaderIconButton onClick={() => openDeleteModal(DELETE_ALL_BATCH)}>
+              <Icon size="sm" type="delete" color="error" aria-label="Delete Batch" />
+            </StyledHeaderIconButton>
+          </Tooltip>
+        </TransactionHeader>
 
-      {/* Draggable Transaction List */}
-      <DragDropContext onDragStart={onDragStart} onDragUpdate={onDragUpdate} onDragEnd={onDragEnd}>
-        <Droppable droppableId={TRANSACTION_LIST_DROPPABLE_ID}>
-          {(provided: DroppableProvided) => (
-            <TransactionList {...provided.droppableProps} ref={provided.innerRef}>
-              {transactions.map(({ id, description }, index) => {
-                const { to } = description;
+        {/* Draggable Transaction List */}
+        <DragDropContext onDragStart={onDragStart} onDragUpdate={onDragUpdate} onDragEnd={onDragEnd}>
+          <Droppable droppableId={TRANSACTION_LIST_DROPPABLE_ID}>
+            {(provided: DroppableProvided) => (
+              <TransactionList {...provided.droppableProps} ref={provided.innerRef}>
+                {transactions.map(({ id, description }, index) => {
+                  const { to } = description;
 
-                const transactionDescription = getTransactionText(description);
+                  const transactionDescription = getTransactionText(description);
 
-                const isLastTransaction = index === transactions.length - 1;
+                  const isLastTransaction = index === transactions.length - 1;
 
-                return (
-                  <Draggable
-                    key={id}
-                    index={index}
-                    draggableId={id.toString()}
-                    isDragDisabled={!allowTransactionReordering}
-                  >
-                    {function DraggableTransaction(provided, snapshot) {
-                      const [isTxExpanded, setTxExpanded] = useState(false);
+                  return (
+                    <Draggable
+                      key={id}
+                      index={index}
+                      draggableId={id.toString()}
+                      isDragDisabled={!allowTransactionReordering}
+                    >
+                      {function DraggableTransaction(provided, snapshot) {
+                        const [isTxExpanded, setTxExpanded] = useState(false);
 
-                      function onClickShowTransactionDetails() {
-                        if (showTransactionDetails) {
-                          setTxExpanded((isTxExpanded) => !isTxExpanded);
+                        function onClickShowTransactionDetails() {
+                          if (showTransactionDetails) {
+                            setTxExpanded((isTxExpanded) => !isTxExpanded);
+                          }
                         }
-                      }
-                      const isThisTxBeingDragging = snapshot.isDragging;
+                        const isThisTxBeingDragging = snapshot.isDragging;
 
-                      const showArrowAdornment = !isLastTransaction && !isThisTxBeingDragging;
+                        const showArrowAdornment = !isLastTransaction && !isThisTxBeingDragging;
 
-                      // displayed orden can change if the user uses the drag and drop feature
-                      const displayedTxPosition = getDisplayedTxPosition(
-                        index,
-                        isThisTxBeingDragging,
-                        draggableTxIndexDestination,
-                        draggableTxIndexOrigin,
-                      );
+                        // displayed orden can change if the user uses the drag and drop feature
+                        const displayedTxPosition = getDisplayedTxPosition(
+                          index,
+                          isThisTxBeingDragging,
+                          draggableTxIndexDestination,
+                          draggableTxIndexOrigin,
+                        );
 
-                      return (
-                        <TransactionListItem
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          {/* Transacion Position */}
-                          <PositionWrapper>
-                            <PositionDot color="tag">
-                              <Text size="xl">{displayedTxPosition}</Text>
-                            </PositionDot>
-                            {showArrowAdornment && <ArrowAdornment />}
-                          </PositionWrapper>
+                        return (
+                          <TransactionListItem
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            {/* Transacion Position */}
+                            <PositionWrapper>
+                              <PositionDot color="tag">
+                                <Text size="xl">{displayedTxPosition}</Text>
+                              </PositionDot>
+                              {showArrowAdornment && <ArrowAdornment />}
+                            </PositionWrapper>
 
-                          {/* Transacion Description */}
-                          <StyledAccordion expanded={isTxExpanded} compact onChange={onClickShowTransactionDetails}>
-                            <AccordionSummary
-                              IconButtonProps={{
-                                hidden: !showTransactionDetails,
-                                style: {
-                                  display: showTransactionDetails ? 'inline' : 'none',
-                                  padding: 16,
-                                },
-                              }}
-                              style={{ cursor: allowTransactionReordering ? 'grab' : 'pointer' }}
-                            >
-                              {/* Drag & Drop Indicator */}
-                              {allowTransactionReordering && (
+                            {/* Transacion Description */}
+                            <StyledAccordion expanded={isTxExpanded} compact onChange={onClickShowTransactionDetails}>
+                              <AccordionSummary
+                                IconButtonProps={{
+                                  hidden: !showTransactionDetails,
+                                  style: {
+                                    display: showTransactionDetails ? 'inline' : 'none',
+                                    padding: 16,
+                                  },
+                                }}
+                                style={{ cursor: allowTransactionReordering ? 'grab' : 'pointer' }}
+                              >
+                                {/* Drag & Drop Indicator */}
+                                {allowTransactionReordering && (
+                                  <Tooltip
+                                    placement="top"
+                                    title="Drag and Drop"
+                                    backgroundColor="primary"
+                                    textColor="white"
+                                    arrow
+                                  >
+                                    <DragAndDropIndicatorIcon fontSize="small" />
+                                  </Tooltip>
+                                )}
+
+                                {/* Destination Address label */}
+                                <EthHashInfo shortName="rin" hash={to} shortenHash={4} shouldShowShortName />
+
+                                {/* Transaction Description label */}
+                                <TransactionsDescription size="lg">{transactionDescription}</TransactionsDescription>
+
+                                {/* Transaction Actions */}
                                 <Tooltip
                                   placement="top"
-                                  title="Drag and Drop"
+                                  title="Delete transaction"
                                   backgroundColor="primary"
                                   textColor="white"
                                   arrow
                                 >
-                                  <DragAndDropIndicatorIcon fontSize="small" />
+                                  <TransactionActionButton
+                                    onClick={() => openDeleteModal(String(index))}
+                                    size="medium"
+                                    aria-label="Delete transaction"
+                                  >
+                                    <Icon size="sm" type="delete" />
+                                  </TransactionActionButton>
                                 </Tooltip>
-                              )}
+                              </AccordionSummary>
 
-                              {/* Destination Address label */}
-                              <EthHashInfo shortName="rin" hash={to} shortenHash={4} shouldShowShortName />
+                              {/* Transaction details will be implemented in other ticket */}
+                              <AccordionDetails>
+                                <Text size="xl">Hi! I am a very cool transaction! :D</Text>
+                              </AccordionDetails>
+                            </StyledAccordion>
+                          </TransactionListItem>
+                        );
+                      }}
+                    </Draggable>
+                  );
+                })}
+                {provided.placeholder}
+              </TransactionList>
+            )}
+          </Droppable>
+        </DragDropContext>
 
-                              {/* Transaction Description label */}
-                              <TransactionsDescription size="lg">{transactionDescription}</TransactionsDescription>
+        {/* Create batch button */}
+        <Button
+          size="md"
+          type="button"
+          disabled={!transactions.length}
+          style={{ marginLeft: 35 }}
+          variant="contained"
+          color="primary"
+          onClick={onSubmitTransactions}
+        >
+          Create Batch
+        </Button>
+      </TransactionsBatchWrapper>
 
-                              {/* Transaction Actions */}
-                              <Tooltip
-                                placement="top"
-                                title="Delete transaction"
-                                backgroundColor="primary"
-                                textColor="white"
-                                arrow
-                              >
-                                <TransactionActionButton
-                                  onClick={() => onRemoveTransaction(index)}
-                                  size="medium"
-                                  aria-label="Delete transaction"
-                                >
-                                  <Icon size="sm" type="delete" />
-                                </TransactionActionButton>
-                              </Tooltip>
-                            </AccordionSummary>
+      {/* Delete batch or transaction modal */}
+      {showDeleteModal && (
+        <GenericModal
+          title={deleteAllBatch ? 'Cancel Transaction Batch?' : 'Delete from batch?'}
+          withoutBodyPadding
+          body={
+            <StyledModalBodyWrapper>
+              <StyledModalDot color="tag">
+                <Text size="xl" color="white">
+                  {deleteAllBatch ? transactions.length : Number(txToRemove) + 1}
+                </Text>
+              </StyledModalDot>
 
-                            {/* Transaction details will be implemented in other ticket */}
-                            <AccordionDetails>
-                              <Text size="xl">Hi! I am a very cool transaction! :D</Text>
-                            </AccordionDetails>
-                          </StyledAccordion>
-                        </TransactionListItem>
-                      );
-                    }}
-                  </Draggable>
-                );
-              })}
-              {provided.placeholder}
-            </TransactionList>
-          )}
-        </Droppable>
-      </DragDropContext>
-
-      {/* Create batch button */}
-      <Button
-        size="md"
-        type="button"
-        disabled={!transactions.length}
-        style={{ marginLeft: 35 }}
-        variant="contained"
-        color="primary"
-        onClick={onSubmitTransactions}
-      >
-        Create Batch
-      </Button>
-    </TransactionsBatchWrapper>
+              <StyledModalText size="xl">
+                {!deleteAllBatch
+                  ? getTransactionText(transactions[Number(txToRemove)]?.description)
+                  : 'Transaction Batch'}
+                {deleteAllBatch
+                  ? ' will be permanently deleted and the transaction data will be lost'
+                  : ' will be permanently deleted from the batch'}
+              </StyledModalText>
+              <StyledModalButtonsWrapper display="flex" alignItems="center" justifyContent="center" maxWidth={'450px'}>
+                <Button size="md" variant="bordered" onClick={closeDeleteModal}>
+                  Back
+                </Button>
+                <Button size="md" style={{ marginLeft: 16 }} color="error" onClick={onClickModalDelete}>
+                  {deleteAllBatch ? 'Yes, Cancel' : 'Yes, Delete'}
+                </Button>
+              </StyledModalButtonsWrapper>
+            </StyledModalBodyWrapper>
+          }
+          onClose={closeDeleteModal}
+        />
+      )}
+    </>
   );
 }
 
@@ -429,4 +490,23 @@ const TransactionsDescription = styled(Text)`
 const DragAndDropIndicatorIcon = styled(DragIndicatorIcon)`
   color: #b2bbc0;
   margin-right: 4px;
+`;
+
+const StyledModalBodyWrapper = styled.div`
+  position: relative;
+  padding: 24px;
+  max-width: 450px;
+`;
+
+const StyledModalDot = styled(TransactionCounterDot)`
+  position: absolute;
+  top: 22px;
+`;
+
+const StyledModalText = styled(Text)`
+  text-indent: 30px;
+`;
+
+const StyledModalButtonsWrapper = styled(Box)`
+  margin-top: 24px;
 `;
