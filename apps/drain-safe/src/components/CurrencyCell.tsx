@@ -33,7 +33,7 @@ function CurrencyCell({
 
         const estimatedTransferGas = await sdk.eth.getEstimateGas({
           ...sendTokenTx,
-          value: item.tokenInfo.type === 'NATIVE_TOKEN' ? `0x${Number(sendTokenTx.value).toString(16)}` : undefined,
+          value: item.tokenInfo.type === 'NATIVE_COIN' ? `0x${Number(sendTokenTx.value).toString(16)}` : undefined,
           from: safe.safeAddress,
         });
 

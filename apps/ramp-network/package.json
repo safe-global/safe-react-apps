@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "@gnosis.pm/safe-react-components": "^0.9.6",
+    "@gnosis.pm/safe-react-components": "^0.9.7",
     "@material-ui/core": "^4.12.3",
     "@ramp-network/ramp-instant-sdk": "^3.0.0"
   },
