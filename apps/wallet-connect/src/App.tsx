@@ -44,6 +44,8 @@ const App = () => {
   const openSafeApp = (url: string | undefined) => {
     // TODO. How can I get the safe-react URL in order to navigate to it?
     console.log(url);
+    wcDisconnect();
+    changeConnectionStatus(DISCONNECTED_STATE);
   };
 
   useEffect(() => {
