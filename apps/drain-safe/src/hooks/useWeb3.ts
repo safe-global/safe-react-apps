@@ -52,6 +52,7 @@ export enum CHAINS {
   ARBITRUM = '42161',
   AVALANCHE = '43114',
   VOLTA = '73799',
+  AURORA = '1313161554',
 }
 
 export const rpcUrlGetterByNetwork: {
@@ -61,8 +62,8 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.MORDEN]: null,
   [CHAINS.ROPSTEN]: null,
   [CHAINS.RINKEBY]: (token) => `https://rinkeby.infura.io/v3/${token}`,
-  [CHAINS.OPTIMISM]: () => 'https://mainnet.optimism.io',
   [CHAINS.GOERLI]: null,
+  [CHAINS.OPTIMISM]: () => 'https://mainnet.optimism.io',
   [CHAINS.KOVAN]: null,
   [CHAINS.BSC]: () => 'https://bsc-dataseed.binance.org',
   [CHAINS.XDAI]: () => 'https://dai.poa.network',
@@ -71,4 +72,5 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.ARBITRUM]: () => 'https://arb1.arbitrum.io/rpc',
   [CHAINS.AVALANCHE]: () => 'https://api.avax.network/ext/bc/C/rpc',
   [CHAINS.VOLTA]: () => 'https://volta-rpc.energyweb.org',
+  [CHAINS.AURORA]: () => 'https://mainnet.aurora.dev',
 };
