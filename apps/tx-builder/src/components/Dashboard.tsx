@@ -70,9 +70,14 @@ const Dashboard = (): ReactElement => {
     return web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
   };
 
+  const isAddressInputFieldValid = isValidAddress(address) || !address;
+
   const contractHasMethods = contract && contract.methods.length > 0 && !isABILoading;
 
-  const isAddressInputFieldValid = address.length > 0 && !isValidAddress(address) ? 'The address is not valid' : '';
+  const isTransferTransaction = !abi && isValidAddress(address);
+  const isContractInteractionTransaction = abi && contractHasMethods;
+
+  const showNewTransactionForm = isTransferTransaction || isContractInteractionTransaction;
 
   return (
     <Wrapper>
@@ -101,7 +106,7 @@ const Dashboard = (): ReactElement => {
           address={address}
           showNetworkPrefix={!!chainInfo?.shortName}
           networkPrefix={chainInfo?.shortName}
-          error={isAddressInputFieldValid}
+          error={isAddressInputFieldValid ? '' : 'The address is not valid'}
           showLoadingSpinner={isABILoading}
           showErrorsInTheLabel={false}
           getAddressFromDomain={getAddressFromDomain}
@@ -124,7 +129,7 @@ const Dashboard = (): ReactElement => {
 
         <JsonField id={'abi'} name="abi" label="Enter ABI" value={abi} onChange={setAbi} />
 
-        {(contractHasMethods || isValidAddress(address)) && !isABILoading && (
+        {showNewTransactionForm && (
           <AddNewTransactionForm
             onAddTransaction={handleAddTransaction}
             contract={contract}
