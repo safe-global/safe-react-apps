@@ -192,8 +192,6 @@ const CheckIconAddressAdornment = styled(CheckCircle)`
 
 const StyledAddressInput = styled(AddressInput)`
   && {
-    width: 400px;
-
     ${errorBaseStyles}
   }
 `;

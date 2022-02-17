@@ -157,7 +157,6 @@ const IconContainer = styled.div`
 
 const StyledTextField = styled(TextFieldInput)`
   && {
-    width: 400px;
     margin-top: 10px;
     ${errorBaseStyles}
 
