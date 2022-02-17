@@ -1,17 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import jsQr from 'jsqr';
-import styled from 'styled-components';
-import format from 'date-fns/format';
 
-import { Icon, Card } from '@gnosis.pm/safe-react-components';
-import Dialog from '@material-ui/core/Dialog';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import styled from 'styled-components';
+
+import { Card } from '@gnosis.pm/safe-react-components';
 import Container from '@material-ui/core/Container';
 
-import { blobToImageData } from './utils/images';
 import useWalletConnect from './hooks/useWalletConnect';
-import ScanCode from './components/ScanCode';
 import AppBar from './components/AppBar';
 import Help from './components/Help';
 import { Grid } from '@material-ui/core';
@@ -20,6 +14,8 @@ import Disconnected from './components/Disconnected';
 import Connected from './components/Connected';
 import { useApps } from './hooks/useApps';
 import Connecting from './components/Connecting';
+import WalletConnectField from './components/WalletConnectField';
+import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 
 enum CONNECTION_STATUS {
   CONNECTED,
@@ -29,20 +25,13 @@ enum CONNECTION_STATUS {
 
 const App = () => {
   const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect();
-  const [inputValue, setInputValue] = useState('');
-  const [invalidQRCode, setInvalidQRCode] = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
-  const { findSafeApp } = useApps();
+  const { findSafeApp, openSafeApp } = useApps();
+  const { safe } = useSafeAppsSDK();
+  console.log('safe', safe);
   const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED);
 
-  const handleQRDialogClose = () => {
-    setOpenDialog(false);
-  };
-
-  const openSafeApp = (url: string | undefined) => {
-    // TODO. How can I get the safe-react URL in order to navigate to it?
-    console.log(url);
+  const handleOpenSafeApp = (url?: string) => {
+    openSafeApp(url);
     wcDisconnect();
     setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
   };
@@ -63,7 +52,6 @@ const App = () => {
 
   useEffect(() => {
     if (wcClientData) {
-      setOpenDialog(false);
       setConnectionStatus(CONNECTION_STATUS.CONNECTING);
     }
   }, [wcClientData]);
@@ -83,67 +71,6 @@ const App = () => {
     }
   }, [connectionStatus, findSafeApp, wcClientData]);
 
-  const onPaste = React.useCallback(
-    (event: React.ClipboardEvent) => {
-      const connectWithUri = (data: string) => {
-        if (data.startsWith('wc:')) {
-          setIsConnecting(true);
-          wcConnect({ uri: data });
-        }
-      };
-
-      const connectWithQR = (item: DataTransferItem) => {
-        const blob = item.getAsFile();
-        const reader = new FileReader();
-        reader.onload = async (event: ProgressEvent<FileReader>) => {
-          const imageData = await blobToImageData(event.target?.result as string);
-          const code = jsQr(imageData.data, imageData.width, imageData.height);
-          if (code?.data) {
-            setIsConnecting(true);
-            wcConnect({ uri: code.data });
-          } else {
-            setInvalidQRCode(true);
-            setInputValue(`Screen Shot ${format(new Date(), 'yyyy-MM-dd')} at ${format(new Date(), 'hh.mm.ss')}`);
-          }
-        };
-        reader.readAsDataURL(blob as Blob);
-      };
-
-      setInvalidQRCode(false);
-      setInputValue('');
-
-      if (wcClientData) {
-        return;
-      }
-
-      const items = event.clipboardData.items;
-
-      for (const index in items) {
-        const item = items[index];
-
-        if (item.kind === 'string' && item.type === 'text/plain') {
-          connectWithUri(event.clipboardData.getData('Text'));
-        }
-
-        if (item.kind === 'file') {
-          connectWithQR(item);
-        }
-      }
-    },
-    [wcClientData, wcConnect],
-  );
-
-  // WalletConnect does not provide a loading/connecting status
-  // This effects simulates a connecting status, and prevents
-  // the user to initiate two connections in simultaneous.
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isConnecting) {
-      interval = setTimeout(() => setIsConnecting(false), 2_000);
-    }
-    return () => clearTimeout(interval);
-  }, [isConnecting]);
-
   return (
     <>
       <AppBar />
@@ -152,19 +79,14 @@ const App = () => {
           <Grid item style={{ width: '484px', marginTop: '45px' }}>
             <StyledCard>
               {connectionStatus === CONNECTION_STATUS.DISCONNECTED && (
-                <Disconnected
-                  isConnecting={isConnecting}
-                  url={inputValue}
-                  onUrlChange={(url) => setInputValue(url)}
-                  onPaste={onPaste}
-                  onCameraOpen={() => setOpenDialog((open) => !open)}
-                  error={invalidQRCode ? 'Invalid QR code' : ''}
-                />
+                <Disconnected>
+                  <WalletConnectField client={wcClientData} onConnect={(data) => wcConnect(data)} />
+                </Disconnected>
               )}
               {connectionStatus === CONNECTION_STATUS.CONNECTING && (
                 <Connecting
                   client={wcClientData}
-                  onOpenSafeApp={() => openSafeApp(wcClientData?.url)}
+                  onOpenSafeApp={() => handleOpenSafeApp(wcClientData?.url)}
                   onKeepUsingWalletConnect={() => setConnectionStatus(CONNECTION_STATUS.CONNECTED)}
                 />
               )}
@@ -177,21 +99,6 @@ const App = () => {
                   }}
                 />
               )}
-              <Dialog
-                open={openDialog}
-                onClose={handleQRDialogClose}
-                aria-labelledby="Dialog to scan QR"
-                aria-describedby="Dialog to load a QR code"
-              >
-                <CloseDialogContainer>
-                  <Tooltip title="Close scan QR code dialog" aria-label="Close scan QR code dialog">
-                    <IconButton onClick={handleQRDialogClose}>
-                      <Icon size="md" type="cross" color="primary" />
-                    </IconButton>
-                  </Tooltip>
-                </CloseDialogContainer>
-                <ScanCode wcConnect={wcConnect} wcClientData={wcClientData} />
-              </Dialog>
             </StyledCard>
           </Grid>
           <Grid item style={{ width: '484px', marginTop: '16px' }}>
@@ -225,12 +132,6 @@ const StyledCard = styled(Card)`
   && {
     box-shadow: none;
   }
-`;
-const CloseDialogContainer = styled.div`
-  position: absolute;
-  z-index: 10;
-  top: 4px;
-  right: 4px;
 `;
 
 const HELP_CONNECT = {

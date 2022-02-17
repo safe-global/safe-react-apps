@@ -5,8 +5,9 @@ import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 const BASE_URL = 'https://safe-client.gnosis.io';
 
 export function useApps() {
-  const { sdk } = useSafeAppsSDK();
+  const { safe, sdk } = useSafeAppsSDK();
   const [safeAppsList, setSafeAppsList] = useState<SafeAppsResponse>([]);
+  const [networkPrefix, setNetworkPrefix] = useState<string>('');
 
   useEffect(() => {
     (async () => {
@@ -14,11 +15,24 @@ export function useApps() {
         const chainInfo = await sdk.safe.getChainInfo();
         const safeAppsList = await getSafeApps(BASE_URL, chainInfo.chainId);
         setSafeAppsList(safeAppsList);
+        setNetworkPrefix(chainInfo.shortName);
       } catch (error) {
         console.error('Unable to get chain info:', error);
       }
     })();
-  }, [sdk.safe]);
+  }, [sdk]);
+
+  const openSafeApp = useCallback(
+    (url: string | undefined) => {
+      if (document.location.ancestorOrigins.length) {
+        console.log(
+          `${document.location.ancestorOrigins[0]}/app/${networkPrefix}:${safe.safeAddress}/apps?appUrl=${url}`,
+        );
+        window.parent.location.href = `${document.location.ancestorOrigins[0]}/app/${networkPrefix}:${safe.safeAddress}/apps?appUrl=${url}`;
+      }
+    },
+    [networkPrefix, safe],
+  );
 
   const findSafeApp = useCallback(
     (url: string) => {
@@ -29,5 +43,5 @@ export function useApps() {
     [safeAppsList],
   );
 
-  return { findSafeApp };
+  return { findSafeApp, openSafeApp };
 }

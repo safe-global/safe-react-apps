@@ -21,9 +21,9 @@ const Connected = ({ client, onDisconnect }: ConnectedProps) => {
           <Image src={client.icons[0] || ''} role="img" />
         </Grid>
         <Grid item>
-          <Text size="md" color="primary">
+          <StyledText size="md" color="primary">
             CONNECTED
-          </Text>
+          </StyledText>
           <Text size="xl" as="span" strong>
             {client.name ? client.name : new URL(client.url).hostname}
           </Text>
@@ -40,13 +40,15 @@ const Connected = ({ client, onDisconnect }: ConnectedProps) => {
         </Button>
       </Grid>
 
-      <StyledMessage item direction="column" alignItems="center" justifyContent="center" spacing={4}>
-        <Icon type="info" color="primary" size="md" />
-        <Text size="lg">
-          You need to have this WalletConnect Safe app open for transactions to pop up. You will not receive transaction
-          requests when you don't have it open.
-        </Text>
-      </StyledMessage>
+      <Grid item>
+        <StyledMessage>
+          <Icon type="info" color="primary" size="md" />
+          <Text size="lg">
+            You need to have this WalletConnect Safe app open for transactions to pop up. You will not receive
+            transaction requests when you don't have it open.
+          </Text>
+        </StyledMessage>
+      </Grid>
     </Container>
   );
 };
@@ -58,6 +60,12 @@ const Image = styled.div<{ src: string }>`
   background-size: contain;
 `;
 
+const StyledText = styled(Text)`
+  letter-spacing: 1px;
+  font-weight: bold;
+  margin-bottom: 5px;
+`;
+
 const StyledDivider = styled(Divider)`
   margin: 0 8px 0 0;
 `;
@@ -66,7 +74,7 @@ const Container = styled(Grid)`
   padding: 16px 22px;
 `;
 
-const StyledMessage = styled(Grid)`
+const StyledMessage = styled.div`
   padding: 20px;
   background: #effaf8;
   text-align: center;
@@ -75,7 +83,7 @@ const StyledMessage = styled(Grid)`
   p {
     margin-top: 8px;
     text-align: center;
-    line-height: 20px;
+    line-height: 22px;
   }
 `;
 
