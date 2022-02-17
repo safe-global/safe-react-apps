@@ -16,6 +16,7 @@ import { errorBaseStyles } from './forms/styles';
 
 const Dashboard = (): ReactElement => {
   const { web3, interfaceRepo, chainInfo } = useServices();
+
   const {
     transactions,
     handleAddTransaction,
@@ -24,6 +25,7 @@ const Dashboard = (): ReactElement => {
     handleRemoveAllTransactions,
     handleReorderTransactions,
   } = useTransactions();
+
   const [address, setAddress] = useState('');
   const [abi, setAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);

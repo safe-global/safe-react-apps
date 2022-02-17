@@ -165,14 +165,19 @@ function TransactionsBatchList({
                           >
                             {/* Transacion Position */}
                             <PositionWrapper>
-                              <PositionDot color="tag">
+                              <PositionDot color="tag" isDragging={isThisTxBeingDragging}>
                                 <Text size="xl">{displayedTxPosition}</Text>
                               </PositionDot>
                               {showArrowAdornment && <ArrowAdornment />}
                             </PositionWrapper>
 
                             {/* Transacion Description */}
-                            <StyledAccordion expanded={isTxExpanded} compact onChange={onClickShowTransactionDetails}>
+                            <StyledAccordion
+                              expanded={isTxExpanded}
+                              compact
+                              onChange={onClickShowTransactionDetails}
+                              isDragging={isThisTxBeingDragging}
+                            >
                               <AccordionSummary
                                 IconButtonProps={{
                                   hidden: !showTransactionDetails,
@@ -342,6 +347,8 @@ const TransactionsBatchWrapper = styled.section`
   margin-top: 24px;
 `;
 
+// batch header styles
+
 const TransactionHeader = styled.header`
   display: flex;
   align-items: center;
@@ -372,6 +379,8 @@ const StyledHeaderIconButton = styled(IconButton)`
   }
 `;
 
+// transactions list styles
+
 const TransactionList = styled.ol`
   list-style: none;
   padding: 0;
@@ -384,30 +393,7 @@ const TransactionListItem = styled.li`
   margin-bottom: 8px;
 `;
 
-const StyledAccordion = styled(Accordion)`
-  flex-grow: 1;
-
-  &.MuiAccordion-root {
-    margin-bottom: 0;
-  }
-
-  .MuiAccordionSummary-root {
-    height: 52px;
-    padding: 0px 8px;
-
-    .MuiIconButton-root {
-      padding: 8px;
-    }
-  }
-
-  .MuiAccordionSummary-content {
-    align-items: center;
-  }
-`;
-
-const TransactionActionButton = styled(IconButton)`
-  padding: 0;
-`;
+// transaction postion dot styles
 
 const PositionWrapper = styled.div`
   display: flex;
@@ -417,11 +403,12 @@ const PositionWrapper = styled.div`
   padding: 14px 10px 0 0;
 `;
 
-const PositionDot = styled(Dot)`
+const PositionDot = styled(Dot)<{ isDragging: boolean }>`
   height: 24px;
   width: 24px;
 
-  background-color: #e2e3e3;
+  background-color: ${({ isDragging }) => (isDragging ? '#92c9be' : ' #e2e3e3')};
+  transition: background-color .5s linear;
 `;
 
 const minArrowSize = '12';
@@ -457,6 +444,35 @@ const ArrowAdornment = styled.div`
 
     transform: rotate(45deg);
   }
+`;
+
+// transaction description styles
+
+const StyledAccordion = styled(Accordion)<{ isDragging: boolean }>`
+  flex-grow: 1;
+
+  &.MuiAccordion-root {
+    margin-bottom: 0;
+    border-color: ${({ isDragging }) => (isDragging ? '#92c9be' : ' #e8e7e6')};
+    transition: border-color .5s linear;
+  }
+
+  .MuiAccordionSummary-root {
+    height: 52px;
+    padding: 0px 8px;
+
+    .MuiIconButton-root {
+      padding: 8px;
+    }
+  }
+
+  .MuiAccordionSummary-content {
+    align-items: center;
+  }
+`;
+
+const TransactionActionButton = styled(IconButton)`
+  padding: 0;
 `;
 
 const TransactionsDescription = styled(Text)`
