@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -10,9 +10,7 @@ import {
   Icon,
   Tooltip,
   Button,
-  GenericModal,
 } from '@gnosis.pm/safe-react-components';
-import Box from '@material-ui/core/Box';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import IconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
@@ -27,6 +25,9 @@ import {
 } from 'react-beautiful-dnd';
 
 import { ProposedTransaction } from '../typings/models';
+import useModal from '../hooks/useModal/useModal';
+import DeleteTransactionModal from './modals/DeleteTransactionModal';
+import DeleteBatchModal from './modals/DeleteBatchModal';
 
 type TransactionsBatchListProps = {
   transactions: ProposedTransaction[];
@@ -40,7 +41,6 @@ type TransactionsBatchListProps = {
 
 const TRANSACTION_LIST_DROPPABLE_ID = 'Transaction_List';
 const DROP_EVENT = 'DROP';
-const DELETE_ALL_BATCH = 'ALL_BATCH';
 
 function TransactionsBatchList({
   transactions,
@@ -54,27 +54,6 @@ function TransactionsBatchList({
   // we need those states to display the correct position in each tx during the drag & drop
   const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState<number>();
   const [draggableTxIndexDestination, setDraggableTxIndexDestination] = useState<number>();
-
-  // modal states
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [txToRemove, setTxToRemove] = useState<string>(); // ALL_BATCH, 0, 1, ...
-  const deleteAllBatch = txToRemove === DELETE_ALL_BATCH;
-  const openDeleteModal = useCallback((txToRemove?: string) => {
-    setShowDeleteModal(true);
-    setTxToRemove(txToRemove);
-  }, []);
-  const closeDeleteModal = useCallback(() => {
-    setShowDeleteModal(false);
-    setTxToRemove(undefined);
-  }, []);
-  const onClickModalDelete = () => {
-    if (deleteAllBatch) {
-      handleRemoveAllTransactions();
-    } else {
-      onRemoveTransaction(Number(txToRemove));
-    }
-    closeDeleteModal();
-  };
 
   const onDragStart = ({ source }: DragStart) => {
     setDraggableTxIndexOrigin(source.index);
@@ -104,6 +83,11 @@ function TransactionsBatchList({
     setDraggableTxIndexDestination(undefined);
   };
 
+  // 2 modals needed: delete batch modal and delete transaction modal
+  const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
+  const { open: showDeleteTxModal, openModal: openDeleteTxModal, closeModal: closeDeleteTxModal } = useModal();
+  const [txToRemove, setTxToRemove] = useState<string>();
+
   return (
     <>
       <TransactionsBatchWrapper>
@@ -128,7 +112,7 @@ function TransactionsBatchList({
             </StyledHeaderIconButton>
           </Tooltip>
           <Tooltip placement="top" title="Delete Batch" backgroundColor="primary" textColor="white" arrow>
-            <StyledHeaderIconButton onClick={() => openDeleteModal(DELETE_ALL_BATCH)}>
+            <StyledHeaderIconButton onClick={openDeleteBatchModal}>
               <Icon size="sm" type="delete" color="error" aria-label="Delete Batch" />
             </StyledHeaderIconButton>
           </Tooltip>
@@ -227,7 +211,10 @@ function TransactionsBatchList({
                                   arrow
                                 >
                                   <TransactionActionButton
-                                    onClick={() => openDeleteModal(String(index))}
+                                    onClick={() => {
+                                      setTxToRemove(String(index));
+                                      openDeleteTxModal();
+                                    }}
                                     size="medium"
                                     aria-label="Delete transaction"
                                   >
@@ -267,38 +254,28 @@ function TransactionsBatchList({
         </Button>
       </TransactionsBatchWrapper>
 
-      {/* Delete batch or transaction modal */}
-      {showDeleteModal && (
-        <GenericModal
-          title={deleteAllBatch ? 'Cancel Transaction Batch?' : 'Delete from batch?'}
-          withoutBodyPadding
-          body={
-            <StyledModalBodyWrapper>
-              <StyledModalDot color="tag">
-                <Text size="xl" color="white">
-                  {deleteAllBatch ? transactions.length : Number(txToRemove) + 1}
-                </Text>
-              </StyledModalDot>
+      {/* Delete batch modal */}
+      {showDeleteBatchModal && (
+        <DeleteBatchModal
+          count={transactions.length}
+          onClick={() => {
+            closeDeleteBatchModal();
+            handleRemoveAllTransactions();
+          }}
+          onClose={closeDeleteBatchModal}
+        />
+      )}
 
-              <StyledModalText size="xl">
-                {!deleteAllBatch
-                  ? getTransactionText(transactions[Number(txToRemove)]?.description)
-                  : 'Transaction Batch'}
-                {deleteAllBatch
-                  ? ' will be permanently deleted and the transaction data will be lost'
-                  : ' will be permanently deleted from the batch'}
-              </StyledModalText>
-              <StyledModalButtonsWrapper display="flex" alignItems="center" justifyContent="center" maxWidth={'450px'}>
-                <Button size="md" variant="bordered" onClick={closeDeleteModal}>
-                  Back
-                </Button>
-                <Button size="md" style={{ marginLeft: 16 }} color="error" onClick={onClickModalDelete}>
-                  {deleteAllBatch ? 'Yes, Cancel' : 'Yes, Delete'}
-                </Button>
-              </StyledModalButtonsWrapper>
-            </StyledModalBodyWrapper>
-          }
-          onClose={closeDeleteModal}
+      {/* Delete a transaction modal */}
+      {showDeleteTxModal && (
+        <DeleteTransactionModal
+          txIndex={String(txToRemove)}
+          txDescription={getTransactionText(transactions[Number(txToRemove)]?.description)}
+          onClick={() => {
+            closeDeleteTxModal();
+            onRemoveTransaction(Number(txToRemove));
+          }}
+          onClose={closeDeleteTxModal}
         />
       )}
     </>
@@ -490,23 +467,4 @@ const TransactionsDescription = styled(Text)`
 const DragAndDropIndicatorIcon = styled(DragIndicatorIcon)`
   color: #b2bbc0;
   margin-right: 4px;
-`;
-
-const StyledModalBodyWrapper = styled.div`
-  position: relative;
-  padding: 24px;
-  max-width: 450px;
-`;
-
-const StyledModalDot = styled(TransactionCounterDot)`
-  position: absolute;
-  top: 22px;
-`;
-
-const StyledModalText = styled(Text)`
-  text-indent: 30px;
-`;
-
-const StyledModalButtonsWrapper = styled(Box)`
-  margin-top: 24px;
 `;
