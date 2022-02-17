@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import jsQr from 'jsqr';
 import styled from 'styled-components';
 import format from 'date-fns/format';
@@ -20,13 +20,12 @@ import Disconnected from './components/Disconnected';
 import Connected from './components/Connected';
 import { useApps } from './hooks/useApps';
 import Connecting from './components/Connecting';
-import useConnectionState, {
-  DISCONNECTED_STATE,
-  CONNECTING_STATE,
-  CONNECTED_STATE,
-  CONNECT_EVENT,
-  DISCONNECT_EVENT,
-} from './hooks/useConnectionState';
+
+enum CONNECTION_STATUS {
+  CONNECTED,
+  DISCONNECTED,
+  CONNECTING,
+}
 
 const App = () => {
   const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect();
@@ -35,7 +34,7 @@ const App = () => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const { findSafeApp } = useApps();
-  const { connectionStatus, changeConnectionStatus } = useConnectionState();
+  const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED);
 
   const handleQRDialogClose = () => {
     setOpenDialog(false);
@@ -45,30 +44,44 @@ const App = () => {
     // TODO. How can I get the safe-react URL in order to navigate to it?
     console.log(url);
     wcDisconnect();
-    changeConnectionStatus(DISCONNECTED_STATE);
+    setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
   };
+
+  const disconnectOnPageRefresh = useCallback(() => {
+    if (connectionStatus === CONNECTION_STATUS.CONNECTING) {
+      wcDisconnect();
+      setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
+    }
+  }, [connectionStatus, wcDisconnect]);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', disconnectOnPageRefresh);
+    return () => {
+      window.removeEventListener('beforeunload', disconnectOnPageRefresh);
+    };
+  }, [disconnectOnPageRefresh]);
 
   useEffect(() => {
     if (wcClientData) {
       setOpenDialog(false);
-      changeConnectionStatus(CONNECT_EVENT);
+      setConnectionStatus(CONNECTION_STATUS.CONNECTING);
     }
-  }, [wcClientData, changeConnectionStatus]);
+  }, [wcClientData]);
 
   useEffect(() => {
     if (!wcClientData) {
-      changeConnectionStatus(DISCONNECT_EVENT);
+      setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
       return;
     }
 
-    if (connectionStatus === CONNECTING_STATE) {
+    if (connectionStatus === CONNECTION_STATUS.CONNECTING) {
       const safeApp = findSafeApp(wcClientData.url);
       console.log(safeApp);
       if (!safeApp) {
-        changeConnectionStatus(CONNECT_EVENT);
+        setConnectionStatus(CONNECTION_STATUS.CONNECTED);
       }
     }
-  }, [connectionStatus, findSafeApp, wcClientData, changeConnectionStatus]);
+  }, [connectionStatus, findSafeApp, wcClientData]);
 
   const onPaste = React.useCallback(
     (event: React.ClipboardEvent) => {
@@ -138,7 +151,7 @@ const App = () => {
         <Grid container direction="column" alignItems="center" style={{ height: '100%', paddingTop: '45px' }}>
           <Grid item style={{ width: '484px', marginTop: '45px' }}>
             <StyledCard>
-              {connectionStatus === DISCONNECTED_STATE && (
+              {connectionStatus === CONNECTION_STATUS.DISCONNECTED && (
                 <Disconnected
                   isConnecting={isConnecting}
                   url={inputValue}
@@ -148,18 +161,18 @@ const App = () => {
                   error={invalidQRCode ? 'Invalid QR code' : ''}
                 />
               )}
-              {connectionStatus === CONNECTING_STATE && (
+              {connectionStatus === CONNECTION_STATUS.CONNECTING && (
                 <Connecting
                   client={wcClientData}
                   onOpenSafeApp={() => openSafeApp(wcClientData?.url)}
-                  onKeepUsingWalletConnect={() => changeConnectionStatus(CONNECT_EVENT)}
+                  onKeepUsingWalletConnect={() => setConnectionStatus(CONNECTION_STATUS.CONNECTED)}
                 />
               )}
-              {connectionStatus === CONNECTED_STATE && (
+              {connectionStatus === CONNECTION_STATUS.CONNECTED && (
                 <Connected
                   client={wcClientData}
                   onDisconnect={() => {
-                    changeConnectionStatus(DISCONNECT_EVENT);
+                    setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
                     wcDisconnect();
                   }}
                 />

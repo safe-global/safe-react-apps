@@ -1,4 +1,3 @@
-import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
@@ -17,12 +16,12 @@ type DisconnectedProps = {
 };
 
 const Disconnected = ({
-  isConnecting,
   url,
   onUrlChange,
   onPaste,
   onCameraOpen,
   error,
+  isConnecting,
 }: DisconnectedProps): React.ReactElement => {
   return (
     <Container container alignItems="center" justifyContent="center" spacing={3}>
@@ -36,10 +35,6 @@ const Disconnected = ({
         {isConnecting ? (
           <Loader size="md" />
         ) : (
-          // <Box>
-
-          //   <input />
-          // </Box>
           <StyledTextField
             id="wc-uri"
             name="wc-uri"
