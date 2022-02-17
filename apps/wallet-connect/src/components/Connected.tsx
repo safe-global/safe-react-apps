@@ -34,11 +34,11 @@ const Connected = ({ client, onDisconnect }: ConnectedProps) => {
         <StyledDivider />
       </Grid>
 
-      <CenteredGridItem item>
+      <StyledCenteredGridItem item>
         <Button size="md" color="error" variant="contained" onClick={onDisconnect}>
           Disconnect
         </Button>
-      </CenteredGridItem>
+      </StyledCenteredGridItem>
 
       <Grid item>
         <StyledMessage>
@@ -59,7 +59,7 @@ const StyledText = styled(Text)`
   margin-bottom: 5px;
 `;
 
-const CenteredGridItem = styled(Grid)`
+const StyledCenteredGridItem = styled(Grid)`
   align-self: center;
 `;
 
