@@ -30,7 +30,7 @@ const App = () => {
   console.log('safe', safe);
   const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED);
 
-  const handleOpenSafeApp = (url?: string) => {
+  const handleOpenSafeApp = (url: string) => {
     openSafeApp(url);
     wcDisconnect();
     setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
@@ -86,7 +86,7 @@ const App = () => {
               {connectionStatus === CONNECTION_STATUS.CONNECTING && (
                 <Connecting
                   client={wcClientData}
-                  onOpenSafeApp={() => handleOpenSafeApp(wcClientData?.url)}
+                  onOpenSafeApp={() => handleOpenSafeApp(wcClientData?.url || '')}
                   onKeepUsingWalletConnect={() => setConnectionStatus(CONNECTION_STATUS.CONNECTED)}
                 />
               )}

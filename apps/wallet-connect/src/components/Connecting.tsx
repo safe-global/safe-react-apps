@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import { IClientMeta } from '@walletconnect/types';
 import Grid from '@material-ui/core/Grid';
-import { Button, Link } from '@gnosis.pm/safe-react-components';
-import { Text } from '@gnosis.pm/safe-react-components';
+import { Text, Button, Link } from '@gnosis.pm/safe-react-components';
 import { ReactComponent as SafeAppConnectLogo } from '../assets/safe-app-connect.svg';
+import { StyledBoldText, StyledCardContainer, StyledImage } from './styles';
 
 type ConnectingProps = {
   client: IClientMeta | null;
@@ -17,38 +17,36 @@ const Connecting = ({ client, onOpenSafeApp, onKeepUsingWalletConnect }: Connect
   }
 
   return (
-    <Container container direction="column" alignItems="center" justifyContent="center" spacing={2}>
+    <StyledCardContainer container direction="column" alignItems="center" justifyContent="center" spacing={2}>
       <Grid item>
         <SafeAppConnectLogo />
       </Grid>
 
       <Grid item>
-        <Text size="xl">
-          Trying to connect <Bold>{client.name}</Bold>
-        </Text>
+        <StyledBoldText size="xl">Trying to connect {client.name}</StyledBoldText>
       </Grid>
 
       <Grid item>
-        <CenteredText size="md">
+        <StyledCenteredText size="md">
           For better experience use Safe optimised app. It allows you to operate with an app without interruption.
-        </CenteredText>
+        </StyledCenteredText>
       </Grid>
 
-      <SafeApp container item alignItems="center" justifyContent="center" spacing={3}>
+      <StyledSafeAppContainer container item alignItems="center" justifyContent="center" spacing={3}>
         <Grid item xs={2}>
-          <Image src={client.icons[0]} role="img" />
+          <StyledImage src={client.icons[0]} role="img" />
         </Grid>
         <Grid container direction="column" item xs={10} spacing={1}>
           <Grid item>
-            <AppTitle size="sm" color="primary">
-              <Bold>SAFE OPTIMISED</Bold>
-            </AppTitle>
+            <StyledBoldText size="sm" color="primary">
+              SAFE OPTIMISED
+            </StyledBoldText>
           </Grid>
           <Grid item>
             <Text size="lg">{client.name ? client.name : new URL(client.url).hostname}</Text>
           </Grid>
         </Grid>
-      </SafeApp>
+      </StyledSafeAppContainer>
 
       <Grid item>
         <Button size="md" color="primary" variant="contained" onClick={onOpenSafeApp}>
@@ -59,11 +57,11 @@ const Connecting = ({ client, onOpenSafeApp, onKeepUsingWalletConnect }: Connect
       <Grid item>
         <StyledLink onClick={onKeepUsingWalletConnect}>Keep using WalletConnect</StyledLink>
       </Grid>
-    </Container>
+    </StyledCardContainer>
   );
 };
 
-const SafeApp = styled(Grid)`
+const StyledSafeAppContainer = styled(Grid)`
   && {
     background-color: #eaf7f4;
     border-radius: 8px;
@@ -72,27 +70,7 @@ const SafeApp = styled(Grid)`
   }
 `;
 
-const Container = styled(Grid)`
-  padding: 16px 22px;
-`;
-
-const AppTitle = styled(Text)`
-  letter-spacing: 1px;
-  font-weight: bold;
-`;
-
-const Image = styled.div<{ src: string }>`
-  background: url('${({ src }) => src}') no-repeat center;
-  height: 60px;
-  width: 60px;
-  background-size: contain;
-`;
-
-const Bold = styled.span`
-  font-weight: bold;
-`;
-
-const CenteredText = styled(Text)`
+const StyledCenteredText = styled(Text)`
   text-align: center;
 `;
 

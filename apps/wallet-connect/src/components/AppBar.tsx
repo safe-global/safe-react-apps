@@ -7,7 +7,7 @@ const WALLET_CONNECT_HELP = 'https://help.gnosis-safe.io/en/articles/4356253-wal
 const AppBar = () => {
   return (
     <StyledAppBar position="static" color="default" elevation={1}>
-      <StyledText size="xl">Wallet Connect</StyledText>
+      <StyledAppBarText size="xl">Wallet Connect</StyledAppBarText>
       <Link href={WALLET_CONNECT_HELP} target="_blank">
         <Icon size="md" type="info" />
       </Link>
@@ -25,7 +25,7 @@ const StyledAppBar = styled(MuiAppBar)`
   }
 `;
 
-const StyledText = styled(Text)`
+const StyledAppBarText = styled(Text)`
   font-size: 20px;
   margin-left: 38px;
   margin-right: 16px;

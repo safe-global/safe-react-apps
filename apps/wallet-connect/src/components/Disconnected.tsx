@@ -1,12 +1,12 @@
-import { Text } from '@gnosis.pm/safe-react-components';
-import Grid from '@material-ui/core/Grid';
 import React from 'react';
+import Grid from '@material-ui/core/Grid';
 import styled from 'styled-components';
+import { Text } from '@gnosis.pm/safe-react-components';
 import { ReactComponent as WalletConnectLogo } from '../assets/wallet-connect-logo.svg';
 
 const Disconnected: React.FC = ({ children }) => {
   return (
-    <Container container alignItems="center" justifyContent="center" spacing={3}>
+    <StyledContainer container alignItems="center" justifyContent="center" spacing={3}>
       <Grid item>
         <WalletConnectLogo />
       </Grid>
@@ -14,17 +14,17 @@ const Disconnected: React.FC = ({ children }) => {
         <StyledText size="xl">Connect your Safe to a dApp via the WalletConnect and trigger transactions</StyledText>
       </Grid>
       <Grid item>{children}</Grid>
-    </Container>
+    </StyledContainer>
   );
 };
 
-const Container = styled(Grid)`
+const StyledContainer = styled(Grid)`
   padding: 38px 30px 45px 30px;
 `;
 
 const StyledText = styled(Text)`
-  margin-bottom: 8px;
   text-align: center;
+  margin-bottom: 8px;
 `;
 
 export default Disconnected;

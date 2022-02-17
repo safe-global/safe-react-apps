@@ -1,10 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
-import { getSafeApps, SafeAppsResponse } from '@gnosis.pm/safe-react-gateway-sdk';
+import { getSafeApps, SafeAppData, SafeAppsResponse } from '@gnosis.pm/safe-react-gateway-sdk';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 
 const BASE_URL = 'https://safe-client.gnosis.io';
 
-export function useApps() {
+type UseAppsResponse = {
+  findSafeApp: (safeAddress: string) => SafeAppData | undefined;
+  openSafeApp: (safeAppAddress: string) => void;
+};
+
+export function useApps(): UseAppsResponse {
   const { safe, sdk } = useSafeAppsSDK();
   const [safeAppsList, setSafeAppsList] = useState<SafeAppsResponse>([]);
   const [networkPrefix, setNetworkPrefix] = useState<string>('');
@@ -23,11 +28,8 @@ export function useApps() {
   }, [sdk]);
 
   const openSafeApp = useCallback(
-    (url: string | undefined) => {
+    (url: string) => {
       if (document.location.ancestorOrigins.length) {
-        console.log(
-          `${document.location.ancestorOrigins[0]}/app/${networkPrefix}:${safe.safeAddress}/apps?appUrl=${url}`,
-        );
         window.parent.location.href = `${document.location.ancestorOrigins[0]}/app/${networkPrefix}:${safe.safeAddress}/apps?appUrl=${url}`;
       }
     },
@@ -35,7 +37,7 @@ export function useApps() {
   );
 
   const findSafeApp = useCallback(
-    (url: string) => {
+    (url: string): SafeAppData | undefined => {
       let { hostname } = new URL(url);
 
       return safeAppsList.find((safeApp) => safeApp.url.includes(hostname));

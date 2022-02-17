@@ -1,14 +1,14 @@
 import { useState, useCallback, useEffect } from 'react';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
+import Dialog from '@material-ui/core/Dialog';
 import { Icon, Loader, TextFieldInput, Tooltip } from '@gnosis.pm/safe-react-components';
+import { IWalletConnectSession, IClientMeta } from '@walletconnect/types';
 import styled from 'styled-components';
+import format from 'date-fns/format';
 import jsQr from 'jsqr';
 import { ReactComponent as QRCode } from '../assets/qr-code.svg';
 import { blobToImageData } from '../utils/images';
-import format from 'date-fns/format';
-import { IWalletConnectSession, IClientMeta } from '@walletconnect/types';
-import Dialog from '@material-ui/core/Dialog';
 import ScanCode from './ScanCode';
 
 type WcConnectProps = {
@@ -45,6 +45,7 @@ const WalletConnectField = ({ client, onConnect }: WalletConnectFieldProps): Rea
     if (isConnecting) {
       interval = setTimeout(() => setIsConnecting(false), 2_000);
     }
+
     return () => clearTimeout(interval);
   }, [isConnecting]);
 
@@ -134,13 +135,13 @@ const WalletConnectField = ({ client, onConnect }: WalletConnectFieldProps): Rea
         aria-labelledby="Dialog to scan QR"
         aria-describedby="Dialog to load a QR code"
       >
-        <CloseDialogContainer>
+        <StyledCloseDialogContainer>
           <Tooltip title="Close scan QR code dialog" aria-label="Close scan QR code dialog">
             <IconButton onClick={handleQRDialogClose}>
               <Icon size="md" type="cross" color="primary" />
             </IconButton>
           </Tooltip>
-        </CloseDialogContainer>
+        </StyledCloseDialogContainer>
         <ScanCode wcConnect={onConnect} wcClientData={client} />
       </Dialog>
     </>
@@ -151,7 +152,7 @@ const StyledQRCodeAdorment = styled(InputAdornment)`
   cursor: pointer;
 `;
 
-const CloseDialogContainer = styled.div`
+const StyledCloseDialogContainer = styled.div`
   position: absolute;
   z-index: 10;
   top: 4px;
@@ -169,33 +170,39 @@ const StyledTextField = styled(TextFieldInput)`
       &:hover {
         background-color: #fff;
       }
-    }
-    .MuiInputBase-input {
-      border-left: 2px solid #e2e3e3;
-      padding-left: 16px;
-    }
-    .MuiInputAdornment-root {
-      margin-left: 4px;
-      margin-right: 4px;
-    }
-    .MuiFilledInput-root {
-      background-color: #fff;
-      .MuiFilledInput-inputHiddenLabel {
-        padding-top: 14px;
-        padding-bottom: 14px;
+
+      .MuiInputBase-input {
+        border-left: 2px solid #e2e3e3;
+        padding-left: 16px;
+      }
+
+      .MuiInputAdornment-root {
+        margin-left: 4px;
+        margin-right: 4px;
+      }
+
+      &.MuiFilledInput-root {
+        background-color: #fff;
+        .MuiFilledInput-inputHiddenLabel {
+          padding-top: 14px;
+          padding-bottom: 14px;
+        }
+        &.MuiFilledInput-underline:after {
+          border-bottom: 0;
+        }
+      }
+
+      &.MuiFilledInput-adornedStart {
+        padding-left: 0;
+      }
+
+      .MuiInputLabel-filled {
+        color: #0000008a;
       }
     }
-    .MuiFilledInput-adornedStart {
-      padding-left: 0;
-    }
+
     .Mui-focused {
       background-color: #fff;
-    }
-    .MuiInputLabel-filled {
-      color: #0000008a;
-    }
-    .MuiFilledInput-underline:after {
-      border-bottom: 0;
     }
   }
 `;

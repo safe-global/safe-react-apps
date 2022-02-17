@@ -15,19 +15,17 @@ const Help = ({ title, steps }: HelpProps): React.ReactElement => {
       </StyledAccordionSummary>
       <StyledAccordionDetails>
         {steps.map((step, index) => (
-          <StyledBox key={index} display="flex" marginBottom={2} alignItems="center">
+          <Box key={index} display="flex" marginBottom={2} alignItems="center">
             <StyledDot color="primary">
-              <DotText size="sm">{index + 1}</DotText>
+              <StyledDotText size="sm">{index + 1}</StyledDotText>
             </StyledDot>
             <Text size="lg">{step}</Text>
-          </StyledBox>
+          </Box>
         ))}
       </StyledAccordionDetails>
     </StyledAccordion>
   );
 };
-
-const StyledBox = styled(Box)``;
 
 const StyledAccordion = styled(Accordion)`
   && {
@@ -60,7 +58,7 @@ const StyledDot = styled(Dot)`
   color: #566976;
 `;
 
-const DotText = styled(Text)`
+const StyledDotText = styled(Text)`
   position: absolute;
   font-size: 10px;
 `;

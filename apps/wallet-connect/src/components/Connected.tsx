@@ -1,8 +1,8 @@
+import Grid from '@material-ui/core/Grid';
 import styled from 'styled-components';
 import { IClientMeta } from '@walletconnect/types';
-import Grid from '@material-ui/core/Grid';
-import { Button, Divider } from '@gnosis.pm/safe-react-components';
-import { Text, Icon } from '@gnosis.pm/safe-react-components';
+import { Text, Icon, Button, Divider } from '@gnosis.pm/safe-react-components';
+import { StyledCardContainer, StyledImage } from './styles';
 
 type ConnectedProps = {
   client: IClientMeta | null;
@@ -15,16 +15,16 @@ const Connected = ({ client, onDisconnect }: ConnectedProps) => {
   }
 
   return (
-    <Container container direction="column" spacing={3}>
-      <Grid container alignItems="center" spacing={3}>
+    <StyledCardContainer container direction="column" spacing={3}>
+      <Grid container alignItems="center" wrap="nowrap" spacing={3}>
         <Grid item>
-          <Image src={client.icons[0] || ''} role="img" />
+          <StyledImage src={client.icons[0] || ''} role="img" />
         </Grid>
         <Grid item>
           <StyledText size="md" color="primary">
             CONNECTED
           </StyledText>
-          <Text size="xl" as="span" strong>
+          <Text size="xl" as="span">
             {client.name ? client.name : new URL(client.url).hostname}
           </Text>
         </Grid>
@@ -34,11 +34,11 @@ const Connected = ({ client, onDisconnect }: ConnectedProps) => {
         <StyledDivider />
       </Grid>
 
-      <Grid item>
+      <CenteredGridItem item>
         <Button size="md" color="error" variant="contained" onClick={onDisconnect}>
           Disconnect
         </Button>
-      </Grid>
+      </CenteredGridItem>
 
       <Grid item>
         <StyledMessage>
@@ -49,16 +49,9 @@ const Connected = ({ client, onDisconnect }: ConnectedProps) => {
           </Text>
         </StyledMessage>
       </Grid>
-    </Container>
+    </StyledCardContainer>
   );
 };
-
-const Image = styled.div<{ src: string }>`
-  background: url('${({ src }) => src}') no-repeat center;
-  height: 60px;
-  width: 60px;
-  background-size: contain;
-`;
 
 const StyledText = styled(Text)`
   letter-spacing: 1px;
@@ -66,12 +59,12 @@ const StyledText = styled(Text)`
   margin-bottom: 5px;
 `;
 
-const StyledDivider = styled(Divider)`
-  margin: 0 8px 0 0;
+const CenteredGridItem = styled(Grid)`
+  align-self: center;
 `;
 
-const Container = styled(Grid)`
-  padding: 16px 22px;
+const StyledDivider = styled(Divider)`
+  margin: 0 8px 0 0;
 `;
 
 const StyledMessage = styled.div`
