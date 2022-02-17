@@ -74,7 +74,7 @@ const Dashboard = (): ReactElement => {
 
   const contractHasMethods = contract && contract.methods.length > 0 && !isABILoading;
 
-  const isTransferTransaction = !abi && isValidAddress(address);
+  const isTransferTransaction = isValidAddress(address) && !abi && !isABILoading;
   const isContractInteractionTransaction = abi && contractHasMethods;
 
   const showNewTransactionForm = isTransferTransaction || isContractInteractionTransaction;
