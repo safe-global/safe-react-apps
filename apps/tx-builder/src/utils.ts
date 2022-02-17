@@ -1,4 +1,4 @@
-import { AbiItem, toBN, isAddress } from 'web3-utils';
+import { AbiItem, toBN, isAddress, fromWei } from 'web3-utils';
 import abiCoder, { AbiCoder } from 'web3-eth-abi';
 
 import { ContractInput, ContractMethod } from './hooks/useServices/interfaceRepository';
@@ -117,4 +117,8 @@ export const encodeToHexData = (contractMethod: ContractMethod | undefined, cont
       console.log('Error encoding current form values to hex data: ', error);
     }
   }
+};
+
+export const weiToEther = (wei: string) => {
+  return fromWei(wei, 'ether');
 };

@@ -1,16 +1,16 @@
 import { GenericModal, Button } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
-import useServices from '../hooks/useServices';
 import { ProposedTransaction } from '../typings/models';
 import SolidityForm, {
   CONTRACT_METHOD_INDEX_FIELD_NAME,
   CONTRACT_VALUES_FIELD_NAME,
-  HEX_ENCODED_DATA_FIELD_NAME,
+  CUSTOM_TRANSACTION_DATA_FIELD_NAME,
   NATIVE_VALUE_FIELD_NAME,
   parseFormToProposedTransaction,
   SolidityFormValuesTypes,
   TO_ADDRESS_FIELD_NAME,
 } from './forms/SolidityForm';
+import { weiToEther } from '../utils';
 
 type EditTransactionModalProps = {
   editingTransactionIndex: number;
@@ -33,17 +33,18 @@ const EditTransactionModal = ({
   onSubmit,
   onDelete,
 }: EditTransactionModalProps) => {
-  const { web3 } = useServices();
-
   const initialFormValues: Partial<SolidityFormValuesTypes> = {
     [TO_ADDRESS_FIELD_NAME]: transaction.raw.to,
-    [NATIVE_VALUE_FIELD_NAME]: web3?.utils.fromWei(transaction.raw.value, 'ether'),
-    [HEX_ENCODED_DATA_FIELD_NAME]: transaction.raw.data,
+    [NATIVE_VALUE_FIELD_NAME]: weiToEther(transaction.raw.value),
+    [CUSTOM_TRANSACTION_DATA_FIELD_NAME]: transaction.description.customTransactionData,
   };
 
   // If the transaction is not a custom hex encoded data, we need to set the contract method index,
   // we need to set the contract fields values
-  const contractMethodEditable = transaction.description.contractMethod && transaction.contractInterface;
+  const contractMethodEditable =
+    !transaction.description.customTransactionData &&
+    transaction.description.contractMethod &&
+    transaction.contractInterface;
   if (contractMethodEditable) {
     initialFormValues[CONTRACT_METHOD_INDEX_FIELD_NAME] = transaction.description.contractMethodIndex;
 
@@ -81,7 +82,7 @@ const EditTransactionModal = ({
             getAddressFromDomain={getAddressFromDomain}
             defaultHexDataView={!contractMethodEditable}
             onSubmit={handleSubmit}
-            hideHexToggler
+            showHexToggler={false}
           >
             <ButtonContainer>
               {/* Remove transaction btn */}
@@ -118,7 +119,6 @@ const ButtonContainer = styled.div`
 
 const FormContainer = styled.div`
   width: 400px;
-  margin-right: 48px;
   padding: 24px;
   border-radius: 8px;
 

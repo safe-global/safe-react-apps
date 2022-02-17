@@ -15,8 +15,9 @@ import EditTransactionModal from './EditTransactionModal';
 import JsonField from './forms/fields/JsonField';
 import { errorBaseStyles } from './forms/styles';
 
-const Dashboard = (): ReactElement => {
+const Dashboard = (): ReactElement | null => {
   const { web3, interfaceRepo, chainInfo } = useServices();
+
   const {
     transactions,
     handleAddTransaction,
@@ -26,6 +27,7 @@ const Dashboard = (): ReactElement => {
     handleReorderTransactions,
     handleReplaceTransaction,
   } = useTransactions();
+
   const [address, setAddress] = useState('');
   const [abi, setAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
@@ -71,12 +73,17 @@ const Dashboard = (): ReactElement => {
     return web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
   };
 
+  const isAddressInputFieldValid = isValidAddress(address) || !address;
+
   const contractHasMethods = contract && contract.methods.length > 0 && !isABILoading;
 
-  const isAddressInputFieldValid = address.length > 0 && !isValidAddress(address) ? 'The address is not valid' : '';
+  const isTransferTransaction = isValidAddress(address) && !abi && !isABILoading;
+  const isContractInteractionTransaction = abi && contractHasMethods;
+
+  const showNewTransactionForm = isTransferTransaction || isContractInteractionTransaction;
 
   if (!chainInfo) {
-    return <div />;
+    return null;
   }
 
   return (
@@ -97,7 +104,7 @@ const Dashboard = (): ReactElement => {
           </Link>
         </StyledText>
 
-        {/* ABI or Address Input */}
+        {/* Address Input */}
         <StyledAddressInput
           id="address"
           name="address"
@@ -106,7 +113,7 @@ const Dashboard = (): ReactElement => {
           address={address}
           showNetworkPrefix={!!chainInfo?.shortName}
           networkPrefix={chainInfo?.shortName}
-          error={isAddressInputFieldValid}
+          error={isAddressInputFieldValid ? '' : 'The address is not valid'}
           showLoadingSpinner={isABILoading}
           showErrorsInTheLabel={false}
           getAddressFromDomain={getAddressFromDomain}
@@ -129,7 +136,7 @@ const Dashboard = (): ReactElement => {
 
         <JsonField id={'abi'} name="abi" label="Enter ABI" value={abi} onChange={setAbi} />
 
-        {(contractHasMethods || isValidAddress(address)) && !isABILoading && (
+        {showNewTransactionForm && (
           <AddNewTransactionForm
             onAddTransaction={handleAddTransaction}
             contract={contract}
@@ -168,9 +175,7 @@ const Dashboard = (): ReactElement => {
           networkPrefix={chainInfo?.shortName}
           transaction={transactions[editingTransactionIndex]}
           getAddressFromDomain={getAddressFromDomain}
-          onSubmit={(transaction) => {
-            handleReplaceTransaction(transaction);
-          }}
+          onSubmit={handleReplaceTransaction}
         />
       )}
     </Wrapper>
@@ -215,8 +220,6 @@ const CheckIconAddressAdornment = styled(CheckCircle)`
 
 const StyledAddressInput = styled(AddressInput)`
   && {
-    width: 400px;
-
     ${errorBaseStyles}
   }
 `;

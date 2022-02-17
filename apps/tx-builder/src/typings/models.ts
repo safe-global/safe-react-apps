@@ -6,10 +6,10 @@ export interface ProposedTransaction {
   description: {
     to: string;
     value: string;
-    hexEncodedData: string;
+    customTransactionData: string;
     contractMethod?: ContractMethod;
     contractFieldsValues: Record<string, string>;
-    contractMethodIndex: string;
+    contractMethodIndex?: string;
   };
   raw: { to: string; value: string; data: string };
 }

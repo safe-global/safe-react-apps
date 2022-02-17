@@ -6,7 +6,7 @@ import {
   ADDRESS_FIELD_TYPE,
   BOOLEAN_FIELD_TYPE,
   CONTRACT_METHOD_FIELD_TYPE,
-  HEX_ENCODED_DATA_FIELD_TYPE,
+  CUSTOM_TRANSACTION_DATA_FIELD_TYPE,
   SolidityFieldTypes,
   CustomFieldTypes,
 } from './fields';
@@ -20,7 +20,7 @@ const CUSTOM_SOLIDITY_COMPONENTS: CustomSolidityComponent = {
   [ADDRESS_FIELD_TYPE]: AddressContractField,
   [BOOLEAN_FIELD_TYPE]: SelectContractField,
   [CONTRACT_METHOD_FIELD_TYPE]: SelectContractField,
-  [HEX_ENCODED_DATA_FIELD_TYPE]: TextareaContractField,
+  [CUSTOM_TRANSACTION_DATA_FIELD_TYPE]: TextareaContractField,
 };
 
 const CUSTOM_DEFAULT_VALUES: CustomDefaultValueTypes = {

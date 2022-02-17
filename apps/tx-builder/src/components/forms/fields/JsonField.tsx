@@ -4,6 +4,7 @@ import { Icon, TextFieldInput, Tooltip, GenericModal, Text, Button, IconTypes } 
 import IconButton from '@material-ui/core/IconButton';
 import { Box } from '@material-ui/core';
 import { errorBaseStyles } from '../styles';
+import useModal from '../../../hooks/useModal/useModal';
 
 const DEFAULT_ROWS = 4;
 
@@ -16,7 +17,7 @@ type Props = {
 };
 
 const JsonField = ({ id, name, label, value, onChange }: Props) => {
-  const [showReplaceModal, setShowReplaceModal] = useState(false);
+  const { open: showReplaceModal, toggleModal } = useModal();
   const [tempAbi, setTempAbi] = useState(value);
   const [isPrettified, setIsPrettified] = useState(false);
 
@@ -33,8 +34,6 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
       onChange(value);
     }
   }, [onChange, value, isPrettified]);
-
-  const toggleModal = useCallback(() => setShowReplaceModal(!showReplaceModal), [showReplaceModal]);
 
   const changeAbi = useCallback(() => {
     onChange(tempAbi);
@@ -99,15 +98,15 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
               <Text size="lg">Do you want to replace the current ABI?</Text>
             </Box>
           }
-          onClose={() => toggleModal}
+          onClose={toggleModal}
           title="Replace ABI"
           footer={
             <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
-              <Button size="md" color="primary" onClick={changeAbi}>
-                Accept
-              </Button>
               <Button size="md" color="secondary" onClick={toggleModal}>
                 Cancel
+              </Button>
+              <Button size="md" color="primary" onClick={changeAbi}>
+                Accept
               </Button>
             </Box>
           }
@@ -157,7 +156,6 @@ const IconContainer = styled.div`
 
 const StyledTextField = styled(TextFieldInput)`
   && {
-    width: 400px;
     margin-top: 10px;
     ${errorBaseStyles}
 

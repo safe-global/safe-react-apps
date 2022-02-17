@@ -15,7 +15,6 @@ export default TextContractField;
 
 const StyledTextField = styled(TextFieldInput)`
   && {
-    width: 400px;
     margin-bottom: 10px;
     ${errorBaseStyles}
     textarea {

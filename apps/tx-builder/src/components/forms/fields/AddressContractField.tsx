@@ -10,6 +10,7 @@ const AddressContractField = ({
   onChange,
   label,
   error,
+  getAddressFromDomain,
   networkPrefix,
   onBlur,
 }: any): ReactElement => {
@@ -25,6 +26,7 @@ const AddressContractField = ({
       networkPrefix={networkPrefix}
       hiddenLabel={false}
       error={error}
+      getAddressFromDomain={getAddressFromDomain}
       onChangeAddress={onChange}
       showErrorsInTheLabel={false}
     />
@@ -35,7 +37,6 @@ export default AddressContractField;
 
 const StyledAddressInput = styled(AddressInput)`
   && {
-    width: 400px;
     margin-bottom: 10px;
     ${errorBaseStyles}
   }

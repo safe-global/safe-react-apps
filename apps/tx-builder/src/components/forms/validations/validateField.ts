@@ -4,7 +4,7 @@ import {
   ADDRESS_FIELD_TYPE,
   NATIVE_AMOUNT_FIELD_TYPE,
   BOOLEAN_FIELD_TYPE,
-  HEX_ENCODED_DATA_FIELD_TYPE,
+  CUSTOM_TRANSACTION_DATA_FIELD_TYPE,
   U_INT_FIELD_TYPE,
 } from '../fields/fields';
 import basicSolidityValidation from './basicSolidityValidation';
@@ -24,7 +24,7 @@ const uintBasicValidation = (value: string): ValidateResult => basicSolidityVali
 
 const CUSTOM_VALIDATIONS: CustomValidationsType = {
   [ADDRESS_FIELD_TYPE]: [validateAddressField],
-  [HEX_ENCODED_DATA_FIELD_TYPE]: [validateHexEncodedDataField],
+  [CUSTOM_TRANSACTION_DATA_FIELD_TYPE]: [validateHexEncodedDataField],
   [BOOLEAN_FIELD_TYPE]: [validateBooleanField],
   [NATIVE_AMOUNT_FIELD_TYPE]: [validateAmountField, uintBasicValidation],
 };
