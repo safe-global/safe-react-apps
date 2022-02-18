@@ -5,9 +5,9 @@ export interface ProposedTransaction {
   description: {
     to: string;
     value: string;
-    hexEncodedData: string;
-    contractMethod: ContractMethod | undefined;
-    contractFieldsValues: Record<string, string>;
+    hexEncodedData?: string;
+    contractMethod?: ContractMethod;
+    contractFieldsValues?: Record<string, string>;
   };
   raw: { to: string; value: string; data: string };
 }

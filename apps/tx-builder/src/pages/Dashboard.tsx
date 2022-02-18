@@ -6,25 +6,32 @@ import CheckCircle from '@material-ui/icons/CheckCircle';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
-import useTransactions from '../hooks/useTransactions';
 import { isValidAddress } from '../utils';
-import AddNewTransactionForm from './forms/AddNewTransactionForm';
-import TransactionsBatchList from './TransactionsBatchList';
-import CreateNewBatchCard from './CreateNewBatchCard';
-import JsonField from './forms/fields/JsonField';
-import { errorBaseStyles } from './forms/styles';
+import AddNewTransactionForm from '../components/forms/AddNewTransactionForm';
+import TransactionsBatchList from '../components/TransactionsBatchList';
+import CreateNewBatchCard from '../components/CreateNewBatchCard';
+import JsonField from '../components/forms/fields/JsonField';
+import { errorBaseStyles } from '../components/forms/styles';
+import { ProposedTransaction } from '../typings/models';
 
-const Dashboard = (): ReactElement => {
+type DashboardProps = {
+  transactions: ProposedTransaction[];
+  handleSubmitTransactions: () => void;
+  handleAddTransaction: (transaction: ProposedTransaction) => void;
+  handleRemoveTransaction: (index: number) => void;
+  handleRemoveAllTransactions: () => void;
+  handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
+};
+
+const Dashboard = ({
+  transactions,
+  handleAddTransaction,
+  handleRemoveTransaction,
+  handleSubmitTransactions,
+  handleRemoveAllTransactions,
+  handleReorderTransactions,
+}: DashboardProps): ReactElement => {
   const { web3, interfaceRepo, chainInfo } = useServices();
-
-  const {
-    transactions,
-    handleAddTransaction,
-    handleRemoveTransaction,
-    handleSubmitTransactions,
-    handleRemoveAllTransactions,
-    handleReorderTransactions,
-  } = useTransactions();
 
   const [address, setAddress] = useState('');
   const [abi, setAbi] = useState('');
@@ -205,6 +212,9 @@ const StyledAddressInput = styled(AddressInput)`
 
 const TransactionsSectionWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
+
+  flex-grow: 1;
+  max-width: 450px;
 `;

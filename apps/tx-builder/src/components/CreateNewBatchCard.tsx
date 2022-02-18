@@ -22,7 +22,6 @@ const Wrapper = styled.div`
   position: relative;
 
   margin-top: 100px;
-  margin-left: 32px;
 
   padding-left: 150px;
 

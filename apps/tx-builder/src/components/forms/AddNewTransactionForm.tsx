@@ -57,8 +57,8 @@ const AddNewTransactionForm = ({
         to,
         value,
         hexEncodedData,
-        contractMethod,
-        contractFieldsValues,
+        contractMethod: !hexEncodedData ? contractMethod : undefined,
+        contractFieldsValues: !hexEncodedData ? contractFieldsValues : undefined,
       },
       raw: { to, value, data },
     });
