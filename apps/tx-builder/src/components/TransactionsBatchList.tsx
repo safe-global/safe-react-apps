@@ -9,7 +9,6 @@ import {
   Title,
   Icon,
   Tooltip,
-  Button,
   FixedIcon,
 } from '@gnosis.pm/safe-react-components';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
@@ -36,7 +35,6 @@ type TransactionsBatchListProps = {
   allowTransactionReordering: boolean;
   onRemoveTransaction: (index: number) => void;
   handleRemoveAllTransactions?: () => void;
-  onSubmitTransactions: () => void;
   handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
 };
 
@@ -46,7 +44,6 @@ const DROP_EVENT = 'DROP';
 function TransactionsBatchList({
   transactions,
   onRemoveTransaction,
-  onSubmitTransactions,
   handleRemoveAllTransactions,
   handleReorderTransactions,
   showTransactionDetails,
@@ -268,19 +265,6 @@ function TransactionsBatchList({
             )}
           </Droppable>
         </DragDropContext>
-
-        {/* Create batch button */}
-        <Button
-          size="md"
-          type="button"
-          disabled={!transactions.length}
-          style={{ marginLeft: 35 }}
-          variant="contained"
-          color="primary"
-          onClick={onSubmitTransactions}
-        >
-          Create Batch
-        </Button>
       </TransactionsBatchWrapper>
 
       {/* Delete batch modal */}

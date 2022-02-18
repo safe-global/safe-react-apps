@@ -35,13 +35,13 @@ const App = () => {
       />
 
       {/* Review & Confirm Screen */}
-
       <Route
         path={REVIEW_AND_CONFIRM_PATH}
         element={
           <ReviewAndConfirm
             transactions={transactions}
             handleRemoveTransaction={handleRemoveTransaction}
+            handleRemoveAllTransactions={handleRemoveAllTransactions}
             handleSubmitTransactions={handleSubmitTransactions}
             handleReorderTransactions={handleReorderTransactions}
           />

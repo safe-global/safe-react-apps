@@ -1,5 +1,5 @@
 import { ReactElement, useState, useEffect } from 'react';
-import { Text, Title, Link, AddressInput } from '@gnosis.pm/safe-react-components';
+import { Text, Title, Link, AddressInput, Button } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import CheckCircle from '@material-ui/icons/CheckCircle';
@@ -151,15 +151,28 @@ const Dashboard = ({
       {/* Transactions Batch section */}
       <TransactionsSectionWrapper>
         {transactions.length > 0 ? (
-          <TransactionsBatchList
-            transactions={transactions}
-            onRemoveTransaction={handleRemoveTransaction}
-            onSubmitTransactions={handleSubmitTransactions}
-            handleRemoveAllTransactions={handleRemoveAllTransactions}
-            handleReorderTransactions={handleReorderTransactions}
-            showTransactionDetails={false}
-            allowTransactionReordering
-          />
+          <>
+            <TransactionsBatchList
+              transactions={transactions}
+              onRemoveTransaction={handleRemoveTransaction}
+              handleRemoveAllTransactions={handleRemoveAllTransactions}
+              handleReorderTransactions={handleReorderTransactions}
+              showTransactionDetails={false}
+              allowTransactionReordering
+            />
+            {/* Create batch button */}
+            <Button
+              size="md"
+              type="button"
+              disabled={!transactions.length}
+              style={{ marginLeft: 35 }}
+              variant="contained"
+              color="primary"
+              onClick={handleSubmitTransactions}
+            >
+              Create Batch
+            </Button>
+          </>
         ) : (
           <CreateNewBatchCard />
         )}
@@ -211,10 +224,6 @@ const StyledAddressInput = styled(AddressInput)`
 `;
 
 const TransactionsSectionWrapper = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-
   flex-grow: 1;
   max-width: 450px;
 `;
