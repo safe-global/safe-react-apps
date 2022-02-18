@@ -18,8 +18,9 @@ export function useApps(): UseAppsResponse {
     (async () => {
       try {
         const chainInfo = await sdk.safe.getChainInfo();
-        const safeAppsList = await getSafeApps(BASE_URL, chainInfo.chainId);
-        setSafeAppsList(safeAppsList);
+        const appsList = await getSafeApps(BASE_URL, chainInfo.chainId);
+
+        setSafeAppsList(appsList);
         setNetworkPrefix(chainInfo.shortName);
       } catch (error) {
         console.error('Unable to get chain info:', error);
