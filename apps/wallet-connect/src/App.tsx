@@ -1,21 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
-
+import { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-
-import { Card } from '@gnosis.pm/safe-react-components';
+import { Grid } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
-
+import { Card } from '@gnosis.pm/safe-react-components';
 import useWalletConnect from './hooks/useWalletConnect';
+import { useApps } from './hooks/useApps';
 import AppBar from './components/AppBar';
 import Help from './components/Help';
-import { Grid } from '@material-ui/core';
-
 import Disconnected from './components/Disconnected';
 import Connected from './components/Connected';
-import { useApps } from './hooks/useApps';
 import Connecting from './components/Connecting';
 import WalletConnectField from './components/WalletConnectField';
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 
 enum CONNECTION_STATUS {
   CONNECTED,
@@ -26,15 +21,16 @@ enum CONNECTION_STATUS {
 const App = () => {
   const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect();
   const { findSafeApp, openSafeApp } = useApps();
-  const { safe } = useSafeAppsSDK();
-  console.log('safe', safe);
   const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED);
 
-  const handleOpenSafeApp = (url: string) => {
-    openSafeApp(url);
-    wcDisconnect();
-    setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
-  };
+  const handleOpenSafeApp = useCallback(
+    (url: string) => {
+      openSafeApp(url);
+      wcDisconnect();
+      setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
+    },
+    [openSafeApp, wcDisconnect],
+  );
 
   const disconnectOnPageRefresh = useCallback(() => {
     if (connectionStatus === CONNECTION_STATUS.CONNECTING) {
@@ -64,7 +60,7 @@ const App = () => {
 
     if (connectionStatus === CONNECTION_STATUS.CONNECTING) {
       const safeApp = findSafeApp(wcClientData.url);
-      console.log(safeApp);
+
       if (!safeApp) {
         setConnectionStatus(CONNECTION_STATUS.CONNECTED);
       }
@@ -74,9 +70,9 @@ const App = () => {
   return (
     <>
       <AppBar />
-      <StyledContainer>
-        <Grid container direction="column" alignItems="center" style={{ height: '100%', paddingTop: '45px' }}>
-          <Grid item style={{ width: '484px', marginTop: '45px' }}>
+      <StyledMainContainer as="main">
+        <StyledAppContainer container direction="column" alignItems="center">
+          <StyledCardContainer item>
             <StyledCard>
               {connectionStatus === CONNECTION_STATUS.DISCONNECTED && (
                 <Disconnected>
@@ -100,23 +96,22 @@ const App = () => {
                 />
               )}
             </StyledCard>
-          </Grid>
-          <Grid item style={{ width: '484px', marginTop: '16px' }}>
-            {wcClientData ? (
-              <Help title={HELP_TRANSACTIONS.title} steps={HELP_TRANSACTIONS.steps} />
-            ) : (
+          </StyledCardContainer>
+          <StyledHelpContainer item>
+            {connectionStatus === CONNECTION_STATUS.DISCONNECTED && (
               <Help title={HELP_CONNECT.title} steps={HELP_CONNECT.steps} />
             )}
-          </Grid>
-        </Grid>
-      </StyledContainer>
+            {connectionStatus !== CONNECTION_STATUS.DISCONNECTED && (
+              <Help title={HELP_TRANSACTIONS.title} steps={HELP_TRANSACTIONS.steps} />
+            )}
+          </StyledHelpContainer>
+        </StyledAppContainer>
+      </StyledMainContainer>
     </>
   );
 };
 
-export default App;
-
-const StyledContainer = styled(Container)`
+const StyledMainContainer = styled(Container)`
   && {
     max-width: 100%;
     background-color: #f3f5f6;
@@ -128,11 +123,30 @@ const StyledContainer = styled(Container)`
   }
 `;
 
+const StyledAppContainer = styled(Grid)`
+  height: 100%;
+  padding-top: 45px;
+`;
+
+const StyledCardContainer = styled(Grid)`
+  width: 484px;
+  margin-top: 45px;
+`;
+
+const StyledHelpContainer = styled(Grid)`
+  && {
+    width: 484px;
+    margin-top: 16px;
+  }
+`;
+
 const StyledCard = styled(Card)`
   && {
     box-shadow: none;
   }
 `;
+
+export default App;
 
 const HELP_CONNECT = {
   title: 'How to connect to a Dapp?',
