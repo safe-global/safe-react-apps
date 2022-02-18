@@ -23,7 +23,9 @@ const Connecting = ({ client, onOpenSafeApp, onKeepUsingWalletConnect }: Connect
       </Grid>
 
       <Grid item>
-        <StyledBoldText size="xl">Trying to connect {client.name}</StyledBoldText>
+        <Text size="xl">
+          Trying to connect <StyledBoldText as="span">{client.name}</StyledBoldText>
+        </Text>
       </Grid>
 
       <Grid item>
