@@ -82,14 +82,14 @@ const Dashboard = ({
   const contractHasMethods = contract && contract.methods.length > 0 && !isABILoading;
 
   const isTransferTransaction = isValidAddress(address) && !abi && !isABILoading;
-  const isContractInteractionTransaction = abi && contractHasMethods;
+  const isContractInteractionTransaction = abi && contract && !isABILoading;
 
   const showNewTransactionForm = isTransferTransaction || isContractInteractionTransaction;
 
   return (
     <Wrapper>
       <AddNewTransactionFormWrapper>
-        <StyledTitle size="sm">Multisend transaction builder</StyledTitle>
+        <StyledTitle size="lg">New Transaction</StyledTitle>
 
         <StyledText size="sm">
           This app allows you to build a custom multisend transaction. Enter a Ethereum contract address or ABI to get
@@ -190,7 +190,7 @@ const Wrapper = styled.div`
   align-items: flex-start;
 `;
 
-const AddNewTransactionFormWrapper = styled.div`
+const AddNewTransactionFormWrapper = styled.section`
   width: 400px;
   margin-right: 48px;
   padding: 24px;
@@ -202,6 +202,8 @@ const AddNewTransactionFormWrapper = styled.div`
 const StyledTitle = styled(Title)`
   margin-top: 0px;
   margin-bottom: 5px;
+  line-height: 22px;
+  font-size: 16px;
 `;
 
 const StyledText = styled(Text)`

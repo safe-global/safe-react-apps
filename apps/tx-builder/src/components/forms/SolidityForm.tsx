@@ -77,10 +77,10 @@ const SolidityForm = ({
   const contractMethodIndex = watch(CONTRACT_METHOD_INDEX_FIELD_NAME);
   const contractMethod = contract?.methods[Number(contractMethodIndex)];
   const contractFields = contractMethod?.inputs || [];
-  const showContractFields = !!contract && !showHexEncodedData;
+  const showContractFields = !!contract && contract.methods.length > 0 && !showHexEncodedData;
   const isPayableMethod = !!contract && contractMethod?.payable;
 
-  const isValueInputVisible = showHexEncodedData || !contract || isPayableMethod;
+  const isValueInputVisible = showHexEncodedData || !showContractFields || isPayableMethod;
 
   const onClickShowHexEncodedData = (checked: boolean) => {
     const contractFieldsValues = getValues(CONTRACT_VALUES_FIELD_NAME);

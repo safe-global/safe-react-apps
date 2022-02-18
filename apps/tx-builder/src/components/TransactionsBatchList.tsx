@@ -354,6 +354,7 @@ function getDisplayedTxPosition(
 const TransactionsBatchWrapper = styled.section`
   margin-top: 24px;
   width: 100%;
+  user-select: none;
 `;
 
 // batch header styles

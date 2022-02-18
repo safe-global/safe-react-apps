@@ -39,7 +39,7 @@ const ReviewAndConfirm = ({
   return (
     <>
       <Wrapper>
-        <StyledTitle size="sm">Review and Confirm</StyledTitle>
+        <StyledTitle size="xl">Review and Confirm</StyledTitle>
 
         <TransactionsBatchList
           transactions={transactions}
@@ -68,7 +68,6 @@ const ReviewAndConfirm = ({
             size="md"
             type="button"
             disabled={!transactions.length}
-            style={{ marginLeft: 16 }}
             variant="bordered"
             color="primary"
             onClick={openDeleteBatchModal}
@@ -101,6 +100,8 @@ const Wrapper = styled.div`
 const StyledTitle = styled(Title)`
   margin-top: 0px;
   margin-bottom: 5px;
+  font-size: 20px;
+  line-height: normal;
 `;
 
 const ButtonsWrapper = styled.div`
@@ -113,6 +114,8 @@ const StyledButtonLabel = styled.span`
 `;
 
 const StyledCancelButton = styled(Button)`
-  margin-left: 16px;
-  min-width: 0;
+  &&.MuiButton-root {
+    margin-left: 16px;
+    min-width: 0;
+  }
 `;

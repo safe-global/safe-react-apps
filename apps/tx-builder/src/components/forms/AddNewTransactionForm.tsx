@@ -31,12 +31,12 @@ const AddNewTransactionForm = ({
   getAddressFromDomain,
   nativeCurrencySymbol,
 }: AddNewTransactionFormProps) => {
-  const showABIWarning = contract && !contract?.methods.length;
-
   const initialFormValues = {
     [TO_ADDRESS_FIELD_NAME]: isValidAddress(to) ? to : '',
     [CONTRACT_METHOD_INDEX_FIELD_NAME]: '0',
   };
+
+  const showNoPublicMethodsWarning = contract && contract.methods.length === 0;
 
   const onSubmit = (values: SolidityFormValuesTypes) => {
     const contractMethodIndex = values[CONTRACT_METHOD_INDEX_FIELD_NAME];
@@ -66,9 +66,14 @@ const AddNewTransactionForm = ({
 
   return (
     <>
-      <Title size="xs">Transaction information</Title>
+      {/* No public methods Warning */}
+      {showNoPublicMethodsWarning && (
+        <Text color="warning" size="lg">
+          Contract ABI doesn't have any public methods.
+        </Text>
+      )}
 
-      {showABIWarning && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
+      <Title size="xs">Transaction information</Title>
 
       <SolidityForm
         id="solidity-contract-form"
