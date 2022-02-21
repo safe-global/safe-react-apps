@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-function useModal(initialValue = false) {
+const useModal = (initialValue = false) => {
   const [open, setOpen] = useState<boolean>(initialValue);
 
   const openModal = useCallback(() => {
@@ -23,6 +23,6 @@ function useModal(initialValue = false) {
     closeModal,
     toggleModal,
   };
-}
+};
 
 export default useModal;

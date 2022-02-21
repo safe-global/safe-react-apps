@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import addNewBatch from '../assets/add-new-batch.svg';
 import arrowToBlock from '../assets/arrow-to-block.svg';
 
-function CreateNewBatchCard() {
+const CreateNewBatchCard = () => {
   return (
     <Wrapper>
       <img src={addNewBatch} alt="add new batch placeholder" />
@@ -14,7 +14,7 @@ function CreateNewBatchCard() {
       <StyledImage src={arrowToBlock} alt="arrow to form decorator" />
     </Wrapper>
   );
-}
+};
 
 export default CreateNewBatchCard;
 
