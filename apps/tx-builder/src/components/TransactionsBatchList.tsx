@@ -106,11 +106,12 @@ const TransactionsBatchList = ({
           </TransactionsTitle>
 
           {/* Transactions Batch Actions */}
-          <Tooltip placement="top" title="Save to Library" backgroundColor="primary" textColor="white" arrow>
+
+          {/* <Tooltip placement="top" title="Save to Library" backgroundColor="primary" textColor="white" arrow>
             <StyledHeaderIconButton>
               <Icon size="sm" type="importImg" color="primary" aria-label="Save to Library" />
             </StyledHeaderIconButton>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip placement="top" title="Delete Batch" backgroundColor="primary" textColor="white" arrow>
             <StyledHeaderIconButton onClick={openDeleteBatchModal}>
               <Icon size="sm" type="delete" color="error" aria-label="Delete Batch" />
