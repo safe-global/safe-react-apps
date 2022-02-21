@@ -68,9 +68,9 @@ const AddNewTransactionForm = ({
     <>
       {/* No public methods Warning */}
       {showNoPublicMethodsWarning && (
-        <Text color="warning" size="lg">
+        <StyledMethodWarning color="warning" size="lg">
           Contract ABI doesn't have any public methods.
-        </Text>
+        </StyledMethodWarning>
       )}
 
       <Title size="xs">Transaction information</Title>
@@ -101,4 +101,8 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
+`;
+
+const StyledMethodWarning = styled(Text)`
+  margin-top: 8px;
 `;
