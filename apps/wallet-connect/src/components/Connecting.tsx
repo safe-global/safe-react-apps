@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import { IClientMeta } from '@walletconnect/types';
 import Grid from '@material-ui/core/Grid';
-import { Text, Button, Link } from '@gnosis.pm/safe-react-components';
-import { ReactComponent as SafeAppConnectLogo } from '../assets/safe-app-connect.svg';
+import { Icon, Text, Button, Link } from '@gnosis.pm/safe-react-components';
 import { StyledBoldText, StyledCardContainer, StyledImage } from './styles';
 
 type ConnectingProps = {
@@ -19,7 +18,7 @@ const Connecting = ({ client, onOpenSafeApp, onKeepUsingWalletConnect }: Connect
   return (
     <StyledCardContainer container direction="column" alignItems="center" justifyContent="center" spacing={2}>
       <Grid item>
-        <SafeAppConnectLogo />
+        <StyledIcon size="md" type="apps" color="primary" />
       </Grid>
 
       <Grid item>
@@ -82,4 +81,10 @@ const StyledLink = styled(Link)`
   font-size: 0.8em;
 `;
 
+const StyledIcon = styled(Icon)`
+  svg {
+    width: 48px;
+    height: 48px;
+  }
+`;
 export default Connecting;

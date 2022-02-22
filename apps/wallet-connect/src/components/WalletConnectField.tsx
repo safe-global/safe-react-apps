@@ -7,7 +7,6 @@ import { IWalletConnectSession, IClientMeta } from '@walletconnect/types';
 import styled from 'styled-components';
 import format from 'date-fns/format';
 import jsQr from 'jsqr';
-import { ReactComponent as QRCode } from '../assets/qr-code.svg';
 import { blobToImageData } from '../utils/images';
 import ScanCode from './ScanCode';
 
@@ -122,7 +121,7 @@ const WalletConnectField = ({ client, onConnect }: WalletConnectFieldProps): Rea
             <StyledQRCodeAdorment position="start">
               <Tooltip title="Start your camera and scan a QR" aria-label="Start your camera and scan a QR">
                 <IconButton onClick={() => setOpenDialog((open) => !open)}>
-                  <QRCode />
+                  <Icon type="qrCode" size="md" />
                 </IconButton>
               </Tooltip>
             </StyledQRCodeAdorment>
