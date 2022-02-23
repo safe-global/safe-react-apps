@@ -9,7 +9,7 @@ type DeleteTransactionModalProps = {
   onClose: () => void;
 };
 
-function DeleteTransactionModal({ txIndex, txDescription, onClick, onClose }: DeleteTransactionModalProps) {
+const DeleteTransactionModal = ({ txIndex, txDescription, onClick, onClose }: DeleteTransactionModalProps) => {
   const positionLabel = Number(txIndex) + 1;
   return (
     <GenericModal
@@ -37,7 +37,7 @@ function DeleteTransactionModal({ txIndex, txDescription, onClick, onClose }: De
       onClose={onClose}
     />
   );
-}
+};
 
 export default DeleteTransactionModal;
 
