@@ -1,0 +1,45 @@
+name: Prepare environment
+
+description: Prepare environment in the CI runner and install dependencies
+
+inputs:
+  node_version:
+    description: Node.js version
+    required: false
+    default: '16'
+  aws-secret-access-key:
+    description: AWS secret access key
+    required: true
+  aws-access-key-id:
+    description: AWS access key id
+    required: true
+  aws-region:
+    description: AWS region
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Node.js setup
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.node_version }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Env dependencies setup
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install python3-pip python3-dev
+        pip install awscli --upgrade --user
+    - name: Project dependencies setup, node version ${{ matrix.node-version }}
+      shell: bash
+      run: yarn install --frozen-lockfile
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}

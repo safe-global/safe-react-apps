@@ -23,7 +23,7 @@ const getSymbolIconUrl = (symbol: string) =>
 
 const filterTokens = (token: cToken) => !EXCLUDE_TOKENS.includes(token.symbol);
 const orderTokensBySymbol = (a: cToken, b: cToken) => ('' + a.underlying_symbol).localeCompare(b.underlying_symbol);
-const transformFromCompoundResponse = (token: cToken, chainId: number) => {
+const transformFromCompoundResponse = (token: cToken, chainId: number): TokenItem => {
   return {
     id: token.underlying_symbol,
     label: token.underlying_symbol,
@@ -48,5 +48,12 @@ export const getTokenList = async (chainId: number): Promise<TokenItem[]> => {
   return cToken
     .filter(filterTokens)
     .sort(orderTokensBySymbol)
-    .map((token: cToken) => transformFromCompoundResponse(token, chainId));
+    .reduce((tokenItems: TokenItem[], cToken: cToken): TokenItem[] => {
+      if (cToken?.cash?.value?.split('.')?.[1]?.length) {
+        const transformedToken = transformFromCompoundResponse(cToken, chainId);
+        return [...tokenItems, transformedToken];
+      }
+
+      return tokenItems;
+    }, []);
 };
