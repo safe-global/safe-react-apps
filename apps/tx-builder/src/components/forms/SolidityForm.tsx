@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ButtonLink, Switch, Text } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
@@ -60,11 +60,20 @@ const SolidityForm = ({
   const [showExamples, setShowExamples] = useState<boolean>(false);
   const [showHexEncodedData, setShowHexEncodedData] = useState<boolean>(false);
 
-  const { handleSubmit, control, setValue, watch, getValues, reset, clearErrors } = useForm<SolidityFormValuesTypes>({
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    getValues,
+    reset,
+    formState: { isSubmitSuccessful },
+  } = useForm<SolidityFormValuesTypes>({
     defaultValues: initialValues,
     mode: 'onTouched', // This option allows you to configure the validation strategy before the user submits the form
   });
 
+  const toAddress = watch(TO_ADDRESS_FIELD_NAME);
   const contractMethodIndex = watch(CONTRACT_METHOD_INDEX_FIELD_NAME);
   const contractMethod = contract?.methods[Number(contractMethodIndex)];
   const contractFields = contractMethod?.inputs || [];
@@ -83,15 +92,15 @@ const SolidityForm = ({
     setShowHexEncodedData(checked);
   };
 
-  const submitAndResetForm = (values: SolidityFormValuesTypes) => {
-    onSubmit(values);
-    reset({ ...initialValues, [TO_ADDRESS_FIELD_NAME]: values[TO_ADDRESS_FIELD_NAME] });
-    setTimeout(clearErrors, 0);
-  };
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({ ...initialValues, [TO_ADDRESS_FIELD_NAME]: toAddress });
+    }
+  }, [isSubmitSuccessful, reset, toAddress, initialValues]);
 
   return (
     <>
-      <form id={id} onSubmit={handleSubmit(submitAndResetForm)} noValidate>
+      <form id={id} onSubmit={handleSubmit(onSubmit)} noValidate>
         {/* To Address field */}
         <Field
           id="to-address-input"

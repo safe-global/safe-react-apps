@@ -37,7 +37,6 @@ export default AddressContractField;
 
 const StyledAddressInput = styled(AddressInput)`
   && {
-    width: 520px;
     margin-bottom: 10px;
     ${errorBaseStyles}
   }

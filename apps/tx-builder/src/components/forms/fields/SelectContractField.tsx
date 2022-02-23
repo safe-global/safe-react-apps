@@ -24,5 +24,5 @@ export default SelectContractField;
 
 const StyledSelect = styled(Select)`
   margin-bottom: 10px;
-  width: 520px;
+  width: 400px;
 `;
