@@ -8,6 +8,8 @@ export interface ProposedTransaction {
     hexEncodedData?: string;
     contractMethod?: ContractMethod;
     contractFieldsValues?: Record<string, string>;
+    nativeCurrencySymbol?: string;
+    networkPrefix?: string;
   };
   raw: { to: string; value: string; data: string };
 }

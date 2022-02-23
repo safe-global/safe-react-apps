@@ -59,6 +59,8 @@ const AddNewTransactionForm = ({
         hexEncodedData,
         contractMethod: !hexEncodedData ? contractMethod : undefined,
         contractFieldsValues: !hexEncodedData ? contractFieldsValues : undefined,
+        nativeCurrencySymbol,
+        networkPrefix,
       },
       raw: { to, value, data },
     });

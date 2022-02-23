@@ -1,4 +1,4 @@
-import { AbiItem, toBN, isAddress } from 'web3-utils';
+import { AbiItem, toBN, isAddress, fromWei } from 'web3-utils';
 import abiCoder, { AbiCoder } from 'web3-eth-abi';
 
 import { ContractInput, ContractMethod } from './hooks/useServices/interfaceRepository';
@@ -91,6 +91,10 @@ export const isValidAddress = (address: string | null) => {
     return false;
   }
   return isAddress(address);
+};
+
+export const weiToEther = (wei: string) => {
+  return fromWei(wei, 'ether');
 };
 
 const NON_VALID_CONTRACT_METHODS = ['receive', 'fallback'];

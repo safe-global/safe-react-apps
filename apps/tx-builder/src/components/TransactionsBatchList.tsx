@@ -28,6 +28,7 @@ import { ProposedTransaction } from '../typings/models';
 import useModal from '../hooks/useModal/useModal';
 import DeleteTransactionModal from './modals/DeleteTransactionModal';
 import DeleteBatchModal from './modals/DeleteBatchModal';
+import TransactionDetails from './TransactionDetails';
 
 type TransactionsBatchListProps = {
   transactions: ProposedTransaction[];
@@ -124,7 +125,8 @@ function TransactionsBatchList({
           <Droppable droppableId={TRANSACTION_LIST_DROPPABLE_ID}>
             {(provided: DroppableProvided) => (
               <TransactionList {...provided.droppableProps} ref={provided.innerRef}>
-                {transactions.map(({ id, description }, index) => {
+                {transactions.map((transaction, index) => {
+                  const { id, description } = transaction;
                   const { to } = description;
 
                   const transactionDescription = getTransactionText(description);
@@ -179,6 +181,7 @@ function TransactionsBatchList({
                               compact
                               onChange={onClickShowTransactionDetails}
                               isDragging={isThisTxBeingDragging}
+                              TransitionProps={{ unmountOnExit: true }}
                             >
                               <AccordionSummary
                                 expandIcon={false}
@@ -249,9 +252,9 @@ function TransactionsBatchList({
                                 )}
                               </AccordionSummary>
 
-                              {/* Transaction details will be implemented in other ticket */}
+                              {/* Transaction details */}
                               <AccordionDetails>
-                                <Text size="xl">Hi! I am a very cool transaction! :D</Text>
+                                <TransactionDetails transaction={transaction} />
                               </AccordionDetails>
                             </StyledAccordion>
                           </TransactionListItem>

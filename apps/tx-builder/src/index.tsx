@@ -14,7 +14,7 @@ ReactDOM.render(
     <GlobalStyles />
     <ThemeProvider theme={theme}>
       <SafeProvider>
-        <BrowserRouter>
+        <BrowserRouter basename={process.env.PUBLIC_URL}>
           <App />
         </BrowserRouter>
       </SafeProvider>
