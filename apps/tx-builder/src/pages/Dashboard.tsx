@@ -2,6 +2,7 @@ import { ReactElement, useState, useEffect } from 'react';
 import { Text, Title, Link, AddressInput, Button } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Grid from '@material-ui/core/Grid';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 
 import { ContractInterface } from '../hooks/useServices/interfaceRepository';
@@ -87,115 +88,114 @@ const Dashboard = ({
 
   return (
     <Wrapper>
-      <AddNewTransactionFormWrapper>
-        <StyledTitle size="lg">New Transaction</StyledTitle>
+      <Grid container justifyContent="center" spacing={6}>
+        <AddNewTransactionFormWrapper item xs={12} md={6}>
+          <StyledTitle size="lg">New Transaction</StyledTitle>
 
-        <StyledText size="sm">
-          This app allows you to build a custom multisend transaction. Enter a Ethereum contract address or ABI to get
-          started.{' '}
-          <Link
-            href="https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app"
-            size="lg"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Learn how to use the transaction builder.
-          </Link>
-        </StyledText>
-
-        {/* Address Input */}
-        <StyledAddressInput
-          id="address"
-          name="address"
-          label="Enter Address or ENS Name"
-          hiddenLabel={false}
-          address={address}
-          fullWidth
-          showNetworkPrefix={!!chainInfo?.shortName}
-          networkPrefix={chainInfo?.shortName}
-          error={isAddressInputFieldValid ? '' : 'The address is not valid'}
-          showLoadingSpinner={isABILoading}
-          showErrorsInTheLabel={false}
-          getAddressFromDomain={getAddressFromDomain}
-          onChangeAddress={(address: string) => setAddress(address)}
-          InputProps={{
-            endAdornment: contractHasMethods && isValidAddress(address) && (
-              <InputAdornment position="end">
-                <CheckIconAddressAdornment />
-              </InputAdornment>
-            ),
-          }}
-        />
-
-        {/* ABI Warning */}
-        {loadContractError && (
-          <StyledWarningText color="warning" size="lg">
-            No ABI found for this address
-          </StyledWarningText>
-        )}
-
-        <JsonField id={'abi'} name="abi" label="Enter ABI" value={abi} onChange={setAbi} />
-
-        {showNewTransactionForm && (
-          <AddNewTransactionForm
-            onAddTransaction={handleAddTransaction}
-            contract={contract}
-            to={address}
-            networkPrefix={chainInfo?.shortName}
-            getAddressFromDomain={getAddressFromDomain}
-            nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
-          />
-        )}
-      </AddNewTransactionFormWrapper>
-
-      {/* Transactions Batch section */}
-      <TransactionsSectionWrapper>
-        {transactions.length > 0 ? (
-          <>
-            <TransactionsBatchList
-              transactions={transactions}
-              onRemoveTransaction={handleRemoveTransaction}
-              handleRemoveAllTransactions={handleRemoveAllTransactions}
-              handleReorderTransactions={handleReorderTransactions}
-              showTransactionDetails={false}
-              allowTransactionReordering
-            />
-            {/* Go to Review Screen button */}
-            <Button
-              size="md"
-              type="button"
-              disabled={!transactions.length}
-              style={{ marginLeft: 35 }}
-              variant="contained"
-              color="primary"
-              onClick={handleSubmitTransactions}
+          <StyledText size="sm">
+            This app allows you to build a custom multisend transaction. Enter a Ethereum contract address or ABI to get
+            started.{' '}
+            <Link
+              href="https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app"
+              size="lg"
+              target="_blank"
+              rel="noreferrer"
             >
-              Create Batch
-            </Button>
-          </>
-        ) : (
-          <CreateNewBatchCard />
-        )}
-      </TransactionsSectionWrapper>
+              Learn how to use the transaction builder.
+            </Link>
+          </StyledText>
+
+          {/* Address Input */}
+          <AddressInput
+            id="address"
+            name="address"
+            label="Enter Address or ENS Name"
+            hiddenLabel={false}
+            address={address}
+            fullWidth
+            showNetworkPrefix={!!chainInfo?.shortName}
+            networkPrefix={chainInfo?.shortName}
+            error={isAddressInputFieldValid ? '' : 'The address is not valid'}
+            showLoadingSpinner={isABILoading}
+            showErrorsInTheLabel={false}
+            getAddressFromDomain={getAddressFromDomain}
+            onChangeAddress={(address: string) => setAddress(address)}
+            InputProps={{
+              endAdornment: contractHasMethods && isValidAddress(address) && (
+                <InputAdornment position="end">
+                  <CheckIconAddressAdornment />
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          {/* ABI Warning */}
+          {loadContractError && (
+            <StyledWarningText color="warning" size="lg">
+              No ABI found for this address
+            </StyledWarningText>
+          )}
+
+          <JsonField id={'abi'} name="abi" label="Enter ABI" value={abi} onChange={setAbi} />
+
+          {showNewTransactionForm && (
+            <AddNewTransactionForm
+              onAddTransaction={handleAddTransaction}
+              contract={contract}
+              to={address}
+              networkPrefix={chainInfo?.shortName}
+              getAddressFromDomain={getAddressFromDomain}
+              nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
+            />
+          )}
+        </AddNewTransactionFormWrapper>
+
+        {/* Transactions Batch section */}
+        <Grid item xs={12} md={6}>
+          {transactions.length > 0 ? (
+            <>
+              <TransactionsBatchList
+                transactions={transactions}
+                onRemoveTransaction={handleRemoveTransaction}
+                handleRemoveAllTransactions={handleRemoveAllTransactions}
+                handleReorderTransactions={handleReorderTransactions}
+                showTransactionDetails={false}
+                allowTransactionReordering
+              />
+              {/* Go to Review Screen button */}
+              <Button
+                size="md"
+                type="button"
+                disabled={!transactions.length}
+                style={{ marginLeft: 35 }}
+                variant="contained"
+                color="primary"
+                onClick={handleSubmitTransactions}
+              >
+                Create Batch
+              </Button>
+            </>
+          ) : (
+            <CreateNewBatchCard />
+          )}
+        </Grid>
+      </Grid>
     </Wrapper>
   );
 };
 
 export default Dashboard;
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  padding: 24px;
-  align-items: flex-start;
+const Wrapper = styled.main`
+  && {
+    padding: 48px;
+    max-width: 1024px;
+    margin: 0 auto;
+  }
 `;
 
-const AddNewTransactionFormWrapper = styled.section`
-  width: 400px;
-  margin-right: 48px;
-  padding: 24px;
+const AddNewTransactionFormWrapper = styled(Grid)`
   border-radius: 8px;
-
   background-color: white;
 `;
 
@@ -217,14 +217,4 @@ const StyledWarningText = styled(Text)`
 const CheckIconAddressAdornment = styled(CheckCircle)`
   color: #03ae60;
   height: 20px;
-`;
-
-const StyledAddressInput = styled(AddressInput)`
-  && {
-  }
-`;
-
-const TransactionsSectionWrapper = styled.div`
-  flex-grow: 1;
-  max-width: 450px;
 `;
