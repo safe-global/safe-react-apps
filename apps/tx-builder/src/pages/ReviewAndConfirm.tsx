@@ -8,6 +8,7 @@ import useModal from '../hooks/useModal/useModal';
 import { HOME_PATH } from '../routes/routes';
 import { ProposedTransaction } from '../typings/models';
 import { useEffect } from 'react';
+import SuccessBatchCreationModal from '../components/modals/SuccessBatchCreationModal';
 
 type ReviewAndConfirmProps = {
   transactions: ProposedTransaction[];
@@ -24,9 +25,23 @@ const ReviewAndConfirm = ({
   handleSubmitTransactions,
   handleReorderTransactions,
 }: ReviewAndConfirmProps) => {
+  const {
+    open: showSuccessBatchModal,
+    openModal: openSuccessBatchModal,
+    closeModal: closeSuccessBatchModal,
+  } = useModal();
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
 
   const navigate = useNavigate();
+
+  const createBatch = async () => {
+    try {
+      await handleSubmitTransactions();
+      openSuccessBatchModal();
+    } catch (e) {
+      console.error('Error sending transactions:', e);
+    }
+  };
 
   useEffect(() => {
     const hasTransactions = transactions.length > 0;
@@ -57,7 +72,7 @@ const ReviewAndConfirm = ({
             disabled={!transactions.length}
             variant="contained"
             color="primary"
-            onClick={handleSubmitTransactions}
+            onClick={createBatch}
           >
             <FixedIcon type={'arrowSentWhite'} />
             <StyledButtonLabel>Send Batch</StyledButtonLabel>
@@ -83,6 +98,18 @@ const ReviewAndConfirm = ({
           count={transactions.length}
           onClick={handleRemoveAllTransactions}
           onClose={closeDeleteBatchModal}
+        />
+      )}
+
+      {/* Success batch modal */}
+      {showSuccessBatchModal && (
+        <SuccessBatchCreationModal
+          count={transactions.length}
+          onClick={() => {
+            handleRemoveAllTransactions();
+            closeSuccessBatchModal();
+          }}
+          onClose={closeSuccessBatchModal}
         />
       )}
     </>
