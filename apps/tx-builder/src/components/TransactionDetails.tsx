@@ -2,6 +2,7 @@ import { ButtonLink, EthHashInfo, Text, Title } from '@gnosis.pm/safe-react-comp
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
+import useElementHeight from '../hooks/useElementHeight/useElementHeight';
 import { ProposedTransaction } from '../typings/models';
 import { weiToEther } from '../utils';
 
@@ -114,20 +115,12 @@ const MAX_HEIGHT = 2 * LINE_HEIGHT; // 2 lines as max height
 const TxValueLabel = ({ children }: { children: React.ReactNode }) => {
   const [showMore, setShowMore] = useState(false);
   const [showEllipsis, setShowEllipsis] = useState(false);
-
-  // we show the Show more/less button if the height is more than 44px (the height of 2 lines)
-  const [height, setHeight] = useState<number | undefined>();
   const valueContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // hack to calculate properly the height of the container
-    setTimeout(() => {
-      const height = valueContainerRef?.current?.clientHeight;
-      setHeight(height);
-    }, 10);
-  }, []);
+  const containerHeight = useElementHeight(valueContainerRef);
 
-  const showMoreButton = height && height > MAX_HEIGHT;
+  // we show the Show more/less button if the height is more than 44px (the height of 2 lines)
+  const showMoreButton = containerHeight && containerHeight > MAX_HEIGHT;
 
   // we show/hide ellipsis at the end of the second line if user clicks on "Show more"
   useEffect(() => {
