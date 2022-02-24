@@ -34,20 +34,6 @@ const App = () => {
     [openSafeApp, wcDisconnect],
   );
 
-  const disconnectOnPageRefresh = useCallback(() => {
-    if (connectionStatus === CONNECTION_STATUS.CONNECTING) {
-      wcDisconnect();
-      setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
-    }
-  }, [connectionStatus, wcDisconnect]);
-
-  useEffect(() => {
-    window.addEventListener('beforeunload', disconnectOnPageRefresh);
-    return () => {
-      window.removeEventListener('beforeunload', disconnectOnPageRefresh);
-    };
-  }, [disconnectOnPageRefresh]);
-
   useEffect(() => {
     if (wcClientData) {
       setConnectionStatus(CONNECTION_STATUS.CONNECTING);
