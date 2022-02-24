@@ -160,7 +160,7 @@ const Dashboard = ({
               showTransactionDetails={false}
               allowTransactionReordering
             />
-            {/* Create batch button */}
+            {/* Go to Review Screen button */}
             <Button
               size="md"
               type="button"
