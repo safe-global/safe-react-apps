@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "/tx-builder",
   "dependencies": {
-    "@gnosis.pm/safe-react-components": "git+https://github.com/gnosis/safe-react-components.git#4cc2795",
+    "@gnosis.pm/safe-react-components": "^1.0.0",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.0",
     "axios": "^0.24.0",

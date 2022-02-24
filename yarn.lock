@@ -1717,9 +1717,10 @@
     react-media "^1.10.0"
     web3-utils "^1.6.0"
 
-"@gnosis.pm/safe-react-components@git+https://github.com/gnosis/safe-react-components.git#4cc2795":
-  version "0.9.8"
-  resolved "git+https://github.com/gnosis/safe-react-components.git#4cc2795408b4946aad09d1ad3f4fe68ef095bc0a"
+"@gnosis.pm/safe-react-components@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-1.0.0.tgz#fa90aaa22e7ce666a4c74c405a2ca64c828d65a8"
+  integrity sha512-qahDXd5aueiA+TgYKaSk3yK8uzda12upx0Yv7RHJmgB6sMOXTzaWVZmbD3EyXDDiHXtoLJc6d6yxLhi6+1kr0A==
   dependencies:
     react-media "^1.10.0"
     web3-utils "^1.6.0"
