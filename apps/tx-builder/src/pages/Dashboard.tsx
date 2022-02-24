@@ -88,7 +88,7 @@ const Dashboard = ({
 
   return (
     <Wrapper>
-      <Grid container justifyContent="center" spacing={6}>
+      <Grid alignItems="flex-start" container justifyContent="center" spacing={6}>
         <AddNewTransactionFormWrapper item xs={12} md={6}>
           <StyledTitle size="lg">New Transaction</StyledTitle>
 
