@@ -118,10 +118,13 @@ const ReviewAndConfirm = ({
 
 export default ReviewAndConfirm;
 
-const Wrapper = styled.div`
-  max-width: 650px;
-  margin: 32px auto 0 auto;
-  padding: 0 24px 64px 0;
+const Wrapper = styled.main`
+  && {
+    padding: 48px;
+    padding-top: 120px;
+    max-width: 650px;
+    margin: 0 auto;
+  }
 `;
 
 const StyledTitle = styled(Title)`

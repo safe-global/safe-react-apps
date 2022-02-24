@@ -151,7 +151,7 @@ const Dashboard = ({
         </AddNewTransactionFormWrapper>
 
         {/* Transactions Batch section */}
-        <Grid item xs={12} md={6}>
+        <TransactionsSectionWrapper item xs={12} md={6}>
           {transactions.length > 0 ? (
             <>
               <TransactionsBatchList
@@ -178,7 +178,7 @@ const Dashboard = ({
           ) : (
             <CreateNewBatchCard />
           )}
-        </Grid>
+        </TransactionsSectionWrapper>
       </Grid>
     </Wrapper>
   );
@@ -189,6 +189,7 @@ export default Dashboard;
 const Wrapper = styled.main`
   && {
     padding: 48px;
+    padding-top: 120px;
     max-width: 1024px;
     margin: 0 auto;
   }
@@ -197,6 +198,12 @@ const Wrapper = styled.main`
 const AddNewTransactionFormWrapper = styled(Grid)`
   border-radius: 8px;
   background-color: white;
+`;
+
+const TransactionsSectionWrapper = styled(Grid)`
+  position: sticky;
+  top: 40px;
+  align-self: flex-start;
 `;
 
 const StyledTitle = styled(Title)`

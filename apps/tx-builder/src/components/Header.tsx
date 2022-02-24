@@ -36,6 +36,9 @@ const Header = () => {
 export default Header;
 
 const HeaderWrapper = styled.header`
+  position: fixed;
+  width: 100%;
+  z-index: 10000;
   display: flex;
   align-items: center;
 
