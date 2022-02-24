@@ -1,5 +1,6 @@
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { useCallback, useState } from 'react';
+import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
+
 import { ProposedTransaction } from '../../typings/models';
 
 export default function useTransactions() {
@@ -7,11 +8,15 @@ export default function useTransactions() {
   const { sdk } = useSafeAppsSDK();
 
   const handleAddTransaction = useCallback(
-    (tx: ProposedTransaction) => {
-      setTransactions([...transactions, tx]);
+    (newTransaction: ProposedTransaction) => {
+      setTransactions([...transactions, newTransaction]);
     },
     [transactions],
   );
+
+  const handleRemoveAllTransactions = useCallback(() => {
+    setTransactions([]);
+  }, []);
 
   const handleRemoveTransaction = useCallback(
     (index: number) => {
@@ -35,10 +40,21 @@ export default function useTransactions() {
     }
   }, [sdk.txs, transactions]);
 
+  const handleReorderTransactions = useCallback((sourceIndex, destinationIndex) => {
+    setTransactions((transactions) => {
+      const transactionToMove = transactions[sourceIndex];
+      transactions.splice(sourceIndex, 1); // we remove the transaction from the list
+      transactions.splice(destinationIndex, 0, transactionToMove); // we add the transaction in the new position
+      return transactions;
+    });
+  }, []);
+
   return {
     transactions,
     handleAddTransaction,
     handleRemoveTransaction,
     handleSubmitTransactions,
+    handleRemoveAllTransactions,
+    handleReorderTransactions,
   };
 }

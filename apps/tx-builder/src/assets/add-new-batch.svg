@@ -1,0 +1,10 @@
+<svg width="137" height="116" viewBox="0 0 137 116" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M62 0C94.0324 0 120 25.9673 120 57.9994C120 90.0327 94.0324 116 62 116C29.9676 116 4 90.0327 4 57.9994C4 25.9673 29.9676 0 62 0Z" fill="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M35.2857 16.2857H21.7143V2.71429C21.7143 1.21464 20.4983 0 19 0C17.5017 0 16.2857 1.21464 16.2857 2.71429V16.2857H2.71429C1.216 16.2857 0 17.5017 0 19C0 20.4983 1.216 21.7143 2.71429 21.7143H16.2857V35.2857C16.2857 36.784 17.5017 38 19 38C20.4983 38 21.7143 36.784 21.7143 35.2857V21.7143H35.2857C36.784 21.7143 38 20.4983 38 19C38 17.5017 36.784 16.2857 35.2857 16.2857Z" fill="#008C73"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M63 62C63 60.896 63.896 60 65 60L98.001 60C99.105 60 100.001 60.896 100.001 62C100.001 63.104 99.105 64 98.001 64L65 64C63.896 64 63 63.104 63 62Z" fill="#B2B5B2"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M80 96C80 94.896 80.896 94 82 94L115.001 94C116.105 94 117.001 94.896 117.001 96C117.001 97.104 116.105 98 115.001 98L82 98C80.896 98 80 97.104 80 96Z" fill="#B2B5B2"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M82 26C82 24.896 82.896 24 84 24L117.001 24C118.105 24 119.001 24.896 119.001 26C119.001 27.104 118.105 28 117.001 28L84 28C82.896 28 82 27.104 82 26Z" fill="#B2B5B2"/>
+<rect x="47" y="49" width="69" height="26" rx="6" stroke="#B2B5B2" stroke-width="4" stroke-linejoin="round"/>
+<rect x="64" y="83" width="69" height="26" rx="6" stroke="#B2B5B2" stroke-width="4" stroke-linejoin="round"/>
+<rect x="66" y="13" width="69" height="26" rx="6" stroke="#B2B5B2" stroke-width="4" stroke-linejoin="round"/>
+</svg>

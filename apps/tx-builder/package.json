@@ -9,11 +9,13 @@
     "@material-ui/icons": "^4.11.0",
     "axios": "^0.24.0",
     "lodash": "^4.17.21",
-    "react-hook-form": "^7.25.3",
+    "react-beautiful-dnd": "^13.1.0",
+    "react-hook-form": "^7.27.0",
     "web3": "~1.7.0"
   },
   "devDependencies": {
-    "@hookform/devtools": "^4.0.2"
+    "@hookform/devtools": "^4.0.2",
+    "@types/react-beautiful-dnd": "^13.1.2"
   },
   "scripts": {
     "start": "dotenv -e .env -- react-app-rewired start",
