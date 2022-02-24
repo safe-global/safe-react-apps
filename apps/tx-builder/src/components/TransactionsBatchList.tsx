@@ -161,11 +161,7 @@ const TransactionsBatchList = ({
                         );
 
                         return (
-                          <TransactionListItem
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
+                          <TransactionListItem ref={provided.innerRef} {...provided.draggableProps}>
                             {/* Transacion Position */}
                             <PositionWrapper>
                               <PositionDot color="tag" isDragging={isThisTxBeingDragging}>
@@ -182,57 +178,36 @@ const TransactionsBatchList = ({
                               isDragging={isThisTxBeingDragging}
                               TransitionProps={{ unmountOnExit: true }}
                             >
-                              <AccordionSummary
-                                expandIcon={false}
-                                style={{ cursor: allowTransactionReordering ? 'grab' : 'pointer' }}
-                              >
-                                {/* Drag & Drop Indicator */}
-                                {allowTransactionReordering && (
-                                  <Tooltip
-                                    placement="top"
-                                    title="Drag and Drop"
-                                    backgroundColor="primary"
-                                    textColor="white"
-                                    arrow
-                                  >
-                                    <DragAndDropIndicatorIcon fontSize="small" />
-                                  </Tooltip>
-                                )}
-
-                                {/* Destination Address label */}
-                                <EthHashInfo shortName="rin" hash={to} shortenHash={4} shouldShowShortName />
-
-                                {/* Transaction Description label */}
-                                <TransactionsDescription size="lg">{transactionDescription}</TransactionsDescription>
-
-                                {/* Transaction Actions */}
-
-                                {/* Delete transaction */}
-                                <Tooltip
-                                  placement="top"
-                                  title="Delete transaction"
-                                  backgroundColor="primary"
-                                  textColor="white"
-                                  arrow
+                              <div {...provided.dragHandleProps}>
+                                <AccordionSummary
+                                  expandIcon={false}
+                                  style={{ cursor: allowTransactionReordering ? 'grab' : 'pointer' }}
                                 >
-                                  <TransactionActionButton
-                                    onClick={(event) => {
-                                      event.stopPropagation();
-                                      setTxToRemove(String(index));
-                                      openDeleteTxModal();
-                                    }}
-                                    size="medium"
-                                    aria-label="Delete transaction"
-                                  >
-                                    <Icon size="sm" type="delete" />
-                                  </TransactionActionButton>
-                                </Tooltip>
+                                  {/* Drag & Drop Indicator */}
+                                  {allowTransactionReordering && (
+                                    <Tooltip
+                                      placement="top"
+                                      title="Drag and Drop"
+                                      backgroundColor="primary"
+                                      textColor="white"
+                                      arrow
+                                    >
+                                      <DragAndDropIndicatorIcon fontSize="small" />
+                                    </Tooltip>
+                                  )}
 
-                                {/* Expand transaction details */}
-                                {showTransactionDetails && (
+                                  {/* Destination Address label */}
+                                  <EthHashInfo shortName="rin" hash={to} shortenHash={4} shouldShowShortName />
+
+                                  {/* Transaction Description label */}
+                                  <TransactionsDescription size="lg">{transactionDescription}</TransactionsDescription>
+
+                                  {/* Transaction Actions */}
+
+                                  {/* Delete transaction */}
                                   <Tooltip
                                     placement="top"
-                                    title="Expand transaction details"
+                                    title="Delete transaction"
                                     backgroundColor="primary"
                                     textColor="white"
                                     arrow
@@ -240,16 +215,39 @@ const TransactionsBatchList = ({
                                     <TransactionActionButton
                                       onClick={(event) => {
                                         event.stopPropagation();
-                                        onClickShowTransactionDetails();
+                                        setTxToRemove(String(index));
+                                        openDeleteTxModal();
                                       }}
                                       size="medium"
-                                      aria-label="Expand transaction details"
+                                      aria-label="Delete transaction"
                                     >
-                                      <FixedIcon type={'chevronDown'} />
+                                      <Icon size="sm" type="delete" />
                                     </TransactionActionButton>
                                   </Tooltip>
-                                )}
-                              </AccordionSummary>
+
+                                  {/* Expand transaction details */}
+                                  {showTransactionDetails && (
+                                    <Tooltip
+                                      placement="top"
+                                      title="Expand transaction details"
+                                      backgroundColor="primary"
+                                      textColor="white"
+                                      arrow
+                                    >
+                                      <TransactionActionButton
+                                        onClick={(event) => {
+                                          event.stopPropagation();
+                                          onClickShowTransactionDetails();
+                                        }}
+                                        size="medium"
+                                        aria-label="Expand transaction details"
+                                      >
+                                        <FixedIcon type={'chevronDown'} />
+                                      </TransactionActionButton>
+                                    </Tooltip>
+                                  )}
+                                </AccordionSummary>
+                              </div>
 
                               {/* Transaction details */}
                               <AccordionDetails>

@@ -82,6 +82,7 @@ export default TransactionDetails;
 const Wrapper = styled.article`
   flex-grow: 1;
   padding: 0 16px;
+  user-select: text;
 `;
 
 const TxSummaryContainer = styled.div`
