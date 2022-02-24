@@ -11,7 +11,10 @@ type SelectContractFieldTypes = {
 const SelectContractField = ({ value, onChange, options }: SelectContractFieldTypes) => {
   return (
     <StyledSelect
+      name="select-contract"
+      label="Select Contract"
       items={options}
+      fullWidth
       activeItemId={value}
       onItemClick={(id: string) => {
         onChange(id);
@@ -24,5 +27,4 @@ export default SelectContractField;
 
 const StyledSelect = styled(Select)`
   margin-bottom: 10px;
-  width: 400px;
 `;

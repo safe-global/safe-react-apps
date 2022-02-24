@@ -11,7 +11,6 @@ import AddNewTransactionForm from '../components/forms/AddNewTransactionForm';
 import TransactionsBatchList from '../components/TransactionsBatchList';
 import CreateNewBatchCard from '../components/CreateNewBatchCard';
 import JsonField from '../components/forms/fields/JsonField';
-import { errorBaseStyles } from '../components/forms/styles';
 import { ProposedTransaction } from '../typings/models';
 
 type DashboardProps = {
@@ -111,6 +110,7 @@ const Dashboard = ({
           label="Enter Address or ENS Name"
           hiddenLabel={false}
           address={address}
+          fullWidth
           showNetworkPrefix={!!chainInfo?.shortName}
           networkPrefix={chainInfo?.shortName}
           error={isAddressInputFieldValid ? '' : 'The address is not valid'}
@@ -221,7 +221,6 @@ const CheckIconAddressAdornment = styled(CheckCircle)`
 
 const StyledAddressInput = styled(AddressInput)`
   && {
-    ${errorBaseStyles}
   }
 `;
 
