@@ -38,11 +38,10 @@ export default Header;
 const HeaderWrapper = styled.header`
   position: fixed;
   width: 100%;
-  z-index: 10000;
   display: flex;
   align-items: center;
-
   border-bottom: 1px solid #e2e3e3;
+  z-index: 10;
   background-color: white;
   height: 70px;
   padding: 0 40px;
