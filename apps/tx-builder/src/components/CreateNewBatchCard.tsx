@@ -1,35 +1,31 @@
 import { Text } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 
-import addNewBatch from '../assets/add-new-batch.svg';
-import arrowToBlock from '../assets/arrow-to-block.svg';
+import { ReactComponent as CreateNewBatchSVG } from '../assets/add-new-batch.svg';
+import { ReactComponent as ArrowToFormSVG } from '../assets/arrow-to-block.svg';
 
-function CreateNewBatchCard() {
+const CreateNewBatchCard = () => {
   return (
     <Wrapper>
-      <img src={addNewBatch} alt="add new batch placeholder" />
+      <CreateNewBatchSVG />
       <StyledText size={'xl'} center>
         Start creating a new batch
       </StyledText>
-      <StyledImage src={arrowToBlock} alt="arrow to form decorator" />
+      <StyledArrowToFormSVG />
     </Wrapper>
   );
-}
+};
 
 export default CreateNewBatchCard;
 
 const Wrapper = styled.div`
   position: relative;
-
   margin-top: 100px;
-  margin-left: 32px;
-
   padding-left: 150px;
-
   text-align: center;
 `;
 
-const StyledImage = styled.img`
+const StyledArrowToFormSVG = styled(ArrowToFormSVG)`
   position: absolute;
   top: 64px;
   left: 0;

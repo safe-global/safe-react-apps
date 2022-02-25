@@ -43,7 +43,7 @@ type TransactionsBatchListProps = {
 const TRANSACTION_LIST_DROPPABLE_ID = 'Transaction_List';
 const DROP_EVENT = 'DROP';
 
-function TransactionsBatchList({
+const TransactionsBatchList = ({
   transactions,
   onRemoveTransaction,
   onSubmitTransactions,
@@ -52,7 +52,7 @@ function TransactionsBatchList({
   handleReorderTransactions,
   showTransactionDetails,
   allowTransactionReordering,
-}: TransactionsBatchListProps) {
+}: TransactionsBatchListProps) => {
   // we need those states to display the correct position in each tx during the drag & drop
   const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState<number>();
   const [draggableTxIndexDestination, setDraggableTxIndexDestination] = useState<number>();
@@ -108,11 +108,12 @@ function TransactionsBatchList({
           </TransactionsTitle>
 
           {/* Transactions Batch Actions */}
-          <Tooltip placement="top" title="Save to Library" backgroundColor="primary" textColor="white" arrow>
+
+          {/* <Tooltip placement="top" title="Save to Library" backgroundColor="primary" textColor="white" arrow>
             <StyledHeaderIconButton>
               <Icon size="sm" type="importImg" color="primary" aria-label="Save to Library" />
             </StyledHeaderIconButton>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip placement="top" title="Delete Batch" backgroundColor="primary" textColor="white" arrow>
             <StyledHeaderIconButton onClick={openDeleteBatchModal}>
               <Icon size="sm" type="delete" color="error" aria-label="Delete Batch" />
@@ -142,11 +143,11 @@ function TransactionsBatchList({
                       {function DraggableTransaction(provided, snapshot) {
                         const [isTxExpanded, setTxExpanded] = useState(false);
 
-                        function onClickShowTransactionDetails() {
+                        const onClickShowTransactionDetails = () => {
                           if (showTransactionDetails) {
                             setTxExpanded((isTxExpanded) => !isTxExpanded);
                           }
-                        }
+                        };
                         const isThisTxBeingDragging = snapshot.isDragging;
 
                         const showArrowAdornment = !isLastTransaction && !isThisTxBeingDragging;
@@ -296,11 +297,11 @@ function TransactionsBatchList({
       )}
     </>
   );
-}
+};
 
 export default TransactionsBatchList;
 
-function getTransactionText(description: ProposedTransaction['description']) {
+const getTransactionText = (description: ProposedTransaction['description']) => {
   const { contractMethod, customTransactionData } = description;
 
   const isCustomHexDataTx = !!customTransactionData;
@@ -321,17 +322,17 @@ function getTransactionText(description: ProposedTransaction['description']) {
 
   // empty tx description as a fallback
   return '';
-}
+};
 
 const UNKNOWN_POSITION_LABEL = '?';
 
 // tx positions can change during drag & drop
-function getDisplayedTxPosition(
+const getDisplayedTxPosition = (
   index: number,
   isDraggingThisTx: boolean,
   draggableTxIndexDestination?: number,
   draggableTxIndexOrigin?: number,
-): string {
+): string => {
   // we show the correct position in the transaction that is being dragged
   if (isDraggingThisTx) {
     const isAwayFromDroppableZone = draggableTxIndexDestination === undefined;
@@ -352,7 +353,7 @@ function getDisplayedTxPosition(
 
   // otherwise we show the natural position
   return `${index + 1}`;
-}
+};
 
 const TransactionsBatchWrapper = styled.section`
   margin-top: 24px;

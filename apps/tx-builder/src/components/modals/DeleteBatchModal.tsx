@@ -8,7 +8,7 @@ type DeleteBatchModalProps = {
   onClose: () => void;
 };
 
-function DeleteBatchModal({ count, onClick, onClose }: DeleteBatchModalProps) {
+const DeleteBatchModal = ({ count, onClick, onClose }: DeleteBatchModalProps) => {
   return (
     <GenericModal
       title="Cancel Transaction Batch?"
@@ -37,7 +37,7 @@ function DeleteBatchModal({ count, onClick, onClose }: DeleteBatchModalProps) {
       onClose={onClose}
     />
   );
-}
+};
 
 export default DeleteBatchModal;
 
