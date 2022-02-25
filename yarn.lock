@@ -1717,10 +1717,10 @@
     react-media "^1.10.0"
     web3-utils "^1.6.0"
 
-"@gnosis.pm/safe-react-components@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-1.0.0.tgz#fa90aaa22e7ce666a4c74c405a2ca64c828d65a8"
-  integrity sha512-qahDXd5aueiA+TgYKaSk3yK8uzda12upx0Yv7RHJmgB6sMOXTzaWVZmbD3EyXDDiHXtoLJc6d6yxLhi6+1kr0A==
+"@gnosis.pm/safe-react-components@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-1.0.1.tgz#fd2d70b98a23c69610949735a4bd0011aa51a7f6"
+  integrity sha512-4oL7WFm8hNo0Y7AijWO0miH8Rq3kPhqtrK2A5QJvDDK5yzKDurSvrHVRKxt3/8DDXfEDAoRuBdw+xqX/r0VnRQ==
   dependencies:
     react-media "^1.10.0"
     web3-utils "^1.6.0"
