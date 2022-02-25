@@ -28,6 +28,7 @@ import { ProposedTransaction } from '../typings/models';
 import useModal from '../hooks/useModal/useModal';
 import DeleteTransactionModal from './modals/DeleteTransactionModal';
 import DeleteBatchModal from './modals/DeleteBatchModal';
+import EditTransactionModal from './EditTransactionModal';
 
 type TransactionsBatchListProps = {
   transactions: ProposedTransaction[];
@@ -36,8 +37,11 @@ type TransactionsBatchListProps = {
   onRemoveTransaction: (index: number) => void;
   handleRemoveAllTransactions: () => void;
   onSubmitTransactions: () => void;
-  onEditTransaction: (index: number) => void;
+  onEditTransaction: (newTransaction: ProposedTransaction, index: number) => void;
   handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
+  networkPrefix: string;
+  nativeCurrencySymbol: string;
+  getAddressFromDomain: (name: string) => Promise<string>;
 };
 
 const TRANSACTION_LIST_DROPPABLE_ID = 'Transaction_List';
@@ -52,6 +56,9 @@ const TransactionsBatchList = ({
   handleReorderTransactions,
   showTransactionDetails,
   allowTransactionReordering,
+  networkPrefix,
+  nativeCurrencySymbol,
+  getAddressFromDomain,
 }: TransactionsBatchListProps) => {
   // we need those states to display the correct position in each tx during the drag & drop
   const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState<number>();
@@ -85,10 +92,13 @@ const TransactionsBatchList = ({
     setDraggableTxIndexDestination(undefined);
   };
 
-  // 2 modals needed: delete batch modal and delete transaction modal
+  // 3 modals needed: edit transaction modal, delete batch modal and delete transaction modal
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
   const { open: showDeleteTxModal, openModal: openDeleteTxModal, closeModal: closeDeleteTxModal } = useModal();
-  const [txToRemove, setTxToRemove] = useState<string>();
+  const { open: showEditTxModal, openModal: openEditTxModal, closeModal: closeEditTxModal } = useModal();
+
+  const [txIndexToRemove, setTxIndexToRemove] = useState<string>();
+  const [txIndexToEdit, setTxIndexToEdit] = useState<string>();
 
   return (
     <>
@@ -215,7 +225,10 @@ const TransactionsBatchList = ({
                                   <TransactionActionButton
                                     size="medium"
                                     aria-label="Edit transaction"
-                                    onClick={() => onEditTransaction(index)}
+                                    onClick={() => {
+                                      setTxIndexToEdit(String(index));
+                                      openEditTxModal();
+                                    }}
                                   >
                                     <Icon size="sm" type="edit" />
                                   </TransactionActionButton>
@@ -229,7 +242,7 @@ const TransactionsBatchList = ({
                                 >
                                   <TransactionActionButton
                                     onClick={() => {
-                                      setTxToRemove(String(index));
+                                      setTxIndexToRemove(String(index));
                                       openDeleteTxModal();
                                     }}
                                     size="medium"
@@ -271,6 +284,26 @@ const TransactionsBatchList = ({
         </Button>
       </TransactionsBatchWrapper>
 
+      {/* Edit transaction */}
+      {showEditTxModal && (
+        <EditTransactionModal
+          txIndex={Number(txIndexToEdit)}
+          transaction={transactions[Number(txIndexToEdit)]}
+          onSubmit={(updatedTransaction: ProposedTransaction) => {
+            closeEditTxModal();
+            onEditTransaction(updatedTransaction, Number(txIndexToEdit));
+          }}
+          onDeleteTx={() => {
+            closeEditTxModal();
+            onRemoveTransaction(Number(txIndexToEdit));
+          }}
+          onClose={closeEditTxModal}
+          networkPrefix={networkPrefix}
+          getAddressFromDomain={getAddressFromDomain}
+          nativeCurrencySymbol={nativeCurrencySymbol}
+        />
+      )}
+
       {/* Delete batch modal */}
       {showDeleteBatchModal && (
         <DeleteBatchModal
@@ -286,11 +319,11 @@ const TransactionsBatchList = ({
       {/* Delete a transaction modal */}
       {showDeleteTxModal && (
         <DeleteTransactionModal
-          txIndex={String(txToRemove)}
-          txDescription={getTransactionText(transactions[Number(txToRemove)]?.description)}
+          txIndex={Number(txIndexToRemove)}
+          txDescription={getTransactionText(transactions[Number(txIndexToRemove)]?.description)}
           onClick={() => {
             closeDeleteTxModal();
-            onRemoveTransaction(Number(txToRemove));
+            onRemoveTransaction(Number(txIndexToRemove));
           }}
           onClose={closeDeleteTxModal}
         />

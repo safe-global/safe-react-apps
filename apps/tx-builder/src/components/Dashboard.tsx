@@ -11,7 +11,6 @@ import { isValidAddress } from '../utils';
 import AddNewTransactionForm from './forms/AddNewTransactionForm';
 import TransactionsBatchList from './TransactionsBatchList';
 import CreateNewBatchCard from './CreateNewBatchCard';
-import EditTransactionModal from './EditTransactionModal';
 import JsonField from './forms/fields/JsonField';
 import { errorBaseStyles } from './forms/styles';
 
@@ -33,7 +32,6 @@ const Dashboard = (): ReactElement | null => {
   const [isABILoading, setIsABILoading] = useState(false);
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadContractError, setLoadContractError] = useState('');
-  const [editingTransactionIndex, setEditingTransactionIndex] = useState<number | null>(null);
 
   // Load contract from address or ABI
   useEffect(() => {
@@ -155,29 +153,19 @@ const Dashboard = (): ReactElement | null => {
             transactions={transactions}
             onRemoveTransaction={handleRemoveTransaction}
             onSubmitTransactions={handleSubmitTransactions}
-            onEditTransaction={(index) => setEditingTransactionIndex(index)}
+            onEditTransaction={handleReplaceTransaction}
             handleRemoveAllTransactions={handleRemoveAllTransactions}
             handleReorderTransactions={handleReorderTransactions}
             showTransactionDetails={false}
             allowTransactionReordering
+            networkPrefix={chainInfo?.shortName}
+            getAddressFromDomain={getAddressFromDomain}
+            nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
           />
         ) : (
           <CreateNewBatchCard />
         )}
       </TransactionsSectionWrapper>
-
-      {editingTransactionIndex != null && (
-        <EditTransactionModal
-          editingTransactionIndex={editingTransactionIndex}
-          onClose={() => setEditingTransactionIndex(null)}
-          onDelete={handleRemoveTransaction}
-          nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
-          networkPrefix={chainInfo?.shortName}
-          transaction={transactions[editingTransactionIndex]}
-          getAddressFromDomain={getAddressFromDomain}
-          onSubmit={handleReplaceTransaction}
-        />
-      )}
     </Wrapper>
   );
 };

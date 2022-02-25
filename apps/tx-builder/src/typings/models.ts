@@ -6,9 +6,9 @@ export interface ProposedTransaction {
   description: {
     to: string;
     value: string;
-    customTransactionData: string;
+    customTransactionData?: string;
     contractMethod?: ContractMethod;
-    contractFieldsValues: Record<string, string>;
+    contractFieldsValues?: Record<string, string>;
     contractMethodIndex?: string;
   };
   raw: { to: string; value: string; data: string };

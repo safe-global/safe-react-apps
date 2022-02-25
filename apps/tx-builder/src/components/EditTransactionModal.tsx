@@ -13,10 +13,10 @@ import SolidityForm, {
 import { weiToEther } from '../utils';
 
 type EditTransactionModalProps = {
-  editingTransactionIndex: number;
+  txIndex: number;
   transaction: ProposedTransaction;
-  onSubmit: (transaction: ProposedTransaction) => void;
-  onDelete: (transactionIndex: number) => void;
+  onSubmit: (newTransaction: ProposedTransaction) => void;
+  onDeleteTx: () => void;
   onClose: () => void;
   nativeCurrencySymbol: string;
   networkPrefix: string;
@@ -24,45 +24,31 @@ type EditTransactionModalProps = {
 };
 
 const EditTransactionModal = ({
-  editingTransactionIndex,
+  txIndex,
   transaction,
+  onSubmit,
+  onDeleteTx,
   onClose,
   nativeCurrencySymbol,
   networkPrefix,
   getAddressFromDomain,
-  onSubmit,
-  onDelete,
 }: EditTransactionModalProps) => {
+  const { description, contractInterface } = transaction;
+
+  const { customTransactionData, contractFieldsValues, contractMethodIndex } = description;
+
+  const isCustomHexDataTx = !!customTransactionData;
+
   const initialFormValues: Partial<SolidityFormValuesTypes> = {
     [TO_ADDRESS_FIELD_NAME]: transaction.raw.to,
     [NATIVE_VALUE_FIELD_NAME]: weiToEther(transaction.raw.value),
-    [CUSTOM_TRANSACTION_DATA_FIELD_NAME]: transaction.description.customTransactionData,
+    [CUSTOM_TRANSACTION_DATA_FIELD_NAME]: customTransactionData,
+    [CONTRACT_METHOD_INDEX_FIELD_NAME]: contractMethodIndex,
+    [CONTRACT_VALUES_FIELD_NAME]: contractFieldsValues,
   };
 
-  // If the transaction is not a custom hex encoded data, we need to set the contract method index,
-  // we need to set the contract fields values
-  const contractMethodEditable =
-    !transaction.description.customTransactionData &&
-    transaction.description.contractMethod &&
-    transaction.contractInterface;
-  if (contractMethodEditable) {
-    initialFormValues[CONTRACT_METHOD_INDEX_FIELD_NAME] = transaction.description.contractMethodIndex;
-
-    // if fallback method is used, there are no values, therefore we check if values are present before setting them
-    if (transaction.description.contractFieldsValues) {
-      for (const [paramName, argument] of Object.entries(transaction.description.contractFieldsValues)) {
-        initialFormValues[CONTRACT_VALUES_FIELD_NAME] = {
-          ...initialFormValues[CONTRACT_VALUES_FIELD_NAME],
-          [paramName]: argument,
-        };
-      }
-    }
-  }
-
   const handleSubmit = (values: SolidityFormValuesTypes) => {
-    onClose();
-
-    const editedTransaction = parseFormToProposedTransaction(values, transaction.contractInterface);
+    const editedTransaction = parseFormToProposedTransaction(values, contractInterface);
 
     // keep the id of the transaction
     onSubmit({ ...editedTransaction, id: transaction.id });
@@ -70,31 +56,23 @@ const EditTransactionModal = ({
 
   return (
     <GenericModal
-      title={`Transaction ${editingTransactionIndex}`}
+      title={`Transaction ${txIndex + 1}`}
       body={
         <FormContainer>
           <SolidityForm
             id="solidity-contract-form"
             initialValues={initialFormValues}
-            contract={transaction.contractInterface}
+            contract={contractInterface}
             nativeCurrencySymbol={nativeCurrencySymbol}
             networkPrefix={networkPrefix}
             getAddressFromDomain={getAddressFromDomain}
-            defaultHexDataView={!contractMethodEditable}
+            defaultHexDataView={isCustomHexDataTx}
             onSubmit={handleSubmit}
             showHexToggler={false}
           >
             <ButtonContainer>
               {/* Remove transaction btn */}
-              <Button
-                type="button"
-                size="md"
-                color="error"
-                onClick={() => {
-                  onClose();
-                  onDelete(editingTransactionIndex);
-                }}
-              >
+              <Button type="button" size="md" color="error" variant="bordered" onClick={onDeleteTx}>
                 Delete
               </Button>
 

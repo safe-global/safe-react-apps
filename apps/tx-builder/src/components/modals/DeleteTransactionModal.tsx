@@ -3,14 +3,14 @@ import Box from '@material-ui/core/Box';
 import styled from 'styled-components';
 
 type DeleteTransactionModalProps = {
-  txIndex: string;
+  txIndex: number;
   txDescription: string;
   onClick: () => void;
   onClose: () => void;
 };
 
 const DeleteTransactionModal = ({ txIndex, txDescription, onClick, onClose }: DeleteTransactionModalProps) => {
-  const positionLabel = Number(txIndex) + 1;
+  const positionLabel = txIndex + 1;
   return (
     <GenericModal
       title={'Delete from batch?'}

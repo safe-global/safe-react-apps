@@ -15,14 +15,9 @@ export default function useTransactions() {
   );
 
   const handleReplaceTransaction = useCallback(
-    (newTransaction: ProposedTransaction) => {
-      const index = transactions.findIndex((transaction) => transaction.id === newTransaction.id);
-      if (index !== -1) {
-        const newTransactions = [...transactions];
-        newTransactions[index] = newTransaction;
-
-        setTransactions(newTransactions);
-      }
+    (newTransaction: ProposedTransaction, index: number) => {
+      transactions[index] = newTransaction;
+      setTransactions([...transactions]);
     },
     [transactions],
   );
