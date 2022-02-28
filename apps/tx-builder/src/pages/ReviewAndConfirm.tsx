@@ -14,6 +14,8 @@ type ReviewAndConfirmProps = {
   transactions: ProposedTransaction[];
   handleSubmitTransactions: () => void;
   handleRemoveTransaction: (index: number) => void;
+  handleSaveTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
+  handleDownloadTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
   handleRemoveAllTransactions: () => void;
   handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
 };
@@ -21,6 +23,8 @@ type ReviewAndConfirmProps = {
 const ReviewAndConfirm = ({
   transactions,
   handleRemoveTransaction,
+  handleDownloadTransactionBatch,
+  handleSaveTransactionBatch,
   handleRemoveAllTransactions,
   handleSubmitTransactions,
   handleReorderTransactions,
@@ -59,6 +63,8 @@ const ReviewAndConfirm = ({
         <TransactionsBatchList
           transactions={transactions}
           onRemoveTransaction={handleRemoveTransaction}
+          handleDownloadTransactionBatch={handleDownloadTransactionBatch}
+          handleSaveTransactionBatch={handleSaveTransactionBatch}
           handleReorderTransactions={handleReorderTransactions}
           showTransactionDetails
           allowTransactionReordering

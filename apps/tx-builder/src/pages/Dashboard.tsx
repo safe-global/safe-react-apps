@@ -18,6 +18,8 @@ type DashboardProps = {
   handleSubmitTransactions: () => void;
   handleAddTransaction: (transaction: ProposedTransaction) => void;
   handleRemoveTransaction: (index: number) => void;
+  handleSaveTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
+  handleDownloadTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
   handleRemoveAllTransactions: () => void;
   handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
 };
@@ -27,6 +29,8 @@ const Dashboard = ({
   handleAddTransaction,
   handleRemoveTransaction,
   handleSubmitTransactions,
+  handleSaveTransactionBatch,
+  handleDownloadTransactionBatch,
   handleRemoveAllTransactions,
   handleReorderTransactions,
 }: DashboardProps): ReactElement => {
@@ -156,6 +160,8 @@ const Dashboard = ({
               <TransactionsBatchList
                 transactions={transactions}
                 onRemoveTransaction={handleRemoveTransaction}
+                handleDownloadTransactionBatch={handleDownloadTransactionBatch}
+                handleSaveTransactionBatch={handleSaveTransactionBatch}
                 handleRemoveAllTransactions={handleRemoveAllTransactions}
                 handleReorderTransactions={handleReorderTransactions}
                 showTransactionDetails={false}

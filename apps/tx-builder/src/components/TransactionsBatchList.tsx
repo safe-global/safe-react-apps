@@ -35,6 +35,8 @@ type TransactionsBatchListProps = {
   showTransactionDetails: boolean;
   allowTransactionReordering: boolean;
   onRemoveTransaction: (index: number) => void;
+  handleSaveTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
+  handleDownloadTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
   handleRemoveAllTransactions?: () => void;
   handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
 };
@@ -45,6 +47,8 @@ const DROP_EVENT = 'DROP';
 const TransactionsBatchList = ({
   transactions,
   onRemoveTransaction,
+  handleSaveTransactionBatch,
+  handleDownloadTransactionBatch,
   handleRemoveAllTransactions,
   handleReorderTransactions,
   showTransactionDetails,
@@ -105,11 +109,17 @@ const TransactionsBatchList = ({
           </TransactionsTitle>
 
           {/* Transactions Batch Actions */}
-          {/* <Tooltip placement="top" title="Save to Library" backgroundColor="primary" textColor="white" arrow>
-            <StyledHeaderIconButton>
-              <Icon size="sm" type="importImg" color="primary" aria-label="Save to Library" />
+          <Tooltip placement="top" title="Save to Library" backgroundColor="primary" textColor="white" arrow>
+            <StyledHeaderIconButton onClick={() => handleSaveTransactionBatch('test-save-batch', transactions)}>
+              <Icon size="sm" type="licenses" color="primary" aria-label="Save to Library" />
             </StyledHeaderIconButton>
-          </Tooltip> */}
+          </Tooltip>
+
+          <Tooltip placement="top" title="Download" backgroundColor="primary" textColor="white" arrow>
+            <StyledHeaderIconButton onClick={() => handleDownloadTransactionBatch('test-download-batch', transactions)}>
+              <Icon size="sm" type="importImg" color="primary" aria-label="Download" />
+            </StyledHeaderIconButton>
+          </Tooltip>
 
           {handleRemoveAllTransactions && (
             <Tooltip placement="top" title="Delete Batch" backgroundColor="primary" textColor="white" arrow>
