@@ -9,6 +9,7 @@ import { HOME_PATH, REVIEW_AND_CONFIRM_PATH } from './routes/routes';
 const App = () => {
   const {
     transactions,
+    resetTransactions,
     handleAddTransaction,
     handleRemoveTransaction,
     handleSubmitTransactions,
@@ -16,7 +17,12 @@ const App = () => {
     handleReorderTransactions,
   } = useTransactions();
 
-  const { handleSaveTransactionBatch, handleDownloadTransactionBatch } = useTransactionLibrary();
+  const { handleSaveTransactionBatch, handleDownloadTransactionBatch, handleImportTransactionBatch } =
+    useTransactionLibrary();
+
+  const handleImport = async (file: File[] | null) => {
+    resetTransactions(await handleImportTransactionBatch(file));
+  };
 
   const navigate = useNavigate();
 
@@ -37,6 +43,7 @@ const App = () => {
               handleSubmitTransactions={() => navigate(REVIEW_AND_CONFIRM_PATH)}
               handleSaveTransactionBatch={handleSaveTransactionBatch}
               handleDownloadTransactionBatch={handleDownloadTransactionBatch}
+              handleImportTransactionBatch={handleImport}
               handleRemoveAllTransactions={handleRemoveAllTransactions}
               handleReorderTransactions={handleReorderTransactions}
             />

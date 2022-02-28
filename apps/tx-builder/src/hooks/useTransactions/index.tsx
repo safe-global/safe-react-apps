@@ -6,6 +6,10 @@ export default function useTransactions() {
   const [transactions, setTransactions] = useState<ProposedTransaction[]>([]);
   const { sdk } = useSafeAppsSDK();
 
+  const resetTransactions = useCallback((transactions: ProposedTransaction[]) => {
+    setTransactions(transactions);
+  }, []);
+
   const handleAddTransaction = useCallback(
     (newTransaction: ProposedTransaction) => {
       setTransactions([...transactions, newTransaction]);
@@ -41,6 +45,7 @@ export default function useTransactions() {
 
   return {
     transactions,
+    resetTransactions,
     handleAddTransaction,
     handleRemoveTransaction,
     handleSubmitTransactions,

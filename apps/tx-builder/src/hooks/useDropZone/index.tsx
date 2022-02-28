@@ -1,6 +1,7 @@
 import { useState, useRef, DragEventHandler, useMemo } from 'react';
 
 export interface DropHandlers {
+  onDragOver: DragEventHandler;
   onDragEnter: DragEventHandler;
   onDragLeave: DragEventHandler;
   onDrop: DragEventHandler;
@@ -12,6 +13,9 @@ const useDropZone = (onDrop: (files: File[] | null) => void): [Boolean, DropHand
 
   const handlers: DropHandlers = useMemo(
     () => ({
+      onDragOver(event) {
+        event.preventDefault();
+      },
       onDragEnter(event) {
         event.preventDefault();
         counter.current++;
@@ -25,6 +29,7 @@ const useDropZone = (onDrop: (files: File[] | null) => void): [Boolean, DropHand
         }
       },
       onDrop(event) {
+        event.preventDefault();
         counter.current = 0;
         setIsOverDropZone(false);
         event.persist();

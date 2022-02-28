@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { downloadBatch, saveBatch } from './storageManager';
+import { downloadBatch, importBatch, saveBatch } from './storageManager';
 
 const useTransactionLibrary = () => {
   const handleSaveTransactionBatch = useCallback(async (name, transactions) => {
@@ -10,9 +10,14 @@ const useTransactionLibrary = () => {
     await downloadBatch(name, transactions);
   }, []);
 
+  const handleImportTransactionBatch = useCallback(async (transactions) => {
+    return await importBatch(transactions);
+  }, []);
+
   return {
     handleSaveTransactionBatch,
     handleDownloadTransactionBatch,
+    handleImportTransactionBatch,
   };
 };
 
