@@ -23,6 +23,7 @@
   "dependencies": {
     "@gnosis.pm/safe-apps-react-sdk": "4.2.0",
     "@gnosis.pm/safe-apps-sdk": "6.3.0",
+    "localforage": "^1.10.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "^4.0.3",

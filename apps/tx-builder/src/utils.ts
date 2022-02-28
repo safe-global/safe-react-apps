@@ -1,7 +1,6 @@
 import { AbiItem, toBN, isAddress, fromWei } from 'web3-utils';
 import abiCoder, { AbiCoder } from 'web3-eth-abi';
-
-import { ContractInput, ContractMethod } from './hooks/useServices/interfaceRepository';
+import { ContractInput, ContractMethod } from './typings/models';
 
 export enum CHAINS {
   MAINNET = '1',

@@ -4,15 +4,13 @@ import styled from 'styled-components';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Grid from '@material-ui/core/Grid';
 import CheckCircle from '@material-ui/icons/CheckCircle';
-
-import { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import { isValidAddress } from '../utils';
 import AddNewTransactionForm from '../components/forms/AddNewTransactionForm';
 import TransactionsBatchList from '../components/TransactionsBatchList';
 import CreateNewBatchCard from '../components/CreateNewBatchCard';
 import JsonField from '../components/forms/fields/JsonField';
-import { ProposedTransaction } from '../typings/models';
+import { ContractInterface, ProposedTransaction } from '../typings/models';
 import { Hidden } from '@material-ui/core';
 
 type DashboardProps = {

@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Switch, Text } from '@gnosis.pm/safe-react-components';
 import { DevTool } from '@hookform/devtools';
-
-import { ContractInterface } from '../../hooks/useServices/interfaceRepository';
 import {
   ADDRESS_FIELD_TYPE,
   AMOUNT_FIELD_TYPE,
@@ -12,6 +10,7 @@ import {
 } from './fields/fields';
 import Field from './fields/Field';
 import { encodeToHexData } from '../../utils';
+import { ContractInterface } from '../../typings/models';
 
 export const TO_ADDRESS_FIELD_NAME = 'toAddress';
 export const TOKEN_INPUT_NAME = 'tokenValue';

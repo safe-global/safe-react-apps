@@ -2,8 +2,7 @@ import { Text, Title, Button } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import { toChecksumAddress, toWei } from 'web3-utils';
 
-import { ContractInterface } from '../../hooks/useServices/interfaceRepository';
-import { ProposedTransaction } from '../../typings/models';
+import { ContractInterface, ProposedTransaction } from '../../typings/models';
 import { encodeToHexData, isValidAddress } from '../../utils';
 import SolidityForm, {
   CONTRACT_METHOD_INDEX_FIELD_NAME,
