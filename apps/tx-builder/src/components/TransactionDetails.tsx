@@ -1,5 +1,5 @@
 import { ButtonLink, EthHashInfo, Text, Title } from '@gnosis.pm/safe-react-components';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import useElementHeight from '../hooks/useElementHeight/useElementHeight';
