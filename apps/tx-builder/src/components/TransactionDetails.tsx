@@ -115,9 +115,8 @@ const MAX_HEIGHT = 2 * LINE_HEIGHT; // 2 lines as max height
 const TxValueLabel = ({ children }: { children: React.ReactNode }) => {
   const [showMore, setShowMore] = useState(false);
   const [showEllipsis, setShowEllipsis] = useState(false);
-  const valueContainerRef = useRef<HTMLDivElement>(null);
 
-  const containerHeight = useElementHeight(valueContainerRef);
+  const { height: containerHeight, elementRef } = useElementHeight<HTMLDivElement>();
 
   // we show the Show more/less button if the height is more than 44px (the height of 2 lines)
   const showMoreButton = containerHeight && containerHeight > MAX_HEIGHT;
@@ -130,7 +129,7 @@ const TxValueLabel = ({ children }: { children: React.ReactNode }) => {
   }, [showMoreButton, showMore]);
 
   return (
-    <div ref={valueContainerRef}>
+    <div ref={elementRef}>
       {/* value */}
       <StyledTxValueLabel size="xl" showMore={showMore} showEllipsis={showEllipsis}>
         {children}
