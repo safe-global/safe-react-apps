@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { ButtonLink, Switch, Text } from '@gnosis.pm/safe-react-components';
-import styled from 'styled-components';
+import { Switch, Text } from '@gnosis.pm/safe-react-components';
 import { DevTool } from '@hookform/devtools';
 
 import { ContractInterface } from '../../hooks/useServices/interfaceRepository';
@@ -12,7 +11,6 @@ import {
   HEX_ENCODED_DATA_FIELD_TYPE,
 } from './fields/fields';
 import Field from './fields/Field';
-import { Examples } from '../Examples';
 import { encodeToHexData } from '../../utils';
 
 export const TO_ADDRESS_FIELD_NAME = 'toAddress';
@@ -57,7 +55,6 @@ const SolidityForm = ({
   contract,
   children,
 }: SolidityFormPropsTypes) => {
-  const [showExamples, setShowExamples] = useState<boolean>(false);
   const [showHexEncodedData, setShowHexEncodedData] = useState<boolean>(false);
 
   const {
@@ -148,17 +145,6 @@ const SolidityForm = ({
           />
         )}
 
-        {/* Show examples link */}
-        {showContractFields && (
-          <StyledExamples>
-            <ButtonLink type="button" color="primary" onClick={() => setShowExamples((prev) => !prev)}>
-              {showExamples ? 'Hide Examples' : 'Show Examples'}
-            </ButtonLink>
-
-            {showExamples && <Examples />}
-          </StyledExamples>
-        )}
-
         {/* Contract Fields */}
         {contractFields.map((contractField, index) => {
           const name = `${CONTRACT_VALUES_FIELD_NAME}.${contractField.name || index}`;
@@ -213,11 +199,3 @@ const SolidityForm = ({
 };
 
 export default SolidityForm;
-
-const StyledExamples = styled.div`
-  margin: 5px 0 10px 0;
-
-  button {
-    padding: 0;
-  }
-`;
