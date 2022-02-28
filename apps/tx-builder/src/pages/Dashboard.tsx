@@ -13,6 +13,7 @@ import TransactionsBatchList from '../components/TransactionsBatchList';
 import CreateNewBatchCard from '../components/CreateNewBatchCard';
 import JsonField from '../components/forms/fields/JsonField';
 import { ProposedTransaction } from '../typings/models';
+import { Hidden } from '@material-ui/core';
 
 type DashboardProps = {
   transactions: ProposedTransaction[];
@@ -176,7 +177,9 @@ const Dashboard = ({
               </Button>
             </>
           ) : (
-            <CreateNewBatchCard />
+            <Hidden smDown>
+              <CreateNewBatchCard />
+            </Hidden>
           )}
         </TransactionsSectionWrapper>
       </Grid>
