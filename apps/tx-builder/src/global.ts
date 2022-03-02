@@ -25,8 +25,14 @@ const GlobalStyle = createGlobalStyle`
         url(${avertaBoldFont}) format('woff');
     }
 
-    .MuiButton-root {
-        height: 46px !important;
+    && {
+        .MuiButton-root {
+            height: 46px !important;
+        }
+    
+        .MuiFormControl-root  {
+            min-height: 79px;
+        }
     }
 `;
 
