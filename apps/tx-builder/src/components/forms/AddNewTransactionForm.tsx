@@ -34,7 +34,7 @@ const AddNewTransactionForm = ({
     [CONTRACT_METHOD_INDEX_FIELD_NAME]: '0',
   };
 
-  const { handleAddTransaction } = useTransactions();
+  const { addTransaction } = useTransactions();
   const showNoPublicMethodsWarning = contract && contract.methods.length === 0;
 
   const onSubmit = (values: SolidityFormValuesTypes) => {
@@ -50,7 +50,7 @@ const AddNewTransactionForm = ({
     const to = toChecksumAddress(toAddress);
     const value = toWei(tokenValue || '0');
 
-    handleAddTransaction({
+    addTransaction({
       id: new Date().getTime(),
       description: {
         to,

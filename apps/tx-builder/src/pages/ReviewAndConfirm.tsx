@@ -16,7 +16,7 @@ const ReviewAndConfirm = () => {
     openModal: openSuccessBatchModal,
     closeModal: closeSuccessBatchModal,
   } = useModal();
-  const { transactions, handleRemoveAllTransactions, handleSubmitTransactions } = useTransactions();
+  const { transactions, removeAllTransactions, submitTransactions } = useTransactions();
 
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
 
@@ -24,7 +24,7 @@ const ReviewAndConfirm = () => {
 
   const createBatch = async () => {
     try {
-      await handleSubmitTransactions();
+      await submitTransactions();
       openSuccessBatchModal();
     } catch (e) {
       console.error('Error sending transactions:', e);
@@ -76,11 +76,7 @@ const ReviewAndConfirm = () => {
 
       {/* Delete batch modal */}
       {showDeleteBatchModal && (
-        <DeleteBatchModal
-          count={transactions.length}
-          onClick={handleRemoveAllTransactions}
-          onClose={closeDeleteBatchModal}
-        />
+        <DeleteBatchModal count={transactions.length} onClick={removeAllTransactions} onClose={closeDeleteBatchModal} />
       )}
 
       {/* Success batch modal */}
@@ -88,7 +84,7 @@ const ReviewAndConfirm = () => {
         <SuccessBatchCreationModal
           count={transactions.length}
           onClick={() => {
-            handleRemoveAllTransactions();
+            removeAllTransactions();
             closeSuccessBatchModal();
           }}
           onClose={closeSuccessBatchModal}

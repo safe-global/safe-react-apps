@@ -20,7 +20,7 @@ type DashboardProps = {
 
 const Dashboard = ({ handleSubmitTransactions }: DashboardProps): ReactElement => {
   const { transactions } = useTransactions();
-  const { handleImportTransactionBatch } = useTransactionLibrary();
+  const { importBatch } = useTransactionLibrary();
   const { web3, interfaceRepo, chainInfo } = useServices();
   const [address, setAddress] = useState('');
   const [abi, setAbi] = useState('');
@@ -158,7 +158,7 @@ const Dashboard = ({ handleSubmitTransactions }: DashboardProps): ReactElement =
             </>
           ) : (
             <Hidden smDown>
-              <CreateNewBatchCard onFileSelected={handleImportTransactionBatch} />
+              <CreateNewBatchCard onFileSelected={importBatch} />
             </Hidden>
           )}
         </TransactionsSectionWrapper>

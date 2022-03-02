@@ -40,9 +40,8 @@ const TRANSACTION_LIST_DROPPABLE_ID = 'Transaction_List';
 const DROP_EVENT = 'DROP';
 
 const TransactionsBatchList = ({ showTransactionDetails, allowTransactionReordering }: TransactionsBatchListProps) => {
-  const { transactions, handleRemoveAllTransactions, handleReorderTransactions, handleRemoveTransaction } =
-    useTransactions();
-  const { handleDownloadTransactionBatch, handleSaveTransactionBatch } = useTransactionLibrary();
+  const { transactions, removeAllTransactions, reorderTransactions, removeTransaction } = useTransactions();
+  const { downloadBatch, saveBatch } = useTransactionLibrary();
   // we need those states to display the correct position in each tx during the drag & drop
   const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState<number>();
   const [draggableTxIndexDestination, setDraggableTxIndexDestination] = useState<number>();
@@ -68,7 +67,7 @@ const TransactionsBatchList = ({ showTransactionDetails, allowTransactionReorder
     const shouldPerformTxReorder = isDropEvent && hasTxPositionChanged;
 
     if (shouldPerformTxReorder) {
-      handleReorderTransactions(sourceIndex, destinationIndex);
+      reorderTransactions(sourceIndex, destinationIndex);
     }
 
     setDraggableTxIndexOrigin(undefined);
@@ -99,13 +98,13 @@ const TransactionsBatchList = ({ showTransactionDetails, allowTransactionReorder
 
           {/* Transactions Batch Actions */}
           <Tooltip placement="top" title="Save to Library" backgroundColor="primary" textColor="white" arrow>
-            <StyledHeaderIconButton onClick={() => handleSaveTransactionBatch('test-save-batch', transactions)}>
+            <StyledHeaderIconButton onClick={() => saveBatch('test-save-batch', transactions)}>
               <Icon size="sm" type="licenses" color="primary" aria-label="Save to Library" />
             </StyledHeaderIconButton>
           </Tooltip>
 
           <Tooltip placement="top" title="Download" backgroundColor="primary" textColor="white" arrow>
-            <StyledHeaderIconButton onClick={() => handleDownloadTransactionBatch('test-download-batch', transactions)}>
+            <StyledHeaderIconButton onClick={() => downloadBatch('test-download-batch', transactions)}>
               <Icon size="sm" type="importImg" color="primary" aria-label="Download" />
             </StyledHeaderIconButton>
           </Tooltip>
@@ -265,12 +264,12 @@ const TransactionsBatchList = ({ showTransactionDetails, allowTransactionReorder
       </TransactionsBatchWrapper>
 
       {/* Delete batch modal */}
-      {showDeleteBatchModal && handleRemoveAllTransactions && (
+      {showDeleteBatchModal && removeAllTransactions && (
         <DeleteBatchModal
           count={transactions.length}
           onClick={() => {
             closeDeleteBatchModal();
-            handleRemoveAllTransactions();
+            removeAllTransactions();
           }}
           onClose={closeDeleteBatchModal}
         />
@@ -283,7 +282,7 @@ const TransactionsBatchList = ({ showTransactionDetails, allowTransactionReorder
           txDescription={getTransactionText(transactions[Number(txToRemove)]?.description)}
           onClick={() => {
             closeDeleteTxModal();
-            handleRemoveTransaction(Number(txToRemove));
+            removeTransaction(Number(txToRemove));
           }}
           onClose={closeDeleteTxModal}
         />

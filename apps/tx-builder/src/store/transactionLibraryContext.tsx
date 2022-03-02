@@ -1,13 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { useTransactions } from '.';
+import { useTransactions } from './transactionsContext';
 import StorageManager from '../lib/storage';
 import { ProposedTransaction } from '../typings/models';
 
 type TransactionLibraryContextProps = {
   batches: ProposedTransaction[];
-  handleSaveTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
-  handleDownloadTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
-  handleImportTransactionBatch: (file: File | null) => void;
+  saveBatch: (name: string, transactions: ProposedTransaction[]) => void;
+  downloadBatch: (name: string, transactions: ProposedTransaction[]) => void;
+  importBatch: (file: File | null) => void;
 };
 
 export const TransactionLibraryContext = createContext<TransactionLibraryContextProps | null>(null);
@@ -25,15 +25,15 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
     loadBatches();
   }, []);
 
-  const handleSaveTransactionBatch = useCallback(async (name, transactions) => {
+  const saveBatch = useCallback(async (name, transactions) => {
     await StorageManager.saveBatch(name, transactions);
   }, []);
 
-  const handleDownloadTransactionBatch = useCallback(async (name, transactions) => {
+  const downloadBatch = useCallback(async (name, transactions) => {
     await StorageManager.downloadBatch(name, transactions);
   }, []);
 
-  const handleImportTransactionBatch = useCallback(
+  const importBatch = useCallback(
     async (transactions) => {
       resetTransactions(await StorageManager.importBatch(transactions));
     },
@@ -44,9 +44,9 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
     <TransactionLibraryContext.Provider
       value={{
         batches,
-        handleSaveTransactionBatch,
-        handleDownloadTransactionBatch,
-        handleImportTransactionBatch,
+        saveBatch,
+        downloadBatch,
+        importBatch,
       }}
     >
       {children}

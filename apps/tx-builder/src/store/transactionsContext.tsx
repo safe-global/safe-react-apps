@@ -5,11 +5,11 @@ import { ProposedTransaction } from '../typings/models';
 type TransactionContextProps = {
   transactions: ProposedTransaction[];
   resetTransactions: (transactions: ProposedTransaction[]) => void;
-  handleAddTransaction: (newTransaction: ProposedTransaction) => void;
-  handleRemoveTransaction: (index: number) => void;
-  handleSubmitTransactions: () => void;
-  handleRemoveAllTransactions: () => void;
-  handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
+  addTransaction: (newTransaction: ProposedTransaction) => void;
+  removeTransaction: (index: number) => void;
+  submitTransactions: () => void;
+  removeAllTransactions: () => void;
+  reorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
 };
 
 export const TransactionContext = createContext<TransactionContextProps | null>(null);
@@ -22,18 +22,18 @@ const TransactionsProvider: React.FC = ({ children }) => {
     setTransactions(transactions);
   }, []);
 
-  const handleAddTransaction = useCallback(
+  const addTransaction = useCallback(
     (newTransaction: ProposedTransaction) => {
       setTransactions([...transactions, newTransaction]);
     },
     [transactions],
   );
 
-  const handleRemoveAllTransactions = useCallback(() => {
+  const removeAllTransactions = useCallback(() => {
     setTransactions([]);
   }, []);
 
-  const handleRemoveTransaction = useCallback(
+  const removeTransaction = useCallback(
     (index: number) => {
       const newTxs = transactions.slice();
       newTxs.splice(index, 1);
@@ -42,11 +42,11 @@ const TransactionsProvider: React.FC = ({ children }) => {
     [transactions],
   );
 
-  const handleSubmitTransactions = useCallback(async () => {
+  const submitTransactions = useCallback(async () => {
     await sdk.txs.send({ txs: transactions.map((transaction) => transaction.raw) });
   }, [sdk.txs, transactions]);
 
-  const handleReorderTransactions = useCallback((sourceIndex, destinationIndex) => {
+  const reorderTransactions = useCallback((sourceIndex, destinationIndex) => {
     setTransactions((transactions) => {
       const transactionToMove = transactions[sourceIndex];
       transactions.splice(sourceIndex, 1); // we remove the transaction from the list
@@ -60,11 +60,11 @@ const TransactionsProvider: React.FC = ({ children }) => {
       value={{
         transactions,
         resetTransactions,
-        handleAddTransaction,
-        handleRemoveTransaction,
-        handleSubmitTransactions,
-        handleRemoveAllTransactions,
-        handleReorderTransactions,
+        addTransaction,
+        removeTransaction,
+        submitTransactions,
+        removeAllTransactions,
+        reorderTransactions,
       }}
     >
       {children}
