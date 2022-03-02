@@ -6,34 +6,18 @@ import DeleteBatchModal from '../components/modals/DeleteBatchModal';
 import TransactionsBatchList from '../components/TransactionsBatchList';
 import useModal from '../hooks/useModal/useModal';
 import { HOME_PATH } from '../routes/routes';
-import { ProposedTransaction } from '../typings/models';
 import { useEffect } from 'react';
 import SuccessBatchCreationModal from '../components/modals/SuccessBatchCreationModal';
+import { useTransactions } from '../store';
 
-type ReviewAndConfirmProps = {
-  transactions: ProposedTransaction[];
-  handleSubmitTransactions: () => void;
-  handleRemoveTransaction: (index: number) => void;
-  handleSaveTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
-  handleDownloadTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
-  handleRemoveAllTransactions: () => void;
-  handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
-};
-
-const ReviewAndConfirm = ({
-  transactions,
-  handleRemoveTransaction,
-  handleDownloadTransactionBatch,
-  handleSaveTransactionBatch,
-  handleRemoveAllTransactions,
-  handleSubmitTransactions,
-  handleReorderTransactions,
-}: ReviewAndConfirmProps) => {
+const ReviewAndConfirm = () => {
   const {
     open: showSuccessBatchModal,
     openModal: openSuccessBatchModal,
     closeModal: closeSuccessBatchModal,
   } = useModal();
+  const { transactions, handleRemoveAllTransactions, handleSubmitTransactions } = useTransactions();
+
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
 
   const navigate = useNavigate();
@@ -60,15 +44,7 @@ const ReviewAndConfirm = ({
       <Wrapper>
         <StyledTitle size="xl">Review and Confirm</StyledTitle>
 
-        <TransactionsBatchList
-          transactions={transactions}
-          onRemoveTransaction={handleRemoveTransaction}
-          handleDownloadTransactionBatch={handleDownloadTransactionBatch}
-          handleSaveTransactionBatch={handleSaveTransactionBatch}
-          handleReorderTransactions={handleReorderTransactions}
-          showTransactionDetails
-          allowTransactionReordering
-        />
+        <TransactionsBatchList showTransactionDetails allowTransactionReordering />
 
         <ButtonsWrapper>
           {/* Send batch button */}

@@ -1,6 +1,6 @@
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
-import { useTransactions, useTransactionLibrary } from './store';
+import { useTransactionLibrary } from './store';
 import Dashboard from './pages/Dashboard';
 import EditTransactionLibrary from './pages/EditTransactionLibrary';
 import ReviewAndConfirm from './pages/ReviewAndConfirm';
@@ -13,17 +13,7 @@ import {
 } from './routes/routes';
 
 const App = () => {
-  const {
-    transactions,
-    handleAddTransaction,
-    handleRemoveTransaction,
-    handleSubmitTransactions,
-    handleRemoveAllTransactions,
-    handleReorderTransactions,
-  } = useTransactions();
-
-  const { batches, handleSaveTransactionBatch, handleDownloadTransactionBatch, handleImportTransactionBatch } =
-    useTransactionLibrary();
+  const { batches } = useTransactionLibrary();
 
   const navigate = useNavigate();
 
@@ -36,36 +26,11 @@ const App = () => {
         {/* Dashboard Screen (Create transactions) */}
         <Route
           path={HOME_PATH}
-          element={
-            <Dashboard
-              transactions={transactions}
-              handleAddTransaction={handleAddTransaction}
-              handleRemoveTransaction={handleRemoveTransaction}
-              handleSubmitTransactions={() => navigate(REVIEW_AND_CONFIRM_PATH)}
-              handleSaveTransactionBatch={handleSaveTransactionBatch}
-              handleDownloadTransactionBatch={handleDownloadTransactionBatch}
-              handleImportTransactionBatch={handleImportTransactionBatch}
-              handleRemoveAllTransactions={handleRemoveAllTransactions}
-              handleReorderTransactions={handleReorderTransactions}
-            />
-          }
+          element={<Dashboard handleSubmitTransactions={() => navigate(REVIEW_AND_CONFIRM_PATH)} />}
         />
 
         {/* Review & Confirm Screen */}
-        <Route
-          path={REVIEW_AND_CONFIRM_PATH}
-          element={
-            <ReviewAndConfirm
-              transactions={transactions}
-              handleRemoveTransaction={handleRemoveTransaction}
-              handleSaveTransactionBatch={handleSaveTransactionBatch}
-              handleDownloadTransactionBatch={handleDownloadTransactionBatch}
-              handleRemoveAllTransactions={handleRemoveAllTransactions}
-              handleSubmitTransactions={handleSubmitTransactions}
-              handleReorderTransactions={handleReorderTransactions}
-            />
-          }
-        />
+        <Route path={REVIEW_AND_CONFIRM_PATH} element={<ReviewAndConfirm />} />
 
         {/* Transaction Library Screen */}
         <Route path={TRANSACTION_LIBRARY_PATH} element={<TransactionLibrary batches={batches} />} />

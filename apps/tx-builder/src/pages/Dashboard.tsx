@@ -10,34 +10,18 @@ import AddNewTransactionForm from '../components/forms/AddNewTransactionForm';
 import TransactionsBatchList from '../components/TransactionsBatchList';
 import CreateNewBatchCard from '../components/CreateNewBatchCard';
 import JsonField from '../components/forms/fields/JsonField';
-import { ContractInterface, ProposedTransaction } from '../typings/models';
+import { ContractInterface } from '../typings/models';
 import { Hidden } from '@material-ui/core';
+import { useTransactions, useTransactionLibrary } from '../store';
 
 type DashboardProps = {
-  transactions: ProposedTransaction[];
   handleSubmitTransactions: () => void;
-  handleAddTransaction: (transaction: ProposedTransaction) => void;
-  handleRemoveTransaction: (index: number) => void;
-  handleSaveTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
-  handleDownloadTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
-  handleImportTransactionBatch: (file: File | null) => void;
-  handleRemoveAllTransactions: () => void;
-  handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
 };
 
-const Dashboard = ({
-  transactions,
-  handleAddTransaction,
-  handleRemoveTransaction,
-  handleSubmitTransactions,
-  handleSaveTransactionBatch,
-  handleDownloadTransactionBatch,
-  handleImportTransactionBatch,
-  handleRemoveAllTransactions,
-  handleReorderTransactions,
-}: DashboardProps): ReactElement => {
+const Dashboard = ({ handleSubmitTransactions }: DashboardProps): ReactElement => {
+  const { transactions } = useTransactions();
+  const { handleImportTransactionBatch } = useTransactionLibrary();
   const { web3, interfaceRepo, chainInfo } = useServices();
-
   const [address, setAddress] = useState('');
   const [abi, setAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
@@ -145,7 +129,6 @@ const Dashboard = ({
 
           {showNewTransactionForm && (
             <AddNewTransactionForm
-              onAddTransaction={handleAddTransaction}
               contract={contract}
               to={address}
               networkPrefix={chainInfo?.shortName}
@@ -159,16 +142,7 @@ const Dashboard = ({
         <TransactionsSectionWrapper item xs={12} md={6}>
           {transactions.length > 0 ? (
             <>
-              <TransactionsBatchList
-                transactions={transactions}
-                onRemoveTransaction={handleRemoveTransaction}
-                handleDownloadTransactionBatch={handleDownloadTransactionBatch}
-                handleSaveTransactionBatch={handleSaveTransactionBatch}
-                handleRemoveAllTransactions={handleRemoveAllTransactions}
-                handleReorderTransactions={handleReorderTransactions}
-                showTransactionDetails={false}
-                allowTransactionReordering
-              />
+              <TransactionsBatchList showTransactionDetails={false} allowTransactionReordering />
               {/* Go to Review Screen button */}
               <Button
                 size="md"

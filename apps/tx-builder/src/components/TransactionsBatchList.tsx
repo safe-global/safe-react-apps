@@ -29,31 +29,20 @@ import useModal from '../hooks/useModal/useModal';
 import DeleteTransactionModal from './modals/DeleteTransactionModal';
 import DeleteBatchModal from './modals/DeleteBatchModal';
 import TransactionDetails from './TransactionDetails';
+import { useTransactions, useTransactionLibrary } from '../store';
 
 type TransactionsBatchListProps = {
-  transactions: ProposedTransaction[];
   showTransactionDetails: boolean;
   allowTransactionReordering: boolean;
-  onRemoveTransaction: (index: number) => void;
-  handleSaveTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
-  handleDownloadTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
-  handleRemoveAllTransactions?: () => void;
-  handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
 };
 
 const TRANSACTION_LIST_DROPPABLE_ID = 'Transaction_List';
 const DROP_EVENT = 'DROP';
 
-const TransactionsBatchList = ({
-  transactions,
-  onRemoveTransaction,
-  handleSaveTransactionBatch,
-  handleDownloadTransactionBatch,
-  handleRemoveAllTransactions,
-  handleReorderTransactions,
-  showTransactionDetails,
-  allowTransactionReordering,
-}: TransactionsBatchListProps) => {
+const TransactionsBatchList = ({ showTransactionDetails, allowTransactionReordering }: TransactionsBatchListProps) => {
+  const { transactions, handleRemoveAllTransactions, handleReorderTransactions, handleRemoveTransaction } =
+    useTransactions();
+  const { handleDownloadTransactionBatch, handleSaveTransactionBatch } = useTransactionLibrary();
   // we need those states to display the correct position in each tx during the drag & drop
   const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState<number>();
   const [draggableTxIndexDestination, setDraggableTxIndexDestination] = useState<number>();
@@ -121,13 +110,11 @@ const TransactionsBatchList = ({
             </StyledHeaderIconButton>
           </Tooltip>
 
-          {handleRemoveAllTransactions && (
-            <Tooltip placement="top" title="Delete Batch" backgroundColor="primary" textColor="white" arrow>
-              <StyledHeaderIconButton onClick={openDeleteBatchModal}>
-                <Icon size="sm" type="delete" color="error" aria-label="Delete Batch" />
-              </StyledHeaderIconButton>
-            </Tooltip>
-          )}
+          <Tooltip placement="top" title="Delete Batch" backgroundColor="primary" textColor="white" arrow>
+            <StyledHeaderIconButton onClick={openDeleteBatchModal}>
+              <Icon size="sm" type="delete" color="error" aria-label="Delete Batch" />
+            </StyledHeaderIconButton>
+          </Tooltip>
         </TransactionHeader>
 
         {/* Draggable Transaction List */}
@@ -296,7 +283,7 @@ const TransactionsBatchList = ({
           txDescription={getTransactionText(transactions[Number(txToRemove)]?.description)}
           onClick={() => {
             closeDeleteTxModal();
-            onRemoveTransaction(Number(txToRemove));
+            handleRemoveTransaction(Number(txToRemove));
           }}
           onClose={closeDeleteTxModal}
         />

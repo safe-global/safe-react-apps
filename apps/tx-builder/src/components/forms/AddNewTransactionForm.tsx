@@ -2,7 +2,7 @@ import { Text, Title, Button } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import { toChecksumAddress, toWei } from 'web3-utils';
 
-import { ContractInterface, ProposedTransaction } from '../../typings/models';
+import { ContractInterface } from '../../typings/models';
 import { encodeToHexData, isValidAddress } from '../../utils';
 import SolidityForm, {
   CONTRACT_METHOD_INDEX_FIELD_NAME,
@@ -12,18 +12,17 @@ import SolidityForm, {
   TOKEN_INPUT_NAME,
   TO_ADDRESS_FIELD_NAME,
 } from './SolidityForm';
+import { useTransactions } from '../../store';
 
 type AddNewTransactionFormProps = {
   contract: ContractInterface | null;
   to: string;
-  onAddTransaction: (transaction: ProposedTransaction) => void;
   networkPrefix: undefined | string;
   getAddressFromDomain: (name: string) => Promise<string>;
   nativeCurrencySymbol: undefined | string;
 };
 
 const AddNewTransactionForm = ({
-  onAddTransaction,
   contract,
   to,
   networkPrefix,
@@ -35,6 +34,7 @@ const AddNewTransactionForm = ({
     [CONTRACT_METHOD_INDEX_FIELD_NAME]: '0',
   };
 
+  const { handleAddTransaction } = useTransactions();
   const showNoPublicMethodsWarning = contract && contract.methods.length === 0;
 
   const onSubmit = (values: SolidityFormValuesTypes) => {
@@ -50,7 +50,7 @@ const AddNewTransactionForm = ({
     const to = toChecksumAddress(toAddress);
     const value = toWei(tokenValue || '0');
 
-    onAddTransaction({
+    handleAddTransaction({
       id: new Date().getTime(),
       description: {
         to,
