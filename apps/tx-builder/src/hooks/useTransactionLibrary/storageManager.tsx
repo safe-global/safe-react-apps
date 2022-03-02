@@ -99,9 +99,8 @@ export const downloadBatch = async (name: string, txs: ProposedTransaction[]) =>
   downloadObjectAsJson(name, batchFile);
 };
 
-export const importBatch = async (files: File[]): Promise<ProposedTransaction[]> => {
+export const importBatch = async (file: File): Promise<ProposedTransaction[]> => {
   return new Promise((resolve, reject) => {
-    const file = files[0];
     const reader = new FileReader();
     reader.readAsText(file);
     reader.onload = async () => {

@@ -7,7 +7,7 @@ export interface DropHandlers {
   onDrop: DragEventHandler;
 }
 
-const useDropZone = (onDrop: (files: File[] | null) => void): [Boolean, DropHandlers] => {
+const useDropZone = (onDrop: (file: File | null) => void): [Boolean, DropHandlers] => {
   const [isOverDropZone, setIsOverDropZone] = useState<Boolean>(false);
   const counter = useRef(0);
 
@@ -34,11 +34,11 @@ const useDropZone = (onDrop: (files: File[] | null) => void): [Boolean, DropHand
         setIsOverDropZone(false);
         event.persist();
         const files = Array.from(event?.dataTransfer?.files ?? []);
-        if (files.length === 0) {
+        if (files.length !== 1) {
           onDrop(null);
           return;
         }
-        onDrop(files);
+        onDrop(files[0]);
       },
     }),
     [onDrop],

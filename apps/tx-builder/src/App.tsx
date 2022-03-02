@@ -27,7 +27,7 @@ const App = () => {
   const { batches, handleSaveTransactionBatch, handleDownloadTransactionBatch, handleImportTransactionBatch } =
     useTransactionLibrary();
 
-  const handleImport = async (file: File[] | null) => {
+  const handleImport = async (file: File | null) => {
     resetTransactions(await handleImportTransactionBatch(file));
   };
 

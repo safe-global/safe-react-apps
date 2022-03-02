@@ -1,17 +1,31 @@
 import { ButtonLink, Icon, Text } from '@gnosis.pm/safe-react-components';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 
 import { ReactComponent as CreateNewBatchSVG } from '../assets/add-new-batch.svg';
 import useDropZone from '../hooks/useDropZone';
 
 type CreateNewBatchCardProps = {
-  onDrop: (files: File[] | null) => void;
+  onFileSelected: (file: File | null) => void;
 };
 
-const CreateNewBatchCard = ({ onDrop }: CreateNewBatchCardProps) => {
-  const [isOverDropZone, handlers] = useDropZone((files: File[] | null) => {
-    onDrop(files);
+const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [isOverDropZone, handlers] = useDropZone((file: File | null) => {
+    onFileSelected(file);
   });
+
+  const handleFileSelected = (event: any) => {
+    event.preventDefault();
+    if (event.target.files.length) {
+      onFileSelected(event.target.files[0]);
+    }
+  };
+
+  const handleBrowse = function (event: any) {
+    event.preventDefault();
+    fileRef.current?.click();
+  };
 
   return (
     <Wrapper>
@@ -19,10 +33,11 @@ const CreateNewBatchCard = ({ onDrop }: CreateNewBatchCardProps) => {
       <StyledDragAndDropFileContainer {...handlers} dragOver={isOverDropZone}>
         <Icon type="termsOfUse" size="sm" />
         <StyledText size={'xl'}>Drag and drop a JSON file or</StyledText>
-        <StyledButtonLink color="primary" type="submit">
+        <StyledButtonLink color="primary" onClick={handleBrowse}>
           choose a file
         </StyledButtonLink>
       </StyledDragAndDropFileContainer>
+      <input ref={fileRef} id="logo-input" type="file" onChange={handleFileSelected} accept=".json" hidden />
     </Wrapper>
   );
 };
