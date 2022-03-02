@@ -1,8 +1,20 @@
-import { useCallback, useState } from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import { ProposedTransaction } from '../../typings/models';
+import { ProposedTransaction } from '../typings/models';
 
-export default function useTransactions() {
+type TransactionContextProps = {
+  transactions: ProposedTransaction[];
+  resetTransactions: (transactions: ProposedTransaction[]) => void;
+  handleAddTransaction: (newTransaction: ProposedTransaction) => void;
+  handleRemoveTransaction: (index: number) => void;
+  handleSubmitTransactions: () => void;
+  handleRemoveAllTransactions: () => void;
+  handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
+};
+
+export const TransactionContext = createContext<TransactionContextProps | null>(null);
+
+const TransactionsProvider: React.FC = ({ children }) => {
   const [transactions, setTransactions] = useState<ProposedTransaction[]>([]);
   const { sdk } = useSafeAppsSDK();
 
@@ -43,13 +55,30 @@ export default function useTransactions() {
     });
   }, []);
 
-  return {
-    transactions,
-    resetTransactions,
-    handleAddTransaction,
-    handleRemoveTransaction,
-    handleSubmitTransactions,
-    handleRemoveAllTransactions,
-    handleReorderTransactions,
-  };
-}
+  return (
+    <TransactionContext.Provider
+      value={{
+        transactions,
+        resetTransactions,
+        handleAddTransaction,
+        handleRemoveTransaction,
+        handleSubmitTransactions,
+        handleRemoveAllTransactions,
+        handleReorderTransactions,
+      }}
+    >
+      {children}
+    </TransactionContext.Provider>
+  );
+};
+
+export const useTransactions = () => {
+  const contextValue = useContext(TransactionContext);
+  if (contextValue === null) {
+    throw new Error('Component must be wrapped with <TransactionProvider>');
+  }
+
+  return contextValue;
+};
+
+export default TransactionsProvider;

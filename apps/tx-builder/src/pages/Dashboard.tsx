@@ -20,7 +20,7 @@ type DashboardProps = {
   handleRemoveTransaction: (index: number) => void;
   handleSaveTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
   handleDownloadTransactionBatch: (name: string, transactions: ProposedTransaction[]) => void;
-  handleImportTransactionBatch: (files: File | null) => void;
+  handleImportTransactionBatch: (file: File | null) => void;
   handleRemoveAllTransactions: () => void;
   handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
 };

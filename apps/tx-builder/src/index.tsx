@@ -8,15 +8,18 @@ import * as serviceWorker from './serviceWorker';
 
 import GlobalStyles from './global';
 import App from './App';
+import StoreProvider from './store';
 
 ReactDOM.render(
   <>
     <GlobalStyles />
     <ThemeProvider theme={theme}>
       <SafeProvider>
-        <BrowserRouter basename={process.env.PUBLIC_URL}>
-          <App />
-        </BrowserRouter>
+        <StoreProvider>
+          <BrowserRouter basename={process.env.PUBLIC_URL}>
+            <App />
+          </BrowserRouter>
+        </StoreProvider>
       </SafeProvider>
     </ThemeProvider>
   </>,

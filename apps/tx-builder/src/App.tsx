@@ -1,7 +1,6 @@
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
-import useTransactions from './hooks/useTransactions';
-import useTransactionLibrary from './hooks/useTransactionLibrary';
+import { useTransactions, useTransactionLibrary } from './store';
 import Dashboard from './pages/Dashboard';
 import EditTransactionLibrary from './pages/EditTransactionLibrary';
 import ReviewAndConfirm from './pages/ReviewAndConfirm';
@@ -16,7 +15,6 @@ import {
 const App = () => {
   const {
     transactions,
-    resetTransactions,
     handleAddTransaction,
     handleRemoveTransaction,
     handleSubmitTransactions,
@@ -26,10 +24,6 @@ const App = () => {
 
   const { batches, handleSaveTransactionBatch, handleDownloadTransactionBatch, handleImportTransactionBatch } =
     useTransactionLibrary();
-
-  const handleImport = async (file: File | null) => {
-    resetTransactions(await handleImportTransactionBatch(file));
-  };
 
   const navigate = useNavigate();
 
@@ -50,7 +44,7 @@ const App = () => {
               handleSubmitTransactions={() => navigate(REVIEW_AND_CONFIRM_PATH)}
               handleSaveTransactionBatch={handleSaveTransactionBatch}
               handleDownloadTransactionBatch={handleDownloadTransactionBatch}
-              handleImportTransactionBatch={handleImport}
+              handleImportTransactionBatch={handleImportTransactionBatch}
               handleRemoveAllTransactions={handleRemoveAllTransactions}
               handleReorderTransactions={handleReorderTransactions}
             />

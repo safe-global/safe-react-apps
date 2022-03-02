@@ -1,6 +1,6 @@
 import localforage from 'localforage';
-import { BatchTransactionFile, BatchTransaction, ProposedTransaction } from '../../typings/models';
-import { encodeToHexData } from '../../utils';
+import { BatchTransactionFile, BatchTransaction, ProposedTransaction } from '../typings/models';
+import { encodeToHexData } from '../utils';
 import { toChecksumAddress, toWei } from 'web3-utils';
 
 localforage.config({
