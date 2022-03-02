@@ -1,33 +1,51 @@
 import { FixedIcon, Icon, Text, Title, Tooltip } from '@gnosis.pm/safe-react-components';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { HOME_PATH, REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
 
-const Header = () => {
+import { EDIT_TRANSACTION_LIBRARY_PATH, HOME_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
+
+type HeaderPropTypes = {
+  batches: any[];
+};
+
+const HELP_ARTICLE_LINK =
+  'https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app';
+
+const Header = ({ batches }: HeaderPropTypes) => {
   const { pathname } = useLocation();
 
-  const isReviewAndConfirmPath = pathname === REVIEW_AND_CONFIRM_PATH;
+  const isHomePath = pathname === HOME_PATH;
+  const isEditTransactionLibraryPath = pathname === EDIT_TRANSACTION_LIBRARY_PATH;
 
   return (
     <HeaderWrapper>
-      {isReviewAndConfirmPath ? (
-        <StyledLink to={HOME_PATH}>
-          <FixedIcon type={'chevronLeft'} />
-          <StyledLinkLabel size="xl">Back to Transaction Creation</StyledLinkLabel>
-        </StyledLink>
-      ) : (
+      {isHomePath && (
         <>
           <StyledTitle size="xl">Transaction Builder</StyledTitle>
           <Tooltip placement="top" title="Help Article" backgroundColor="primary" textColor="white" arrow>
-            <a
-              href="https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={HELP_ARTICLE_LINK} target="_blank" rel="noreferrer">
               <Icon size="md" type="info" />
             </a>
           </Tooltip>
         </>
+      )}
+
+      {!isHomePath && (
+        <StyledLink to={isEditTransactionLibraryPath ? TRANSACTION_LIBRARY_PATH : HOME_PATH}>
+          <FixedIcon type={'chevronLeft'} />
+          <StyledLeftLinkLabel size="xl">
+            {isEditTransactionLibraryPath ? 'Back to transaction library' : 'Back to transaction creation'}
+          </StyledLeftLinkLabel>
+        </StyledLink>
+      )}
+
+      {isHomePath && (
+        <RigthLinkWrapper>
+          <StyledLink to={TRANSACTION_LIBRARY_PATH}>
+            <StyledRightLinkLabel size="xl">{`(${batches.length}) Your transaction library`}</StyledRightLinkLabel>
+            <FixedIcon type={'chevronRight'} />
+          </StyledLink>
+        </RigthLinkWrapper>
       )}
     </HeaderWrapper>
   );
@@ -45,6 +63,7 @@ const HeaderWrapper = styled.header`
   background-color: white;
   height: 70px;
   padding: 0 40px;
+  box-sizing: border-box;
 `;
 
 const StyledTitle = styled(Title)`
@@ -60,6 +79,16 @@ const StyledLink = styled(Link)`
   text-decoration: none;
 `;
 
-const StyledLinkLabel = styled(Text)`
-  margin-left: 12px;
+const StyledLeftLinkLabel = styled(Text)`
+  margin-left: 8px;
+`;
+
+const RigthLinkWrapper = styled.div`
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+`;
+
+const StyledRightLinkLabel = styled(Text)`
+  margin-right: 8px;
 `;

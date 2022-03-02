@@ -82,6 +82,18 @@ export const saveBatch = async (name: string, txs: ProposedTransaction[]): Promi
   return batchFile;
 };
 
+export const getBatches = async () => {
+  try {
+    const batches: any[] = [];
+    await localforage.iterate((value: any, key: any, iterationNumber: any) => {
+      batches.push({ id: key, ...value });
+    });
+    return batches;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const downloadBatch = async (name: string, txs: ProposedTransaction[]) => {
   const batchFile = convertToBatchFile(name, txs);
   downloadObjectAsJson(name, batchFile);

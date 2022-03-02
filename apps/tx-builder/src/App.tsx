@@ -3,8 +3,15 @@ import Header from './components/Header';
 import useTransactions from './hooks/useTransactions';
 import useTransactionLibrary from './hooks/useTransactionLibrary';
 import Dashboard from './pages/Dashboard';
+import EditTransactionLibrary from './pages/EditTransactionLibrary';
 import ReviewAndConfirm from './pages/ReviewAndConfirm';
-import { HOME_PATH, REVIEW_AND_CONFIRM_PATH } from './routes/routes';
+import TransactionLibrary from './pages/TransactionLibrary';
+import {
+  EDIT_TRANSACTION_LIBRARY_PATH,
+  HOME_PATH,
+  REVIEW_AND_CONFIRM_PATH,
+  TRANSACTION_LIBRARY_PATH,
+} from './routes/routes';
 
 const App = () => {
   const {
@@ -17,7 +24,7 @@ const App = () => {
     handleReorderTransactions,
   } = useTransactions();
 
-  const { handleSaveTransactionBatch, handleDownloadTransactionBatch, handleImportTransactionBatch } =
+  const { batches, handleSaveTransactionBatch, handleDownloadTransactionBatch, handleImportTransactionBatch } =
     useTransactionLibrary();
 
   const handleImport = async (file: File[] | null) => {
@@ -29,7 +36,7 @@ const App = () => {
   return (
     <>
       {/* App Header */}
-      <Header />
+      <Header batches={batches} />
 
       <Routes>
         {/* Dashboard Screen (Create transactions) */}
@@ -65,6 +72,12 @@ const App = () => {
             />
           }
         />
+
+        {/* Transaction Library Screen */}
+        <Route path={TRANSACTION_LIBRARY_PATH} element={<TransactionLibrary batches={batches} />} />
+
+        {/* Edit Transaction Library Screen */}
+        <Route path={EDIT_TRANSACTION_LIBRARY_PATH} element={<EditTransactionLibrary />} />
       </Routes>
     </>
   );

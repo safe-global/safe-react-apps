@@ -1,7 +1,18 @@
-import { useCallback } from 'react';
-import { downloadBatch, importBatch, saveBatch } from './storageManager';
+import { useCallback, useEffect, useState } from 'react';
+import { downloadBatch, getBatches, importBatch, saveBatch } from './storageManager';
 
 const useTransactionLibrary = () => {
+  const [batches, setBatches] = useState<any>([]);
+
+  useEffect(() => {
+    const loadBatches = async () => {
+      const batches = await getBatches();
+      setBatches(batches || []);
+    };
+
+    loadBatches();
+  }, []);
+
   const handleSaveTransactionBatch = useCallback(async (name, transactions) => {
     await saveBatch(name, transactions);
   }, []);
@@ -15,6 +26,8 @@ const useTransactionLibrary = () => {
   }, []);
 
   return {
+    batches,
+
     handleSaveTransactionBatch,
     handleDownloadTransactionBatch,
     handleImportTransactionBatch,
