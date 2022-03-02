@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useTransactions } from '.';
-import { downloadBatch, getBatches, importBatch, saveBatch } from '../lib/storageManager';
+import StorageManager from '../lib/storage';
 import { ProposedTransaction } from '../typings/models';
 
 type TransactionLibraryContextProps = {
@@ -18,7 +18,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     const loadBatches = async () => {
-      const batches = await getBatches();
+      const batches = await StorageManager.getBatches();
       setBatches(batches || []);
     };
 
@@ -26,16 +26,16 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
   }, []);
 
   const handleSaveTransactionBatch = useCallback(async (name, transactions) => {
-    await saveBatch(name, transactions);
+    await StorageManager.saveBatch(name, transactions);
   }, []);
 
   const handleDownloadTransactionBatch = useCallback(async (name, transactions) => {
-    await downloadBatch(name, transactions);
+    await StorageManager.downloadBatch(name, transactions);
   }, []);
 
   const handleImportTransactionBatch = useCallback(
     async (transactions) => {
-      resetTransactions(await importBatch(transactions));
+      resetTransactions(await StorageManager.importBatch(transactions));
     },
     [resetTransactions],
   );

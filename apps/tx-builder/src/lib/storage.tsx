@@ -70,7 +70,7 @@ const convertToBatchFile = (name: string, txs: ProposedTransaction[]): BatchTran
   };
 };
 
-export const saveBatch = async (name: string, txs: ProposedTransaction[]): Promise<BatchTransactionFile> => {
+const saveBatch = async (name: string, txs: ProposedTransaction[]): Promise<BatchTransactionFile> => {
   const batchFile = convertToBatchFile(name, txs);
 
   try {
@@ -82,7 +82,7 @@ export const saveBatch = async (name: string, txs: ProposedTransaction[]): Promi
   return batchFile;
 };
 
-export const getBatches = async () => {
+const getBatches = async () => {
   try {
     const batches: any[] = [];
     await localforage.iterate((value: any, key: any, iterationNumber: any) => {
@@ -92,22 +92,6 @@ export const getBatches = async () => {
   } catch (error) {
     console.error(error);
   }
-};
-
-export const downloadBatch = async (name: string, txs: ProposedTransaction[]) => {
-  const batchFile = convertToBatchFile(name, txs);
-  downloadObjectAsJson(name, batchFile);
-};
-
-export const importBatch = async (file: File): Promise<ProposedTransaction[]> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = async () => {
-      const batchFile: BatchTransactionFile = JSON.parse(reader.result as string);
-      resolve(convertToProposedTransactions(batchFile));
-    };
-  });
 };
 
 const downloadObjectAsJson = (name: string, batchFile: BatchTransactionFile) => {
@@ -121,6 +105,22 @@ const downloadObjectAsJson = (name: string, batchFile: BatchTransactionFile) => 
   downloadAnchorNode.remove();
 };
 
+const downloadBatch = async (name: string, txs: ProposedTransaction[]) => {
+  const batchFile = convertToBatchFile(name, txs);
+  downloadObjectAsJson(name, batchFile);
+};
+
+const importBatch = async (file: File): Promise<ProposedTransaction[]> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = async () => {
+      const batchFile: BatchTransactionFile = JSON.parse(reader.result as string);
+      resolve(convertToProposedTransactions(batchFile));
+    };
+  });
+};
+
 const uuidv4 = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
@@ -128,3 +128,12 @@ const uuidv4 = () => {
     return v.toString(16);
   });
 };
+
+const StorageManager = {
+  saveBatch,
+  getBatches,
+  downloadBatch,
+  importBatch,
+};
+
+export default StorageManager;
