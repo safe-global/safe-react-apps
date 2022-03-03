@@ -38,8 +38,9 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
   const saveBatch = useCallback(
     async (name, transactions) => {
       await StorageManager.saveBatch(generateBatchFile({ name, transactions, chainInfo, safe }));
+      await loadBatches();
     },
-    [chainInfo, safe],
+    [chainInfo, safe, loadBatches],
   );
 
   const downloadBatch = useCallback(

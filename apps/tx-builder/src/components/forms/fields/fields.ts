@@ -20,4 +20,12 @@ export const CONTRACT_METHOD_FIELD_TYPE = 'contractMethod';
 // encoded hex data field
 export const HEX_ENCODED_DATA_FIELD_TYPE = 'hexEncodedData';
 
-export const NON_SOLIDITY_TYPES = [AMOUNT_FIELD_TYPE, CONTRACT_METHOD_FIELD_TYPE, HEX_ENCODED_DATA_FIELD_TYPE];
+// text field
+export const TEXT_FIELD_TYPE = 'text';
+
+export const NON_SOLIDITY_TYPES = [
+  AMOUNT_FIELD_TYPE,
+  CONTRACT_METHOD_FIELD_TYPE,
+  HEX_ENCODED_DATA_FIELD_TYPE,
+  TEXT_FIELD_TYPE,
+];

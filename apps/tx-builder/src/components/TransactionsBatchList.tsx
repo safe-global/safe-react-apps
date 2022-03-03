@@ -29,6 +29,7 @@ import useModal from '../hooks/useModal/useModal';
 import DeleteTransactionModal from './modals/DeleteTransactionModal';
 import DeleteBatchModal from './modals/DeleteBatchModal';
 import TransactionDetails from './TransactionDetails';
+import SaveBatchModal from './modals/SaveBatchModal';
 
 type TransactionsBatchListProps = {
   transactions: ProposedTransaction[];
@@ -88,6 +89,7 @@ const TransactionsBatchList = ({
 
   // 2 modals needed: delete batch modal and delete transaction modal
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
+  const { open: showSaveBatchModal, openModal: openSaveBatchModal, closeModal: closeSaveBatchModal } = useModal();
   const { open: showDeleteTxModal, openModal: openDeleteTxModal, closeModal: closeDeleteTxModal } = useModal();
   const [txToRemove, setTxToRemove] = useState<string>();
 
@@ -112,7 +114,7 @@ const TransactionsBatchList = ({
             {/* Transactions Batch Actions */}
             {saveBatch && (
               <Tooltip placement="top" title="Save to Library" backgroundColor="primary" textColor="white" arrow>
-                <StyledHeaderIconButton onClick={() => saveBatch('test-save-batch', transactions)}>
+                <StyledHeaderIconButton onClick={openSaveBatchModal}>
                   <Icon size="sm" type="licenses" color="primary" aria-label="Save to Library" />
                 </StyledHeaderIconButton>
               </Tooltip>
@@ -301,6 +303,17 @@ const TransactionsBatchList = ({
             removeTransaction?.(Number(txToRemove));
           }}
           onClose={closeDeleteTxModal}
+        />
+      )}
+
+      {/* Save batch modal */}
+      {showSaveBatchModal && (
+        <SaveBatchModal
+          onClick={(name: string) => {
+            closeSaveBatchModal();
+            saveBatch?.(name, transactions);
+          }}
+          onClose={closeSaveBatchModal}
         />
       )}
     </>
