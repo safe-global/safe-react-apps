@@ -122,8 +122,8 @@ const generateBatchFile = ({
   };
 };
 
-const convertToBatchTransactions = (txs: ProposedTransaction[]): BatchTransaction[] => {
-  return txs.map(
+const convertToBatchTransactions = (transactions: ProposedTransaction[]): BatchTransaction[] => {
+  return transactions.map(
     ({ description }: ProposedTransaction): BatchTransaction => ({
       to: description.to,
       value: description.value,
@@ -135,21 +135,21 @@ const convertToBatchTransactions = (txs: ProposedTransaction[]): BatchTransactio
 };
 
 const convertToProposedTransactions = (batchFile: BatchFile, chainInfo: ChainInfo): ProposedTransaction[] => {
-  return batchFile.transactions.map((tx, index) => {
-    if (tx.data) {
+  return batchFile.transactions.map((transaction, index) => {
+    if (transaction.data) {
       return {
         id: index,
         description: {
-          to: tx.to,
-          value: tx.value,
-          hexEncodedData: tx.data,
+          to: transaction.to,
+          value: transaction.value,
+          hexEncodedData: transaction.data,
           nativeCurrencySymbol: chainInfo.nativeCurrency.symbol,
           networkPrefix: chainInfo.shortName,
         },
         raw: {
-          to: tx.to,
-          value: tx.value,
-          data: tx.data || '',
+          to: transaction.to,
+          value: transaction.value,
+          data: transaction.data || '',
         },
       };
     }
@@ -157,17 +157,17 @@ const convertToProposedTransactions = (batchFile: BatchFile, chainInfo: ChainInf
     return {
       id: index,
       description: {
-        to: tx.to,
-        value: tx.value,
-        contractMethod: tx.contractMethod,
-        contractFieldsValues: tx.contractInputsValues,
+        to: transaction.to,
+        value: transaction.value,
+        contractMethod: transaction.contractMethod,
+        contractFieldsValues: transaction.contractInputsValues,
         nativeCurrencySymbol: chainInfo.nativeCurrency.symbol,
         networkPrefix: chainInfo.shortName,
       },
       raw: {
-        to: toChecksumAddress(tx.to),
-        value: tx.value,
-        data: tx.data || encodeToHexData(tx.contractMethod, tx.contractInputsValues) || '0x',
+        to: toChecksumAddress(transaction.to),
+        value: transaction.value,
+        data: transaction.data || encodeToHexData(transaction.contractMethod, transaction.contractInputsValues) || '0x',
       },
     };
   });
