@@ -3,16 +3,15 @@ import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { EDIT_TRANSACTION_LIBRARY_PATH, HOME_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
-
-type HeaderPropTypes = {
-  batches: any[];
-};
+import { useTransactionLibrary } from '../store';
 
 const HELP_ARTICLE_LINK =
   'https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app';
 
-const Header = ({ batches }: HeaderPropTypes) => {
+const Header = () => {
   const { pathname } = useLocation();
+
+  const { batches } = useTransactionLibrary();
 
   const isHomePath = pathname === HOME_PATH;
   const isEditTransactionLibraryPath = pathname === EDIT_TRANSACTION_LIBRARY_PATH;

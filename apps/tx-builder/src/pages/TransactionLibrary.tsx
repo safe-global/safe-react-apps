@@ -12,18 +12,19 @@ import {
 } from '@gnosis.pm/safe-react-components';
 import IconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
+import TransactionsBatchList from '../components/TransactionsBatchList';
 
-type TransactionLibraryTypes = {
-  batches: any;
-};
+import { useTransactionLibrary } from '../store';
 
-const TransactionLibrary = ({ batches }: TransactionLibraryTypes) => {
+const TransactionLibrary = () => {
+  const { batches } = useTransactionLibrary();
+
   return (
     <Wrapper>
       <StyledTitle size="xl">Your transaction library</StyledTitle>
 
       {batches.map(({ id, meta, transactions }: any) => (
-        <StyledAccordion key={id}>
+        <StyledAccordion key={id} compact>
           <StyledAccordionSummary>
             {/* transactions count  */}
             <TransactionCounterDot color="tag">
@@ -84,7 +85,12 @@ const TransactionLibrary = ({ batches }: TransactionLibraryTypes) => {
           </StyledAccordionSummary>
           <AccordionDetails>
             {/* transactions batch list  */}
-            List trasactions here! :D
+            <TransactionsBatchList
+              transactions={transactions}
+              showTransactionDetails
+              allowTransactionReordering
+              showBatchHeader={false}
+            />
           </AccordionDetails>
         </StyledAccordion>
       ))}
@@ -113,7 +119,6 @@ const StyledTitle = styled(Title)`
 const StyledAccordion = styled(Accordion)`
   &.MuiAccordion-root {
     margin-bottom: 0;
-    border-bottom: 0;
     border-radius: 8px;
     margin-bottom: 12px;
   }

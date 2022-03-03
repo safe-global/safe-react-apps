@@ -16,14 +16,15 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
   const [batches, setBatches] = useState<any>([]);
   const { resetTransactions } = useTransactions();
 
-  useEffect(() => {
-    const loadBatches = async () => {
-      const batches = await StorageManager.getBatches();
-      setBatches(batches || []);
-    };
-
-    loadBatches();
+  const loadBatches = useCallback(async () => {
+    const batches = await StorageManager.getBatches();
+    setBatches(batches || []);
   }, []);
+
+  // on App init we load stored batches
+  useEffect(() => {
+    loadBatches();
+  }, [loadBatches]);
 
   const saveBatch = useCallback(async (name, transactions) => {
     await StorageManager.saveBatch(name, transactions);

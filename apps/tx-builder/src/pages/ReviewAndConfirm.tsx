@@ -8,7 +8,7 @@ import useModal from '../hooks/useModal/useModal';
 import { HOME_PATH } from '../routes/routes';
 import { useEffect } from 'react';
 import SuccessBatchCreationModal from '../components/modals/SuccessBatchCreationModal';
-import { useTransactions } from '../store';
+import { useTransactionLibrary, useTransactions } from '../store';
 
 const ReviewAndConfirm = () => {
   const {
@@ -16,7 +16,9 @@ const ReviewAndConfirm = () => {
     openModal: openSuccessBatchModal,
     closeModal: closeSuccessBatchModal,
   } = useModal();
-  const { transactions, removeAllTransactions, submitTransactions } = useTransactions();
+  const { transactions, removeTransaction, removeAllTransactions, submitTransactions, reorderTransactions } =
+    useTransactions();
+  const { downloadBatch, saveBatch } = useTransactionLibrary();
 
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
 
@@ -44,7 +46,16 @@ const ReviewAndConfirm = () => {
       <Wrapper>
         <StyledTitle size="xl">Review and Confirm</StyledTitle>
 
-        <TransactionsBatchList showTransactionDetails allowTransactionReordering />
+        <TransactionsBatchList
+          transactions={transactions}
+          removeTransaction={removeTransaction}
+          saveBatch={saveBatch}
+          downloadBatch={downloadBatch}
+          reorderTransactions={reorderTransactions}
+          showTransactionDetails
+          allowTransactionReordering
+          showBatchHeader
+        />
 
         <ButtonsWrapper>
           {/* Send batch button */}

@@ -85,8 +85,30 @@ const saveBatch = async (name: string, txs: ProposedTransaction[]): Promise<Batc
 const getBatches = async () => {
   try {
     const batches: any[] = [];
-    await localforage.iterate((value: any, key: any, iterationNumber: any) => {
-      batches.push({ id: key, ...value });
+    await localforage.iterate((batch: any, key: any, iterationNumber: any) => {
+      const parsedBatch = {
+        ...batch,
+        transactions: batch.transactions.map((transaction: any, index: number) => ({
+          id: index,
+          description: {
+            to: transaction.to,
+            value: transaction.value,
+            hexEncodedData: transaction.data,
+            contractMethod: transaction.contractMethod,
+            contractFieldsValues: transaction.contractInputsValues,
+            // TODO: review this
+            nativeCurrencySymbol: 'ETH',
+            networkPrefix: 'rin',
+          },
+          raw: {
+            to: transaction.to,
+            value: transaction.value,
+            data: transaction.data,
+          },
+        })),
+      };
+      console.log('parsedBatch');
+      batches.push({ id: key, ...parsedBatch });
     });
     return batches;
   } catch (error) {
