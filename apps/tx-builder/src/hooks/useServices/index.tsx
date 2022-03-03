@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Web3 from 'web3';
-import SafeAppsSDK, { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
+import SafeAppsSDK, { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 
 import InterfaceRepository from './interfaceRepository';
@@ -9,13 +9,14 @@ import { CHAINS, rpcUrlGetterByNetwork } from '../../utils';
 
 export interface Services {
   sdk: SafeAppsSDK;
+  safe: SafeInfo;
   chainInfo: ChainInfo | undefined;
   web3: Web3 | undefined;
   interfaceRepo: InterfaceRepo | undefined;
 }
 
 export default function useServices(): Services {
-  const { sdk } = useSafeAppsSDK();
+  const { sdk, safe } = useSafeAppsSDK();
   const [web3, setWeb3] = useState<Web3 | undefined>();
   const [chainInfo, setChainInfo] = useState<ChainInfo>();
   const [interfaceRepo, setInterfaceRepo] = useState<InterfaceRepository | undefined>();
@@ -53,6 +54,7 @@ export default function useServices(): Services {
 
   return {
     sdk,
+    safe,
     chainInfo,
     web3,
     interfaceRepo,

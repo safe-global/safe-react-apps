@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Grid from '@material-ui/core/Grid';
 import CheckCircle from '@material-ui/icons/CheckCircle';
-import Hidden from '@material-ui/core/Hidden';
 
 import { isValidAddress } from '../utils';
 import AddNewTransactionForm from '../components/forms/AddNewTransactionForm';
@@ -175,9 +174,7 @@ const Dashboard = ({
               </Button>
             </>
           ) : (
-            <Hidden smDown>
-              <CreateNewBatchCard onFileSelected={importBatch} />
-            </Hidden>
+            <CreateNewBatchCard onFileSelected={importBatch} />
           )}
         </TransactionsSectionWrapper>
       </Grid>

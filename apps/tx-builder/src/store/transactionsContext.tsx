@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useState } from 'react';
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { ProposedTransaction } from '../typings/models';
+import useServices from '../hooks/useServices';
 
 type TransactionContextProps = {
   transactions: ProposedTransaction[];
@@ -16,7 +16,7 @@ export const TransactionContext = createContext<TransactionContextProps | null>(
 
 const TransactionsProvider: React.FC = ({ children }) => {
   const [transactions, setTransactions] = useState<ProposedTransaction[]>([]);
-  const { sdk } = useSafeAppsSDK();
+  const { sdk } = useServices();
 
   const resetTransactions = useCallback((transactions: ProposedTransaction[]) => {
     setTransactions(transactions);

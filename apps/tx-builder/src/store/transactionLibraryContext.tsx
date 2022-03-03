@@ -2,10 +2,10 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import { useTransactions } from './transactionsContext';
 import StorageManager from '../lib/storage';
 import { BatchFile, BatchTransaction, ProposedTransaction } from '../typings/models';
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk';
 import { encodeToHexData } from '../utils';
 import { toChecksumAddress, toWei } from 'web3-utils';
+import useServices from '../hooks/useServices';
 
 const packageJson = require('../../package.json');
 
@@ -21,21 +21,7 @@ export const TransactionLibraryContext = createContext<TransactionLibraryContext
 const TransactionLibraryProvider: React.FC = ({ children }) => {
   const [batches, setBatches] = useState<any>([]);
   const { resetTransactions } = useTransactions();
-  const [chainInfo, setChainInfo] = useState<ChainInfo | null>(null);
-  const { sdk, safe } = useSafeAppsSDK();
-
-  useEffect(() => {
-    const getChainInfo = async () => {
-      try {
-        const info = await sdk.safe.getChainInfo();
-        setChainInfo(info);
-      } catch (e) {
-        console.error('Unable to get chain info:', e);
-      }
-    };
-
-    getChainInfo();
-  }, [sdk]);
+  const { chainInfo, safe } = useServices();
 
   const loadBatches = useCallback(async () => {
     if (chainInfo) {
@@ -103,7 +89,7 @@ const generateBatchFile = ({
   name: string;
   description?: string;
   transactions: ProposedTransaction[];
-  chainInfo: ChainInfo | null;
+  chainInfo: ChainInfo | undefined;
   safe: SafeInfo;
 }): BatchFile => {
   return {
