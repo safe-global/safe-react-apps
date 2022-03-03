@@ -11,7 +11,6 @@ import TransactionsBatchList from '../components/TransactionsBatchList';
 import CreateNewBatchCard from '../components/CreateNewBatchCard';
 import JsonField from '../components/forms/fields/JsonField';
 import { ContractInterface } from '../typings/models';
-import { Hidden } from '@material-ui/core';
 import { useTransactions, useTransactionLibrary } from '../store';
 
 type DashboardProps = {
@@ -157,9 +156,7 @@ const Dashboard = ({ handleSubmitTransactions }: DashboardProps): ReactElement =
               </Button>
             </>
           ) : (
-            <Hidden smDown>
-              <CreateNewBatchCard onFileSelected={importBatch} />
-            </Hidden>
+            <CreateNewBatchCard onFileSelected={importBatch} />
           )}
         </TransactionsSectionWrapper>
       </Grid>

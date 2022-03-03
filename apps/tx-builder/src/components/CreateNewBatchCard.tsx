@@ -1,4 +1,5 @@
 import { ButtonLink, Icon, Text } from '@gnosis.pm/safe-react-components';
+import Hidden from '@material-ui/core/Hidden';
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 
@@ -29,7 +30,9 @@ const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
 
   return (
     <Wrapper>
-      <CreateNewBatchSVG />
+      <Hidden smDown>
+        <CreateNewBatchSVG />
+      </Hidden>
       <StyledDragAndDropFileContainer {...handlers} dragOver={isOverDropZone}>
         <Icon type="termsOfUse" size="sm" />
         <StyledText size={'xl'}>Drag and drop a JSON file or</StyledText>
