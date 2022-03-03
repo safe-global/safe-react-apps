@@ -159,7 +159,6 @@ const Dashboard = ({
                 removeAllTransactions={removeAllTransactions}
                 reorderTransactions={reorderTransactions}
                 showTransactionDetails={false}
-                allowTransactionReordering
                 showBatchHeader
               />
               {/* Go to Review Screen button */}

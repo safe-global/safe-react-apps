@@ -88,7 +88,6 @@ const TransactionLibrary = () => {
             <TransactionsBatchList
               transactions={transactions}
               showTransactionDetails
-              allowTransactionReordering
               showBatchHeader={false}
             />
           </AccordionDetails>

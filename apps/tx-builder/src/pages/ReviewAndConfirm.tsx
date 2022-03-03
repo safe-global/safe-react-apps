@@ -53,7 +53,6 @@ const ReviewAndConfirm = () => {
           downloadBatch={downloadBatch}
           reorderTransactions={reorderTransactions}
           showTransactionDetails
-          allowTransactionReordering
           showBatchHeader
         />
 

@@ -33,7 +33,6 @@ import TransactionDetails from './TransactionDetails';
 type TransactionsBatchListProps = {
   transactions: ProposedTransaction[];
   showTransactionDetails: boolean;
-  allowTransactionReordering: boolean;
   showBatchHeader: boolean;
   removeTransaction?: (index: number) => void;
   saveBatch?: (name: string, transactions: ProposedTransaction[]) => void;
@@ -53,7 +52,6 @@ const TransactionsBatchList = ({
   saveBatch,
   downloadBatch,
   showTransactionDetails,
-  allowTransactionReordering,
   showBatchHeader,
 }: TransactionsBatchListProps) => {
   // we need those states to display the correct position in each tx during the drag & drop
@@ -151,12 +149,7 @@ const TransactionsBatchList = ({
                   const isLastTransaction = index === transactions.length - 1;
 
                   return (
-                    <Draggable
-                      key={id}
-                      index={index}
-                      draggableId={id.toString()}
-                      isDragDisabled={!allowTransactionReordering}
-                    >
+                    <Draggable key={id} index={index} draggableId={id.toString()} isDragDisabled={!reorderTransactions}>
                       {function DraggableTransaction(provided, snapshot) {
                         const [isTxExpanded, setTxExpanded] = useState(false);
 
@@ -198,10 +191,10 @@ const TransactionsBatchList = ({
                               <div {...provided.dragHandleProps}>
                                 <AccordionSummary
                                   expandIcon={false}
-                                  style={{ cursor: allowTransactionReordering ? 'grab' : 'pointer' }}
+                                  style={{ cursor: reorderTransactions ? 'grab' : 'pointer' }}
                                 >
                                   {/* Drag & Drop Indicator */}
-                                  {allowTransactionReordering && (
+                                  {reorderTransactions && (
                                     <Tooltip
                                       placement="top"
                                       title="Drag and Drop"
