@@ -52,7 +52,19 @@ export const parseInputValue = (input: any, value: string): any => {
   const isBooleanInput = input.type === 'bool';
 
   if (value.charAt(0) === '[') {
-    return JSON.parse(value.replace(/"/g, '"'));
+    const parsed = JSON.parse(value.replace(/"/g, '"'));
+
+    if (input.type === 'bool[]') {
+      return parsed.map((value: boolean | string) => {
+        if (typeof value == 'string') {
+          return value.toLowerCase() === 'true';
+        }
+
+        return value;
+      });
+    }
+
+    return parsed;
   }
 
   if (isBooleanInput) {
