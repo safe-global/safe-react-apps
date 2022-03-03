@@ -5,10 +5,9 @@ import { errorBaseStyles } from '../styles';
 
 type TextContractFieldTypes = TextFieldInputProps & {
   networkPrefix?: undefined | string;
-  getAddressFromDomain?: (name: string) => Promise<string>;
 };
 
-const TextContractField = ({ getAddressFromDomain, networkPrefix, ...props }: TextContractFieldTypes) => {
+const TextContractField = ({ networkPrefix, ...props }: TextContractFieldTypes) => {
   return <StyledTextField {...props} hiddenLabel={false} />;
 };
 

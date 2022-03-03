@@ -14,6 +14,14 @@ export default function useTransactions() {
     [transactions],
   );
 
+  const handleReplaceTransaction = useCallback(
+    (newTransaction: ProposedTransaction, index: number) => {
+      transactions[index] = newTransaction;
+      setTransactions([...transactions]);
+    },
+    [transactions],
+  );
+
   const handleRemoveAllTransactions = useCallback(() => {
     setTransactions([]);
   }, []);
@@ -56,5 +64,6 @@ export default function useTransactions() {
     handleSubmitTransactions,
     handleRemoveAllTransactions,
     handleReorderTransactions,
+    handleReplaceTransaction,
   };
 }

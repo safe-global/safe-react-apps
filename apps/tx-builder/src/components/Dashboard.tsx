@@ -14,7 +14,7 @@ import CreateNewBatchCard from './CreateNewBatchCard';
 import JsonField from './forms/fields/JsonField';
 import { errorBaseStyles } from './forms/styles';
 
-const Dashboard = (): ReactElement => {
+const Dashboard = (): ReactElement | null => {
   const { web3, interfaceRepo, chainInfo } = useServices();
 
   const {
@@ -24,6 +24,7 @@ const Dashboard = (): ReactElement => {
     handleSubmitTransactions,
     handleRemoveAllTransactions,
     handleReorderTransactions,
+    handleReplaceTransaction,
   } = useTransactions();
 
   const [address, setAddress] = useState('');
@@ -78,6 +79,10 @@ const Dashboard = (): ReactElement => {
   const isContractInteractionTransaction = abi && contractHasMethods;
 
   const showNewTransactionForm = isTransferTransaction || isContractInteractionTransaction;
+
+  if (!chainInfo) {
+    return null;
+  }
 
   return (
     <Wrapper>
@@ -148,10 +153,14 @@ const Dashboard = (): ReactElement => {
             transactions={transactions}
             onRemoveTransaction={handleRemoveTransaction}
             onSubmitTransactions={handleSubmitTransactions}
+            onEditTransaction={handleReplaceTransaction}
             handleRemoveAllTransactions={handleRemoveAllTransactions}
             handleReorderTransactions={handleReorderTransactions}
             showTransactionDetails={false}
             allowTransactionReordering
+            networkPrefix={chainInfo?.shortName}
+            getAddressFromDomain={getAddressFromDomain}
+            nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
           />
         ) : (
           <CreateNewBatchCard />
