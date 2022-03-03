@@ -1,6 +1,5 @@
-import { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
 import localforage from 'localforage';
-import { Batch, BatchFile } from '../typings/models';
+import { BatchFile } from '../typings/models';
 
 localforage.config({
   name: 'tx-builder',
