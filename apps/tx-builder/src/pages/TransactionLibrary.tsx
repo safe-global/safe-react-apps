@@ -11,88 +11,105 @@ import {
   Button,
 } from '@gnosis.pm/safe-react-components';
 import IconButton from '@material-ui/core/IconButton';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import DeleteBatchFromLibrary from '../components/modals/DeleteBatchFromLibrary';
 import TransactionsBatchList from '../components/TransactionsBatchList';
+import useModal from '../hooks/useModal/useModal';
 import { REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
 
 import { useTransactionLibrary, useTransactions } from '../store';
 
 const TransactionLibrary = () => {
-  const { batches } = useTransactionLibrary();
+  const { batches, removeBatch } = useTransactionLibrary();
   const { resetTransactions } = useTransactions();
   const navigate = useNavigate();
+  const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
 
   return (
     <Wrapper>
       <StyledTitle size="xl">Your transaction library</StyledTitle>
 
       {batches.map((batch) => (
-        <StyledAccordion key={batch.id} compact>
-          <StyledAccordionSummary>
-            {/* transactions count  */}
-            <TransactionCounterDot color="tag">
-              <Text size="xl" color="white">
-                {batch.transactions.length}
-              </Text>
-            </TransactionCounterDot>
+        <React.Fragment key={batch.id}>
+          <StyledAccordion compact TransitionProps={{ unmountOnExit: true }}>
+            <StyledAccordionSummary>
+              {/* transactions count  */}
+              <TransactionCounterDot color="tag">
+                <Text size="xl" color="white">
+                  {batch.transactions.length}
+                </Text>
+              </TransactionCounterDot>
 
-            {/* batch name  */}
-            <StyledTransactionName size="xl">{batch.name}</StyledTransactionName>
+              {/* batch name  */}
+              <StyledTransactionName size="xl">{batch.name}</StyledTransactionName>
 
-            {/* batch actions  */}
-            <BatchButtonsContainer>
-              {/* execute batch */}
-              <Tooltip placement="top" title="Execute batch" backgroundColor="primary" textColor="white" arrow>
-                <div>
-                  <ExecuteBatchButton
-                    size="md"
-                    type="button"
-                    aria-label="Execute batch"
-                    variant="contained"
-                    color="primary"
+              {/* batch actions  */}
+              <BatchButtonsContainer>
+                {/* execute batch */}
+                <Tooltip placement="top" title="Execute batch" backgroundColor="primary" textColor="white" arrow>
+                  <div>
+                    <ExecuteBatchButton
+                      size="md"
+                      type="button"
+                      aria-label="Execute batch"
+                      variant="contained"
+                      color="primary"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        resetTransactions(batch.transactions);
+                        navigate(REVIEW_AND_CONFIRM_PATH);
+                      }}
+                    >
+                      <FixedIcon type={'arrowSentWhite'} />
+                    </ExecuteBatchButton>
+                  </div>
+                </Tooltip>
+
+                {/* download batch */}
+                <Tooltip placement="top" title="Download" backgroundColor="primary" textColor="white" arrow>
+                  <StyledIconButton
                     onClick={(event) => {
                       event.stopPropagation();
-                      resetTransactions(batch.transactions);
-                      navigate(REVIEW_AND_CONFIRM_PATH);
+                      console.log('TODO: Download Batch');
                     }}
                   >
-                    <FixedIcon type={'arrowSentWhite'} />
-                  </ExecuteBatchButton>
-                </div>
-              </Tooltip>
+                    <Icon size="sm" type="importImg" color="primary" aria-label="Download" />
+                  </StyledIconButton>
+                </Tooltip>
 
-              {/* download batch */}
-              <Tooltip placement="top" title="Download" backgroundColor="primary" textColor="white" arrow>
-                <StyledIconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    console.log('TODO: Download Batch');
-                  }}
-                >
-                  <Icon size="sm" type="importImg" color="primary" aria-label="Download" />
-                </StyledIconButton>
-              </Tooltip>
-
-              {/* delete batch */}
-              <Tooltip placement="top" title="Delete Batch" backgroundColor="primary" textColor="white" arrow>
-                <StyledIconButton
-                  size="small"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    console.log('TODO: Delete Batch');
-                  }}
-                >
-                  <Icon size="sm" type="delete" color="error" aria-label="Delete Batch" />
-                </StyledIconButton>
-              </Tooltip>
-            </BatchButtonsContainer>
-          </StyledAccordionSummary>
-          <AccordionDetails>
-            {/* transactions batch list  */}
-            <TransactionsBatchList transactions={batch.transactions} showTransactionDetails showBatchHeader={false} />
-          </AccordionDetails>
-        </StyledAccordion>
+                {/* delete batch */}
+                <Tooltip placement="top" title="Delete Batch" backgroundColor="primary" textColor="white" arrow>
+                  <StyledIconButton
+                    size="small"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      openDeleteBatchModal();
+                    }}
+                  >
+                    <Icon size="sm" type="delete" color="error" aria-label="Delete Batch" />
+                  </StyledIconButton>
+                </Tooltip>
+              </BatchButtonsContainer>
+            </StyledAccordionSummary>
+            <AccordionDetails>
+              {/* transactions batch list  */}
+              <TransactionsBatchList transactions={batch.transactions} showTransactionDetails showBatchHeader={false} />
+            </AccordionDetails>
+          </StyledAccordion>
+          {showDeleteBatchModal && (
+            <DeleteBatchFromLibrary
+              batchName={batch.name}
+              count={batch.transactions.length}
+              onClick={() => {
+                closeDeleteBatchModal();
+                removeBatch(batch.id);
+              }}
+              onClose={closeDeleteBatchModal}
+            />
+          )}
+        </React.Fragment>
       ))}
     </Wrapper>
   );

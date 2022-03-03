@@ -19,7 +19,7 @@ const TransactionsProvider: React.FC = ({ children }) => {
   const { sdk } = useServices();
 
   const resetTransactions = useCallback((transactions: ProposedTransaction[]) => {
-    setTransactions(transactions);
+    setTransactions([...transactions]);
   }, []);
 
   const addTransaction = useCallback(

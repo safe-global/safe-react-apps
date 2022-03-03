@@ -13,6 +13,7 @@ const packageJson = require('../../package.json');
 type TransactionLibraryContextProps = {
   batches: Batch[];
   saveBatch: (name: string, transactions: ProposedTransaction[]) => void;
+  removeBatch: (batchId: string | number) => void;
   downloadBatch: (name: string, transactions: ProposedTransaction[]) => void;
   importBatch: (file: File | null) => void;
 };
@@ -55,6 +56,14 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
     [chainInfo, safe, loadBatches],
   );
 
+  const removeBatch = useCallback(
+    async (batchId: string | number) => {
+      await StorageManager.removeBatch(String(batchId));
+      await loadBatches();
+    },
+    [loadBatches],
+  );
+
   const downloadBatch = useCallback(
     async (name, transactions) => {
       await StorageManager.downloadBatch(generateBatchFile({ name, transactions, chainInfo, safe }));
@@ -80,6 +89,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
       value={{
         batches,
         saveBatch,
+        removeBatch,
         downloadBatch,
         importBatch,
       }}

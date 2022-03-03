@@ -18,6 +18,14 @@ const saveBatch = async (batchFile: BatchFile): Promise<BatchFile> => {
   return batchFile;
 };
 
+const removeBatch = async (batchId: string): Promise<void> => {
+  try {
+    await localforage.removeItem(batchId);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const getBatches = async () => {
   const batches: Record<string, BatchFile> = {};
   try {
@@ -66,6 +74,7 @@ const uuidv4 = () => {
 
 const StorageManager = {
   saveBatch,
+  removeBatch,
   getBatches,
   downloadBatch,
   importBatch,
