@@ -6,6 +6,16 @@ import styled from 'styled-components';
 import { Loader, Title, Text } from '@gnosis.pm/safe-react-components';
 import ErrorImg from '../assets/cam-permissions.png';
 
+type WcConnectProps = {
+  uri?: string | undefined;
+  session?: IWalletConnectSession | undefined;
+};
+
+type Props = {
+  wcConnect: ({ uri }: WcConnectProps) => Promise<void>;
+  wcClientData: IClientMeta | null;
+};
+
 function ScanCode({ wcConnect, wcClientData }: Props) {
   const { videoRef, isLoadingWebcam, errorConnectingWebcam } = useWebcam();
 
@@ -105,13 +115,3 @@ const StyledErrorContainer = styled.div`
 const StyledErrorTitle = styled(Title)`
   margin-top: 0;
 `;
-
-type WcConnectProps = {
-  uri?: string | undefined;
-  session?: IWalletConnectSession | undefined;
-};
-
-type Props = {
-  wcConnect: ({ uri }: WcConnectProps) => Promise<void>;
-  wcClientData: IClientMeta | null;
-};
