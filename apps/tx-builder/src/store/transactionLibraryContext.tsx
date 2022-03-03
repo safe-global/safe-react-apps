@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useTransactions } from './transactionsContext';
 import StorageManager from '../lib/storage';
-import { BatchFile, BatchTransaction, ProposedTransaction } from '../typings/models';
+import { Batch, BatchFile, BatchTransaction, ProposedTransaction } from '../typings/models';
 import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk';
 import { encodeToHexData } from '../utils';
 import { toChecksumAddress, toWei } from 'web3-utils';
@@ -10,7 +10,7 @@ import useServices from '../hooks/useServices';
 const packageJson = require('../../package.json');
 
 type TransactionLibraryContextProps = {
-  batches: ProposedTransaction[];
+  batches: Batch[];
   saveBatch: (name: string, transactions: ProposedTransaction[]) => void;
   downloadBatch: (name: string, transactions: ProposedTransaction[]) => void;
   importBatch: (file: File | null) => void;
@@ -19,7 +19,7 @@ type TransactionLibraryContextProps = {
 export const TransactionLibraryContext = createContext<TransactionLibraryContextProps | null>(null);
 
 const TransactionLibraryProvider: React.FC = ({ children }) => {
-  const [batches, setBatches] = useState<any>([]);
+  const [batches, setBatches] = useState<Batch[]>([]);
   const { resetTransactions } = useTransactions();
   const { chainInfo, safe } = useServices();
 

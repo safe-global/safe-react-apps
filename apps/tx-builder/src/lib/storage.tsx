@@ -1,6 +1,6 @@
 import { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
 import localforage from 'localforage';
-import { BatchFile } from '../typings/models';
+import { Batch, BatchFile } from '../typings/models';
 
 localforage.config({
   name: 'tx-builder',
@@ -21,10 +21,12 @@ const saveBatch = async (batchFile: BatchFile): Promise<BatchFile> => {
 
 const getBatches = async (chainInfo: ChainInfo) => {
   try {
-    const batches: any[] = [];
-    await localforage.iterate((batch: any, key: any, iterationNumber: any) => {
+    const batches: Batch[] = [];
+    await localforage.iterate((batch: BatchFile, key: string) => {
       const parsedBatch = {
         ...batch,
+        id: key,
+        name: batch.meta.name,
         transactions: batch.transactions.map((transaction: any, index: number) => ({
           id: index,
           description: {
@@ -43,7 +45,7 @@ const getBatches = async (chainInfo: ChainInfo) => {
           },
         })),
       };
-      batches.push({ id: key, ...parsedBatch });
+      batches.push(parsedBatch);
     });
     return batches;
   } catch (error) {

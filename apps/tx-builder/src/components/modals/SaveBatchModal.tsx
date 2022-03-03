@@ -1,4 +1,4 @@
-import { Text, Button, GenericModal } from '@gnosis.pm/safe-react-components';
+import { Button, GenericModal } from '@gnosis.pm/safe-react-components';
 import Box from '@material-ui/core/Box';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';

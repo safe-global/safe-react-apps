@@ -23,18 +23,18 @@ const TransactionLibrary = () => {
     <Wrapper>
       <StyledTitle size="xl">Your transaction library</StyledTitle>
 
-      {batches.map(({ id, meta, transactions }: any) => (
-        <StyledAccordion key={id} compact>
+      {batches.map((batch) => (
+        <StyledAccordion key={batch.id} compact>
           <StyledAccordionSummary>
             {/* transactions count  */}
             <TransactionCounterDot color="tag">
               <Text size="xl" color="white">
-                {transactions.length}
+                {batch.transactions.length}
               </Text>
             </TransactionCounterDot>
 
             {/* batch name  */}
-            <StyledTransactionName size="xl">{meta.name}</StyledTransactionName>
+            <StyledTransactionName size="xl">{batch.name}</StyledTransactionName>
 
             {/* batch actions  */}
             <BatchButtonsContainer>
@@ -85,11 +85,7 @@ const TransactionLibrary = () => {
           </StyledAccordionSummary>
           <AccordionDetails>
             {/* transactions batch list  */}
-            <TransactionsBatchList
-              transactions={transactions}
-              showTransactionDetails
-              showBatchHeader={false}
-            />
+            <TransactionsBatchList transactions={batch.transactions} showTransactionDetails showBatchHeader={false} />
           </AccordionDetails>
         </StyledAccordion>
       ))}

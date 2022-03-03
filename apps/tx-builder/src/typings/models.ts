@@ -16,6 +16,12 @@ export interface ContractInterface {
   methods: ContractMethod[];
 }
 
+export interface Batch {
+  id: number | string;
+  name: string;
+  transactions: ProposedTransaction[];
+}
+
 export interface BatchFile {
   version: string;
   chainId: string;
