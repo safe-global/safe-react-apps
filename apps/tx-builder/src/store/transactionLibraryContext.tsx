@@ -6,6 +6,7 @@ import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk';
 import { encodeToHexData } from '../utils';
 import { toChecksumAddress } from 'web3-utils';
 import useServices from '../hooks/useServices';
+import { addChecksum, validateChecksum } from '../lib/checksum';
 
 const packageJson = require('../../package.json');
 
@@ -48,7 +49,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 
   const saveBatch = useCallback(
     async (name, transactions) => {
-      await StorageManager.saveBatch(generateBatchFile({ name, transactions, chainInfo, safe }));
+      await StorageManager.saveBatch(addChecksum(generateBatchFile({ name, transactions, chainInfo, safe })));
       await loadBatches();
     },
     [chainInfo, safe, loadBatches],
@@ -64,7 +65,11 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
   const importBatch = useCallback(
     async (transactions) => {
       if (chainInfo) {
-        resetTransactions(convertToProposedTransactions(await StorageManager.importBatch(transactions), chainInfo));
+        const importedBatchFile = await StorageManager.importBatch(transactions);
+        if (validateChecksum(importedBatchFile)) {
+          console.error('[Checksum check] - This file was modified since it was generated', importedBatchFile);
+        }
+        resetTransactions(convertToProposedTransactions(importedBatchFile, chainInfo));
       }
     },
     [resetTransactions, chainInfo],
