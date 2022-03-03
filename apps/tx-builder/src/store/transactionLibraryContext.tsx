@@ -66,7 +66,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 
   const downloadBatch = useCallback(
     async (name, transactions) => {
-      await StorageManager.downloadBatch(generateBatchFile({ name, transactions, chainInfo, safe }));
+      await StorageManager.downloadBatch(addChecksum(generateBatchFile({ name, transactions, chainInfo, safe })));
     },
     [chainInfo, safe],
   );
