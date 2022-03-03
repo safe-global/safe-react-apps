@@ -16,19 +16,21 @@ export interface ContractInterface {
   methods: ContractMethod[];
 }
 
-export interface BatchTransactionFile {
+export interface BatchFile {
   version: string;
   chainId: string;
   createdAt: number;
-  meta: {
-    txBuilderVersion: string;
-    checksum: string;
-    createdFromSafeAddress: string;
-    createdFromOwnerAddress: string;
-    name: string;
-    description: string;
-  };
+  meta: BatchFileMeta;
   transactions: BatchTransaction[];
+}
+
+export interface BatchFileMeta {
+  txBuilderVersion?: string;
+  checksum?: string;
+  createdFromSafeAddress?: string;
+  createdFromOwnerAddress?: string;
+  name: string;
+  description?: string;
 }
 
 export interface BatchTransaction {
