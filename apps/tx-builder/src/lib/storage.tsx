@@ -19,38 +19,16 @@ const saveBatch = async (batchFile: BatchFile): Promise<BatchFile> => {
   return batchFile;
 };
 
-const getBatches = async (chainInfo: ChainInfo) => {
+const getBatches = async () => {
+  const batches: Record<string, BatchFile> = {};
   try {
-    const batches: Batch[] = [];
     await localforage.iterate((batch: BatchFile, key: string) => {
-      const parsedBatch = {
-        ...batch,
-        id: key,
-        name: batch.meta.name,
-        transactions: batch.transactions.map((transaction: any, index: number) => ({
-          id: index,
-          description: {
-            to: transaction.to,
-            value: transaction.value,
-            hexEncodedData: transaction.data,
-            contractMethod: transaction.contractMethod,
-            contractFieldsValues: transaction.contractInputsValues,
-            nativeCurrencySymbol: chainInfo.nativeCurrency.symbol,
-            networkPrefix: chainInfo.shortName,
-          },
-          raw: {
-            to: transaction.to,
-            value: transaction.value,
-            data: transaction.data,
-          },
-        })),
-      };
-      batches.push(parsedBatch);
+      batches[key] = batch;
     });
-    return batches;
   } catch (error) {
     console.error(error);
   }
+  return batches;
 };
 
 const downloadObjectAsJson = (batchFile: BatchFile) => {

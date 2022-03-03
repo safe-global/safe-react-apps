@@ -4,7 +4,7 @@ import StorageManager from '../lib/storage';
 import { Batch, BatchFile, BatchTransaction, ProposedTransaction } from '../typings/models';
 import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk';
 import { encodeToHexData } from '../utils';
-import { toChecksumAddress, toWei } from 'web3-utils';
+import { toChecksumAddress } from 'web3-utils';
 import useServices from '../hooks/useServices';
 
 const packageJson = require('../../package.json');
@@ -25,8 +25,19 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 
   const loadBatches = useCallback(async () => {
     if (chainInfo) {
-      const batches = await StorageManager.getBatches(chainInfo);
-      setBatches(batches || []);
+      const batchesRecords = await StorageManager.getBatches();
+      const batches: Batch[] = Object.keys(batchesRecords).reduce((batches: Batch[], key: string) => {
+        const batchFile = batchesRecords[key];
+        const batch = {
+          id: key,
+          name: batchFile.meta.name,
+          transactions: convertToProposedTransactions(batchFile, chainInfo),
+        };
+
+        return [...batches, batch];
+      }, []);
+
+      setBatches(batches);
     }
   }, [chainInfo]);
 
@@ -52,9 +63,11 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 
   const importBatch = useCallback(
     async (transactions) => {
-      resetTransactions(convertToProposedTransactions(await StorageManager.importBatch(transactions)));
+      if (chainInfo) {
+        resetTransactions(convertToProposedTransactions(await StorageManager.importBatch(transactions), chainInfo));
+      }
     },
-    [resetTransactions],
+    [resetTransactions, chainInfo],
   );
 
   return (
@@ -121,7 +134,7 @@ const convertToBatchTransactions = (txs: ProposedTransaction[]): BatchTransactio
   );
 };
 
-const convertToProposedTransactions = (batchFile: BatchFile): ProposedTransaction[] => {
+const convertToProposedTransactions = (batchFile: BatchFile, chainInfo: ChainInfo): ProposedTransaction[] => {
   return batchFile.transactions.map((tx, index) => {
     if (tx.data) {
       return {
@@ -130,10 +143,12 @@ const convertToProposedTransactions = (batchFile: BatchFile): ProposedTransactio
           to: tx.to,
           value: tx.value,
           hexEncodedData: tx.data,
+          nativeCurrencySymbol: chainInfo.nativeCurrency.symbol,
+          networkPrefix: chainInfo.shortName,
         },
         raw: {
           to: tx.to,
-          value: tx.value || '',
+          value: tx.value,
           data: tx.data || '',
         },
       };
@@ -146,10 +161,12 @@ const convertToProposedTransactions = (batchFile: BatchFile): ProposedTransactio
         value: tx.value,
         contractMethod: tx.contractMethod,
         contractFieldsValues: tx.contractInputsValues,
+        nativeCurrencySymbol: chainInfo.nativeCurrency.symbol,
+        networkPrefix: chainInfo.shortName,
       },
       raw: {
         to: toChecksumAddress(tx.to),
-        value: toWei(tx.value || '0'),
+        value: tx.value,
         data: tx.data || encodeToHexData(tx.contractMethod, tx.contractInputsValues) || '0x',
       },
     };

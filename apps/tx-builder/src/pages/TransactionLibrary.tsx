@@ -11,13 +11,17 @@ import {
   Button,
 } from '@gnosis.pm/safe-react-components';
 import IconButton from '@material-ui/core/IconButton';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import TransactionsBatchList from '../components/TransactionsBatchList';
+import { REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
 
-import { useTransactionLibrary } from '../store';
+import { useTransactionLibrary, useTransactions } from '../store';
 
 const TransactionLibrary = () => {
   const { batches } = useTransactionLibrary();
+  const { resetTransactions } = useTransactions();
+  const navigate = useNavigate();
 
   return (
     <Wrapper>
@@ -49,7 +53,8 @@ const TransactionLibrary = () => {
                     color="primary"
                     onClick={(event) => {
                       event.stopPropagation();
-                      console.log('TODO: Review Transactions');
+                      resetTransactions(batch.transactions);
+                      navigate(REVIEW_AND_CONFIRM_PATH);
                     }}
                   >
                     <FixedIcon type={'arrowSentWhite'} />
