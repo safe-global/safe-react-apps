@@ -1,3 +1,4 @@
+import { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
 import localforage from 'localforage';
 import { BatchFile } from '../typings/models';
 
@@ -18,11 +19,32 @@ const saveBatch = async (batchFile: BatchFile): Promise<BatchFile> => {
   return batchFile;
 };
 
-const getBatches = async () => {
+const getBatches = async (chainInfo: ChainInfo) => {
   try {
     const batches: any[] = [];
-    await localforage.iterate((value: any, key: any, iterationNumber: any) => {
-      batches.push({ id: key, ...value });
+    await localforage.iterate((batch: any, key: any, iterationNumber: any) => {
+      const parsedBatch = {
+        ...batch,
+        transactions: batch.transactions.map((transaction: any, index: number) => ({
+          id: index,
+          description: {
+            to: transaction.to,
+            value: transaction.value,
+            hexEncodedData: transaction.data,
+            contractMethod: transaction.contractMethod,
+            contractFieldsValues: transaction.contractInputsValues,
+            nativeCurrencySymbol: chainInfo.nativeCurrency.symbol,
+            networkPrefix: chainInfo.shortName,
+          },
+          raw: {
+            to: transaction.to,
+            value: transaction.value,
+            data: transaction.data,
+          },
+        })),
+      };
+      console.log('parsedBatch');
+      batches.push({ id: key, ...parsedBatch });
     });
     return batches;
   } catch (error) {

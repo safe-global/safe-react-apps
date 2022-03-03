@@ -37,14 +37,17 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
     getChainInfo();
   }, [sdk]);
 
-  useEffect(() => {
-    const loadBatches = async () => {
-      const batches = await StorageManager.getBatches();
+  const loadBatches = useCallback(async () => {
+    if (chainInfo) {
+      const batches = await StorageManager.getBatches(chainInfo);
       setBatches(batches || []);
-    };
+    }
+  }, [chainInfo]);
 
+  // on App init we load stored batches
+  useEffect(() => {
     loadBatches();
-  }, []);
+  }, [loadBatches]);
 
   const saveBatch = useCallback(
     async (name, transactions) => {

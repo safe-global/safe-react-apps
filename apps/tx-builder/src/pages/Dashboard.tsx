@@ -1,10 +1,12 @@
 import { ReactElement, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Text, Title, Link, AddressInput, Button } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Grid from '@material-ui/core/Grid';
 import CheckCircle from '@material-ui/icons/CheckCircle';
-import useServices from '../hooks/useServices';
+import Hidden from '@material-ui/core/Hidden';
+
 import { isValidAddress } from '../utils';
 import AddNewTransactionForm from '../components/forms/AddNewTransactionForm';
 import TransactionsBatchList from '../components/TransactionsBatchList';
@@ -12,20 +14,32 @@ import CreateNewBatchCard from '../components/CreateNewBatchCard';
 import JsonField from '../components/forms/fields/JsonField';
 import { ContractInterface } from '../typings/models';
 import { useTransactions, useTransactionLibrary } from '../store';
+import { REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
+import InterfaceRepository from '../hooks/useServices/interfaceRepository';
 
 type DashboardProps = {
-  handleSubmitTransactions: () => void;
+  interfaceRepo: InterfaceRepository | undefined;
+  networkPrefix: string | undefined;
+  nativeCurrencySymbol: string | undefined;
+  getAddressFromDomain: (name: string) => Promise<string>;
 };
 
-const Dashboard = ({ handleSubmitTransactions }: DashboardProps): ReactElement => {
-  const { transactions } = useTransactions();
-  const { importBatch } = useTransactionLibrary();
-  const { web3, interfaceRepo, chainInfo } = useServices();
+const Dashboard = ({
+  interfaceRepo,
+  networkPrefix,
+  nativeCurrencySymbol,
+  getAddressFromDomain,
+}: DashboardProps): ReactElement => {
+  const { transactions, removeAllTransactions, reorderTransactions, removeTransaction } = useTransactions();
+  const { importBatch, downloadBatch, saveBatch } = useTransactionLibrary();
+
   const [address, setAddress] = useState('');
   const [abi, setAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadContractError, setLoadContractError] = useState('');
+
+  const navigate = useNavigate();
 
   // Load contract from address or ABI
   useEffect(() => {
@@ -60,10 +74,6 @@ const Dashboard = ({ handleSubmitTransactions }: DashboardProps): ReactElement =
 
     setContract(interfaceRepo.getMethods(abi));
   }, [abi, interfaceRepo]);
-
-  const getAddressFromDomain = (name: string): Promise<string> => {
-    return web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
-  };
 
   const isAddressInputFieldValid = isValidAddress(address) || !address;
 
@@ -101,8 +111,8 @@ const Dashboard = ({ handleSubmitTransactions }: DashboardProps): ReactElement =
             hiddenLabel={false}
             address={address}
             fullWidth
-            showNetworkPrefix={!!chainInfo?.shortName}
-            networkPrefix={chainInfo?.shortName}
+            showNetworkPrefix={!!networkPrefix}
+            networkPrefix={networkPrefix}
             error={isAddressInputFieldValid ? '' : 'The address is not valid'}
             showLoadingSpinner={isABILoading}
             showErrorsInTheLabel={false}
@@ -130,9 +140,9 @@ const Dashboard = ({ handleSubmitTransactions }: DashboardProps): ReactElement =
             <AddNewTransactionForm
               contract={contract}
               to={address}
-              networkPrefix={chainInfo?.shortName}
+              networkPrefix={networkPrefix}
               getAddressFromDomain={getAddressFromDomain}
-              nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
+              nativeCurrencySymbol={nativeCurrencySymbol}
             />
           )}
         </AddNewTransactionFormWrapper>
@@ -141,7 +151,17 @@ const Dashboard = ({ handleSubmitTransactions }: DashboardProps): ReactElement =
         <TransactionsSectionWrapper item xs={12} md={6}>
           {transactions.length > 0 ? (
             <>
-              <TransactionsBatchList showTransactionDetails={false} allowTransactionReordering />
+              <TransactionsBatchList
+                transactions={transactions}
+                removeTransaction={removeTransaction}
+                saveBatch={saveBatch}
+                downloadBatch={downloadBatch}
+                removeAllTransactions={removeAllTransactions}
+                reorderTransactions={reorderTransactions}
+                showTransactionDetails={false}
+                allowTransactionReordering
+                showBatchHeader
+              />
               {/* Go to Review Screen button */}
               <Button
                 size="md"
@@ -150,7 +170,7 @@ const Dashboard = ({ handleSubmitTransactions }: DashboardProps): ReactElement =
                 style={{ marginLeft: 35 }}
                 variant="contained"
                 color="primary"
-                onClick={handleSubmitTransactions}
+                onClick={() => navigate(REVIEW_AND_CONFIRM_PATH)}
               >
                 Create Batch
               </Button>
