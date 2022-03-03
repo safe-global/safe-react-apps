@@ -20,9 +20,9 @@ const SaveBatchModal = ({ onClick, onClose }: SaveBatchModalProps) => {
     mode: 'onTouched',
   });
 
-  function onSubmit({ batchName }: CreateBatchFormValuesTypes) {
+  const onSubmit = ({ batchName }: CreateBatchFormValuesTypes) => {
     onClick(batchName);
-  }
+  };
 
   return (
     <GenericModal

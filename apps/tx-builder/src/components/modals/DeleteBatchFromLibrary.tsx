@@ -1,15 +1,16 @@
 import { Dot, Text, Button, GenericModal } from '@gnosis.pm/safe-react-components';
 import Box from '@material-ui/core/Box';
+
 import styled from 'styled-components';
+import { Batch } from '../../typings/models';
 
 type DeleteBatchFromLibraryProps = {
-  count: number;
-  batchName: string;
-  onClick: () => void;
+  batch: Batch;
+  onClick: (batch: Batch) => void;
   onClose: () => void;
 };
 
-const DeleteBatchFromLibrary = ({ count, batchName, onClick, onClose }: DeleteBatchFromLibraryProps) => {
+const DeleteBatchFromLibrary = ({ batch, onClick, onClose }: DeleteBatchFromLibraryProps) => {
   return (
     <GenericModal
       title="Delete batch from the library?"
@@ -18,16 +19,16 @@ const DeleteBatchFromLibrary = ({ count, batchName, onClick, onClose }: DeleteBa
         <StyledModalBodyWrapper>
           <StyledModalDot color="tag">
             <Text size="xl" color="white">
-              {count}
+              {batch.transactions.length}
             </Text>
           </StyledModalDot>
 
-          <StyledModalText size="xl">{`${batchName} batch will be permanently deleted`}</StyledModalText>
+          <StyledModalText size="xl">{`${batch.name} batch will be permanently deleted`}</StyledModalText>
           <StyledModalButtonsWrapper display="flex" alignItems="center" justifyContent="center" maxWidth={'450px'}>
             <Button size="md" variant="bordered" onClick={onClose}>
               Back
             </Button>
-            <Button size="md" style={{ marginLeft: 16 }} color="error" onClick={onClick}>
+            <Button size="md" style={{ marginLeft: 16 }} color="error" onClick={() => onClick(batch)}>
               Yes, Delete
             </Button>
           </StyledModalButtonsWrapper>

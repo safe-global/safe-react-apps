@@ -9,9 +9,10 @@ import {
   Icon,
   FixedIcon,
   Button,
+  TextFieldInput,
 } from '@gnosis.pm/safe-react-components';
 import IconButton from '@material-ui/core/IconButton';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import DeleteBatchFromLibrary from '../components/modals/DeleteBatchFromLibrary';
@@ -20,21 +21,23 @@ import useModal from '../hooks/useModal/useModal';
 import { REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
 
 import { useTransactionLibrary, useTransactions } from '../store';
+import { Batch } from '../typings/models';
 
 const TransactionLibrary = () => {
-  const { batches, removeBatch } = useTransactionLibrary();
+  const { batches, removeBatch, downloadBatch, renameBatch } = useTransactionLibrary();
   const { resetTransactions } = useTransactions();
   const navigate = useNavigate();
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
+  const [batchToRemove, setBatchToRemove] = useState<Batch>();
 
   return (
     <Wrapper>
       <StyledTitle size="xl">Your transaction library</StyledTitle>
 
-      {batches.map((batch) => (
-        <React.Fragment key={batch.id}>
-          <StyledAccordion compact TransitionProps={{ unmountOnExit: true }}>
-            <StyledAccordionSummary>
+      {batches.length > 0 ? (
+        batches.map((batch) => (
+          <StyledAccordion key={batch.id} compact TransitionProps={{ unmountOnExit: true }}>
+            <StyledAccordionSummary style={{ backgroundColor: 'white' }}>
               {/* transactions count  */}
               <TransactionCounterDot color="tag">
                 <Text size="xl" color="white">
@@ -43,7 +46,7 @@ const TransactionLibrary = () => {
               </TransactionCounterDot>
 
               {/* batch name  */}
-              <StyledTransactionName size="xl">{batch.name}</StyledTransactionName>
+              <BatchName batch={batch} renameBatch={renameBatch} />
 
               {/* batch actions  */}
               <BatchButtonsContainer>
@@ -72,7 +75,7 @@ const TransactionLibrary = () => {
                   <StyledIconButton
                     onClick={(event) => {
                       event.stopPropagation();
-                      console.log('TODO: Download Batch');
+                      downloadBatch(batch.name, batch.transactions);
                     }}
                   >
                     <Icon size="sm" type="importImg" color="primary" aria-label="Download" />
@@ -85,6 +88,7 @@ const TransactionLibrary = () => {
                     size="small"
                     onClick={(event) => {
                       event.stopPropagation();
+                      setBatchToRemove(batch);
                       openDeleteBatchModal();
                     }}
                   >
@@ -98,19 +102,24 @@ const TransactionLibrary = () => {
               <TransactionsBatchList transactions={batch.transactions} showTransactionDetails showBatchHeader={false} />
             </AccordionDetails>
           </StyledAccordion>
-          {showDeleteBatchModal && (
-            <DeleteBatchFromLibrary
-              batchName={batch.name}
-              count={batch.transactions.length}
-              onClick={() => {
-                closeDeleteBatchModal();
-                removeBatch(batch.id);
-              }}
-              onClose={closeDeleteBatchModal}
-            />
-          )}
-        </React.Fragment>
-      ))}
+        ))
+      ) : (
+        <div>TODO: No batches yet screen</div>
+      )}
+      {showDeleteBatchModal && batchToRemove && (
+        <DeleteBatchFromLibrary
+          batch={batchToRemove}
+          onClick={(batch) => {
+            closeDeleteBatchModal();
+            removeBatch(batch.id);
+            setBatchToRemove(undefined);
+          }}
+          onClose={() => {
+            closeDeleteBatchModal();
+            setBatchToRemove(undefined);
+          }}
+        />
+      )}
     </Wrapper>
   );
 };
@@ -133,6 +142,7 @@ const StyledTitle = styled(Title)`
   line-height: normal;
 `;
 
+// background-color: white;
 const StyledAccordion = styled(Accordion)`
   &.MuiAccordion-root {
     margin-bottom: 0;
@@ -161,8 +171,28 @@ const TransactionCounterDot = styled(Dot)`
   background-color: #566976;
 `;
 
+const StyledTextFieldInput = styled(TextFieldInput)`
+  && {
+    margin-left: 8px;
+    min-height: 0;
+
+    .MuiOutlinedInput-input {
+      padding: 8px;
+    }
+  }
+`;
+
 const StyledTransactionName = styled(Text)`
   margin-left: 8px;
+  line-height: inherit;
+  padding: 8px;
+  border: 1px solid transparent;
+  cursor: text;
+
+  &:hover {
+    border: 1px solid #e2e3e3;
+    border-radius: 8px;
+  }
 `;
 
 const BatchButtonsContainer = styled.div`
@@ -188,3 +218,47 @@ const StyledIconButton = styled(IconButton)`
     background-color: #f6f7f8;
   }
 `;
+
+type BatchNameType = {
+  batch: Batch;
+  renameBatch: (batchId: string | number, newName: string) => void;
+};
+
+function BatchName({ batch, renameBatch }: BatchNameType) {
+  const [batchNameEditable, setBatchNameEditable] = useState(false);
+  const [batchName, setBatchName] = useState(batch.name);
+
+  useEffect(() => {
+    setBatchName(batch.name);
+  }, [batch.name]);
+
+  const submitRenameBatch = () => {
+    renameBatch(batch.id, batchName);
+    setBatchNameEditable(false);
+  };
+
+  return batchNameEditable ? (
+    <StyledTextFieldInput
+      id={'batch-name-field'}
+      name="batch-name"
+      value={batchName}
+      onChange={(event) => setBatchName(event.target.value)}
+      onBlur={submitRenameBatch}
+      onKeyPress={(event) => event.key === 'Enter' && submitRenameBatch()}
+      onClick={(event) => event.stopPropagation()}
+      label={''}
+      autoFocus
+    />
+  ) : (
+    <Tooltip placement="top" title="Edit batch name" backgroundColor="primary" textColor="white" arrow>
+      <div
+        onClick={(event) => {
+          event.stopPropagation();
+          setBatchNameEditable(true);
+        }}
+      >
+        <StyledTransactionName size="xl">{batchName}</StyledTransactionName>
+      </div>
+    </Tooltip>
+  );
+}

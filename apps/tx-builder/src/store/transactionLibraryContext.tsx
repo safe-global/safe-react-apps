@@ -14,6 +14,7 @@ type TransactionLibraryContextProps = {
   batches: Batch[];
   saveBatch: (name: string, transactions: ProposedTransaction[]) => void;
   removeBatch: (batchId: string | number) => void;
+  renameBatch: (batchId: string | number, newName: string) => void;
   downloadBatch: (name: string, transactions: ProposedTransaction[]) => void;
   importBatch: (file: File | null) => void;
 };
@@ -64,6 +65,18 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
     [loadBatches],
   );
 
+  const renameBatch = useCallback(
+    async (batchId: string | number, newName: string) => {
+      const batch = await StorageManager.getBatch(String(batchId));
+      if (batch) {
+        batch.meta.name = newName;
+        await StorageManager.updateBatch(String(batchId), batch);
+      }
+      await loadBatches();
+    },
+    [loadBatches],
+  );
+
   const downloadBatch = useCallback(
     async (name, transactions) => {
       await StorageManager.downloadBatch(generateBatchFile({ name, transactions, chainInfo, safe }));
@@ -90,6 +103,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
         batches,
         saveBatch,
         removeBatch,
+        renameBatch,
         downloadBatch,
         importBatch,
       }}
