@@ -187,7 +187,7 @@ const TransactionCounterDot = styled(Dot)`
 
 const EditableLabel = styled.span`
   margin-left: 8px;
-  padding: 8px;
+  padding: 10px;
   cursor: text;
   border-radius: 8px;
   border: 1px solid transparent;
