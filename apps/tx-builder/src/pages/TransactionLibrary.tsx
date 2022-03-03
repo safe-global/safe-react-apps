@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   AccordionSummary,
   Title,
@@ -9,17 +10,15 @@ import {
   Icon,
   FixedIcon,
   Button,
-  TextFieldInput,
 } from '@gnosis.pm/safe-react-components';
 import IconButton from '@material-ui/core/IconButton';
-import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+
 import DeleteBatchFromLibrary from '../components/modals/DeleteBatchFromLibrary';
 import TransactionsBatchList from '../components/TransactionsBatchList';
 import useModal from '../hooks/useModal/useModal';
 import { REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
-
 import { useTransactionLibrary, useTransactions } from '../store';
 import { Batch } from '../typings/models';
 
@@ -45,8 +44,24 @@ const TransactionLibrary = () => {
                 </Text>
               </TransactionCounterDot>
 
-              {/* batch name  */}
-              <BatchName batch={batch} renameBatch={renameBatch} />
+              {/* editable batch name */}
+              <Tooltip placement="top" title="Edit batch name" backgroundColor="primary" textColor="white" arrow>
+                <div>
+                  <Text size="xl">
+                    <EditableLabel
+                      contentEditable="true"
+                      suppressContentEditableWarning={true}
+                      onBlur={(event) => renameBatch(batch.id, event.target.innerText)}
+                      onKeyPress={(event: any) =>
+                        event.key === 'Enter' && renameBatch(batch.id, event.target.innerText) && event.preventDefault()
+                      }
+                      onClick={(event) => event.stopPropagation()} // to prevent open batch details
+                    >
+                      {batch.name}
+                    </EditableLabel>
+                  </Text>
+                </div>
+              </Tooltip>
 
               {/* batch actions  */}
               <BatchButtonsContainer>
@@ -142,7 +157,6 @@ const StyledTitle = styled(Title)`
   line-height: normal;
 `;
 
-// background-color: white;
 const StyledAccordion = styled(Accordion)`
   &.MuiAccordion-root {
     margin-bottom: 0;
@@ -171,27 +185,19 @@ const TransactionCounterDot = styled(Dot)`
   background-color: #566976;
 `;
 
-const StyledTextFieldInput = styled(TextFieldInput)`
-  && {
-    margin-left: 8px;
-    min-height: 0;
-
-    .MuiOutlinedInput-input {
-      padding: 8px;
-    }
-  }
-`;
-
-const StyledTransactionName = styled(Text)`
+const EditableLabel = styled.span`
   margin-left: 8px;
-  line-height: inherit;
   padding: 8px;
-  border: 1px solid transparent;
   cursor: text;
+  border-radius: 8px;
+  border: 1px solid transparent;
 
   &:hover {
-    border: 1px solid #e2e3e3;
-    border-radius: 8px;
+    border-color: #e2e3e3;
+  }
+
+  &:focus {
+    outline-color: #008c73;
   }
 `;
 
@@ -218,47 +224,3 @@ const StyledIconButton = styled(IconButton)`
     background-color: #f6f7f8;
   }
 `;
-
-type BatchNameType = {
-  batch: Batch;
-  renameBatch: (batchId: string | number, newName: string) => void;
-};
-
-function BatchName({ batch, renameBatch }: BatchNameType) {
-  const [batchNameEditable, setBatchNameEditable] = useState(false);
-  const [batchName, setBatchName] = useState(batch.name);
-
-  useEffect(() => {
-    setBatchName(batch.name);
-  }, [batch.name]);
-
-  const submitRenameBatch = () => {
-    renameBatch(batch.id, batchName);
-    setBatchNameEditable(false);
-  };
-
-  return batchNameEditable ? (
-    <StyledTextFieldInput
-      id={'batch-name-field'}
-      name="batch-name"
-      value={batchName}
-      onChange={(event) => setBatchName(event.target.value)}
-      onBlur={submitRenameBatch}
-      onKeyPress={(event) => event.key === 'Enter' && submitRenameBatch()}
-      onClick={(event) => event.stopPropagation()}
-      label={''}
-      autoFocus
-    />
-  ) : (
-    <Tooltip placement="top" title="Edit batch name" backgroundColor="primary" textColor="white" arrow>
-      <div
-        onClick={(event) => {
-          event.stopPropagation();
-          setBatchNameEditable(true);
-        }}
-      >
-        <StyledTransactionName size="xl">{batchName}</StyledTransactionName>
-      </div>
-    </Tooltip>
-  );
-}
