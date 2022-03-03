@@ -1,3 +1,4 @@
+import { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
 import localforage from 'localforage';
 import { BatchFile } from '../typings/models';
 
@@ -18,7 +19,7 @@ const saveBatch = async (batchFile: BatchFile): Promise<BatchFile> => {
   return batchFile;
 };
 
-const getBatches = async () => {
+const getBatches = async (chainInfo: ChainInfo) => {
   try {
     const batches: any[] = [];
     await localforage.iterate((batch: any, key: any, iterationNumber: any) => {
@@ -32,9 +33,8 @@ const getBatches = async () => {
             hexEncodedData: transaction.data,
             contractMethod: transaction.contractMethod,
             contractFieldsValues: transaction.contractInputsValues,
-            // TODO: review this
-            nativeCurrencySymbol: 'ETH',
-            networkPrefix: 'rin',
+            nativeCurrencySymbol: chainInfo.nativeCurrency.symbol,
+            networkPrefix: chainInfo.shortName,
           },
           raw: {
             to: transaction.to,
