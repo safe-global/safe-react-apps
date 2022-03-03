@@ -43,7 +43,6 @@ const getBatches = async (chainInfo: ChainInfo) => {
           },
         })),
       };
-      console.log('parsedBatch');
       batches.push({ id: key, ...parsedBatch });
     });
     return batches;
