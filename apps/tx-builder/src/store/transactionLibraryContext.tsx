@@ -75,7 +75,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
     async (transactions) => {
       if (chainInfo) {
         const importedBatchFile = await StorageManager.importBatch(transactions);
-        if (validateChecksum(importedBatchFile)) {
+        if (!validateChecksum(importedBatchFile)) {
           console.error('[Checksum check] - This file was modified since it was generated', importedBatchFile);
         }
         resetTransactions(convertToProposedTransactions(importedBatchFile, chainInfo));
