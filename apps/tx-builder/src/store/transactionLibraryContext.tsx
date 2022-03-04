@@ -17,12 +17,15 @@ type TransactionLibraryContextProps = {
   renameBatch: (batchId: string | number, newName: string) => void;
   downloadBatch: (name: string, transactions: ProposedTransaction[]) => void;
   importBatch: (file: File | null) => void;
+  hasChecksumWarning: boolean;
+  setHasChecksumWarning: (hasChecksumWarning: boolean) => void;
 };
 
 export const TransactionLibraryContext = createContext<TransactionLibraryContextProps | null>(null);
 
 const TransactionLibraryProvider: React.FC = ({ children }) => {
   const [batches, setBatches] = useState<Batch[]>([]);
+  const [hasChecksumWarning, setHasChecksumWarning] = useState<boolean>(false);
   const { resetTransactions } = useTransactions();
   const { chainInfo, safe } = useServices();
 
@@ -48,6 +51,16 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
   useEffect(() => {
     loadBatches();
   }, [loadBatches]);
+
+  useEffect(() => {
+    let id: ReturnType<typeof setTimeout>;
+
+    if (hasChecksumWarning) {
+      id = setTimeout(() => setHasChecksumWarning(false), 5000);
+    }
+
+    return () => clearTimeout(id);
+  }, [hasChecksumWarning]);
 
   const saveBatch = useCallback(
     async (name, transactions) => {
@@ -95,6 +108,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
         if (validateChecksum(importedBatchFile)) {
           console.info('[Checksum check] - Checksum validation success', importedBatchFile);
         } else {
+          setHasChecksumWarning(true);
           console.error('[Checksum check] - This file was modified since it was generated', importedBatchFile);
         }
         resetTransactions(convertToProposedTransactions(importedBatchFile, chainInfo));
@@ -112,6 +126,8 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
         renameBatch,
         downloadBatch,
         importBatch,
+        hasChecksumWarning,
+        setHasChecksumWarning,
       }}
     >
       {children}
