@@ -5,7 +5,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Grid from '@material-ui/core/Grid';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 
-import { ContractInterface } from '../hooks/useServices/interfaceRepository';
+import InterfaceRepository, { ContractInterface } from '../hooks/useServices/interfaceRepository';
 import useServices from '../hooks/useServices';
 import { isValidAddress } from '../utils';
 import AddNewTransactionForm from '../components/forms/AddNewTransactionForm';
@@ -22,6 +22,11 @@ type DashboardProps = {
   handleRemoveTransaction: (index: number) => void;
   handleRemoveAllTransactions: () => void;
   handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
+  handleReplaceTransaction: (newTransaction: ProposedTransaction, index: number) => void;
+  interfaceRepo: InterfaceRepository | undefined;
+  networkPrefix: string | undefined;
+  nativeCurrencySymbol: string | undefined;
+  getAddressFromDomain: (name: string) => Promise<string>;
 };
 
 const Dashboard = ({
@@ -31,7 +36,8 @@ const Dashboard = ({
   handleSubmitTransactions,
   handleRemoveAllTransactions,
   handleReorderTransactions,
-}: DashboardProps): ReactElement => {
+  handleReplaceTransaction,
+}: DashboardProps): ReactElement | null => {
   const { web3, interfaceRepo, chainInfo } = useServices();
 
   const [address, setAddress] = useState('');
@@ -86,6 +92,10 @@ const Dashboard = ({
   const isContractInteractionTransaction = abi && contract && !isABILoading;
 
   const showNewTransactionForm = isTransferTransaction || isContractInteractionTransaction;
+
+  if (!chainInfo) {
+    return null;
+  }
 
   return (
     <Wrapper>
@@ -160,8 +170,12 @@ const Dashboard = ({
                 onRemoveTransaction={handleRemoveTransaction}
                 handleRemoveAllTransactions={handleRemoveAllTransactions}
                 handleReorderTransactions={handleReorderTransactions}
+                onEditTransaction={handleReplaceTransaction}
                 showTransactionDetails={false}
                 allowTransactionReordering
+                networkPrefix={chainInfo?.shortName}
+                getAddressFromDomain={getAddressFromDomain}
+                nativeCurrencySymbol={chainInfo?.nativeCurrency.symbol}
               />
               {/* Go to Review Screen button */}
               <Button

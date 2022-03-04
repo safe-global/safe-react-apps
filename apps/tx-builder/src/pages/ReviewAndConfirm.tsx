@@ -16,6 +16,10 @@ type ReviewAndConfirmProps = {
   handleRemoveTransaction: (index: number) => void;
   handleRemoveAllTransactions: () => void;
   handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
+  handleReplaceTransaction: (newTransaction: ProposedTransaction, index: number) => void;
+  networkPrefix: string | undefined;
+  nativeCurrencySymbol: string | undefined;
+  getAddressFromDomain: (name: string) => Promise<string>;
 };
 
 const ReviewAndConfirm = ({
@@ -24,6 +28,10 @@ const ReviewAndConfirm = ({
   handleRemoveAllTransactions,
   handleSubmitTransactions,
   handleReorderTransactions,
+  handleReplaceTransaction,
+  networkPrefix,
+  nativeCurrencySymbol,
+  getAddressFromDomain,
 }: ReviewAndConfirmProps) => {
   const {
     open: showSuccessBatchModal,
@@ -60,8 +68,12 @@ const ReviewAndConfirm = ({
           transactions={transactions}
           onRemoveTransaction={handleRemoveTransaction}
           handleReorderTransactions={handleReorderTransactions}
+          onEditTransaction={handleReplaceTransaction}
           showTransactionDetails
           allowTransactionReordering
+          networkPrefix={networkPrefix}
+          getAddressFromDomain={getAddressFromDomain}
+          nativeCurrencySymbol={nativeCurrencySymbol}
         />
 
         <ButtonsWrapper>

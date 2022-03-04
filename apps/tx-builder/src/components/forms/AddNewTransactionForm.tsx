@@ -1,26 +1,23 @@
 import { Text, Title, Button } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
-import { toChecksumAddress, toWei } from 'web3-utils';
 
 import { ContractInterface } from '../../hooks/useServices/interfaceRepository';
 import { ProposedTransaction } from '../../typings/models';
-import { encodeToHexData, isValidAddress } from '../../utils';
+import { isValidAddress } from '../../utils';
 import SolidityForm, {
   CONTRACT_METHOD_INDEX_FIELD_NAME,
-  CONTRACT_VALUES_FIELD_NAME,
-  HEX_ENCODED_DATA_FIELD_NAME,
   SolidityFormValuesTypes,
-  TOKEN_INPUT_NAME,
   TO_ADDRESS_FIELD_NAME,
+  parseFormToProposedTransaction,
 } from './SolidityForm';
 
 type AddNewTransactionFormProps = {
   contract: ContractInterface | null;
   to: string;
   onAddTransaction: (transaction: ProposedTransaction) => void;
-  networkPrefix: undefined | string;
+  networkPrefix: string;
+  nativeCurrencySymbol: string;
   getAddressFromDomain: (name: string) => Promise<string>;
-  nativeCurrencySymbol: undefined | string;
 };
 
 const AddNewTransactionForm = ({
@@ -39,31 +36,9 @@ const AddNewTransactionForm = ({
   const showNoPublicMethodsWarning = contract && contract.methods.length === 0;
 
   const onSubmit = (values: SolidityFormValuesTypes) => {
-    const contractMethodIndex = values[CONTRACT_METHOD_INDEX_FIELD_NAME];
-    const toAddress = values[TO_ADDRESS_FIELD_NAME];
-    const tokenValue = values[TOKEN_INPUT_NAME];
-    const contractFieldsValues = values[CONTRACT_VALUES_FIELD_NAME];
-    const hexEncodedData = values[HEX_ENCODED_DATA_FIELD_NAME];
+    const proposedTransaction = parseFormToProposedTransaction(values, contract, nativeCurrencySymbol, networkPrefix);
 
-    const contractMethod = contract?.methods[Number(contractMethodIndex)];
-
-    const data = hexEncodedData || encodeToHexData(contractMethod, contractFieldsValues) || '0x';
-    const to = toChecksumAddress(toAddress);
-    const value = toWei(tokenValue || '0');
-
-    onAddTransaction({
-      id: new Date().getTime(),
-      description: {
-        to,
-        value,
-        hexEncodedData,
-        contractMethod: !hexEncodedData ? contractMethod : undefined,
-        contractFieldsValues: !hexEncodedData ? contractFieldsValues : undefined,
-        nativeCurrencySymbol,
-        networkPrefix,
-      },
-      raw: { to, value, data },
-    });
+    onAddTransaction(proposedTransaction);
   };
 
   return (

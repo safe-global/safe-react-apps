@@ -1,5 +1,12 @@
-import { screen, fireEvent, createEvent, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
-
+import {
+  screen,
+  fireEvent,
+  createEvent,
+  waitFor,
+  waitForElementToBeRemoved,
+  findByAltText,
+  findByText,
+} from '@testing-library/react';
 import App from './App';
 import { renderWithProviders } from './utils/test-helpers';
 
@@ -53,10 +60,10 @@ describe('WalletConnect unit tests', () => {
 
     expect(titleNode).toBeInTheDocument();
 
-    const inputNode = screen.getByLabelText('Paste WalletConnect QR code or connection URI');
+    const inputNode = screen.getByPlaceholderText('QR code or connection');
     expect(inputNode).toBeInTheDocument();
 
-    const instructionsNode = screen.getByText('How to connect to a Dapp');
+    const instructionsNode = screen.getByText('How to connect to a Dapp?');
 
     expect(instructionsNode).toBeInTheDocument();
   });
@@ -65,11 +72,11 @@ describe('WalletConnect unit tests', () => {
     it('Connects via onPaste valid URI', () => {
       renderWithProviders(<App />);
 
-      const instructionsNode = screen.getByText('How to connect to a Dapp');
+      const instructionsNode = screen.getByText('How to connect to a Dapp?');
 
       expect(instructionsNode).toBeInTheDocument();
 
-      const inputNode = screen.getByLabelText('Paste WalletConnect QR code or connection URI');
+      const inputNode = screen.getByPlaceholderText('QR code or connection');
 
       const URIPasteEvent = {
         clipboardData: {
@@ -90,10 +97,10 @@ describe('WalletConnect unit tests', () => {
 
       expect(instructionsNode).not.toBeInTheDocument();
 
-      const connectedNode = screen.getByText('Connected');
+      const connectedNode = screen.getByText('CONNECTED');
       expect(connectedNode).toBeInTheDocument();
 
-      const connectedInstructionsNode = screen.getByText('How to confirm transactions');
+      const connectedInstructionsNode = screen.getByText('How to confirm transactions?');
       expect(connectedInstructionsNode).toBeInTheDocument();
 
       const dappNameNode = screen.getByText('Test name');
@@ -107,11 +114,11 @@ describe('WalletConnect unit tests', () => {
     it('No connection is set if an invalid URI is provided', () => {
       renderWithProviders(<App />);
 
-      const instructionsNode = screen.getByText('How to connect to a Dapp');
+      const instructionsNode = screen.getByText('How to connect to a Dapp?');
 
       expect(instructionsNode).toBeInTheDocument();
 
-      const inputNode = screen.getByLabelText('Paste WalletConnect QR code or connection URI');
+      const inputNode = screen.getByPlaceholderText('QR code or connection');
 
       const URIPasteEvent = {
         clipboardData: {
@@ -129,7 +136,7 @@ describe('WalletConnect unit tests', () => {
 
       fireEvent(inputNode, pasteEvent);
 
-      const connectedNode = screen.queryByText('Connected');
+      const connectedNode = screen.queryByText('CONNECTED');
       expect(connectedNode).not.toBeInTheDocument();
     });
   });
@@ -138,13 +145,15 @@ describe('WalletConnect unit tests', () => {
     it('Shows scan QR dialog', async () => {
       renderWithProviders(<App />);
 
-      const openDialogNode = screen.getByRole('button');
+      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR');
+
+      expect(openDialogNode).toBeDefined();
 
       fireEvent.click(openDialogNode);
 
       const scanQRCodeDialog = await screen.findByRole('dialog');
 
-      expect(scanQRCodeDialog).toBeInTheDocument();
+      await waitFor(() => expect(scanQRCodeDialog).toBeDefined());
     });
 
     it('Shows Permissions error image', async () => {
@@ -157,31 +166,33 @@ describe('WalletConnect unit tests', () => {
 
       renderWithProviders(<App />);
 
-      const openDialogNode = screen.getByRole('button');
+      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR');
+
+      expect(openDialogNode).toBeInTheDocument();
 
       fireEvent.click(openDialogNode);
 
       const scanQRCodeDialog = await screen.findByRole('dialog');
 
-      expect(scanQRCodeDialog).toBeInTheDocument();
+      expect(scanQRCodeDialog).toBeDefined();
 
-      const permissionErrorTitle = screen.getByText('Check browser permissions');
-      expect(permissionErrorTitle).toBeInTheDocument();
+      const permissionErrorTitle = await findByText(scanQRCodeDialog, 'Check browser permissions');
 
-      const permissionErrorImg = screen.getByAltText('camera permission error');
-      expect(permissionErrorImg).toBeInTheDocument();
+      expect(permissionErrorTitle).toBeDefined();
+
+      const permissionErrorImg = await findByAltText(scanQRCodeDialog, 'camera permission error');
+      expect(permissionErrorImg).toBeDefined();
     });
 
     it('Scans valid QR code', async () => {
       renderWithProviders(<App />);
 
-      const openDialogNode = screen.getByRole('button');
+      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR');
 
       fireEvent.click(openDialogNode);
 
       const scanQRCodeDialog = await screen.findByRole('dialog');
-
-      expect(scanQRCodeDialog).toBeInTheDocument();
+      expect(scanQRCodeDialog).toBeDefined();
 
       const dappNameNode = await screen.findByText('Test name');
       expect(dappNameNode).toBeInTheDocument();
@@ -224,14 +235,13 @@ describe('WalletConnect unit tests', () => {
       expect(openWebcamSpy).not.toHaveBeenCalled();
       expect(stopWebcamSpy).not.toHaveBeenCalled();
 
-      const openDialogNode = screen.getByRole('button');
+      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR');
 
       // we open webcam dialog
       fireEvent.click(openDialogNode);
 
       const scanQRCodeDialog = await screen.findByRole('dialog');
-
-      expect(scanQRCodeDialog).toBeInTheDocument();
+      expect(scanQRCodeDialog).toBeDefined();
 
       // only webcam connection should be called at this point of the test
       expect(openWebcamSpy).toHaveBeenCalled();
@@ -254,11 +264,11 @@ describe('WalletConnect unit tests', () => {
     it('Disconnects if user clicks on Disconnect button', () => {
       renderWithProviders(<App />);
 
-      const instructionsNode = screen.getByText('How to connect to a Dapp');
+      const instructionsNode = screen.getByText('How to connect to a Dapp?');
 
       expect(instructionsNode).toBeInTheDocument();
 
-      const inputNode = screen.getByLabelText('Paste WalletConnect QR code or connection URI');
+      const inputNode = screen.getByPlaceholderText('QR code or connection');
 
       const URIPasteEvent = {
         clipboardData: {

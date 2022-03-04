@@ -14,9 +14,9 @@ const TransactionDetails = ({ transaction }: TransactionDetailsProp) => {
   const { description, raw } = transaction;
 
   const { to, value, data } = raw;
-  const { contractMethod, contractFieldsValues, hexEncodedData, networkPrefix, nativeCurrencySymbol } = description;
+  const { contractMethod, contractFieldsValues, customTransactionData, networkPrefix, nativeCurrencySymbol } = description;
 
-  const isCustomHexDataTx = !!hexEncodedData;
+  const isCustomHexDataTx = !!customTransactionData;
   const isContractInteractionTx = !!contractMethod && !isCustomHexDataTx;
 
   const isTokenTransferTx = !isCustomHexDataTx && !isContractInteractionTx;
