@@ -51,7 +51,9 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 
   const saveBatch = useCallback(
     async (name, transactions) => {
-      await StorageManager.saveBatch(addChecksum(generateBatchFile({ name, transactions, chainInfo, safe })));
+      await StorageManager.saveBatch(
+        addChecksum(generateBatchFile({ name, description: '', transactions, chainInfo, safe })),
+      );
       await loadBatches();
     },
     [chainInfo, safe, loadBatches],
@@ -79,7 +81,9 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 
   const downloadBatch = useCallback(
     async (name, transactions) => {
-      await StorageManager.downloadBatch(addChecksum(generateBatchFile({ name, transactions, chainInfo, safe })));
+      await StorageManager.downloadBatch(
+        addChecksum(generateBatchFile({ name, description: '', transactions, chainInfo, safe })),
+      );
     },
     [chainInfo, safe],
   );
@@ -88,7 +92,9 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
     async (transactions) => {
       if (chainInfo) {
         const importedBatchFile = await StorageManager.importBatch(transactions);
-        if (!validateChecksum(importedBatchFile)) {
+        if (validateChecksum(importedBatchFile)) {
+          console.info('[Checksum check] - Checksum validation success', importedBatchFile);
+        } else {
           console.error('[Checksum check] - This file was modified since it was generated', importedBatchFile);
         }
         resetTransactions(convertToProposedTransactions(importedBatchFile, chainInfo));
@@ -130,7 +136,7 @@ const generateBatchFile = ({
   safe,
 }: {
   name: string;
-  description?: string;
+  description: string;
   transactions: ProposedTransaction[];
   chainInfo: ChainInfo | undefined;
   safe: SafeInfo;
@@ -143,7 +149,6 @@ const generateBatchFile = ({
       name,
       description,
       txBuilderVersion: packageJson.version,
-      checksum: '',
       createdFromSafeAddress: safe.safeAddress,
       createdFromOwnerAddress: '',
     },

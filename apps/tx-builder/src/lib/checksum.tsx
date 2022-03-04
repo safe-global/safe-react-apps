@@ -1,6 +1,10 @@
 import SHA256 from 'crypto-js/sha256';
 import { BatchFile } from '../typings/models';
 
+// JSON spec does not allow undefined so stringify removes the prop
+// That's a problem for calculating the checksum back so this function avoid the issue
+export const stringifyReplacer = (key: string, value: any) => (value === undefined ? null : value);
+
 const serializeJSONObject = (json: any): string => {
   if (Array.isArray(json)) {
     return `[${json.map((el) => serializeJSONObject(el)).join(',')}]`;
@@ -9,7 +13,7 @@ const serializeJSONObject = (json: any): string => {
   if (typeof json === 'object' && json !== null) {
     let acc = '';
     const keys = Object.keys(json).sort();
-    acc += `{${JSON.stringify(keys)}`;
+    acc += `{${JSON.stringify(keys, stringifyReplacer)}`;
 
     for (let i = 0; i < keys.length; i++) {
       acc += `${serializeJSONObject(json[keys[i]])},`;
@@ -18,7 +22,7 @@ const serializeJSONObject = (json: any): string => {
     return `${acc}}`;
   }
 
-  return `${JSON.stringify(json)}`;
+  return `${JSON.stringify(json, stringifyReplacer)}`;
 };
 
 const calculateChecksum = (batchFile: BatchFile): string => {

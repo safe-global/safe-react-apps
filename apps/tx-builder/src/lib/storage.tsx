@@ -1,5 +1,6 @@
 import localforage from 'localforage';
 import { BatchFile } from '../typings/models';
+import { stringifyReplacer } from './checksum';
 
 localforage.config({
   name: 'tx-builder',
@@ -57,7 +58,7 @@ const getBatches = async () => {
 };
 
 const downloadObjectAsJson = (batchFile: BatchFile) => {
-  const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(batchFile));
+  const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(batchFile, stringifyReplacer));
   const downloadAnchorNode = document.createElement('a');
 
   downloadAnchorNode.setAttribute('href', dataStr);
