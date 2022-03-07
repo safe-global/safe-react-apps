@@ -96,7 +96,7 @@ const ReviewAndConfirm = ({
             type="button"
             disabled={!transactions.length}
             variant="bordered"
-            color="primary"
+            color="error"
             onClick={openDeleteBatchModal}
           >
             Cancel
