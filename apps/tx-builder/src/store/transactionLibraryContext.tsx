@@ -196,7 +196,7 @@ const convertToBatchTransactions = (transactions: ProposedTransaction[]): BatchT
     ({ description }: ProposedTransaction): BatchTransaction => ({
       to: description.to,
       value: description.value,
-      data: description.hexEncodedData,
+      data: description.customTransactionData,
       contractMethod: description.contractMethod,
       contractInputsValues: description.contractFieldsValues,
     }),
@@ -208,10 +208,11 @@ const convertToProposedTransactions = (batchFile: BatchFile, chainInfo: ChainInf
     if (transaction.data) {
       return {
         id: index,
+        contractInterface: null,
         description: {
           to: transaction.to,
           value: transaction.value,
-          hexEncodedData: transaction.data,
+          customTransactionData: transaction.data,
           nativeCurrencySymbol: chainInfo.nativeCurrency.symbol,
           networkPrefix: chainInfo.shortName,
         },
@@ -225,6 +226,7 @@ const convertToProposedTransactions = (batchFile: BatchFile, chainInfo: ChainInf
 
     return {
       id: index,
+      contractInterface: null,
       description: {
         to: transaction.to,
         value: transaction.value,

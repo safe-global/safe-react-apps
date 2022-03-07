@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Grid from '@material-ui/core/Grid';
 import CheckCircle from '@material-ui/icons/CheckCircle';
+import Hidden from '@material-ui/core/Hidden';
 
 import { isValidAddress } from '../utils';
 import AddNewTransactionForm from '../components/forms/AddNewTransactionForm';
@@ -30,7 +31,8 @@ const Dashboard = ({
   nativeCurrencySymbol,
   getAddressFromDomain,
 }: DashboardProps): ReactElement => {
-  const { transactions, removeAllTransactions, reorderTransactions, removeTransaction } = useTransactions();
+  const { transactions, removeAllTransactions, replaceTransaction, reorderTransactions, removeTransaction } =
+    useTransactions();
   const { importBatch, downloadBatch, saveBatch } = useTransactionLibrary();
 
   const [address, setAddress] = useState('');
@@ -158,9 +160,13 @@ const Dashboard = ({
                 saveBatch={saveBatch}
                 downloadBatch={downloadBatch}
                 removeAllTransactions={removeAllTransactions}
+                replaceTransaction={replaceTransaction}
                 reorderTransactions={reorderTransactions}
                 showTransactionDetails={false}
                 showBatchHeader
+                networkPrefix={networkPrefix}
+                getAddressFromDomain={getAddressFromDomain}
+                nativeCurrencySymbol={nativeCurrencySymbol}
               />
               {/* Go to Review Screen button */}
               <Button
@@ -181,7 +187,9 @@ const Dashboard = ({
               )}
             </>
           ) : (
-            <CreateNewBatchCard onFileSelected={importBatch} />
+            <Hidden smDown>
+              <CreateNewBatchCard onFileSelected={importBatch} />
+            </Hidden>
           )}
         </TransactionsSectionWrapper>
       </Grid>

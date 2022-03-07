@@ -44,10 +44,28 @@ const App = () => {
         />
 
         {/* Review & Confirm Screen */}
-        <Route path={REVIEW_AND_CONFIRM_PATH} element={<ReviewAndConfirm />} />
+        <Route
+          path={REVIEW_AND_CONFIRM_PATH}
+          element={
+            <ReviewAndConfirm
+              networkPrefix={networkPrefix}
+              nativeCurrencySymbol={nativeCurrencySymbol}
+              getAddressFromDomain={getAddressFromDomain}
+            />
+          }
+        />
 
         {/* Transaction Library Screen */}
-        <Route path={TRANSACTION_LIBRARY_PATH} element={<TransactionLibrary />} />
+        <Route
+          path={TRANSACTION_LIBRARY_PATH}
+          element={
+            <TransactionLibrary
+              networkPrefix={networkPrefix}
+              nativeCurrencySymbol={nativeCurrencySymbol}
+              getAddressFromDomain={getAddressFromDomain}
+            />
+          }
+        />
 
         {/* Edit Transaction Library Screen */}
         <Route path={EDIT_TRANSACTION_LIBRARY_PATH} element={<EditTransactionLibrary />} />

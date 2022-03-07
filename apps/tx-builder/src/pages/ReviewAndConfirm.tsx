@@ -10,14 +10,26 @@ import { useEffect } from 'react';
 import SuccessBatchCreationModal from '../components/modals/SuccessBatchCreationModal';
 import { useTransactionLibrary, useTransactions } from '../store';
 
-const ReviewAndConfirm = () => {
+type ReviewAndConfirmProps = {
+  networkPrefix: string | undefined;
+  nativeCurrencySymbol: string | undefined;
+  getAddressFromDomain: (name: string) => Promise<string>;
+};
+
+const ReviewAndConfirm = ({ networkPrefix, getAddressFromDomain, nativeCurrencySymbol }: ReviewAndConfirmProps) => {
   const {
     open: showSuccessBatchModal,
     openModal: openSuccessBatchModal,
     closeModal: closeSuccessBatchModal,
   } = useModal();
-  const { transactions, removeTransaction, removeAllTransactions, submitTransactions, reorderTransactions } =
-    useTransactions();
+  const {
+    transactions,
+    removeTransaction,
+    removeAllTransactions,
+    replaceTransaction,
+    submitTransactions,
+    reorderTransactions,
+  } = useTransactions();
   const { downloadBatch, saveBatch } = useTransactionLibrary();
 
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
@@ -52,8 +64,12 @@ const ReviewAndConfirm = () => {
           saveBatch={saveBatch}
           downloadBatch={downloadBatch}
           reorderTransactions={reorderTransactions}
+          replaceTransaction={replaceTransaction}
           showTransactionDetails
           showBatchHeader
+          networkPrefix={networkPrefix}
+          getAddressFromDomain={getAddressFromDomain}
+          nativeCurrencySymbol={nativeCurrencySymbol}
         />
 
         <ButtonsWrapper>
@@ -76,7 +92,7 @@ const ReviewAndConfirm = () => {
             type="button"
             disabled={!transactions.length}
             variant="bordered"
-            color="primary"
+            color="error"
             onClick={openDeleteBatchModal}
           >
             Cancel
@@ -97,7 +113,10 @@ const ReviewAndConfirm = () => {
             removeAllTransactions();
             closeSuccessBatchModal();
           }}
-          onClose={closeSuccessBatchModal}
+          onClose={() => {
+            removeAllTransactions();
+            closeSuccessBatchModal();
+          }}
         />
       )}
     </>

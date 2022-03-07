@@ -25,7 +25,13 @@ import { useTransactionLibrary } from '../store';
 import { Batch } from '../typings/models';
 import { Box } from '@material-ui/core';
 
-const TransactionLibrary = () => {
+type TransactionLibraryProps = {
+  networkPrefix: string | undefined;
+  nativeCurrencySymbol: string | undefined;
+  getAddressFromDomain: (name: string) => Promise<string>;
+};
+
+const TransactionLibrary = ({ networkPrefix, nativeCurrencySymbol, getAddressFromDomain }: TransactionLibraryProps) => {
   const { batches, removeBatch, executeBatch, downloadBatch, renameBatch } = useTransactionLibrary();
   const navigate = useNavigate();
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
@@ -122,7 +128,14 @@ const TransactionLibrary = () => {
             </StyledAccordionSummary>
             <AccordionDetails>
               {/* transactions batch list  */}
-              <TransactionsBatchList transactions={batch.transactions} showTransactionDetails showBatchHeader={false} />
+              <TransactionsBatchList
+                transactions={batch.transactions}
+                showTransactionDetails
+                showBatchHeader={false}
+                networkPrefix={networkPrefix}
+                getAddressFromDomain={getAddressFromDomain}
+                nativeCurrencySymbol={nativeCurrencySymbol}
+              />
             </AccordionDetails>
           </StyledAccordion>
         ))

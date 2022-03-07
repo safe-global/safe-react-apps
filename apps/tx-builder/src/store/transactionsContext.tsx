@@ -6,6 +6,7 @@ type TransactionContextProps = {
   transactions: ProposedTransaction[];
   resetTransactions: (transactions: ProposedTransaction[]) => void;
   addTransaction: (newTransaction: ProposedTransaction) => void;
+  replaceTransaction: (newTransaction: ProposedTransaction, index: number) => void;
   removeTransaction: (index: number) => void;
   submitTransactions: () => void;
   removeAllTransactions: () => void;
@@ -25,6 +26,14 @@ const TransactionsProvider: React.FC = ({ children }) => {
   const addTransaction = useCallback(
     (newTransaction: ProposedTransaction) => {
       setTransactions([...transactions, newTransaction]);
+    },
+    [transactions],
+  );
+
+  const replaceTransaction = useCallback(
+    (newTransaction: ProposedTransaction, index: number) => {
+      transactions[index] = newTransaction;
+      setTransactions([...transactions]);
     },
     [transactions],
   );
@@ -61,6 +70,7 @@ const TransactionsProvider: React.FC = ({ children }) => {
         transactions,
         resetTransactions,
         addTransaction,
+        replaceTransaction,
         removeTransaction,
         submitTransactions,
         removeAllTransactions,

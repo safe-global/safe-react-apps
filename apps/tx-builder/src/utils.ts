@@ -104,10 +104,6 @@ export const isValidAddress = (address: string | null) => {
   return isAddress(address);
 };
 
-export const weiToEther = (wei: string) => {
-  return fromWei(wei, 'ether');
-};
-
 const NON_VALID_CONTRACT_METHODS = ['receive', 'fallback'];
 
 export const encodeToHexData = (contractMethod: ContractMethod | undefined, contractFieldsValues: any) => {
@@ -132,4 +128,8 @@ export const encodeToHexData = (contractMethod: ContractMethod | undefined, cont
       console.log('Error encoding current form values to hex data: ', error);
     }
   }
+};
+
+export const weiToEther = (wei: string) => {
+  return fromWei(wei, 'ether');
 };

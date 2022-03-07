@@ -16,7 +16,7 @@ import AddressInput from './AddressInput';
 import useWeb3 from '../hooks/useWeb3';
 import TimedComponent from './TimedComponent';
 
-const App: React.FC = () => {
+const App = (): React.ReactElement => {
   const { sdk, safe } = useSafeAppsSDK();
   const { web3 } = useWeb3();
   const {

@@ -1,6 +1,13 @@
-import { RefObject, useEffect, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 
-const useElementHeight = (elementRef: RefObject<HTMLElement>) => {
+type useElementHeightTypes<T extends HTMLElement> = {
+  height: number | undefined;
+  elementRef: RefObject<T>;
+};
+
+const useElementHeight = <T extends HTMLElement>(): useElementHeightTypes<T> => {
+  const elementRef = useRef<T>(null);
+
   const [height, setHeight] = useState<number | undefined>();
 
   useEffect(() => {
@@ -11,7 +18,7 @@ const useElementHeight = (elementRef: RefObject<HTMLElement>) => {
     }, 10);
   }, [elementRef]);
 
-  return height;
+  return { height, elementRef };
 };
 
 export default useElementHeight;

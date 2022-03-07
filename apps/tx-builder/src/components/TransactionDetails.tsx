@@ -1,5 +1,5 @@
 import { ButtonLink, EthHashInfo, Text, Title } from '@gnosis.pm/safe-react-components';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import useElementHeight from '../hooks/useElementHeight/useElementHeight';
@@ -14,9 +14,10 @@ const TransactionDetails = ({ transaction }: TransactionDetailsProp) => {
   const { description, raw } = transaction;
 
   const { to, value, data } = raw;
-  const { contractMethod, contractFieldsValues, hexEncodedData, networkPrefix, nativeCurrencySymbol } = description;
+  const { contractMethod, contractFieldsValues, customTransactionData, networkPrefix, nativeCurrencySymbol } =
+    description;
 
-  const isCustomHexDataTx = !!hexEncodedData;
+  const isCustomHexDataTx = !!customTransactionData;
   const isContractInteractionTx = !!contractMethod && !isCustomHexDataTx;
 
   const isTokenTransferTx = !isCustomHexDataTx && !isContractInteractionTx;
@@ -56,18 +57,19 @@ const TransactionDetails = ({ transaction }: TransactionDetailsProp) => {
             </Text>
             <StyledTxValueLabel size="xl">{contractMethod.name}</StyledTxValueLabel>
 
-            {/* method params */}
+            {/* method inputs */}
             {contractMethod.inputs.map(({ name, type }, index) => {
-              const methodName = name || index;
-              const methodLabel = `${methodName} (${type})`;
+              const inputName = name || index;
+              const inputLabel = `${inputName} (${type})`;
+              const inputValue = contractFieldsValues?.[inputName];
               return (
-                <React.Fragment key={`${methodName}`}>
-                  {/* param name */}
-                  <StyledMethodNameLabel size="xl" color="secondaryHover" tooltip={methodLabel}>
-                    {methodLabel}
+                <React.Fragment key={`${inputLabel}-${index}`}>
+                  {/* input name */}
+                  <StyledMethodNameLabel size="xl" color="secondaryHover" tooltip={inputLabel}>
+                    {inputLabel}
                   </StyledMethodNameLabel>
-                  {/* param value */}
-                  <TxValueLabel>{contractFieldsValues?.[methodName]}</TxValueLabel>
+                  {/* input value */}
+                  <TxValueLabel>{inputValue}</TxValueLabel>
                 </React.Fragment>
               );
             })}
@@ -115,9 +117,8 @@ const MAX_HEIGHT = 2 * LINE_HEIGHT; // 2 lines as max height
 const TxValueLabel = ({ children }: { children: React.ReactNode }) => {
   const [showMore, setShowMore] = useState(false);
   const [showEllipsis, setShowEllipsis] = useState(false);
-  const valueContainerRef = useRef<HTMLDivElement>(null);
 
-  const containerHeight = useElementHeight(valueContainerRef);
+  const { height: containerHeight, elementRef } = useElementHeight<HTMLDivElement>();
 
   // we show the Show more/less button if the height is more than 44px (the height of 2 lines)
   const showMoreButton = containerHeight && containerHeight > MAX_HEIGHT;
@@ -130,7 +131,7 @@ const TxValueLabel = ({ children }: { children: React.ReactNode }) => {
   }, [showMoreButton, showMore]);
 
   return (
-    <div ref={valueContainerRef}>
+    <div ref={elementRef}>
       {/* value */}
       <StyledTxValueLabel size="xl" showMore={showMore} showEllipsis={showEllipsis}>
         {children}

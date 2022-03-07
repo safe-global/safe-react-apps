@@ -1,11 +1,13 @@
 export interface ProposedTransaction {
-  id: number | string;
+  id: number;
+  contractInterface: ContractInterface | null;
   description: {
     to: string;
     value: string;
-    hexEncodedData?: string;
+    customTransactionData?: string;
     contractMethod?: ContractMethod;
     contractFieldsValues?: Record<string, string>;
+    contractMethodIndex?: string;
     nativeCurrencySymbol?: string;
     networkPrefix?: string;
   };
