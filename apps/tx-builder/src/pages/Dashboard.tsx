@@ -15,6 +15,7 @@ import { ContractInterface } from '../typings/models';
 import { useTransactions, useTransactionLibrary } from '../store';
 import { REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
 import InterfaceRepository from '../hooks/useServices/interfaceRepository';
+import QuickTip from '../components/QuickTip';
 
 type DashboardProps = {
   interfaceRepo: InterfaceRepository | undefined;
@@ -34,6 +35,7 @@ const Dashboard = ({
 
   const [address, setAddress] = useState('');
   const [abi, setAbi] = useState('');
+  const [quickTipOpen, setQuickTipOpen] = useState(true);
   const [isABILoading, setIsABILoading] = useState(false);
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadContractError, setLoadContractError] = useState('');
@@ -172,6 +174,11 @@ const Dashboard = ({
               >
                 Create Batch
               </Button>
+              {quickTipOpen && (
+                <QuickTipWrapper>
+                  <QuickTip onClose={() => setQuickTipOpen(false)} />
+                </QuickTipWrapper>
+              )}
             </>
           ) : (
             <CreateNewBatchCard onFileSelected={importBatch} />
@@ -222,4 +229,9 @@ const StyledWarningText = styled(Text)`
 const CheckIconAddressAdornment = styled(CheckCircle)`
   color: #03ae60;
   height: 20px;
+`;
+
+const QuickTipWrapper = styled.div`
+  margin-left: 35px;
+  margin-top: 20px;
 `;
