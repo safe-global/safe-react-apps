@@ -10,23 +10,32 @@ import {
   Icon,
   FixedIcon,
   Button,
+  Link,
 } from '@gnosis.pm/safe-react-components';
 import IconButton from '@material-ui/core/IconButton';
-import { useNavigate } from 'react-router-dom';
+import { useHref, useLinkClickHandler, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { ReactComponent as EmptyLibrary } from '../assets/empty-library.svg';
 import DeleteBatchFromLibrary from '../components/modals/DeleteBatchFromLibrary';
 import TransactionsBatchList from '../components/TransactionsBatchList';
 import useModal from '../hooks/useModal/useModal';
-import { REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
+import { HOME_PATH, REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
 import { useTransactionLibrary } from '../store';
 import { Batch } from '../typings/models';
+import { Box } from '@material-ui/core';
 
 const TransactionLibrary = () => {
   const { batches, removeBatch, executeBatch, downloadBatch, renameBatch } = useTransactionLibrary();
   const navigate = useNavigate();
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
   const [batchToRemove, setBatchToRemove] = useState<Batch>();
+
+  const hrefToHome = useHref(HOME_PATH);
+  const internalOnClick = useLinkClickHandler(HOME_PATH);
+  const redirectToHome = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    internalOnClick(event);
+  };
 
   return (
     <Wrapper>
@@ -118,7 +127,18 @@ const TransactionLibrary = () => {
           </StyledAccordion>
         ))
       ) : (
-        <div>TODO: No batches yet screen</div>
+        <Box display="flex" flexDirection={'column'} alignItems={'center'} paddingTop={'128px'}>
+          {/* Empty library Screen */}
+          <EmptyLibrary />
+          <StyledEmptyLibraryText size="xl">You don't have any saved batches.</StyledEmptyLibraryText>
+          <StyledEmptyLibraryTextLink size="xl">
+            Safe a batch by{' '}
+            <StyledEmptyLibraryLink href={hrefToHome} onClick={redirectToHome} size="xl">
+              <StyledLinkIcon size="sm" type="licenses" color="primary" aria-label="go to transaction list view" />
+              in transaction list view.
+            </StyledEmptyLibraryLink>
+          </StyledEmptyLibraryTextLink>
+        </Box>
       )}
       {showDeleteBatchModal && batchToRemove && (
         <DeleteBatchFromLibrary
@@ -222,4 +242,26 @@ const StyledIconButton = styled(IconButton)`
     margin-left: 8px;
     background-color: #f6f7f8;
   }
+`;
+
+const StyledEmptyLibraryText = styled(Text)`
+  max-width: 320px;
+  margin-top: 32px;
+  font-size: 20px;
+  color: #566976;
+`;
+
+const StyledEmptyLibraryTextLink = styled(Text)`
+  margin-top: 8px;
+  color: #566976;
+  text-decoration: none;
+`;
+
+const StyledLinkIcon = styled(Icon)`
+  vertical-align: middle;
+  margin-right: 2px;
+`;
+
+const StyledEmptyLibraryLink = styled(Link)`
+  text-decoration: none;
 `;
