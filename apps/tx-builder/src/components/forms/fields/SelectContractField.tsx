@@ -6,13 +6,15 @@ type SelectContractFieldTypes = {
   options: SelectItem[];
   onChange: (id: string) => void;
   value: string;
+  label: string;
+  name: string;
 };
 
-const SelectContractField = ({ value, onChange, options }: SelectContractFieldTypes) => {
+const SelectContractField = ({ value, onChange, options, label, name }: SelectContractFieldTypes) => {
   return (
     <StyledSelect
-      name="select-contract"
-      label="Select Contract"
+      name={name}
+      label={label}
       items={options}
       fullWidth
       activeItemId={value}
