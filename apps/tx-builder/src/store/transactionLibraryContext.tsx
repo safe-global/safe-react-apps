@@ -16,6 +16,7 @@ type TransactionLibraryContextProps = {
   removeBatch: (batchId: string | number) => void;
   renameBatch: (batchId: string | number, newName: string) => void;
   downloadBatch: (name: string, transactions: ProposedTransaction[]) => void;
+  executeBatch: (batch: Batch) => void;
   importBatch: (file: File | null) => void;
   hasChecksumWarning: boolean;
   setHasChecksumWarning: (hasChecksumWarning: boolean) => void;
@@ -101,20 +102,37 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
     [chainInfo, safe],
   );
 
-  const importBatch = useCallback(
-    async (transactions) => {
+  const initializeBatch = useCallback(
+    (batchFile: BatchFile) => {
       if (chainInfo) {
-        const importedBatchFile = await StorageManager.importBatch(transactions);
-        if (validateChecksum(importedBatchFile)) {
-          console.info('[Checksum check] - Checksum validation success', importedBatchFile);
+        if (validateChecksum(batchFile)) {
+          console.info('[Checksum check] - Checksum validation success', batchFile);
         } else {
           setHasChecksumWarning(true);
-          console.error('[Checksum check] - This file was modified since it was generated', importedBatchFile);
+          console.error('[Checksum check] - This file was modified since it was generated', batchFile);
         }
-        resetTransactions(convertToProposedTransactions(importedBatchFile, chainInfo));
+        resetTransactions(convertToProposedTransactions(batchFile, chainInfo));
       }
     },
-    [resetTransactions, chainInfo],
+    [chainInfo, resetTransactions],
+  );
+
+  const executeBatch = useCallback(
+    async (batch: Batch) => {
+      const batchFile = await StorageManager.getBatch(batch.id as string);
+
+      if (batchFile) {
+        initializeBatch(batchFile);
+      }
+    },
+    [initializeBatch],
+  );
+
+  const importBatch = useCallback(
+    async (transactions) => {
+      initializeBatch(await StorageManager.importBatch(transactions));
+    },
+    [initializeBatch],
   );
 
   return (
@@ -125,6 +143,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
         removeBatch,
         renameBatch,
         downloadBatch,
+        executeBatch,
         importBatch,
         hasChecksumWarning,
         setHasChecksumWarning,

@@ -19,12 +19,11 @@ import DeleteBatchFromLibrary from '../components/modals/DeleteBatchFromLibrary'
 import TransactionsBatchList from '../components/TransactionsBatchList';
 import useModal from '../hooks/useModal/useModal';
 import { REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
-import { useTransactionLibrary, useTransactions } from '../store';
+import { useTransactionLibrary } from '../store';
 import { Batch } from '../typings/models';
 
 const TransactionLibrary = () => {
-  const { batches, removeBatch, downloadBatch, renameBatch } = useTransactionLibrary();
-  const { resetTransactions } = useTransactions();
+  const { batches, removeBatch, executeBatch, downloadBatch, renameBatch } = useTransactionLibrary();
   const navigate = useNavigate();
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
   const [batchToRemove, setBatchToRemove] = useState<Batch>();
@@ -76,7 +75,7 @@ const TransactionLibrary = () => {
                       color="primary"
                       onClick={(event) => {
                         event.stopPropagation();
-                        resetTransactions(batch.transactions);
+                        executeBatch(batch);
                         navigate(REVIEW_AND_CONFIRM_PATH);
                       }}
                     >
@@ -124,7 +123,7 @@ const TransactionLibrary = () => {
       {showDeleteBatchModal && batchToRemove && (
         <DeleteBatchFromLibrary
           batch={batchToRemove}
-          onClick={(batch) => {
+          onClick={(batch: Batch) => {
             closeDeleteBatchModal();
             removeBatch(batch.id);
             setBatchToRemove(undefined);
