@@ -121,7 +121,10 @@ const ReviewAndConfirm = ({
             handleRemoveAllTransactions();
             closeSuccessBatchModal();
           }}
-          onClose={closeSuccessBatchModal}
+          onClose={() => {
+            handleRemoveAllTransactions();
+            closeSuccessBatchModal();
+          }}
         />
       )}
     </>

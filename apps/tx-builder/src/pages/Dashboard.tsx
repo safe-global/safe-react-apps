@@ -187,7 +187,7 @@ const Dashboard = ({
                 color="primary"
                 onClick={handleSubmitTransactions}
               >
-                Create Batch
+                Review batch
               </Button>
             </>
           ) : (

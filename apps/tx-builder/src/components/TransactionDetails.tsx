@@ -14,7 +14,8 @@ const TransactionDetails = ({ transaction }: TransactionDetailsProp) => {
   const { description, raw } = transaction;
 
   const { to, value, data } = raw;
-  const { contractMethod, contractFieldsValues, customTransactionData, networkPrefix, nativeCurrencySymbol } = description;
+  const { contractMethod, contractFieldsValues, customTransactionData, networkPrefix, nativeCurrencySymbol } =
+    description;
 
   const isCustomHexDataTx = !!customTransactionData;
   const isContractInteractionTx = !!contractMethod && !isCustomHexDataTx;
@@ -56,18 +57,19 @@ const TransactionDetails = ({ transaction }: TransactionDetailsProp) => {
             </Text>
             <StyledTxValueLabel size="xl">{contractMethod.name}</StyledTxValueLabel>
 
-            {/* method params */}
+            {/* method inputs */}
             {contractMethod.inputs.map(({ name, type }, index) => {
-              const methodName = name || index;
-              const methodLabel = `${methodName} (${type})`;
+              const inputName = name || index;
+              const inputLabel = `${inputName} (${type})`;
+              const inputValue = contractFieldsValues?.[inputName];
               return (
-                <React.Fragment key={`${methodName}`}>
-                  {/* param name */}
-                  <StyledMethodNameLabel size="xl" color="secondaryHover" tooltip={methodLabel}>
-                    {methodLabel}
+                <React.Fragment key={`${inputLabel}-${index}`}>
+                  {/* input name */}
+                  <StyledMethodNameLabel size="xl" color="secondaryHover" tooltip={inputLabel}>
+                    {inputLabel}
                   </StyledMethodNameLabel>
-                  {/* param value */}
-                  <TxValueLabel>{contractFieldsValues?.[methodName]}</TxValueLabel>
+                  {/* input value */}
+                  <TxValueLabel>{inputValue}</TxValueLabel>
                 </React.Fragment>
               );
             })}
