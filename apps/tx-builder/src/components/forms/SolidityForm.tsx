@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { ButtonLink, Switch, Text } from '@gnosis.pm/safe-react-components';
-import styled from 'styled-components';
+import { Switch, Text } from '@gnosis.pm/safe-react-components';
 import { DevTool } from '@hookform/devtools';
 import { toChecksumAddress, toWei } from 'web3-utils';
 
@@ -14,7 +13,6 @@ import {
   SolidityFieldTypes,
 } from './fields/fields';
 import Field from './fields/Field';
-import { Examples } from '../Examples';
 import { encodeToHexData } from '../../utils';
 import { ProposedTransaction } from '../../typings/models';
 
@@ -53,6 +51,8 @@ export type SolidityFormValuesTypes = {
 export const parseFormToProposedTransaction = (
   values: SolidityFormValuesTypes,
   contract: ContractInterface | null,
+  nativeCurrencySymbol: string | undefined,
+  networkPrefix: string | undefined,
 ): ProposedTransaction => {
   const contractMethodIndex = values[CONTRACT_METHOD_INDEX_FIELD_NAME];
   const toAddress = values[TO_ADDRESS_FIELD_NAME];
@@ -76,6 +76,8 @@ export const parseFormToProposedTransaction = (
       contractMethod,
       contractFieldsValues,
       contractMethodIndex,
+      nativeCurrencySymbol,
+      networkPrefix,
     },
     raw: { to, value, data },
   };
@@ -95,7 +97,6 @@ const SolidityForm = ({
   showHexToggler = true,
   children,
 }: SolidityFormPropsTypes) => {
-  const [showExamples, setShowExamples] = useState<boolean>(false);
   const [showHexEncodedData, setShowHexEncodedData] = useState<boolean>(!!defaultHexDataView);
 
   const {
@@ -118,10 +119,10 @@ const SolidityForm = ({
   const contractMethod = contract?.methods[Number(contractMethodIndex)];
 
   const contractFields = contractMethod?.inputs || [];
-  const showContractFields = !!contract && !showHexEncodedData;
+  const showContractFields = !!contract && contract.methods.length > 0 && !showHexEncodedData;
   const isPayableMethod = !!contract && contractMethod?.payable;
 
-  const isValueInputVisible = showHexEncodedData || !contract || isPayableMethod;
+  const isValueInputVisible = showHexEncodedData || !showContractFields || isPayableMethod;
 
   const onClickShowHexEncodedData = (checked: boolean) => {
     const contractFieldsValues = getValues(CONTRACT_VALUES_FIELD_NAME);
@@ -205,17 +206,6 @@ const SolidityForm = ({
           />
         )}
 
-        {/* Show examples link */}
-        {showContractFields && (
-          <StyledExamples>
-            <ButtonLink type="button" color="primary" onClick={() => setShowExamples((prev) => !prev)}>
-              {showExamples ? 'Hide Examples' : 'Show Examples'}
-            </ButtonLink>
-
-            {showExamples && <Examples />}
-          </StyledExamples>
-        )}
-
         {/* Contract Fields */}
         {contractFields.map((contractField, index) => {
           const name = `${CONTRACT_VALUES_FIELD_NAME}.${contractField.name || index}`;
@@ -271,11 +261,3 @@ const SolidityForm = ({
 };
 
 export default SolidityForm;
-
-const StyledExamples = styled.div`
-  margin: 5px 0 10px 0;
-
-  button {
-    padding: 0;
-  }
-`;

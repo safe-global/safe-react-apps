@@ -28,24 +28,29 @@ const AddNewTransactionForm = ({
   getAddressFromDomain,
   nativeCurrencySymbol,
 }: AddNewTransactionFormProps) => {
-  const showABIWarning = contract && !contract?.methods.length;
-
   const initialFormValues = {
     [TO_ADDRESS_FIELD_NAME]: isValidAddress(to) ? to : '',
     [CONTRACT_METHOD_INDEX_FIELD_NAME]: '0',
   };
 
+  const showNoPublicMethodsWarning = contract && contract.methods.length === 0;
+
   const onSubmit = (values: SolidityFormValuesTypes) => {
-    const proposedTransaction = parseFormToProposedTransaction(values, contract);
+    const proposedTransaction = parseFormToProposedTransaction(values, contract, nativeCurrencySymbol, networkPrefix);
 
     onAddTransaction(proposedTransaction);
   };
 
   return (
     <>
-      <Title size="xs">Transaction information</Title>
+      {/* No public methods Warning */}
+      {showNoPublicMethodsWarning && (
+        <StyledMethodWarning color="warning" size="lg">
+          Contract ABI doesn't have any public methods.
+        </StyledMethodWarning>
+      )}
 
-      {showABIWarning && <Text size="lg">Contract ABI doesn't have any public methods.</Text>}
+      <Title size="xs">Transaction information</Title>
 
       <SolidityForm
         id="solidity-contract-form"
@@ -73,4 +78,8 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
+`;
+
+const StyledMethodWarning = styled(Text)`
+  margin-top: 8px;
 `;

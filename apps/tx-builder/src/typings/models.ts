@@ -10,6 +10,8 @@ export interface ProposedTransaction {
     contractMethod?: ContractMethod;
     contractFieldsValues?: Record<string, string>;
     contractMethodIndex?: string;
+    nativeCurrencySymbol?: string;
+    networkPrefix?: string;
   };
   raw: { to: string; value: string; data: string };
 }

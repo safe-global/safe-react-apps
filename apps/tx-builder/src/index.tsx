@@ -1,20 +1,22 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@gnosis.pm/safe-react-components';
 import { SafeProvider } from '@gnosis.pm/safe-apps-react-sdk';
+import { BrowserRouter } from 'react-router-dom';
 
 import * as serviceWorker from './serviceWorker';
 
-import Dashboard from './components/Dashboard';
 import GlobalStyles from './global';
+import App from './App';
 
 ReactDOM.render(
   <>
     <GlobalStyles />
     <ThemeProvider theme={theme}>
       <SafeProvider>
-        <Dashboard />
+        <BrowserRouter basename={process.env.PUBLIC_URL}>
+          <App />
+        </BrowserRouter>
       </SafeProvider>
     </ThemeProvider>
   </>,

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Icon, TextFieldInput, Tooltip, GenericModal, Text, Button, IconTypes } from '@gnosis.pm/safe-react-components';
 import IconButton from '@material-ui/core/IconButton';
 import { Box } from '@material-ui/core';
-import { errorBaseStyles } from '../styles';
 import useModal from '../../../hooks/useModal/useModal';
 
 const DEFAULT_ROWS = 4;
@@ -157,7 +156,6 @@ const IconContainer = styled.div`
 const StyledTextField = styled(TextFieldInput)`
   && {
     margin-top: 10px;
-    ${errorBaseStyles}
 
     textarea {
       font-family: monospace;

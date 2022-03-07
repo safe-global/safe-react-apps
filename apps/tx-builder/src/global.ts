@@ -24,6 +24,10 @@ const GlobalStyle = createGlobalStyle`
         url(${avertaFont}) format('woff2'),
         url(${avertaBoldFont}) format('woff');
     }
+
+    .MuiButton-root {
+        height: 46px !important;
+    }
 `;
 
 export default GlobalStyle;

@@ -18,8 +18,8 @@ type EditTransactionModalProps = {
   onSubmit: (newTransaction: ProposedTransaction) => void;
   onDeleteTx: () => void;
   onClose: () => void;
-  nativeCurrencySymbol: string;
-  networkPrefix: string;
+  nativeCurrencySymbol: string | undefined;
+  networkPrefix: string | undefined;
   getAddressFromDomain: (name: string) => Promise<string>;
 };
 
@@ -48,7 +48,12 @@ const EditTransactionModal = ({
   };
 
   const handleSubmit = (values: SolidityFormValuesTypes) => {
-    const editedTransaction = parseFormToProposedTransaction(values, contractInterface);
+    const editedTransaction = parseFormToProposedTransaction(
+      values,
+      contractInterface,
+      nativeCurrencySymbol,
+      networkPrefix,
+    );
 
     // keep the id of the transaction
     onSubmit({ ...editedTransaction, id: transaction.id });

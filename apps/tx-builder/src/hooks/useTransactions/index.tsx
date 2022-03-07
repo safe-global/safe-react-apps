@@ -36,16 +36,7 @@ export default function useTransactions() {
   );
 
   const handleSubmitTransactions = useCallback(async () => {
-    if (!transactions.length) {
-      return;
-    }
-
-    try {
-      await sdk.txs.send({ txs: transactions.map((transaction) => transaction.raw) });
-      setTransactions([]);
-    } catch (e) {
-      console.error('Error sending transactions:', e);
-    }
+    await sdk.txs.send({ txs: transactions.map((transaction) => transaction.raw) });
   }, [sdk.txs, transactions]);
 
   const handleReorderTransactions = useCallback((sourceIndex, destinationIndex) => {
