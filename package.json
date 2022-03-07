@@ -16,7 +16,7 @@
     "start:drain-safe": "yarn workspace drain-safe start",
     "prepare": "husky install"
   },
-  "version": "2.5.0",
+  "version": "2.5.1",
   "workspaces": [
     "apps/*"
   ],
