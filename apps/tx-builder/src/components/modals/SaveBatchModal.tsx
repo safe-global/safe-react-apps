@@ -1,7 +1,9 @@
 import { Button, GenericModal } from '@gnosis.pm/safe-react-components';
 import Box from '@material-ui/core/Box';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { SAVE_BATCH_PATH } from '../../routes/routes';
 import Field from '../forms/fields/Field';
 import { TEXT_FIELD_TYPE } from '../forms/fields/fields';
 
@@ -20,8 +22,11 @@ const SaveBatchModal = ({ onClick, onClose }: SaveBatchModalProps) => {
     mode: 'onTouched',
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = ({ batchName }: CreateBatchFormValuesTypes) => {
     onClick(batchName);
+    navigate(SAVE_BATCH_PATH);
   };
 
   return (

@@ -59,6 +59,7 @@ const ReviewAndConfirm = ({ networkPrefix, getAddressFromDomain, nativeCurrencyS
         <StyledTitle size="xl">Review and Confirm</StyledTitle>
 
         <TransactionsBatchList
+          batchTitle={'Transactions Batch'}
           transactions={transactions}
           removeTransaction={removeTransaction}
           saveBatch={saveBatch}

@@ -4,17 +4,17 @@ import TransactionsBatchList from '../components/TransactionsBatchList';
 
 import { useTransactionLibrary, useTransactions } from '../store';
 
-type EditTransactionLibraryProps = {
+type SaveTransactionsProps = {
   networkPrefix: string | undefined;
   nativeCurrencySymbol: string | undefined;
   getAddressFromDomain: (name: string) => Promise<string>;
 };
 
-const EditTransactionLibrary = ({
+const SaveTransactionLibrary = ({
   networkPrefix,
   nativeCurrencySymbol,
   getAddressFromDomain,
-}: EditTransactionLibraryProps) => {
+}: SaveTransactionsProps) => {
   const { transactions, removeAllTransactions, replaceTransaction, reorderTransactions, removeTransaction } =
     useTransactions();
   const { downloadBatch, saveBatch } = useTransactionLibrary();
@@ -23,7 +23,7 @@ const EditTransactionLibrary = ({
     <TransactionsSectionWrapper item xs={12} md={6}>
       <TransactionsBatchList
         transactions={transactions}
-        batchTitle={'TODO: SHOW BATCH NAME!!  [Edit page]'}
+        batchTitle={'TODO: SHOW BATCH NAME!! [Creation page]'}
         removeTransaction={removeTransaction}
         saveBatch={saveBatch}
         downloadBatch={downloadBatch}
@@ -40,7 +40,7 @@ const EditTransactionLibrary = ({
   );
 };
 
-export default EditTransactionLibrary;
+export default SaveTransactionLibrary;
 
 const TransactionsSectionWrapper = styled(Grid)`
   position: sticky;
