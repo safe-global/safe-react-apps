@@ -33,16 +33,18 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
   const loadBatches = useCallback(async () => {
     if (chainInfo) {
       const batchesRecords = await StorageManager.getBatches();
-      const batches: Batch[] = Object.keys(batchesRecords).reduce((batches: Batch[], key: string) => {
-        const batchFile = batchesRecords[key];
-        const batch = {
-          id: key,
-          name: batchFile.meta.name,
-          transactions: convertToProposedTransactions(batchFile, chainInfo),
-        };
+      const batches: Batch[] = Object.keys(batchesRecords)
+        .filter((key) => batchesRecords[key].chainId === chainInfo.chainId) // batches filtered by chain
+        .reduce((batches: Batch[], key: string) => {
+          const batchFile = batchesRecords[key];
+          const batch = {
+            id: key,
+            name: batchFile.meta.name,
+            transactions: convertToProposedTransactions(batchFile, chainInfo),
+          };
 
-        return [...batches, batch];
-      }, []);
+          return [...batches, batch];
+        }, []);
 
       setBatches(batches);
     }
