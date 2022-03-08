@@ -28,7 +28,6 @@ type SolidityFormPropsTypes = {
   contract: ContractInterface | null;
   onSubmit: SubmitHandler<SolidityFormValuesTypes>;
   initialValues?: Partial<SolidityInitialFormValuesTypes>;
-  defaultHexDataView?: boolean;
   showHexToggler?: boolean;
   children: React.ReactNode;
   showHexEncodedData: boolean;
@@ -92,7 +91,6 @@ const SolidityForm = ({
   nativeCurrencySymbol,
   networkPrefix,
   contract,
-  defaultHexDataView,
   children,
   showHexEncodedData,
 }: SolidityFormPropsTypes) => {
