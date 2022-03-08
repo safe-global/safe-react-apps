@@ -1,6 +1,6 @@
 import { ReactElement, useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Text, Title, Link, Divider, AddressInput, Button, Switch } from '@gnosis.pm/safe-react-components';
+import { Text, Title, Divider, AddressInput, Switch } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Grid from '@material-ui/core/Grid';
