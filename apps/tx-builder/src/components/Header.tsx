@@ -2,7 +2,7 @@ import { FixedIcon, Icon, Text, Title, Tooltip } from '@gnosis.pm/safe-react-com
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { EDIT_TRANSACTION_LIBRARY_PATH, HOME_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
+import { EDIT_BATCH_PATH, HOME_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
 import { useTransactionLibrary } from '../store';
 import ChecksumWarning from './ChecksumWarning';
 
@@ -15,7 +15,7 @@ const Header = () => {
   const { batches } = useTransactionLibrary();
 
   const isHomePath = pathname === HOME_PATH;
-  const isEditTransactionLibraryPath = pathname === EDIT_TRANSACTION_LIBRARY_PATH;
+  const isEditTransactionLibraryPath = pathname === EDIT_BATCH_PATH;
 
   return (
     <>

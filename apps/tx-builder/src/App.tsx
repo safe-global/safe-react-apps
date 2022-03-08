@@ -2,14 +2,17 @@ import { Routes, Route } from 'react-router-dom';
 
 import Header from './components/Header';
 import useServices from './hooks/useServices';
+import CreateTransactions from './pages/CreateTransactions';
 import Dashboard from './pages/Dashboard';
 import EditTransactionLibrary from './pages/EditTransactionLibrary';
 import ReviewAndConfirm from './pages/ReviewAndConfirm';
+import SaveTransactionLibrary from './pages/SaveTransactionLibrary';
 import TransactionLibrary from './pages/TransactionLibrary';
 import {
-  EDIT_TRANSACTION_LIBRARY_PATH,
-  HOME_PATH,
+  DASHBOARD_PATH,
+  EDIT_BATCH_PATH,
   REVIEW_AND_CONFIRM_PATH,
+  SAVE_BATCH_PATH,
   TRANSACTION_LIBRARY_PATH,
 } from './routes/routes';
 
@@ -32,7 +35,7 @@ const App = () => {
       <Routes>
         {/* Dashboard Screen (Create transactions) */}
         <Route
-          path={HOME_PATH}
+          path={DASHBOARD_PATH}
           element={
             <Dashboard
               interfaceRepo={interfaceRepo}
@@ -41,7 +44,43 @@ const App = () => {
               getAddressFromDomain={getAddressFromDomain}
             />
           }
-        />
+        >
+          {/* Transactions Batch section */}
+          <Route
+            index
+            element={
+              <CreateTransactions
+                networkPrefix={networkPrefix}
+                nativeCurrencySymbol={nativeCurrencySymbol}
+                getAddressFromDomain={getAddressFromDomain}
+              />
+            }
+          />
+
+          {/* Save Batch section */}
+          <Route
+            path={SAVE_BATCH_PATH}
+            element={
+              <SaveTransactionLibrary
+                networkPrefix={networkPrefix}
+                nativeCurrencySymbol={nativeCurrencySymbol}
+                getAddressFromDomain={getAddressFromDomain}
+              />
+            }
+          />
+
+          {/* Edit Batch section */}
+          <Route
+            path={EDIT_BATCH_PATH}
+            element={
+              <EditTransactionLibrary
+                networkPrefix={networkPrefix}
+                nativeCurrencySymbol={nativeCurrencySymbol}
+                getAddressFromDomain={getAddressFromDomain}
+              />
+            }
+          />
+        </Route>
 
         {/* Review & Confirm Screen */}
         <Route
@@ -66,9 +105,6 @@ const App = () => {
             />
           }
         />
-
-        {/* Edit Transaction Library Screen */}
-        <Route path={EDIT_TRANSACTION_LIBRARY_PATH} element={<EditTransactionLibrary />} />
       </Routes>
     </>
   );

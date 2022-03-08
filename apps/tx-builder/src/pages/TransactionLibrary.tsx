@@ -20,7 +20,7 @@ import { ReactComponent as EmptyLibrary } from '../assets/empty-library.svg';
 import DeleteBatchFromLibrary from '../components/modals/DeleteBatchFromLibrary';
 import TransactionsBatchList from '../components/TransactionsBatchList';
 import useModal from '../hooks/useModal/useModal';
-import { HOME_PATH, REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
+import { EDIT_BATCH_PATH, HOME_PATH, REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
 import { useTransactionLibrary } from '../store';
 import { Batch } from '../typings/models';
 import { Box } from '@material-ui/core';
@@ -99,8 +99,21 @@ const TransactionLibrary = ({ networkPrefix, nativeCurrencySymbol, getAddressFro
                   </div>
                 </Tooltip>
 
+                {/* edit batch */}
+                <Tooltip placement="top" title="Edit batch" backgroundColor="primary" textColor="white" arrow>
+                  <StyledIconButton
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      executeBatch(batch);
+                      navigate(EDIT_BATCH_PATH);
+                    }}
+                  >
+                    <Icon size="sm" type="edit" color="primary" aria-label="edit batch" />
+                  </StyledIconButton>
+                </Tooltip>
+
                 {/* download batch */}
-                <Tooltip placement="top" title="Download" backgroundColor="primary" textColor="white" arrow>
+                <Tooltip placement="top" title="Download batch" backgroundColor="primary" textColor="white" arrow>
                   <StyledIconButton
                     onClick={(event) => {
                       event.stopPropagation();

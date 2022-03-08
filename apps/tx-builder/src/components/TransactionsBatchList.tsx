@@ -36,6 +36,7 @@ type TransactionsBatchListProps = {
   transactions: ProposedTransaction[];
   showTransactionDetails: boolean;
   showBatchHeader: boolean;
+  batchTitle?: string;
   removeTransaction?: (index: number) => void;
   saveBatch?: (name: string, transactions: ProposedTransaction[]) => void;
   downloadBatch?: (name: string, transactions: ProposedTransaction[]) => void;
@@ -60,6 +61,7 @@ const TransactionsBatchList = ({
   downloadBatch,
   showTransactionDetails,
   showBatchHeader,
+  batchTitle,
   networkPrefix,
   getAddressFromDomain,
   nativeCurrencySymbol,
@@ -119,9 +121,11 @@ const TransactionsBatchList = ({
             </TransactionCounterDot>
 
             {/* Transactions Batch Title */}
-            <TransactionsTitle withoutMargin size="lg">
-              Transactions Batch
-            </TransactionsTitle>
+            {batchTitle && (
+              <TransactionsTitle withoutMargin size="lg">
+                {batchTitle}
+              </TransactionsTitle>
+            )}
 
             {/* Transactions Batch Actions */}
             {saveBatch && (
