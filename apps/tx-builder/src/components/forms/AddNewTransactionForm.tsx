@@ -17,6 +17,7 @@ type AddNewTransactionFormProps = {
   networkPrefix: string | undefined;
   nativeCurrencySymbol: string | undefined;
   getAddressFromDomain: (name: string) => Promise<string>;
+  showHexEncodedData: boolean;
 };
 
 const AddNewTransactionForm = ({
@@ -25,6 +26,7 @@ const AddNewTransactionForm = ({
   networkPrefix,
   getAddressFromDomain,
   nativeCurrencySymbol,
+  showHexEncodedData,
 }: AddNewTransactionFormProps) => {
   const initialFormValues = {
     [TO_ADDRESS_FIELD_NAME]: isValidAddress(to) ? to : '',
@@ -59,6 +61,7 @@ const AddNewTransactionForm = ({
         nativeCurrencySymbol={nativeCurrencySymbol}
         networkPrefix={networkPrefix}
         onSubmit={onSubmit}
+        showHexEncodedData={showHexEncodedData}
       >
         <ButtonContainer>
           {/* Add transaction btn */}

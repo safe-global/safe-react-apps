@@ -1,6 +1,6 @@
 import { ReactElement, useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Text, Title, Link, Divider, AddressInput, Button, Switch  } from '@gnosis.pm/safe-react-components';
+import { Text, Title, Divider, AddressInput, Switch } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Grid from '@material-ui/core/Grid';
@@ -30,6 +30,7 @@ const Dashboard = ({
   const [isABILoading, setIsABILoading] = useState(false);
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadContractError, setLoadContractError] = useState('');
+  const [showHexEncodedData, setShowHexEncodedData] = useState<boolean>(false);
 
   // Load contract from address or ABI
   useEffect(() => {
@@ -84,7 +85,7 @@ const Dashboard = ({
             </Grid>
             <Grid container item xs={6} alignItems="center" justifyContent="flex-end">
               <Grid item>
-                <Switch checked={true} onChange={() => {}} />
+                <Switch checked={showHexEncodedData} onChange={() => setShowHexEncodedData(!showHexEncodedData)} />
               </Grid>
               <Grid item>
                 <Text size="lg">Custom data</Text>
@@ -136,6 +137,7 @@ const Dashboard = ({
                 networkPrefix={networkPrefix}
                 getAddressFromDomain={getAddressFromDomain}
                 nativeCurrencySymbol={nativeCurrencySymbol}
+                showHexEncodedData={showHexEncodedData}
               />
             </>
           )}

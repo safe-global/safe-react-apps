@@ -72,8 +72,8 @@ const EditTransactionModal = ({
             networkPrefix={networkPrefix}
             getAddressFromDomain={getAddressFromDomain}
             defaultHexDataView={isCustomHexDataTx}
+            showHexEncodedData={!!isCustomHexDataTx}
             onSubmit={handleSubmit}
-            showHexToggler={false}
           >
             <ButtonContainer>
               {/* Remove transaction btn */}
