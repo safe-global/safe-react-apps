@@ -5,8 +5,8 @@ import { Batch, BatchFile, BatchTransaction, ProposedTransaction } from '../typi
 import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk';
 import { encodeToHexData } from '../utils';
 import { toChecksumAddress } from 'web3-utils';
-import useServices from '../hooks/useServices';
 import { addChecksum, validateChecksum } from '../lib/checksum';
+import { useNetwork } from './networkContext';
 
 const packageJson = require('../../package.json');
 
@@ -28,7 +28,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
   const [batches, setBatches] = useState<Batch[]>([]);
   const [hasChecksumWarning, setHasChecksumWarning] = useState<boolean>(false);
   const { resetTransactions } = useTransactions();
-  const { chainInfo, safe } = useServices();
+  const { chainInfo, safe } = useNetwork();
 
   const loadBatches = useCallback(async () => {
     if (chainInfo) {

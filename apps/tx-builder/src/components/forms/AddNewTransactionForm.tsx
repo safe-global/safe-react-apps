@@ -10,28 +10,22 @@ import SolidityForm, {
   parseFormToProposedTransaction,
 } from './SolidityForm';
 import { useTransactions } from '../../store';
+import { useNetwork } from '../../store';
 
 type AddNewTransactionFormProps = {
   contract: ContractInterface | null;
   to: string;
-  networkPrefix: string | undefined;
-  nativeCurrencySymbol: string | undefined;
-  getAddressFromDomain: (name: string) => Promise<string>;
 };
 
-const AddNewTransactionForm = ({
-  contract,
-  to,
-  networkPrefix,
-  getAddressFromDomain,
-  nativeCurrencySymbol,
-}: AddNewTransactionFormProps) => {
+const AddNewTransactionForm = ({ contract, to }: AddNewTransactionFormProps) => {
   const initialFormValues = {
     [TO_ADDRESS_FIELD_NAME]: isValidAddress(to) ? to : '',
     [CONTRACT_METHOD_INDEX_FIELD_NAME]: '0',
   };
 
   const { addTransaction } = useTransactions();
+  const { networkPrefix, getAddressFromDomain, nativeCurrencySymbol } = useNetwork();
+
   const showNoPublicMethodsWarning = contract && contract.methods.length === 0;
 
   const onSubmit = (values: SolidityFormValuesTypes) => {

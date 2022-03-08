@@ -1,5 +1,5 @@
 import { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
-import { ContractInterface } from '../../typings/models';
+import { ContractInterface } from '../typings/models';
 import getAbi from './getAbi';
 
 class InterfaceRepository {

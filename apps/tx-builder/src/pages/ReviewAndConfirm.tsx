@@ -10,13 +10,7 @@ import { useEffect } from 'react';
 import SuccessBatchCreationModal from '../components/modals/SuccessBatchCreationModal';
 import { useTransactionLibrary, useTransactions } from '../store';
 
-type ReviewAndConfirmProps = {
-  networkPrefix: string | undefined;
-  nativeCurrencySymbol: string | undefined;
-  getAddressFromDomain: (name: string) => Promise<string>;
-};
-
-const ReviewAndConfirm = ({ networkPrefix, getAddressFromDomain, nativeCurrencySymbol }: ReviewAndConfirmProps) => {
+const ReviewAndConfirm = () => {
   const {
     open: showSuccessBatchModal,
     openModal: openSuccessBatchModal,
@@ -68,9 +62,6 @@ const ReviewAndConfirm = ({ networkPrefix, getAddressFromDomain, nativeCurrencyS
           replaceTransaction={replaceTransaction}
           showTransactionDetails
           showBatchHeader
-          networkPrefix={networkPrefix}
-          getAddressFromDomain={getAddressFromDomain}
-          nativeCurrencySymbol={nativeCurrencySymbol}
         />
 
         <ButtonsWrapper>

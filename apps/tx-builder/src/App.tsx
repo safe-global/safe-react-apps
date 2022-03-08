@@ -1,7 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 
 import Header from './components/Header';
-import useServices from './hooks/useServices';
 import CreateTransactions from './pages/CreateTransactions';
 import Dashboard from './pages/Dashboard';
 import EditTransactionLibrary from './pages/EditTransactionLibrary';
@@ -17,16 +16,6 @@ import {
 } from './routes/routes';
 
 const App = () => {
-  const { web3, interfaceRepo, chainInfo } = useServices();
-
-  const networkPrefix = chainInfo?.shortName;
-
-  const nativeCurrencySymbol = chainInfo?.nativeCurrency.symbol;
-
-  const getAddressFromDomain = (name: string): Promise<string> => {
-    return web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
-  };
-
   return (
     <>
       {/* App Header */}
@@ -34,77 +23,22 @@ const App = () => {
 
       <Routes>
         {/* Dashboard Screen (Create transactions) */}
-        <Route
-          path={DASHBOARD_PATH}
-          element={
-            <Dashboard
-              interfaceRepo={interfaceRepo}
-              networkPrefix={networkPrefix}
-              nativeCurrencySymbol={nativeCurrencySymbol}
-              getAddressFromDomain={getAddressFromDomain}
-            />
-          }
-        >
+        <Route path={DASHBOARD_PATH} element={<Dashboard />}>
           {/* Transactions Batch section */}
-          <Route
-            index
-            element={
-              <CreateTransactions
-                networkPrefix={networkPrefix}
-                nativeCurrencySymbol={nativeCurrencySymbol}
-                getAddressFromDomain={getAddressFromDomain}
-              />
-            }
-          />
+          <Route index element={<CreateTransactions />} />
 
           {/* Save Batch section */}
-          <Route
-            path={SAVE_BATCH_PATH}
-            element={
-              <SaveTransactionLibrary
-                networkPrefix={networkPrefix}
-                nativeCurrencySymbol={nativeCurrencySymbol}
-                getAddressFromDomain={getAddressFromDomain}
-              />
-            }
-          />
+          <Route path={SAVE_BATCH_PATH} element={<SaveTransactionLibrary />} />
 
           {/* Edit Batch section */}
-          <Route
-            path={EDIT_BATCH_PATH}
-            element={
-              <EditTransactionLibrary
-                networkPrefix={networkPrefix}
-                nativeCurrencySymbol={nativeCurrencySymbol}
-                getAddressFromDomain={getAddressFromDomain}
-              />
-            }
-          />
+          <Route path={EDIT_BATCH_PATH} element={<EditTransactionLibrary />} />
         </Route>
 
         {/* Review & Confirm Screen */}
-        <Route
-          path={REVIEW_AND_CONFIRM_PATH}
-          element={
-            <ReviewAndConfirm
-              networkPrefix={networkPrefix}
-              nativeCurrencySymbol={nativeCurrencySymbol}
-              getAddressFromDomain={getAddressFromDomain}
-            />
-          }
-        />
+        <Route path={REVIEW_AND_CONFIRM_PATH} element={<ReviewAndConfirm />} />
 
         {/* Transaction Library Screen */}
-        <Route
-          path={TRANSACTION_LIBRARY_PATH}
-          element={
-            <TransactionLibrary
-              networkPrefix={networkPrefix}
-              nativeCurrencySymbol={nativeCurrencySymbol}
-              getAddressFromDomain={getAddressFromDomain}
-            />
-          }
-        />
+        <Route path={TRANSACTION_LIBRARY_PATH} element={<TransactionLibrary />} />
       </Routes>
     </>
   );

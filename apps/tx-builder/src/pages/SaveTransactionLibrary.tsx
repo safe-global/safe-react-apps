@@ -4,17 +4,7 @@ import TransactionsBatchList from '../components/TransactionsBatchList';
 
 import { useTransactionLibrary, useTransactions } from '../store';
 
-type SaveTransactionsProps = {
-  networkPrefix: string | undefined;
-  nativeCurrencySymbol: string | undefined;
-  getAddressFromDomain: (name: string) => Promise<string>;
-};
-
-const SaveTransactionLibrary = ({
-  networkPrefix,
-  nativeCurrencySymbol,
-  getAddressFromDomain,
-}: SaveTransactionsProps) => {
+const SaveTransactionLibrary = () => {
   const { transactions, removeAllTransactions, replaceTransaction, reorderTransactions, removeTransaction } =
     useTransactions();
   const { downloadBatch, saveBatch } = useTransactionLibrary();
@@ -32,9 +22,6 @@ const SaveTransactionLibrary = ({
         reorderTransactions={reorderTransactions}
         showTransactionDetails={false}
         showBatchHeader
-        networkPrefix={networkPrefix}
-        getAddressFromDomain={getAddressFromDomain}
-        nativeCurrencySymbol={nativeCurrencySymbol}
       />
     </TransactionsSectionWrapper>
   );
