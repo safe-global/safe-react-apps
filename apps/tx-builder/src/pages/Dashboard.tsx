@@ -1,6 +1,6 @@
 import { ReactElement, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Text, Title, Link, AddressInput, Button } from '@gnosis.pm/safe-react-components';
+import { Text, Title, Divider, AddressInput, Button, Switch } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Grid from '@material-ui/core/Grid';
@@ -91,20 +91,21 @@ const Dashboard = ({
     <Wrapper>
       <Grid alignItems="flex-start" container justifyContent="center" spacing={6}>
         <AddNewTransactionFormWrapper item xs={12} md={6}>
-          <StyledTitle size="lg">New Transaction</StyledTitle>
+          <HeaderWrapper container alignItems="center">
+            <Grid item xs={6}>
+              <StyledTitle size="lg">New Transaction</StyledTitle>
+            </Grid>
+            <Grid container item xs={6} alignItems="center" justifyContent="flex-end">
+              <Grid item>
+                <Switch checked={true} onChange={() => {}} />
+              </Grid>
+              <Grid item>
+                <Text size="lg">Custom data</Text>
+              </Grid>
+            </Grid>
+          </HeaderWrapper>
 
-          <StyledText size="sm">
-            This app allows you to build a custom multisend transaction. Enter a Ethereum contract address or ABI to get
-            started.{' '}
-            <Link
-              href="https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app"
-              size="lg"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Learn how to use the transaction builder.
-            </Link>
-          </StyledText>
+          <StyledDivider />
 
           {/* Address Input */}
           <AddressInput
@@ -140,13 +141,16 @@ const Dashboard = ({
           <JsonField id={'abi'} name="abi" label="Enter ABI" value={abi} onChange={setAbi} />
 
           {showNewTransactionForm && (
-            <AddNewTransactionForm
-              contract={contract}
-              to={address}
-              networkPrefix={networkPrefix}
-              getAddressFromDomain={getAddressFromDomain}
-              nativeCurrencySymbol={nativeCurrencySymbol}
-            />
+            <>
+              <StyledDivider />
+              <AddNewTransactionForm
+                contract={contract}
+                to={address}
+                networkPrefix={networkPrefix}
+                getAddressFromDomain={getAddressFromDomain}
+                nativeCurrencySymbol={nativeCurrencySymbol}
+              />
+            </>
           )}
         </AddNewTransactionFormWrapper>
 
@@ -220,14 +224,17 @@ const TransactionsSectionWrapper = styled(Grid)`
 `;
 
 const StyledTitle = styled(Title)`
+  font-weight: bold;
   margin-top: 0px;
   margin-bottom: 5px;
   line-height: 22px;
   font-size: 16px;
 `;
 
-const StyledText = styled(Text)`
-  margin-bottom: 15px;
+const HeaderWrapper = styled(Grid)``;
+
+const StyledDivider = styled(Divider)`
+  margin: 16px -24px 32px -24px;
 `;
 
 const StyledWarningText = styled(Text)`
