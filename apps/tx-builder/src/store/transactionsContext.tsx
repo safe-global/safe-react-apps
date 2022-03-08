@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useState } from 'react';
 import { ProposedTransaction } from '../typings/models';
-import useServices from '../hooks/useServices';
+import { useNetwork } from './networkContext';
 
 type TransactionContextProps = {
   transactions: ProposedTransaction[];
@@ -17,7 +17,7 @@ export const TransactionContext = createContext<TransactionContextProps | null>(
 
 const TransactionsProvider: React.FC = ({ children }) => {
   const [transactions, setTransactions] = useState<ProposedTransaction[]>([]);
-  const { sdk } = useServices();
+  const { sdk } = useNetwork();
 
   const resetTransactions = useCallback((transactions: ProposedTransaction[]) => {
     setTransactions([...transactions]);

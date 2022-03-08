@@ -11,13 +11,7 @@ import { REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
 import QuickTip from '../components/QuickTip';
 import { useTransactionLibrary, useTransactions } from '../store';
 
-type CreateTransactionsProps = {
-  networkPrefix: string | undefined;
-  nativeCurrencySymbol: string | undefined;
-  getAddressFromDomain: (name: string) => Promise<string>;
-};
-
-const CreateTransactions = ({ networkPrefix, nativeCurrencySymbol, getAddressFromDomain }: CreateTransactionsProps) => {
+const CreateTransactions = () => {
   const { transactions, removeAllTransactions, replaceTransaction, reorderTransactions, removeTransaction } =
     useTransactions();
   const { importBatch, downloadBatch, saveBatch } = useTransactionLibrary();
@@ -41,9 +35,6 @@ const CreateTransactions = ({ networkPrefix, nativeCurrencySymbol, getAddressFro
             reorderTransactions={reorderTransactions}
             showTransactionDetails={false}
             showBatchHeader
-            networkPrefix={networkPrefix}
-            getAddressFromDomain={getAddressFromDomain}
-            nativeCurrencySymbol={nativeCurrencySymbol}
           />
           {/* Go to Review Screen button */}
           <Button

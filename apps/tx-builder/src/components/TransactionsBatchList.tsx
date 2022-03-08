@@ -31,6 +31,7 @@ import DeleteBatchModal from './modals/DeleteBatchModal';
 import TransactionDetails from './TransactionDetails';
 import SaveBatchModal from './modals/SaveBatchModal';
 import EditTransactionModal from './EditTransactionModal';
+import { useNetwork } from '../store';
 
 type TransactionsBatchListProps = {
   transactions: ProposedTransaction[];
@@ -43,9 +44,6 @@ type TransactionsBatchListProps = {
   removeAllTransactions?: () => void;
   replaceTransaction?: (newTransaction: ProposedTransaction, index: number) => void;
   reorderTransactions?: (sourceIndex: number, destinationIndex: number) => void;
-  networkPrefix: string | undefined;
-  getAddressFromDomain: (name: string) => Promise<string>;
-  nativeCurrencySymbol: string | undefined;
 };
 
 const TRANSACTION_LIST_DROPPABLE_ID = 'Transaction_List';
@@ -62,13 +60,12 @@ const TransactionsBatchList = ({
   showTransactionDetails,
   showBatchHeader,
   batchTitle,
-  networkPrefix,
-  getAddressFromDomain,
-  nativeCurrencySymbol,
 }: TransactionsBatchListProps) => {
   // we need those states to display the correct position in each tx during the drag & drop
   const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState<number>();
   const [draggableTxIndexDestination, setDraggableTxIndexDestination] = useState<number>();
+
+  const { networkPrefix, getAddressFromDomain, nativeCurrencySymbol } = useNetwork();
 
   const onDragStart = ({ source }: DragStart) => {
     setDraggableTxIndexOrigin(source.index);

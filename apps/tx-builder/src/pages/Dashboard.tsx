@@ -10,27 +10,17 @@ import { isValidAddress } from '../utils';
 import AddNewTransactionForm from '../components/forms/AddNewTransactionForm';
 import JsonField from '../components/forms/fields/JsonField';
 import { ContractInterface } from '../typings/models';
-import InterfaceRepository from '../hooks/useServices/interfaceRepository';
+import { useNetwork } from '../store';
 
-type DashboardProps = {
-  interfaceRepo: InterfaceRepository | undefined;
-  networkPrefix: string | undefined;
-  nativeCurrencySymbol: string | undefined;
-  getAddressFromDomain: (name: string) => Promise<string>;
-};
-
-const Dashboard = ({
-  interfaceRepo,
-  networkPrefix,
-  nativeCurrencySymbol,
-  getAddressFromDomain,
-}: DashboardProps): ReactElement => {
+const Dashboard = (): ReactElement => {
   const [address, setAddress] = useState('');
   const [abi, setAbi] = useState('');
   const [isABILoading, setIsABILoading] = useState(false);
   const [contract, setContract] = useState<ContractInterface | null>(null);
   const [loadContractError, setLoadContractError] = useState('');
   const [showHexEncodedData, setShowHexEncodedData] = useState<boolean>(false);
+
+  const { interfaceRepo, networkPrefix, getAddressFromDomain } = useNetwork();
 
   // Load contract from address or ABI
   useEffect(() => {
@@ -131,14 +121,7 @@ const Dashboard = ({
           {showNewTransactionForm && (
             <>
               <StyledDivider />
-              <AddNewTransactionForm
-                contract={contract}
-                to={address}
-                networkPrefix={networkPrefix}
-                getAddressFromDomain={getAddressFromDomain}
-                nativeCurrencySymbol={nativeCurrencySymbol}
-                showHexEncodedData={showHexEncodedData}
-              />
+              <AddNewTransactionForm contract={contract} to={address} showHexEncodedData={showHexEncodedData} />
             </>
           )}
         </AddNewTransactionFormWrapper>
