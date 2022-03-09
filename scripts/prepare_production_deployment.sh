@@ -3,9 +3,8 @@
 set -ev
 
 # Only:
-# - Tagged commits
 # - Security env variables are available.
-if [ -n "$VERSION_TAG" ] && [ -n "$PROD_DEPLOYMENT_HOOK_TOKEN" ] && [ -n "$PROD_DEPLOYMENT_HOOK_URL" ]
+if [ -n "$PROD_DEPLOYMENT_HOOK_TOKEN" ] && [ -n "$PROD_DEPLOYMENT_HOOK_URL" ]
 then
   APP_NAME="$(basename $(pwd))"
   curl --silent --output /dev/null --write-out "%{http_code}" -X POST \
