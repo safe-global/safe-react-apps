@@ -23,6 +23,7 @@ import {
   DragUpdate,
   DropResult,
 } from 'react-beautiful-dnd';
+import { Virtuoso } from 'react-virtuoso';
 
 import { ProposedTransaction } from '../typings/models';
 import useModal from '../hooks/useModal/useModal';
@@ -155,26 +156,30 @@ const TransactionsBatchList = ({
           <Droppable droppableId={TRANSACTION_LIST_DROPPABLE_ID}>
             {(provided: DroppableProvided) => (
               <TransactionList {...provided.droppableProps} ref={provided.innerRef}>
-                {transactions.map((transaction, index) => (
-                  <Transaction
-                    key={transaction.id}
-                    transaction={transaction}
-                    isLastTransaction={index === transactions.length - 1}
-                    isDragDisabled={!reorderTransactions}
-                    showTransactionDetails={showTransactionDetails}
-                    index={index}
-                    draggableTxIndexDestination={draggableTxIndexDestination}
-                    draggableTxIndexOrigin={draggableTxIndexOrigin}
-                    reorderTransactions={reorderTransactions}
-                    networkPrefix={networkPrefix}
-                    replaceTransaction={replaceTransaction}
-                    setTxIndexToEdit={setTxIndexToEdit}
-                    openEditTxModal={openEditTxModal}
-                    removeTransaction={removeTransaction}
-                    setTxIndexToRemove={setTxIndexToRemove}
-                    openDeleteTxModal={openDeleteTxModal}
-                  />
-                ))}
+                <Virtuoso
+                  style={{ height: window.innerHeight - 300 }}
+                  data={transactions}
+                  itemContent={(index, transaction) => (
+                    <Transaction
+                      key={transaction.id}
+                      transaction={transaction}
+                      isLastTransaction={index === transactions.length - 1}
+                      isDragDisabled={!reorderTransactions}
+                      showTransactionDetails={showTransactionDetails}
+                      index={index}
+                      draggableTxIndexDestination={draggableTxIndexDestination}
+                      draggableTxIndexOrigin={draggableTxIndexOrigin}
+                      reorderTransactions={reorderTransactions}
+                      networkPrefix={networkPrefix}
+                      replaceTransaction={replaceTransaction}
+                      setTxIndexToEdit={setTxIndexToEdit}
+                      openEditTxModal={openEditTxModal}
+                      removeTransaction={removeTransaction}
+                      setTxIndexToRemove={setTxIndexToRemove}
+                      openDeleteTxModal={openDeleteTxModal}
+                    />
+                  )}
+                />
                 {provided.placeholder}
               </TransactionList>
             )}
