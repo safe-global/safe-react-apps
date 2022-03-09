@@ -3,11 +3,7 @@
 function deploy_app {
   BUNDLE_FOLDER="build"
 
-  PACKAGE_VERSION=$(cat package.json \
-  | grep version \
-  | head -1 \
-  | awk -F: '{ print $2 }' \
-  | sed 's/[",]//g')
+  PACKAGE_VERSION=$(sed -nr 's/^\s*\"version": "([0-9]{1,}\.[0-9]{1,}.*)",$/\1/p' package.json)
   
   if [ -n "$APPEND_TAG" ]
   then
