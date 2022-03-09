@@ -23,33 +23,28 @@ const TransactionsProvider: React.FC = ({ children }) => {
     setTransactions([...transactions]);
   }, []);
 
-  const addTransaction = useCallback(
-    (newTransaction: ProposedTransaction) => {
-      setTransactions([...transactions, newTransaction]);
-    },
-    [transactions],
-  );
+  const addTransaction = useCallback((newTransaction: ProposedTransaction) => {
+    setTransactions((transactions) => [...transactions, newTransaction]);
+  }, []);
 
-  const replaceTransaction = useCallback(
-    (newTransaction: ProposedTransaction, index: number) => {
+  const replaceTransaction = useCallback((newTransaction: ProposedTransaction, index: number) => {
+    setTransactions((transactions) => {
       transactions[index] = newTransaction;
-      setTransactions([...transactions]);
-    },
-    [transactions],
-  );
+      return [...transactions];
+    });
+  }, []);
 
   const removeAllTransactions = useCallback(() => {
     setTransactions([]);
   }, []);
 
-  const removeTransaction = useCallback(
-    (index: number) => {
+  const removeTransaction = useCallback((index: number) => {
+    setTransactions((transactions) => {
       const newTxs = transactions.slice();
       newTxs.splice(index, 1);
-      setTransactions(newTxs);
-    },
-    [transactions],
-  );
+      return newTxs;
+    });
+  }, []);
 
   const submitTransactions = useCallback(async () => {
     await sdk.txs.send({ txs: transactions.map((transaction) => transaction.raw) });

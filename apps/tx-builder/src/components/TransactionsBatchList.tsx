@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -155,160 +155,26 @@ const TransactionsBatchList = ({
           <Droppable droppableId={TRANSACTION_LIST_DROPPABLE_ID}>
             {(provided: DroppableProvided) => (
               <TransactionList {...provided.droppableProps} ref={provided.innerRef}>
-                {transactions.map((transaction, index) => {
-                  const { id, description } = transaction;
-                  const { to } = description;
-
-                  const transactionDescription = getTransactionText(description);
-
-                  const isLastTransaction = index === transactions.length - 1;
-
-                  return (
-                    <Draggable key={id} index={index} draggableId={id.toString()} isDragDisabled={!reorderTransactions}>
-                      {function DraggableTransaction(provided, snapshot) {
-                        const [isTxExpanded, setTxExpanded] = useState(false);
-
-                        const onClickShowTransactionDetails = () => {
-                          if (showTransactionDetails) {
-                            setTxExpanded((isTxExpanded) => !isTxExpanded);
-                          }
-                        };
-                        const isThisTxBeingDragging = snapshot.isDragging;
-
-                        const showArrowAdornment = !isLastTransaction && !isThisTxBeingDragging;
-
-                        // displayed order can change if the user uses the drag and drop feature
-                        const displayedTxPosition = getDisplayedTxPosition(
-                          index,
-                          isThisTxBeingDragging,
-                          draggableTxIndexDestination,
-                          draggableTxIndexOrigin,
-                        );
-
-                        return (
-                          <TransactionListItem ref={provided.innerRef} {...provided.draggableProps}>
-                            {/* Transacion Position */}
-                            <PositionWrapper>
-                              <PositionDot color="tag" isDragging={isThisTxBeingDragging}>
-                                <Text size="xl">{displayedTxPosition}</Text>
-                              </PositionDot>
-                              {showArrowAdornment && <ArrowAdornment />}
-                            </PositionWrapper>
-
-                            {/* Transaction Description */}
-                            <StyledAccordion
-                              expanded={isTxExpanded}
-                              compact
-                              onChange={onClickShowTransactionDetails}
-                              isDragging={isThisTxBeingDragging}
-                              TransitionProps={{ unmountOnExit: true }}
-                            >
-                              <div {...provided.dragHandleProps}>
-                                <AccordionSummary
-                                  expandIcon={false}
-                                  style={{ cursor: reorderTransactions ? 'grab' : 'pointer' }}
-                                >
-                                  {/* Drag & Drop Indicator */}
-                                  {reorderTransactions && (
-                                    <Tooltip
-                                      placement="top"
-                                      title="Drag and Drop"
-                                      backgroundColor="primary"
-                                      textColor="white"
-                                      arrow
-                                    >
-                                      <DragAndDropIndicatorIcon fontSize="small" />
-                                    </Tooltip>
-                                  )}
-
-                                  {/* Destination Address label */}
-                                  <EthHashInfo
-                                    shortName={networkPrefix || ''}
-                                    hash={to}
-                                    shortenHash={4}
-                                    shouldShowShortName
-                                  />
-
-                                  {/* Transaction Description label */}
-                                  <TransactionsDescription size="lg">{transactionDescription}</TransactionsDescription>
-
-                                  {/* Transaction Actions */}
-
-                                  {/* Edit transaction */}
-                                  {replaceTransaction && (
-                                    <Tooltip title="Edit transaction" backgroundColor="primary" textColor="white" arrow>
-                                      <TransactionActionButton
-                                        size="medium"
-                                        aria-label="Edit transaction"
-                                        onClick={(event) => {
-                                          event.stopPropagation();
-                                          setTxIndexToEdit(String(index));
-                                          openEditTxModal();
-                                        }}
-                                      >
-                                        <Icon size="sm" type="edit" />
-                                      </TransactionActionButton>
-                                    </Tooltip>
-                                  )}
-
-                                  {/* Delete transaction */}
-                                  {removeTransaction && (
-                                    <Tooltip
-                                      placement="top"
-                                      title="Delete transaction"
-                                      backgroundColor="primary"
-                                      textColor="white"
-                                      arrow
-                                    >
-                                      <TransactionActionButton
-                                        onClick={(event) => {
-                                          event.stopPropagation();
-                                          setTxIndexToRemove(String(index));
-                                          openDeleteTxModal();
-                                        }}
-                                        size="medium"
-                                        aria-label="Delete transaction"
-                                      >
-                                        <Icon size="sm" type="delete" />
-                                      </TransactionActionButton>
-                                    </Tooltip>
-                                  )}
-
-                                  {/* Expand transaction details */}
-                                  {showTransactionDetails && (
-                                    <Tooltip
-                                      placement="top"
-                                      title="Expand transaction details"
-                                      backgroundColor="primary"
-                                      textColor="white"
-                                      arrow
-                                    >
-                                      <TransactionActionButton
-                                        onClick={(event) => {
-                                          event.stopPropagation();
-                                          onClickShowTransactionDetails();
-                                        }}
-                                        size="medium"
-                                        aria-label="Expand transaction details"
-                                      >
-                                        <FixedIcon type={'chevronDown'} />
-                                      </TransactionActionButton>
-                                    </Tooltip>
-                                  )}
-                                </AccordionSummary>
-                              </div>
-
-                              {/* Transaction details */}
-                              <AccordionDetails>
-                                <TransactionDetails transaction={transaction} />
-                              </AccordionDetails>
-                            </StyledAccordion>
-                          </TransactionListItem>
-                        );
-                      }}
-                    </Draggable>
-                  );
-                })}
+                {transactions.map((transaction, index) => (
+                  <Transaction
+                    key={transaction.id}
+                    transaction={transaction}
+                    isLastTransaction={index === transactions.length - 1}
+                    isDragDisabled={!reorderTransactions}
+                    showTransactionDetails={showTransactionDetails}
+                    index={index}
+                    draggableTxIndexDestination={draggableTxIndexDestination}
+                    draggableTxIndexOrigin={draggableTxIndexOrigin}
+                    reorderTransactions={reorderTransactions}
+                    networkPrefix={networkPrefix}
+                    replaceTransaction={replaceTransaction}
+                    setTxIndexToEdit={setTxIndexToEdit}
+                    openEditTxModal={openEditTxModal}
+                    removeTransaction={removeTransaction}
+                    setTxIndexToRemove={setTxIndexToRemove}
+                    openDeleteTxModal={openDeleteTxModal}
+                  />
+                ))}
                 {provided.placeholder}
               </TransactionList>
             )}
@@ -374,6 +240,181 @@ const TransactionsBatchList = ({
     </>
   );
 };
+
+type TransactionProps = {
+  transaction: ProposedTransaction;
+  isLastTransaction: boolean;
+  isDragDisabled: boolean;
+  showTransactionDetails: boolean;
+  index: number;
+  draggableTxIndexDestination: number | undefined;
+  draggableTxIndexOrigin: number | undefined;
+  reorderTransactions?: (sourceIndex: number, destinationIndex: number) => void;
+  networkPrefix: string | undefined;
+  replaceTransaction?: (newTransaction: ProposedTransaction, index: number) => void;
+  setTxIndexToEdit: (index: string) => void;
+  openEditTxModal: () => void;
+  removeTransaction?: (index: number) => void;
+  setTxIndexToRemove: (index: string) => void;
+  openDeleteTxModal: () => void;
+};
+
+const Transaction = memo(
+  ({
+    transaction,
+    isLastTransaction,
+    isDragDisabled,
+    showTransactionDetails,
+    index,
+    draggableTxIndexDestination,
+    draggableTxIndexOrigin,
+    reorderTransactions,
+    networkPrefix,
+    replaceTransaction,
+    setTxIndexToEdit,
+    openEditTxModal,
+    removeTransaction,
+    setTxIndexToRemove,
+    openDeleteTxModal,
+  }: TransactionProps) => {
+    const { id, description } = transaction;
+    const { to } = description;
+
+    const transactionDescription = getTransactionText(description);
+
+    return (
+      <Draggable key={id} index={index} draggableId={id.toString()} isDragDisabled={isDragDisabled}>
+        {function DraggableTransaction(provided, snapshot) {
+          const [isTxExpanded, setTxExpanded] = useState(false);
+
+          const onClickShowTransactionDetails = () => {
+            if (showTransactionDetails) {
+              setTxExpanded((isTxExpanded) => !isTxExpanded);
+            }
+          };
+          const isThisTxBeingDragging = snapshot.isDragging;
+
+          const showArrowAdornment = !isLastTransaction && !isThisTxBeingDragging;
+
+          // displayed order can change if the user uses the drag and drop feature
+          const displayedTxPosition = getDisplayedTxPosition(
+            index,
+            isThisTxBeingDragging,
+            draggableTxIndexDestination,
+            draggableTxIndexOrigin,
+          );
+
+          return (
+            <TransactionListItem ref={provided.innerRef} {...provided.draggableProps}>
+              {/* Transacion Position */}
+              <PositionWrapper>
+                <PositionDot color="tag" isDragging={isThisTxBeingDragging}>
+                  <Text size="xl">{displayedTxPosition}</Text>
+                </PositionDot>
+                {showArrowAdornment && <ArrowAdornment />}
+              </PositionWrapper>
+
+              {/* Transaction Description */}
+              <StyledAccordion
+                expanded={isTxExpanded}
+                compact
+                onChange={onClickShowTransactionDetails}
+                isDragging={isThisTxBeingDragging}
+                TransitionProps={{ unmountOnExit: true }}
+              >
+                <div {...provided.dragHandleProps}>
+                  <AccordionSummary expandIcon={false} style={{ cursor: reorderTransactions ? 'grab' : 'pointer' }}>
+                    {/* Drag & Drop Indicator */}
+                    {reorderTransactions && (
+                      <Tooltip placement="top" title="Drag and Drop" backgroundColor="primary" textColor="white" arrow>
+                        <DragAndDropIndicatorIcon fontSize="small" />
+                      </Tooltip>
+                    )}
+
+                    {/* Destination Address label */}
+                    <EthHashInfo shortName={networkPrefix || ''} hash={to} shortenHash={4} shouldShowShortName />
+
+                    {/* Transaction Description label */}
+                    <TransactionsDescription size="lg">{transactionDescription}</TransactionsDescription>
+
+                    {/* Transaction Actions */}
+
+                    {/* Edit transaction */}
+                    {replaceTransaction && (
+                      <Tooltip title="Edit transaction" backgroundColor="primary" textColor="white" arrow>
+                        <TransactionActionButton
+                          size="medium"
+                          aria-label="Edit transaction"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setTxIndexToEdit(String(index));
+                            openEditTxModal();
+                          }}
+                        >
+                          <Icon size="sm" type="edit" />
+                        </TransactionActionButton>
+                      </Tooltip>
+                    )}
+
+                    {/* Delete transaction */}
+                    {removeTransaction && (
+                      <Tooltip
+                        placement="top"
+                        title="Delete transaction"
+                        backgroundColor="primary"
+                        textColor="white"
+                        arrow
+                      >
+                        <TransactionActionButton
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setTxIndexToRemove(String(index));
+                            openDeleteTxModal();
+                          }}
+                          size="medium"
+                          aria-label="Delete transaction"
+                        >
+                          <Icon size="sm" type="delete" />
+                        </TransactionActionButton>
+                      </Tooltip>
+                    )}
+
+                    {/* Expand transaction details */}
+                    {showTransactionDetails && (
+                      <Tooltip
+                        placement="top"
+                        title="Expand transaction details"
+                        backgroundColor="primary"
+                        textColor="white"
+                        arrow
+                      >
+                        <TransactionActionButton
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            onClickShowTransactionDetails();
+                          }}
+                          size="medium"
+                          aria-label="Expand transaction details"
+                        >
+                          <FixedIcon type={'chevronDown'} />
+                        </TransactionActionButton>
+                      </Tooltip>
+                    )}
+                  </AccordionSummary>
+                </div>
+
+                {/* Transaction details */}
+                <AccordionDetails>
+                  <TransactionDetails transaction={transaction} />
+                </AccordionDetails>
+              </StyledAccordion>
+            </TransactionListItem>
+          );
+        }}
+      </Draggable>
+    );
+  },
+);
 
 export default TransactionsBatchList;
 
