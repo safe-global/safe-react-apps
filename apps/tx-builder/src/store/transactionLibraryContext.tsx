@@ -256,11 +256,12 @@ const convertToProposedTransactions = (batchFile: BatchFile, chainInfo: ChainInf
 
     return {
       id: index,
-      contractInterface: null,
+      contractInterface: !!transaction.contractMethod ? { methods: [transaction.contractMethod] } : null,
       description: {
         to: transaction.to,
         value: transaction.value,
         contractMethod: transaction.contractMethod,
+        contractMethodIndex: '0',
         contractFieldsValues: transaction.contractInputsValues,
         nativeCurrencySymbol: chainInfo.nativeCurrency.symbol,
         networkPrefix: chainInfo.shortName,
