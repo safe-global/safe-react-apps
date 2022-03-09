@@ -11,11 +11,11 @@ const Help = ({ title, steps }: HelpProps): React.ReactElement => {
   return (
     <StyledAccordion compact>
       <StyledAccordionSummary>
-        <IconText iconSize="sm" textSize="xl" iconType="question" text={title} />
+        <StyledIconText iconSize="sm" textSize="xl" iconType="question" text={title} />
       </StyledAccordionSummary>
       <StyledAccordionDetails>
         {steps.map((step, index) => (
-          <Box key={index} display="flex" marginBottom={2} alignItems="center">
+          <Box key={index} display="flex" marginBottom={2} alignItems="flex-start">
             <StyledDot color="primary">
               <StyledDotText size="sm">{index + 1}</StyledDotText>
             </StyledDot>
@@ -26,6 +26,17 @@ const Help = ({ title, steps }: HelpProps): React.ReactElement => {
     </StyledAccordion>
   );
 };
+
+const StyledIconText = styled(IconText)`
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  p {
+    margin-left: 13px;
+  }
+`;
 
 const StyledAccordion = styled(Accordion)`
   && {
@@ -46,6 +57,12 @@ const StyledAccordionDetails = styled(AccordionDetails)`
   && {
     flex-direction: column;
     border-top: 2px solid #e2e3e3;
+    &:first-child {
+      padding-top: 24px;
+    }
+    &:last-child {
+      padding-bottom: 8px;
+    }
   }
 `;
 
