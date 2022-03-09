@@ -157,7 +157,7 @@ const TransactionsBatchList = ({
             {(provided: DroppableProvided) => (
               <TransactionList {...provided.droppableProps} ref={provided.innerRef}>
                 <Virtuoso
-                  style={{ height: window.innerHeight - 300 }}
+                  style={{ height: transactions.length > 5 ? 400 : transactions.length * 70 }}
                   data={transactions}
                   itemContent={(index, transaction) => (
                     <Transaction
