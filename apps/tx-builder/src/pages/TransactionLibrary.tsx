@@ -20,7 +20,7 @@ import { ReactComponent as EmptyLibrary } from '../assets/empty-library.svg';
 import DeleteBatchFromLibrary from '../components/modals/DeleteBatchFromLibrary';
 import TransactionsBatchList from '../components/TransactionsBatchList';
 import useModal from '../hooks/useModal/useModal';
-import { EDIT_BATCH_PATH, HOME_PATH, REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
+import { EDIT_BATCH_PATH, HOME_PATH, REVIEW_AND_CONFIRM_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
 import { useTransactionLibrary } from '../store';
 import { Batch } from '../typings/models';
 import { Box } from '@material-ui/core';
@@ -82,10 +82,10 @@ const TransactionLibrary = () => {
                       aria-label="Execute batch"
                       variant="contained"
                       color="primary"
-                      onClick={(event) => {
+                      onClick={async (event) => {
                         event.stopPropagation();
-                        executeBatch(batch);
-                        navigate(REVIEW_AND_CONFIRM_PATH);
+                        await executeBatch(batch);
+                        navigate(REVIEW_AND_CONFIRM_PATH, { state: { from: TRANSACTION_LIBRARY_PATH } });
                       }}
                     >
                       <FixedIcon type={'arrowSentWhite'} />
@@ -96,9 +96,9 @@ const TransactionLibrary = () => {
                 {/* edit batch */}
                 <Tooltip placement="top" title="Edit batch" backgroundColor="primary" textColor="white" arrow>
                   <StyledIconButton
-                    onClick={(event) => {
+                    onClick={async (event) => {
                       event.stopPropagation();
-                      executeBatch(batch);
+                      await executeBatch(batch);
                       navigate(EDIT_BATCH_PATH);
                     }}
                   >

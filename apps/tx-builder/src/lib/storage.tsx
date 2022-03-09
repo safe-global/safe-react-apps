@@ -9,14 +9,18 @@ localforage.config({
   description: 'List of stored transactions in the Transaction Builder',
 });
 
-const saveBatch = async (batchFile: BatchFile): Promise<BatchFile> => {
+const saveBatch = async (batchFile: BatchFile): Promise<{ id: string; batchFile: BatchFile }> => {
+  const id = uuidv4();
   try {
-    await localforage.setItem(uuidv4(), batchFile);
+    await localforage.setItem(id, batchFile);
   } catch (error) {
     console.error(error);
   }
 
-  return batchFile;
+  return {
+    id,
+    batchFile,
+  };
 };
 
 const removeBatch = async (batchId: string): Promise<void> => {

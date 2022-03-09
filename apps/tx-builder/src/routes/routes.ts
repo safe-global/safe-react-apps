@@ -1,7 +1,6 @@
 export const HOME_PATH = '/';
 
-export const DASHBOARD_PATH = HOME_PATH;
-export const CREATE_BATCH_PATH = DASHBOARD_PATH;
+export const CREATE_BATCH_PATH = HOME_PATH;
 export const SAVE_BATCH_PATH = '/save-batch';
 export const EDIT_BATCH_PATH = '/edit-batch';
 

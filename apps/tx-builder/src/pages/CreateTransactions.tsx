@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 
 import TransactionsBatchList from '../components/TransactionsBatchList';
 import CreateNewBatchCard from '../components/CreateNewBatchCard';
-import { REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
+import { CREATE_BATCH_PATH, REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
 import QuickTip from '../components/QuickTip';
 import { useTransactionLibrary, useTransactions } from '../store';
 
@@ -44,7 +44,7 @@ const CreateTransactions = () => {
             style={{ marginLeft: 35 }}
             variant="contained"
             color="primary"
-            onClick={() => navigate(REVIEW_AND_CONFIRM_PATH)}
+            onClick={() => navigate(REVIEW_AND_CONFIRM_PATH, { state: { from: CREATE_BATCH_PATH } })}
           >
             Create Batch
           </Button>

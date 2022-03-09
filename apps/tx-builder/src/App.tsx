@@ -8,7 +8,7 @@ import ReviewAndConfirm from './pages/ReviewAndConfirm';
 import SaveTransactionLibrary from './pages/SaveTransactionLibrary';
 import TransactionLibrary from './pages/TransactionLibrary';
 import {
-  DASHBOARD_PATH,
+  HOME_PATH,
   EDIT_BATCH_PATH,
   REVIEW_AND_CONFIRM_PATH,
   SAVE_BATCH_PATH,
@@ -23,7 +23,7 @@ const App = () => {
 
       <Routes>
         {/* Dashboard Screen (Create transactions) */}
-        <Route path={DASHBOARD_PATH} element={<Dashboard />}>
+        <Route path={HOME_PATH} element={<Dashboard />}>
           {/* Transactions Batch section */}
           <Route index element={<CreateTransactions />} />
 

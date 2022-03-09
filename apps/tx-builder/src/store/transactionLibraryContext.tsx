@@ -12,9 +12,11 @@ const packageJson = require('../../package.json');
 
 type TransactionLibraryContextProps = {
   batches: Batch[];
+  batch?: Batch;
   saveBatch: (name: string, transactions: ProposedTransaction[]) => void;
   removeBatch: (batchId: string | number) => void;
   renameBatch: (batchId: string | number, newName: string) => void;
+  updateBatch: (batchId: string | number, name: string, transactions: ProposedTransaction[]) => void;
   downloadBatch: (name: string, transactions: ProposedTransaction[]) => void;
   executeBatch: (batch: Batch) => void;
   importBatch: (file: File | null) => void;
@@ -26,11 +28,12 @@ export const TransactionLibraryContext = createContext<TransactionLibraryContext
 
 const TransactionLibraryProvider: React.FC = ({ children }) => {
   const [batches, setBatches] = useState<Batch[]>([]);
+  const [batch, setBatch] = useState<Batch>();
   const [hasChecksumWarning, setHasChecksumWarning] = useState<boolean>(false);
   const { resetTransactions } = useTransactions();
   const { chainInfo, safe } = useNetwork();
 
-  const loadBatches = useCallback(async () => {
+  const loadBatches = useCallback(async (): Promise<Batch[]> => {
     if (chainInfo) {
       const batchesRecords = await StorageManager.getBatches();
       const batches: Batch[] = Object.keys(batchesRecords)
@@ -47,7 +50,10 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
         }, []);
 
       setBatches(batches);
+
+      return batches;
     }
+    return [];
   }, [chainInfo]);
 
   // on App init we load stored batches
@@ -67,18 +73,36 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 
   const saveBatch = useCallback(
     async (name, transactions) => {
-      await StorageManager.saveBatch(
+      const { id: batchId } = await StorageManager.saveBatch(
         addChecksum(generateBatchFile({ name, description: '', transactions, chainInfo, safe })),
       );
-      await loadBatches();
+      const batches = await loadBatches();
+      const batch = batches.find((batch) => batch.id === batchId);
+      setBatch(batch);
     },
     [chainInfo, safe, loadBatches],
+  );
+
+  const updateBatch = useCallback(
+    async (batchId: string | number, name: string, transactions: ProposedTransaction[]) => {
+      const batch = await StorageManager.getBatch(String(batchId));
+      if (batch) {
+        await StorageManager.updateBatch(
+          String(batchId),
+          addChecksum(generateBatchFile({ name, description: '', transactions, chainInfo, safe })),
+        );
+      }
+      const batches = await loadBatches();
+      setBatch(batches.find((batch) => batch.id === batchId));
+    },
+    [loadBatches, chainInfo, safe],
   );
 
   const removeBatch = useCallback(
     async (batchId: string | number) => {
       await StorageManager.removeBatch(String(batchId));
       await loadBatches();
+      setBatch(undefined);
     },
     [loadBatches],
   );
@@ -90,7 +114,8 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
         batch.meta.name = newName;
         await StorageManager.updateBatch(String(batchId), batch);
       }
-      await loadBatches();
+      const batches = await loadBatches();
+      setBatch(batches.find((batch) => batch.id === batchId));
     },
     [loadBatches],
   );
@@ -121,6 +146,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 
   const executeBatch = useCallback(
     async (batch: Batch) => {
+      setBatch(batch);
       const batchFile = await StorageManager.getBatch(batch.id as string);
 
       if (batchFile) {
@@ -141,7 +167,9 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
     <TransactionLibraryContext.Provider
       value={{
         batches,
+        batch,
         saveBatch,
+        updateBatch,
         removeBatch,
         renameBatch,
         downloadBatch,
