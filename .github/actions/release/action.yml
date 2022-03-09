@@ -44,6 +44,6 @@ runs:
       uses: ad-m/github-push-action@8407731efefc0d8f72af254c74276b7a90be36e1
       with:
         github_token: ${{ inputs.github-token }}
-        branch: refs/heads/main/bump-versions
+        branch: refs/heads/main-bump-versions
         force: true
         tags: true
