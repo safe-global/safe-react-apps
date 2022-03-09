@@ -116,8 +116,7 @@ jobs:
       - name: 'Deploy production'
         uses: ./.github/actions/release
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          prod_deployment_hook_token: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
-          prod_deployment_hook_url: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
-          bucket_name: ${{ secrets.STAGING_BUCKET_NAME }}/releases
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          prod-deployment-hook-token: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
+          prod-deployment-hook-url: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
+          bucket-name: ${{ secrets.STAGING_BUCKET_NAME }}/releases
