@@ -15,7 +15,7 @@
     "test": "react-app-rewired test --passWithNoTests",
     "deploy:s3": "bash ../../scripts/deploy_to_s3_bucket.sh",
     "deploy:pr": "bash ../../scripts/deploy_pr.sh",
-    "deploy:prod-hook": "bash ../../scripts/prepare-production-deployment.sh"
+    "deploy:prod-hook": "bash ../../scripts/prepare_production_deployment.sh"
   },
   "eslintConfig": {
     "extends": "react-app"
