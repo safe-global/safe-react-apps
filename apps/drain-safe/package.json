@@ -1,6 +1,6 @@
 {
   "name": "drain-safe",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "dependencies": {
     "@gnosis.pm/safe-react-components": "^0.9.7",
