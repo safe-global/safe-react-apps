@@ -77,7 +77,7 @@ const TransactionsBatchList = ({
     setDraggableTxIndexDestination(undefined);
   };
 
-  // 4 modals needed: save batch modal, edit transaction modal, delete batch modal and delete transaction modal
+  // 5 modals needed: save batch modal, edit transaction modal, delete batch modal, delete transaction modal, download batch modal
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
   const { open: showSaveBatchModal, openModal: openSaveBatchModal, closeModal: closeSaveBatchModal } = useModal();
   const { open: showDeleteTxModal, openModal: openDeleteTxModal, closeModal: closeDeleteTxModal } = useModal();

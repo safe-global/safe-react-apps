@@ -19,7 +19,7 @@ type TransactionLibraryContextProps = {
   updateBatch: (batchId: string | number, name: string, transactions: ProposedTransaction[]) => void;
   downloadBatch: (name: string, transactions: ProposedTransaction[]) => void;
   executeBatch: (batch: Batch) => void;
-  importBatch: (file: File | null) => void;
+  importBatch: (file: File | null) => Promise<BatchFile>;
   hasChecksumWarning: boolean;
   setHasChecksumWarning: (hasChecksumWarning: boolean) => void;
 };
@@ -140,6 +140,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
         }
         resetTransactions(convertToProposedTransactions(batchFile, chainInfo));
       }
+      return batchFile;
     },
     [chainInfo, resetTransactions],
   );
@@ -157,8 +158,9 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
   );
 
   const importBatch = useCallback(
-    async (transactions) => {
-      initializeBatch(await StorageManager.importBatch(transactions));
+    async (file) => {
+      const batchFile = await initializeBatch(await StorageManager.importBatch(file));
+      return batchFile;
     },
     [initializeBatch],
   );

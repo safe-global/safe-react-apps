@@ -9,7 +9,9 @@ import TransactionsBatchList from '../components/TransactionsBatchList';
 import CreateNewBatchCard from '../components/CreateNewBatchCard';
 import { CREATE_BATCH_PATH, REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
 import QuickTip from '../components/QuickTip';
-import { useTransactionLibrary, useTransactions } from '../store';
+import { useNetwork, useTransactionLibrary, useTransactions } from '../store';
+import useModal from '../hooks/useModal/useModal';
+import WrongChainBatchModal from '../components/modals/WrongChainBatchModal';
 
 const CreateTransactions = () => {
   const [fileName, setFileName] = useState('');
@@ -18,57 +20,71 @@ const CreateTransactions = () => {
     useTransactions();
   const { importBatch, downloadBatch, saveBatch } = useTransactionLibrary();
 
+  const { chainInfo } = useNetwork();
+
   const [quickTipOpen, setQuickTipOpen] = useState(true);
 
   const navigate = useNavigate();
 
+  const { open: showWrongChainModal, openModal: openWrongChainModal, closeModal: closeWrongChainModal } = useModal();
+
   return (
-    <TransactionsSectionWrapper item xs={12} md={6}>
-      {transactions.length > 0 ? (
-        <>
-          <TransactionsBatchList
-            batchTitle={fileName ? <FileNameTitle filename={fileName} /> : 'Transactions Batch'}
-            transactions={transactions}
-            removeTransaction={removeTransaction}
-            saveBatch={saveBatch}
-            downloadBatch={downloadBatch}
-            removeAllTransactions={removeAllTransactions}
-            replaceTransaction={replaceTransaction}
-            reorderTransactions={reorderTransactions}
-            showTransactionDetails={false}
-            showBatchHeader
-          />
-          {/* Go to Review Screen button */}
-          <Button
-            size="md"
-            type="button"
-            disabled={!transactions.length}
-            style={{ marginLeft: 35 }}
-            variant="contained"
-            color="primary"
-            onClick={() => navigate(REVIEW_AND_CONFIRM_PATH, { state: { from: CREATE_BATCH_PATH } })}
-          >
-            Create Batch
-          </Button>
-          {quickTipOpen && (
-            <QuickTipWrapper>
-              <QuickTip onClose={() => setQuickTipOpen(false)} />
-            </QuickTipWrapper>
-          )}
-        </>
-      ) : (
-        <Hidden smDown>
-          <CreateNewBatchCard
-            onFileSelected={(uploadedFile: File | null) => {
-              if (uploadedFile) {
-                setFileName(uploadedFile.name);
-                importBatch(uploadedFile);
-              }
-            }}
-          />
-        </Hidden>
-      )}
-    </TransactionsSectionWrapper>
+    <>
+      <TransactionsSectionWrapper item xs={12} md={6}>
+        {transactions.length > 0 ? (
+          <>
+            <TransactionsBatchList
+              batchTitle={fileName ? <FileNameTitle filename={fileName} /> : 'Transactions Batch'}
+              transactions={transactions}
+              removeTransaction={removeTransaction}
+              saveBatch={saveBatch}
+              downloadBatch={downloadBatch}
+              removeAllTransactions={removeAllTransactions}
+              replaceTransaction={replaceTransaction}
+              reorderTransactions={reorderTransactions}
+              showTransactionDetails={false}
+              showBatchHeader
+            />
+            {/* Go to Review Screen button */}
+            <Button
+              size="md"
+              type="button"
+              disabled={!transactions.length}
+              style={{ marginLeft: 35 }}
+              variant="contained"
+              color="primary"
+              onClick={() => navigate(REVIEW_AND_CONFIRM_PATH, { state: { from: CREATE_BATCH_PATH } })}
+            >
+              Create Batch
+            </Button>
+            {quickTipOpen && (
+              <QuickTipWrapper>
+                <QuickTip onClose={() => setQuickTipOpen(false)} />
+              </QuickTipWrapper>
+            )}
+          </>
+        ) : (
+          <Hidden smDown>
+            <CreateNewBatchCard
+              onFileSelected={async (uploadedFile: File | null) => {
+                if (uploadedFile) {
+                  setFileName(uploadedFile.name);
+                  const batchFile = await importBatch(uploadedFile);
+                  // we show a modal if the batch file is from a different chain
+                  const isWrongChain = batchFile.chainId !== chainInfo?.chainId;
+                  if (isWrongChain) {
+                    openWrongChainModal();
+                  }
+                }
+              }}
+            />
+          </Hidden>
+        )}
+      </TransactionsSectionWrapper>
+
+      {/* Uploaded batch network modal */}
+      {showWrongChainModal && <WrongChainBatchModal onClick={closeWrongChainModal} onClose={closeWrongChainModal} />}
+    </>
   );
 };
 
