@@ -160,6 +160,6 @@ const HELP_TRANSACTIONS = {
   steps: [
     'Trigger a transaction from the Dapp.',
     'Come back here to confirm the transaction. You will see a popup with transaction details. Review the details and submit the transaction.',
-    'The transaction has to be confirmed by owners and executed just like any other Safe transaction',
+    'The transaction has to be confirmed by owners and executed just like any other Safe transaction.',
   ],
 };
