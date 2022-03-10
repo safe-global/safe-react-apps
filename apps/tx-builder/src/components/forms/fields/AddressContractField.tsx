@@ -24,6 +24,7 @@ const AddressContractField = ({
       showNetworkPrefix={!!networkPrefix}
       networkPrefix={networkPrefix}
       hiddenLabel={false}
+      fullWidth
       error={error}
       getAddressFromDomain={getAddressFromDomain}
       onChangeAddress={onChange}
@@ -36,15 +37,6 @@ export default AddressContractField;
 
 const StyledAddressInput = styled(AddressInput)`
   && {
-    width: 520px;
     margin-bottom: 10px;
-
-    .MuiFormLabel-root {
-      color: ${(props) => (!!props.error ? '#f44336' : '#0000008a')};
-    }
-
-    .MuiFormLabel-root.Mui-focused {
-      color: ${(props) => (!!props.error ? '#f44336' : '#008c73')};
-    }
   }
 `;

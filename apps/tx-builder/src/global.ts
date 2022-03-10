@@ -11,6 +11,7 @@ const GlobalStyle = createGlobalStyle`
        height: 100%;
        margin: 0px;
        padding: 0px;
+       background-color: #F6F6F6;
     }
 
     #root {
@@ -22,6 +23,10 @@ const GlobalStyle = createGlobalStyle`
         src: local('Averta'), local('Averta Bold'),
         url(${avertaFont}) format('woff2'),
         url(${avertaBoldFont}) format('woff');
+    }
+
+    .MuiButton-root {
+        height: 46px !important;
     }
 `;
 

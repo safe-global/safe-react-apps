@@ -1,4 +1,4 @@
-import { AbiItem, toBN, isAddress } from 'web3-utils';
+import { AbiItem, toBN, isAddress, fromWei } from 'web3-utils';
 import abiCoder, { AbiCoder } from 'web3-eth-abi';
 
 import { ContractInput, ContractMethod } from './hooks/useServices/interfaceRepository';
@@ -52,7 +52,19 @@ export const parseInputValue = (input: any, value: string): any => {
   const isBooleanInput = input.type === 'bool';
 
   if (value.charAt(0) === '[') {
-    return JSON.parse(value.replace(/"/g, '"'));
+    const parsed = JSON.parse(value.replace(/"/g, '"'));
+
+    if (input.type === 'bool[]') {
+      return parsed.map((value: boolean | string) => {
+        if (typeof value == 'string') {
+          return value.toLowerCase() === 'true';
+        }
+
+        return value;
+      });
+    }
+
+    return parsed;
   }
 
   if (isBooleanInput) {
@@ -119,20 +131,6 @@ export const encodeToHexData = (contractMethod: ContractMethod | undefined, cont
   }
 };
 
-export const getTxDescription = (contractMethod: ContractMethod | undefined, contractFieldsValues: any) => {
-  const contractMethodName = contractMethod?.name;
-  const contractFields = contractMethod?.inputs || [];
-
-  const isValidContractMethod = contractMethodName && !NON_VALID_CONTRACT_METHODS.includes(contractMethodName);
-
-  if (isValidContractMethod) {
-    const descriptionValues = contractFields.map((contractField: ContractInput, index) => {
-      const contractFieldName = contractField.name || index;
-      const contractFieldValue = contractFieldsValues[contractFieldName] || '';
-
-      return `${contractField.name || contractField.type}: ${contractFieldValue}`;
-    });
-
-    return `${contractMethodName} (${descriptionValues.join(', ')})`;
-  }
+export const weiToEther = (wei: string) => {
+  return fromWei(wei, 'ether');
 };

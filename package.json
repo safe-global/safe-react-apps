@@ -29,8 +29,6 @@
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
-    "@commitlint/cli": "^16.0.1",
-    "@commitlint/config-angular": "^16.0.0",
     "@jscutlery/semver": "^2.18.0",
     "@nrwl/cli": "13.8.0",
     "@nrwl/tao": "13.8.0",
