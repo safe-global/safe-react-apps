@@ -18,7 +18,7 @@ type TransactionsBatchListProps = {
   transactions: ProposedTransaction[];
   showTransactionDetails: boolean;
   showBatchHeader: boolean;
-  batchTitle?: string;
+  batchTitle?: string | React.ReactNode;
   removeTransaction?: (index: number) => void;
   saveBatch?: (name: string, transactions: ProposedTransaction[]) => void;
   downloadBatch?: (name: string, transactions: ProposedTransaction[]) => void;

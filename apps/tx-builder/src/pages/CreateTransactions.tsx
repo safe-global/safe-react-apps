@@ -12,6 +12,8 @@ import QuickTip from '../components/QuickTip';
 import { useTransactionLibrary, useTransactions } from '../store';
 
 const CreateTransactions = () => {
+  const [fileName, setFileName] = useState('');
+
   const { transactions, removeAllTransactions, replaceTransaction, reorderTransactions, removeTransaction } =
     useTransactions();
   const { importBatch, downloadBatch, saveBatch } = useTransactionLibrary();
@@ -25,7 +27,7 @@ const CreateTransactions = () => {
       {transactions.length > 0 ? (
         <>
           <TransactionsBatchList
-            batchTitle={'Transactions Batch'}
+            batchTitle={fileName ? <FileNameTitle filename={fileName} /> : 'Transactions Batch'}
             transactions={transactions}
             removeTransaction={removeTransaction}
             saveBatch={saveBatch}
@@ -56,7 +58,14 @@ const CreateTransactions = () => {
         </>
       ) : (
         <Hidden smDown>
-          <CreateNewBatchCard onFileSelected={importBatch} />
+          <CreateNewBatchCard
+            onFileSelected={(uploadedFile: File | null) => {
+              if (uploadedFile) {
+                setFileName(uploadedFile.name);
+                importBatch(uploadedFile);
+              }
+            }}
+          />
         </Hidden>
       )}
     </TransactionsSectionWrapper>
@@ -75,3 +84,16 @@ const QuickTipWrapper = styled.div`
   margin-left: 35px;
   margin-top: 20px;
 `;
+
+const UploadedLabel = styled.span`
+  margin-left: 4px;
+  color: #b2bbc0;
+`;
+
+const FileNameTitle = ({ filename }: { filename: string }) => {
+  return (
+    <>
+      {filename} <UploadedLabel>uploaded</UploadedLabel>
+    </>
+  );
+};
