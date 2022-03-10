@@ -13,6 +13,7 @@ import EditTransactionModal from './EditTransactionModal';
 import { useNetwork } from '../store';
 import TransactionBatchListItem, { getTransactionText } from './TransactionBatchListItem';
 import VirtualizedList from './VirtualizedList';
+import DownloadBatchModal from './modals/downloadBatchModal';
 
 type TransactionsBatchListProps = {
   transactions: ProposedTransaction[];
@@ -81,6 +82,11 @@ const TransactionsBatchList = ({
   const { open: showSaveBatchModal, openModal: openSaveBatchModal, closeModal: closeSaveBatchModal } = useModal();
   const { open: showDeleteTxModal, openModal: openDeleteTxModal, closeModal: closeDeleteTxModal } = useModal();
   const { open: showEditTxModal, openModal: openEditTxModal, closeModal: closeEditTxModal } = useModal();
+  const {
+    open: showDownloadBatchModal,
+    openModal: openDownloadBatchModal,
+    closeModal: closeDownloadBatchModal,
+  } = useModal();
 
   const [txIndexToRemove, setTxIndexToRemove] = useState<string>();
   const [txIndexToEdit, setTxIndexToEdit] = useState<string>();
@@ -115,7 +121,7 @@ const TransactionsBatchList = ({
             )}
             {downloadBatch && (
               <Tooltip placement="top" title="Download" backgroundColor="primary" textColor="white" arrow>
-                <StyledHeaderIconButton onClick={() => downloadBatch('test-download-batch', transactions)}>
+                <StyledHeaderIconButton onClick={openDownloadBatchModal}>
                   <Icon size="sm" type="importImg" color="primary" aria-label="Download" />
                 </StyledHeaderIconButton>
               </Tooltip>
@@ -220,6 +226,17 @@ const TransactionsBatchList = ({
             saveBatch?.(name, transactions);
           }}
           onClose={closeSaveBatchModal}
+        />
+      )}
+
+      {/* Download batch modal */}
+      {showDownloadBatchModal && (
+        <DownloadBatchModal
+          onClick={(fileName: string) => {
+            closeDownloadBatchModal();
+            downloadBatch?.(fileName, transactions);
+          }}
+          onClose={closeDownloadBatchModal}
         />
       )}
     </>

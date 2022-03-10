@@ -1,10 +1,8 @@
 import { Button, GenericModal } from '@gnosis.pm/safe-react-components';
 import Box from '@material-ui/core/Box';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { SAVE_BATCH_PATH } from '../../routes/routes';
 import Field from '../forms/fields/Field';
 import { TEXT_FIELD_TYPE } from '../forms/fields/fields';
 
@@ -12,36 +10,33 @@ type SaveBatchModalProps = {
   onClick: (name: string) => void;
   onClose: () => void;
 };
-const BATCH_NAME_FIELD = 'batchName';
+const BATCH_FILE_NAME_FIELD = 'batchFileName';
 
 type CreateBatchFormValuesTypes = {
-  [BATCH_NAME_FIELD]: string;
+  [BATCH_FILE_NAME_FIELD]: string;
 };
 
-const SaveBatchModal = ({ onClick, onClose }: SaveBatchModalProps) => {
+const DownloadBatchModal = ({ onClick, onClose }: SaveBatchModalProps) => {
   const { handleSubmit, control } = useForm<CreateBatchFormValuesTypes>({
     mode: 'onTouched',
   });
 
-  const navigate = useNavigate();
-
   const onSubmit = (values: CreateBatchFormValuesTypes) => {
-    const { [BATCH_NAME_FIELD]: batchName } = values;
-    onClick(batchName);
-    navigate(SAVE_BATCH_PATH);
+    const { [BATCH_FILE_NAME_FIELD]: fileName } = values;
+    onClick(fileName);
   };
 
   return (
     <GenericModal
-      title="Save transaction Batch"
+      title="Download Batch"
       withoutBodyPadding
       body={
         <StyledModalBodyWrapper>
-          <form id={'create-batch-form'} onSubmit={handleSubmit(onSubmit)} noValidate>
+          <form id={'download-batch-form'} onSubmit={handleSubmit(onSubmit)} noValidate>
             <Field
-              id="batch-name-input"
-              name={BATCH_NAME_FIELD}
-              label={'Batch name'}
+              id="batch-file-name-input"
+              name={BATCH_FILE_NAME_FIELD}
+              label={'File name'}
               fieldType={TEXT_FIELD_TYPE}
               fullWidth
               required
@@ -50,7 +45,7 @@ const SaveBatchModal = ({ onClick, onClose }: SaveBatchModalProps) => {
             />
             <Box display="flex" alignItems="center" justifyContent="center" maxWidth={'450px'}>
               <Button size="md" type="submit">
-                Create
+                Download
               </Button>
             </Box>
           </form>
@@ -61,7 +56,7 @@ const SaveBatchModal = ({ onClick, onClose }: SaveBatchModalProps) => {
   );
 };
 
-export default SaveBatchModal;
+export default DownloadBatchModal;
 
 const StyledModalBodyWrapper = styled.div`
   padding: 24px;
