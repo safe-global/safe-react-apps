@@ -108,7 +108,7 @@ const WalletConnectField = ({ client, onConnect }: WalletConnectFieldProps): Rea
         id="wc-uri"
         name="wc-uri"
         label="WalletConnect URI"
-        placeholder="QR code or connection"
+        placeholder="QR code or connection link"
         hiddenLabel
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
