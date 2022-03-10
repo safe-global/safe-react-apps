@@ -10,7 +10,7 @@ import DeleteTransactionModal from './modals/DeleteTransactionModal';
 import DeleteBatchModal from './modals/DeleteBatchModal';
 import SaveBatchModal from './modals/SaveBatchModal';
 import EditTransactionModal from './EditTransactionModal';
-import { useNetwork } from '../store';
+import { useNetwork, useTransactionLibrary } from '../store';
 import TransactionBatchListItem, { getTransactionText } from './TransactionBatchListItem';
 import VirtualizedList from './VirtualizedList';
 import DownloadBatchModal from './modals/downloadBatchModal';
@@ -44,6 +44,7 @@ const TransactionsBatchList = ({
   batchTitle,
 }: TransactionsBatchListProps) => {
   // we need those states to display the correct position in each tx during the drag & drop
+  const { batch } = useTransactionLibrary();
   const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState<number>();
   const [draggableTxIndexDestination, setDraggableTxIndexDestination] = useState<number>();
 
@@ -115,7 +116,12 @@ const TransactionsBatchList = ({
             {saveBatch && (
               <Tooltip placement="top" title="Save to Library" backgroundColor="primary" textColor="white" arrow>
                 <StyledHeaderIconButton onClick={openSaveBatchModal}>
-                  <Icon size="sm" type="licenses" color="primary" aria-label="Save to Library" />
+                  <Icon
+                    size="sm"
+                    type={batch ? 'bookmarkFilled' : 'bookmark'}
+                    color="primary"
+                    aria-label="Save to Library"
+                  />
                 </StyledHeaderIconButton>
               </Tooltip>
             )}

@@ -147,7 +147,7 @@ const TransactionLibrary = () => {
           <StyledEmptyLibraryTextLink size="xl">
             Safe a batch by{' '}
             <StyledEmptyLibraryLink href={hrefToHome} onClick={redirectToHome} size="xl">
-              <StyledLinkIcon size="sm" type="licenses" color="primary" aria-label="go to transaction list view" />
+              <StyledLinkIcon size="sm" type="bookmark" color="primary" aria-label="go to transaction list view" />
               in transaction list view.
             </StyledEmptyLibraryLink>
           </StyledEmptyLibraryTextLink>

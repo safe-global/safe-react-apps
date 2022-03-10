@@ -13,7 +13,7 @@ const QuickTip = ({ onClose }: QuickTipProps) => {
     <StyledAlert severity="success" onClose={onClose} icon={false}>
       <StyledTitle>Quick Tip</StyledTitle>
       You can save your batches in your transaction library{' '}
-      <StyledIcon size="sm" type="licenses" color="primary" aria-label="Save to Library" /> (local browser storage) or{' '}
+      <StyledIcon size="sm" type="bookmark" color="primary" aria-label="Save to Library" /> (local browser storage) or{' '}
       <StyledIcon size="sm" type="importImg" color="primary" aria-label="Download" /> download the .json file to use
       them later.
     </StyledAlert>
