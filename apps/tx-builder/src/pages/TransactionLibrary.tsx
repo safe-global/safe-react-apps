@@ -20,7 +20,7 @@ import { ReactComponent as EmptyLibrary } from '../assets/empty-library.svg';
 import DeleteBatchFromLibrary from '../components/modals/DeleteBatchFromLibrary';
 import TransactionsBatchList from '../components/TransactionsBatchList';
 import useModal from '../hooks/useModal/useModal';
-import { EDIT_BATCH_PATH, HOME_PATH, REVIEW_AND_CONFIRM_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
+import { getEditBatchUrl, HOME_PATH, REVIEW_AND_CONFIRM_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
 import { useTransactionLibrary } from '../store';
 import { Batch } from '../typings/models';
 import { Box } from '@material-ui/core';
@@ -99,7 +99,7 @@ const TransactionLibrary = () => {
                     onClick={async (event) => {
                       event.stopPropagation();
                       await executeBatch(batch);
-                      navigate(EDIT_BATCH_PATH);
+                      navigate(getEditBatchUrl(batch.id), { state: { from: TRANSACTION_LIBRARY_PATH } });
                     }}
                   >
                     <Icon size="sm" type="edit" color="primary" aria-label="edit batch" />

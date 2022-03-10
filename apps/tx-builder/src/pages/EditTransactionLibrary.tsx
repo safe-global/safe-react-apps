@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import styled from 'styled-components';
 import { Button } from '@gnosis.pm/safe-react-components';
@@ -13,6 +13,8 @@ const EditTransactionLibrary = () => {
   const { transactions, removeAllTransactions, replaceTransaction, reorderTransactions, removeTransaction } =
     useTransactions();
   const { batch, downloadBatch, saveBatch, updateBatch } = useTransactionLibrary();
+
+  const { batchId } = useParams();
 
   const navigate = useNavigate();
 
@@ -37,7 +39,7 @@ const EditTransactionLibrary = () => {
         showBatchHeader
       />
       {/* Save Batch and redirect to Transaction library */}
-      {batch && (
+      {batch && batchId && (
         <Button
           size="md"
           type="button"
@@ -46,8 +48,8 @@ const EditTransactionLibrary = () => {
           variant="contained"
           color="primary"
           onClick={() => {
-            const { id, name } = batch;
-            updateBatch(id, name, transactions);
+            const { name } = batch;
+            updateBatch(batchId, name, transactions);
             navigate(TRANSACTION_LIBRARY_PATH);
           }}
         >
