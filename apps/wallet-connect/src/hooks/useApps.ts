@@ -12,14 +12,17 @@ type UseAppsResponse = {
 export function useApps(): UseAppsResponse {
   const { safe, sdk } = useSafeAppsSDK();
   const [safeAppsList, setSafeAppsList] = useState<SafeAppsResponse>([]);
+  const [origin, setOrigin] = useState<string>();
   const [networkPrefix, setNetworkPrefix] = useState<string>('');
 
   useEffect(() => {
     (async () => {
       try {
         const chainInfo = await sdk.safe.getChainInfo();
+        const communicationInfo = await sdk.safe.getCommunicationInfo();
         const appsList = await getSafeApps(BASE_URL, chainInfo.chainId);
 
+        setOrigin(communicationInfo.origin);
         setSafeAppsList(appsList);
         setNetworkPrefix(chainInfo.shortName);
       } catch (error) {
@@ -30,11 +33,11 @@ export function useApps(): UseAppsResponse {
 
   const openSafeApp = useCallback(
     (url: string) => {
-      if (document.location.ancestorOrigins.length) {
-        window.parent.location.href = `${document.location.ancestorOrigins[0]}/app/${networkPrefix}:${safe.safeAddress}/apps?appUrl=${url}`;
+      if (origin?.length) {
+        window.parent.location.href = `${origin}/app/${networkPrefix}:${safe.safeAddress}/apps?appUrl=${url}`;
       }
     },
-    [networkPrefix, safe],
+    [networkPrefix, origin, safe],
   );
 
   const findSafeApp = useCallback(
