@@ -148,8 +148,8 @@ const HELP_CONNECT = {
   title: 'How to connect to a Dapp?',
   steps: [
     'Open a Dapp with WalletConnect support.',
-    'Copy QR code image into clipboard (Command+Control+Shift+4 on Mac, Windows key+PrtScn on Windows).',
-    'Paste QR code image into the input field (Command+V on Mac, Ctrl+V on Windows).',
+    'Copy the QR code image into clipboard (Command+Control+Shift+4 on Mac, Windows key+PrtScn on Windows) or copy the link.',
+    'Paste the QR code image or link into the input field (Command+V on Mac, Ctrl+V on Windows).',
     'WalletConnect connection is established automatically.',
     'Now you can trigger transactions via the Dapp to your Safe.',
   ],
