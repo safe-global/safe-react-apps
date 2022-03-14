@@ -1694,17 +1694,17 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
-"@gnosis.pm/safe-apps-react-sdk@4.2.3":
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-4.2.3.tgz#d4aad71a0bd89f55e12584f8703ea0b02848661c"
-  integrity sha512-o0xzsU2m3ChL8JTK6/lEDfsv6lKIv1+4Tb6szJ9lKn1aEJx3rl0H7K3fFUzNRuVzSMYMf6ziJ5RsoFh2Z+gwMA==
+"@gnosis.pm/safe-apps-react-sdk@4.3.1":
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-4.3.1.tgz#eab045829eefa1bb9e4b1d24f8a3ccebbee59d95"
+  integrity sha512-0pvG7xYZHRSiEv1Dh6KweBjWQiI32jRuMKnIDS/VLLVpq/+8LhSGbgTcO1j/rM7vfNnT0KX5PgHQP25XF489RA==
   dependencies:
-    "@gnosis.pm/safe-apps-sdk" "7.2.0"
+    "@gnosis.pm/safe-apps-sdk" "7.3.0"
 
-"@gnosis.pm/safe-apps-sdk@7.2.0":
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-7.2.0.tgz#99a39d37b6472c27052249259e2b2246fb0d14f4"
-  integrity sha512-Lz11y7mTBpnyWDiBC7y353kKCC26+5m1RjOdlwrm0Xy0dS8g9m9YP//wCfJsngjUBxN0QP3mrnv0sfOfvckRdA==
+"@gnosis.pm/safe-apps-sdk@7.3.0":
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-7.3.0.tgz#3a3ed38b75657a7d5cd58d5a6884ec60087b05a8"
+  integrity sha512-1f6VHJWqPRKAEg/m+fbO1XiaDrsTcI3PQg31A0ciHATlVVoh35BYXryijaQxXblLzz4eDgbbIXQdNAH683j87Q==
   dependencies:
     "@gnosis.pm/safe-react-gateway-sdk" "^2.10.0"
     ethers "^5.4.7"
@@ -1732,7 +1732,7 @@
   dependencies:
     cross-fetch "^3.1.5"
 
-"@gnosis.pm/safe-react-gateway-sdk@^2.8.5":
+"@gnosis.pm/safe-react-gateway-sdk@^2.10.1":
   version "2.10.1"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-2.10.1.tgz#62f4abf733855e734aa1eab4be4778ccd08fe689"
   integrity sha512-uIosTEqmoxhCy7WS8sIzXde2nJQwzC+KfNoeDQVeLZtEpnRZQ7R+N/qDtORMUJfKeyc8cIwkKXmVc2DRgSRxOQ==
