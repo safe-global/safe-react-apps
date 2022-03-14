@@ -82,6 +82,9 @@ jobs:
         run: |
           npx nx affected --target=test --parallel
           npx nx affected --target=build --parallel
+        env:
+          REACT_APP_RPC_TOKEN: ${{ secrets.REACT_APP_RPC_TOKEN }}
+
       # Script to deploy to the dev environment
       - name: 'Deploy to S3: Develop'
         if: github.ref == 'refs/heads/development'
@@ -120,3 +123,5 @@ jobs:
           prod-deployment-hook-token: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
           prod-deployment-hook-url: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
           bucket-name: ${{ secrets.STAGING_BUCKET_NAME }}/releases
+          react-app-rpc-token: ${{ secrets.REACT_APP_RPC_TOKEN }}
+
