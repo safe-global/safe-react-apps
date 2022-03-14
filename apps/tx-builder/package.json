@@ -9,17 +9,16 @@
     "@material-ui/icons": "^4.11.0",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "axios": "^0.24.0",
-    "crypto-js": "^4.1.1",
     "lodash": "^4.17.21",
     "react-beautiful-dnd": "^13.1.0",
     "react-hook-form": "^7.27.0",
     "react-router-dom": "^6.2.1",
     "react-virtuoso": "^2.8.0",
-    "web3": "~1.7.0"
+    "web3": "~1.7.0",
+    "localforage": "^1.10.0"
   },
   "devDependencies": {
     "@hookform/devtools": "^4.0.2",
-    "@types/crypto-js": "^4.1.1",
     "@types/react-beautiful-dnd": "^13.1.2"
   },
   "scripts": {

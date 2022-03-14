@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import SafeAppsSDK, { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk';
 import Web3 from 'web3';
-import InterfaceRepository, { InterfaceRepo } from '../services/interfaceRepository';
+import InterfaceRepository, { InterfaceRepo } from '../lib/interfaceRepository';
 import { CHAINS, rpcUrlGetterByNetwork } from '../utils';
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
 

@@ -1,4 +1,4 @@
-import SHA256 from 'crypto-js/sha256';
+import web3 from 'web3';
 import { BatchFile } from '../typings/models';
 
 // JSON spec does not allow undefined so stringify removes the prop
@@ -25,8 +25,11 @@ const serializeJSONObject = (json: any): string => {
   return `${JSON.stringify(json, stringifyReplacer)}`;
 };
 
-const calculateChecksum = (batchFile: BatchFile): string => {
-  return SHA256(serializeJSONObject(batchFile)).toString();
+const calculateChecksum = (batchFile: BatchFile): string | undefined => {
+  const serialized = serializeJSONObject(batchFile);
+  const sha = web3.utils.sha3(serialized);
+
+  return sha || undefined;
 };
 
 export const addChecksum = (batchFile: BatchFile): BatchFile => {

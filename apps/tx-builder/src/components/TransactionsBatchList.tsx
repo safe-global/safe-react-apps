@@ -11,9 +11,10 @@ import DeleteBatchModal from './modals/DeleteBatchModal';
 import SaveBatchModal from './modals/SaveBatchModal';
 import EditTransactionModal from './EditTransactionModal';
 import { useNetwork, useTransactionLibrary } from '../store';
-import TransactionBatchListItem, { getTransactionText } from './TransactionBatchListItem';
+import TransactionBatchListItem from './TransactionBatchListItem';
 import VirtualizedList from './VirtualizedList';
 import DownloadBatchModal from './modals/downloadBatchModal';
+import { getTransactionText } from '../utils';
 
 type TransactionsBatchListProps = {
   transactions: ProposedTransaction[];

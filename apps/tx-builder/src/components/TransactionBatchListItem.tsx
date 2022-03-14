@@ -15,6 +15,7 @@ import styled from 'styled-components';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { ProposedTransaction } from '../typings/models';
 import TransactionDetails from './TransactionDetails';
+import { getTransactionText } from '../utils';
 
 const UNKNOWN_POSITION_LABEL = '?';
 const minArrowSize = '12';
@@ -193,29 +194,6 @@ const TransactionBatchListItem = memo(
     );
   },
 );
-
-export const getTransactionText = (description: ProposedTransaction['description']) => {
-  const { contractMethod, customTransactionData } = description;
-
-  const isCustomHexDataTx = !!customTransactionData;
-  const isContractInteractionTx = !!contractMethod;
-  const isTokenTransferTx = !isCustomHexDataTx && !isContractInteractionTx;
-
-  if (isTokenTransferTx) {
-    return 'Transfer';
-  }
-
-  if (isCustomHexDataTx) {
-    return 'Custom hex data';
-  }
-
-  if (isContractInteractionTx) {
-    return contractMethod.name;
-  }
-
-  // empty tx description as a fallback
-  return '';
-};
 
 const getDisplayedTxPosition = (
   index: number,
