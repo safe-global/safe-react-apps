@@ -3,7 +3,7 @@ name: Prepare environment
 description: Prepare environment in the CI runner and install dependencies
 
 inputs:
-  node_version:
+  node-version:
     description: Node.js version
     required: false
     default: '16'
@@ -23,7 +23,7 @@ runs:
     - name: Node.js setup
       uses: actions/setup-node@v2
       with:
-        node-version: ${{ inputs.node_version }}
+        node-version: ${{ inputs.node-version }}
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
