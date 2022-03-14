@@ -15,7 +15,8 @@ const WrongChainBatchModal = ({ onClick, onClose }: WrongChainBatchModalProps) =
       body={
         <StyledModalBodyWrapper>
           <Text size={'xl'} center>
-            This Batch is from another Chain!
+            This batch was created on a different network. Please proceed with caution and make sure the contracts exist
+            on the current network
           </Text>
           <StyleButtonContainer display="flex" alignItems="center" justifyContent="center" maxWidth={'450px'}>
             <Button size="md" type="button" onClick={onClick}>
