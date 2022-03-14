@@ -1,5 +1,5 @@
 import { FixedIcon, Icon, Text, Title, Tooltip } from '@gnosis.pm/safe-react-components';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Location, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { CREATE_BATCH_PATH, HOME_PATH, SAVE_BATCH_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
@@ -12,6 +12,10 @@ const HELP_ARTICLE_LINK =
 const goBackLabel: Record<string, string> = {
   [CREATE_BATCH_PATH]: 'Back to Transaction Creation',
   [TRANSACTION_LIBRARY_PATH]: 'Back to Your Transaction Library',
+};
+
+type LocationType = {
+  state: { from: string } | null;
 };
 
 const Header = () => {
@@ -29,8 +33,9 @@ const Header = () => {
   const showTitle = isTransactionCreationPath || isSaveBatchPath;
   const showLinkToLibrary = isTransactionCreationPath || isSaveBatchPath;
 
-  const { state } = useLocation();
-  const { from: previousUrl } = (state as { from: string }) || { from: CREATE_BATCH_PATH };
+  const { state } = useLocation() as LocationType;
+
+  const previousUrl = state?.from || CREATE_BATCH_PATH;
 
   return (
     <>
