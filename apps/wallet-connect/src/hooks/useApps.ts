@@ -19,10 +19,10 @@ export function useApps(): UseAppsResponse {
     (async () => {
       try {
         const chainInfo = await sdk.safe.getChainInfo();
-        const communicationInfo = await sdk.safe.getCommunicationInfo();
+        const environmentInfo = await sdk.safe.getEnvironmentInfo();
         const appsList = await getSafeApps(BASE_URL, chainInfo.chainId);
 
-        setOrigin(communicationInfo.origin);
+        setOrigin(environmentInfo.origin);
         setSafeAppsList(appsList);
         setNetworkPrefix(chainInfo.shortName);
       } catch (error) {
