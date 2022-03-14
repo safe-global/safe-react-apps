@@ -38,7 +38,7 @@ const GlobalStyle = createGlobalStyle`
         }
     
         .MuiFormControl-root  {
-            min-height: 80px;
+            min-height: 82px;
             margin-bottom: 0;
         }
 
