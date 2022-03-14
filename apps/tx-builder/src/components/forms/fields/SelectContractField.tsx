@@ -1,6 +1,5 @@
 import { Select } from '@gnosis.pm/safe-react-components';
 import { SelectItem } from '@gnosis.pm/safe-react-components/dist/inputs/Select';
-import styled from 'styled-components';
 
 type SelectContractFieldTypes = {
   options: SelectItem[];
@@ -12,7 +11,7 @@ type SelectContractFieldTypes = {
 
 const SelectContractField = ({ value, onChange, options, label, name }: SelectContractFieldTypes) => {
   return (
-    <StyledSelect
+    <Select
       name={name}
       label={label}
       items={options}
@@ -26,7 +25,3 @@ const SelectContractField = ({ value, onChange, options, label, name }: SelectCo
 };
 
 export default SelectContractField;
-
-const StyledSelect = styled(Select)`
-  margin-bottom: 10px;
-`;
