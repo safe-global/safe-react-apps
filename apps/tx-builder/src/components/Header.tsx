@@ -1,5 +1,5 @@
 import { FixedIcon, Icon, Text, Title, Tooltip } from '@gnosis.pm/safe-react-components';
-import { Link, Location, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { CREATE_BATCH_PATH, HOME_PATH, SAVE_BATCH_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
