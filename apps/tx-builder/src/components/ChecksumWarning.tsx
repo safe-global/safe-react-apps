@@ -4,7 +4,7 @@ import MuiAlertTitle from '@material-ui/lab/AlertTitle';
 import styled from 'styled-components';
 import { useTransactionLibrary } from '../store';
 
-const ChecksumWarning: React.FC = () => {
+const ChecksumWarning = () => {
   const { hasChecksumWarning, setHasChecksumWarning } = useTransactionLibrary();
 
   if (!hasChecksumWarning) {
