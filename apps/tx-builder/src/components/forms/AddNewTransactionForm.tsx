@@ -9,8 +9,7 @@ import SolidityForm, {
   TO_ADDRESS_FIELD_NAME,
   parseFormToProposedTransaction,
 } from './SolidityForm';
-import { useTransactions } from '../../store';
-import { useNetwork } from '../../store';
+import { useTransactions, useNetwork } from '../../store';
 
 type AddNewTransactionFormProps = {
   contract: ContractInterface | null;
