@@ -515,16 +515,26 @@ const StyledAccordion = styled(Accordion).withConfig({
 
   &.MuiAccordion-root {
     margin-bottom: 0;
-    border-color: ${({ isDragging }) => (isDragging ? '#92c9be' : ' #e8e7e6')};
+    border-color: ${({ isDragging, expanded }) => (isDragging || expanded ? '#92c9be' : '#e8e7e6')};
     transition: border-color 0.5s linear;
   }
 
   .MuiAccordionSummary-root {
     height: 52px;
     padding: 0px 8px;
+    background-color: ${({ isDragging }) => (isDragging ? '#EFFAF8' : '#FFFFFF')};
+
+    &:hover {
+      background-color: #ffffff;
+    }
 
     .MuiIconButton-root {
       padding: 8px;
+    }
+
+    &.Mui-expanded {
+      background-color: #effaf8;
+      border-color: ${({ isDragging, expanded }) => (isDragging || expanded ? '#92c9be' : '#e8e7e6')};
     }
   }
 
