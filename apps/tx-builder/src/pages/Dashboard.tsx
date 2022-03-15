@@ -58,7 +58,13 @@ const Dashboard = ({
       try {
         if (isValidAddress(address)) {
           setIsABILoading(true);
-          setAbi(JSON.stringify(await interfaceRepo.loadAbi(address)));
+          const abiResponse = await interfaceRepo.loadAbi(address);
+
+          if (abiResponse) {
+            setAbi(JSON.stringify(abiResponse));
+          } else {
+            setAbi('');
+          }
         }
       } catch (e) {
         setAbi('');
