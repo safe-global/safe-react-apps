@@ -235,7 +235,8 @@ const StyledText = styled(Text)`
 `;
 
 const StyledWarningText = styled(Text)`
-  margin-top: 5px;
+  margin-top: -12px;
+  margin-bottom: 5px;
 `;
 
 const CheckIconAddressAdornment = styled(CheckCircle)`
