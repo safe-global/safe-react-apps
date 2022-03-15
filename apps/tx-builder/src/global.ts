@@ -38,7 +38,12 @@ const GlobalStyle = createGlobalStyle`
         }
     
         .MuiFormControl-root  {
-            min-height: 79px;
+            min-height: 82px;
+            margin-bottom: 0;
+        }
+
+        .MuiTooltip-tooltip {
+            border: 0 !important;
         }
     }
 `;
