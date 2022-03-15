@@ -14,7 +14,6 @@ export default TextContractField;
 
 const StyledTextField = styled(TextFieldInput)`
   && {
-    margin-bottom: 10px;
     textarea {
       &.MuiInputBase-input {
         padding: 0;

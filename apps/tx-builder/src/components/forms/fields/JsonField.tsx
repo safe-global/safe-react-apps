@@ -155,7 +155,6 @@ const IconContainer = styled.div`
 
 const StyledTextField = styled(TextFieldInput)`
   && {
-    margin-top: 10px;
 
     textarea {
       font-family: monospace;

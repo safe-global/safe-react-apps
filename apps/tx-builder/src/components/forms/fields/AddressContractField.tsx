@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import { ReactElement } from 'react';
 import { AddressInput } from '@gnosis.pm/safe-react-components';
 
@@ -14,7 +13,7 @@ const AddressContractField = ({
   onBlur,
 }: any): ReactElement => {
   return (
-    <StyledAddressInput
+    <AddressInput
       id={id}
       name={name}
       label={label}
@@ -34,9 +33,3 @@ const AddressContractField = ({
 };
 
 export default AddressContractField;
-
-const StyledAddressInput = styled(AddressInput)`
-  && {
-    margin-bottom: 10px;
-  }
-`;
