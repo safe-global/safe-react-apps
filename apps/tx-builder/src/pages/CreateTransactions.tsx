@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button } from '@gnosis.pm/safe-react-components';
+import { Button, Tooltip } from '@gnosis.pm/safe-react-components';
 import Hidden from '@material-ui/core/Hidden';
 import Grid from '@material-ui/core/Grid';
 
@@ -23,6 +23,7 @@ const CreateTransactions = () => {
   const { chainInfo } = useNetwork();
 
   const [quickTipOpen, setQuickTipOpen] = useState(true);
+  const [fileChainId, setFileChainId] = useState<string>();
 
   const navigate = useNavigate();
 
@@ -73,6 +74,7 @@ const CreateTransactions = () => {
                   // we show a modal if the batch file is from a different chain
                   const isWrongChain = batchFile.chainId !== chainInfo?.chainId;
                   if (isWrongChain) {
+                    setFileChainId(batchFile.chainId);
                     openWrongChainModal();
                   }
                 }
@@ -83,7 +85,9 @@ const CreateTransactions = () => {
       </TransactionsSectionWrapper>
 
       {/* Uploaded batch network modal */}
-      {showWrongChainModal && <WrongChainBatchModal onClick={closeWrongChainModal} onClose={closeWrongChainModal} />}
+      {showWrongChainModal && (
+        <WrongChainBatchModal onClick={closeWrongChainModal} onClose={closeWrongChainModal} fileChainId={fileChainId} />
+      )}
     </>
   );
 };
@@ -106,10 +110,20 @@ const UploadedLabel = styled.span`
   color: #b2bbc0;
 `;
 
+const FilenameLabel = styled.div`
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 const FileNameTitle = ({ filename }: { filename: string }) => {
   return (
     <>
-      {filename} <UploadedLabel>uploaded</UploadedLabel>
+      <Tooltip title={filename}>
+        <FilenameLabel>{filename}</FilenameLabel>
+      </Tooltip>{' '}
+      <UploadedLabel>uploaded</UploadedLabel>
     </>
   );
 };
