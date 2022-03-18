@@ -31,7 +31,7 @@ const SaveBatchModal = ({ onClick, onClose }: SaveBatchModalProps) => {
 
   const onSubmit = (values: CreateBatchFormValuesTypes) => {
     const { [BATCH_NAME_FIELD]: batchName } = values;
-    onClick(batchName);
+    onClick(batchName.trim());
     navigate(SAVE_BATCH_PATH);
   };
 
@@ -79,5 +79,11 @@ const validateBatchName = (batchName: string, batches: Batch[]): ValidateResult 
 
   if (isBatchNameAlreadyTaken) {
     return 'this Batch name is already taken';
+  }
+
+  const trimmedBatchName = batchName.trim();
+
+  if (!trimmedBatchName) {
+    return 'Required';
   }
 };
