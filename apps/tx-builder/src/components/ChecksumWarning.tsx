@@ -14,7 +14,7 @@ const ChecksumWarning = () => {
   return (
     <ChecksumWrapper>
       <MuiAlert severity="warning" onClose={() => setHasChecksumWarning(false)}>
-        <MuiAlertTitle>This batch contains some changed properties since you save or download it</MuiAlertTitle>
+        <MuiAlertTitle>This batch contains some changed properties since you saved or downloaded it</MuiAlertTitle>
       </MuiAlert>
     </ChecksumWrapper>
   );
