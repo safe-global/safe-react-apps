@@ -110,8 +110,9 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
   const renameBatch = useCallback(
     async (batchId: string | number, newName: string) => {
       const batch = await StorageManager.getBatch(String(batchId));
-      if (batch) {
-        batch.meta.name = newName;
+      const trimmedName = newName.trim();
+      if (batch && trimmedName) {
+        batch.meta.name = trimmedName;
         await StorageManager.updateBatch(String(batchId), batch);
       }
       const batches = await loadBatches();
