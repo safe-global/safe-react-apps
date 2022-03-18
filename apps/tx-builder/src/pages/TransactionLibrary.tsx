@@ -24,6 +24,7 @@ import { getEditBatchUrl, HOME_PATH, REVIEW_AND_CONFIRM_PATH, TRANSACTION_LIBRAR
 import { useTransactionLibrary } from '../store';
 import { Batch } from '../typings/models';
 import { Box } from '@material-ui/core';
+import EditableLabel from '../components/EditableLabel';
 
 const TransactionLibrary = () => {
   const { batches, removeBatch, executeBatch, downloadBatch, renameBatch } = useTransactionLibrary();
@@ -53,23 +54,15 @@ const TransactionLibrary = () => {
               </TransactionCounterDot>
 
               {/* editable batch name */}
-              <Tooltip placement="top" title="Edit batch name" backgroundColor="primary" textColor="white" arrow>
-                <div>
-                  <Text size="xl">
-                    <EditableLabel
-                      contentEditable="true"
-                      suppressContentEditableWarning={true}
-                      onBlur={(event) => renameBatch(batch.id, event.target.innerText)}
-                      onKeyPress={(event: any) =>
-                        event.key === 'Enter' && renameBatch(batch.id, event.target.innerText) && event.preventDefault()
-                      }
-                      onClick={(event) => event.stopPropagation()} // to prevent open batch details
-                    >
+              <StyledBatchTitle size="xl">
+                <Tooltip placement="top" title="Edit batch name" backgroundColor="primary" textColor="white" arrow>
+                  <span>
+                    <EditableLabel onEdit={(newBatchName) => renameBatch(batch.id, newBatchName)}>
                       {batch.name}
                     </EditableLabel>
-                  </Text>
-                </div>
-              </Tooltip>
+                  </span>
+                </Tooltip>
+              </StyledBatchTitle>
 
               {/* batch actions  */}
               <BatchButtonsContainer>
@@ -204,6 +197,8 @@ const StyledAccordionSummary = styled(AccordionSummary)`
     display: flex;
     align-items: center;
 
+    max-width: calc(100% - 24px);
+
     .MuiIconButton-root {
       padding: 8px;
     }
@@ -215,26 +210,18 @@ const TransactionCounterDot = styled(Dot)`
   width: 24px;
 
   background-color: #566976;
+  flex-shrink: 0;
 `;
 
-const EditableLabel = styled.span`
-  margin-left: 8px;
-  padding: 10px;
-  cursor: text;
-  border-radius: 8px;
-  border: 1px solid transparent;
-
-  &:hover {
-    border-color: #e2e3e3;
-  }
-
-  &:focus {
-    outline-color: #008c73;
-  }
+const StyledBatchTitle = styled(Text)`
+  min-width: 10px;
 `;
 
 const BatchButtonsContainer = styled.div`
   flex-grow: 1;
+  flex-shrink: 0;
+  padding-left: 8px;
+
   display: flex;
   justify-content: flex-end;
   align-items: center;

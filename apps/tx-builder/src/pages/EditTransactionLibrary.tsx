@@ -8,11 +8,12 @@ import TransactionsBatchList from '../components/TransactionsBatchList';
 import { CREATE_BATCH_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
 
 import { useTransactionLibrary, useTransactions } from '../store';
+import EditableLabel from '../components/EditableLabel';
 
 const EditTransactionLibrary = () => {
   const { transactions, removeAllTransactions, replaceTransaction, reorderTransactions, removeTransaction } =
     useTransactions();
-  const { batch, downloadBatch, saveBatch, updateBatch } = useTransactionLibrary();
+  const { batch, downloadBatch, saveBatch, updateBatch, renameBatch } = useTransactionLibrary();
 
   const { batchId } = useParams();
 
@@ -28,7 +29,11 @@ const EditTransactionLibrary = () => {
     <TransactionsSectionWrapper item xs={12} md={6}>
       <TransactionsBatchList
         transactions={transactions}
-        batchTitle={batch?.name}
+        batchTitle={
+          batch && (
+            <EditableLabel onEdit={(newBatchName) => renameBatch(batch?.id, newBatchName)}>{batch?.name}</EditableLabel>
+          )
+        }
         removeTransaction={removeTransaction}
         saveBatch={saveBatch}
         downloadBatch={downloadBatch}

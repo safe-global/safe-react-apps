@@ -277,6 +277,7 @@ const TransactionCounterDot = styled(Dot)`
 const TransactionsTitle = styled(Title)`
   flex-grow: 1;
   margin-left: 14px;
+  min-width: 0;
 
   font-size: 16px;
   line-height: normal;
