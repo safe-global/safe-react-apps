@@ -26,7 +26,6 @@ const EditableComponent = styled.span`
   white-space: nowrap;
   overflow: scroll;
 
-  margin-left: 8px;
   padding: 10px;
   cursor: text;
   border-radius: 8px;

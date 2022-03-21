@@ -71,11 +71,13 @@ const Dashboard = (): ReactElement => {
 
   const showNewTransactionForm = isTransferTransaction || isContractInteractionTransaction;
 
+  const showNoPublicMethodsWarning = contract && contract.methods.length === 0;
+
   return (
     <Wrapper>
       <Grid alignItems="flex-start" container justifyContent="center" spacing={6}>
         <AddNewTransactionFormWrapper item xs={12} md={6}>
-          <HeaderWrapper container alignItems="center">
+          <Grid container alignItems="center">
             <Grid item xs={6}>
               <StyledTitle size="lg">New Transaction</StyledTitle>
             </Grid>
@@ -87,7 +89,7 @@ const Dashboard = (): ReactElement => {
                 <Text size="lg">Custom data</Text>
               </Grid>
             </Grid>
-          </HeaderWrapper>
+          </Grid>
 
           <StyledDivider />
 
@@ -123,6 +125,13 @@ const Dashboard = (): ReactElement => {
           )}
 
           <JsonField id={'abi'} name="abi" label="Enter ABI" value={abi} onChange={setAbi} />
+
+          {/* No public methods Warning */}
+          {showNoPublicMethodsWarning && (
+            <StyledMethodWarning color="warning" size="lg">
+              Contract ABI doesn't have any public methods.
+            </StyledMethodWarning>
+          )}
 
           {showNewTransactionForm && (
             <>
@@ -162,15 +171,17 @@ const StyledTitle = styled(Title)`
   font-size: 16px;
 `;
 
-const HeaderWrapper = styled(Grid)``;
+const StyledMethodWarning = styled(Text)`
+  margin-top: 8px;
+`;
 
 const StyledDivider = styled(Divider)`
   margin: 16px -24px 32px -24px;
 `;
 
 const StyledWarningText = styled(Text)`
-  margin-top: -12px;
-  margin-bottom: 5px;
+  margin-top: -18px;
+  margin-bottom: 14px;
 `;
 
 const CheckIconAddressAdornment = styled(CheckCircle)`

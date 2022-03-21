@@ -1,4 +1,4 @@
-import { Text, Title, Button } from '@gnosis.pm/safe-react-components';
+import { Title, Button } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 
 import { ContractInterface } from '../../typings/models';
@@ -26,8 +26,6 @@ const AddNewTransactionForm = ({ contract, to, showHexEncodedData }: AddNewTrans
   const { addTransaction } = useTransactions();
   const { networkPrefix, getAddressFromDomain, nativeCurrencySymbol } = useNetwork();
 
-  const showNoPublicMethodsWarning = contract && contract.methods.length === 0;
-
   const onSubmit = (values: SolidityFormValuesTypes) => {
     const proposedTransaction = parseFormToProposedTransaction(values, contract, nativeCurrencySymbol, networkPrefix);
 
@@ -36,13 +34,6 @@ const AddNewTransactionForm = ({ contract, to, showHexEncodedData }: AddNewTrans
 
   return (
     <>
-      {/* No public methods Warning */}
-      {showNoPublicMethodsWarning && (
-        <StyledMethodWarning color="warning" size="lg">
-          Contract ABI doesn't have any public methods.
-        </StyledMethodWarning>
-      )}
-
       <Title size="xs">Transaction information</Title>
 
       <SolidityForm
@@ -72,8 +63,4 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
-`;
-
-const StyledMethodWarning = styled(Text)`
-  margin-top: 8px;
 `;

@@ -197,7 +197,7 @@ const StyledAccordionSummary = styled(AccordionSummary)`
     display: flex;
     align-items: center;
 
-    max-width: calc(100% - 24px);
+    max-width: calc(100% - 32px);
 
     .MuiIconButton-root {
       padding: 8px;
@@ -214,6 +214,7 @@ const TransactionCounterDot = styled(Dot)`
 `;
 
 const StyledBatchTitle = styled(Text)`
+  padding-left: 4px;
   min-width: 10px;
 `;
 
