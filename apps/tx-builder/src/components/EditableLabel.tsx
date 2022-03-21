@@ -11,9 +11,7 @@ const EditableLabel = ({ children, onEdit }: EditableLabelProps) => {
       contentEditable="true"
       suppressContentEditableWarning={true}
       onBlur={(event) => onEdit(event.target.innerText)}
-      onKeyPress={(event: any) =>
-        event.key === 'Enter' && onEdit(event.target.innerText) && event.target.blur() && event.preventDefault()
-      }
+      onKeyPress={(event: any) => event.key === 'Enter' && event.target.blur() && event.preventDefault()}
       onClick={(event) => event.stopPropagation()}
     >
       {children}

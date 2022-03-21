@@ -31,7 +31,7 @@ const EditTransactionLibrary = () => {
         transactions={transactions}
         batchTitle={
           batch && (
-            <EditableLabel onEdit={(newBatchName) => renameBatch(batch?.id, newBatchName)}>{batch?.name}</EditableLabel>
+            <EditableLabel key={batch.name} onEdit={(newBatchName) => renameBatch(batch.id, newBatchName)}>{batch.name}</EditableLabel>
           )
         }
         removeTransaction={removeTransaction}
