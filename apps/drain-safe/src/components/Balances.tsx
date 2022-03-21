@@ -15,7 +15,7 @@ const ethToken: TokenInfo = {
   symbol: 'ETH',
   name: 'Ether',
   decimals: 18,
-  type: TokenType['NATIVE_COIN'],
+  type: TokenType['NATIVE_TOKEN'],
   address: '',
 };
 

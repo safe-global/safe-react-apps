@@ -10,6 +10,9 @@ import {
 import App from './App';
 import { renderWithProviders } from './utils/test-helpers';
 
+const CONNECTION_INPUT_TEXT = 'QR code or connection link';
+const HELP_TITLE = 'How to connect to a Dapp?';
+
 jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
   const originalModule = jest.requireActual('@gnosis.pm/safe-apps-react-sdk');
   return {
@@ -60,10 +63,10 @@ describe('WalletConnect unit tests', () => {
 
     expect(titleNode).toBeInTheDocument();
 
-    const inputNode = screen.getByPlaceholderText('QR code or connection');
+    const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT);
     expect(inputNode).toBeInTheDocument();
 
-    const instructionsNode = screen.getByText('How to connect to a Dapp?');
+    const instructionsNode = screen.getByText(HELP_TITLE);
 
     expect(instructionsNode).toBeInTheDocument();
   });
@@ -72,11 +75,11 @@ describe('WalletConnect unit tests', () => {
     it('Connects via onPaste valid URI', () => {
       renderWithProviders(<App />);
 
-      const instructionsNode = screen.getByText('How to connect to a Dapp?');
+      const instructionsNode = screen.getByText(HELP_TITLE);
 
       expect(instructionsNode).toBeInTheDocument();
 
-      const inputNode = screen.getByPlaceholderText('QR code or connection');
+      const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT);
 
       const URIPasteEvent = {
         clipboardData: {
@@ -114,11 +117,11 @@ describe('WalletConnect unit tests', () => {
     it('No connection is set if an invalid URI is provided', () => {
       renderWithProviders(<App />);
 
-      const instructionsNode = screen.getByText('How to connect to a Dapp?');
+      const instructionsNode = screen.getByText(HELP_TITLE);
 
       expect(instructionsNode).toBeInTheDocument();
 
-      const inputNode = screen.getByPlaceholderText('QR code or connection');
+      const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT);
 
       const URIPasteEvent = {
         clipboardData: {
@@ -264,11 +267,11 @@ describe('WalletConnect unit tests', () => {
     it('Disconnects if user clicks on Disconnect button', () => {
       renderWithProviders(<App />);
 
-      const instructionsNode = screen.getByText('How to connect to a Dapp?');
+      const instructionsNode = screen.getByText(HELP_TITLE);
 
       expect(instructionsNode).toBeInTheDocument();
 
-      const inputNode = screen.getByPlaceholderText('QR code or connection');
+      const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT);
 
       const URIPasteEvent = {
         clipboardData: {

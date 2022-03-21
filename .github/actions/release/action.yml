@@ -15,6 +15,9 @@ inputs:
   prod-deployment-hook-url:
     description: URL of the webhook that triggers the deployment to production
     required: true
+  react-app-rpc-token:
+    description: Infura RPC API token
+    required: true
 
 runs:
   using: composite
@@ -39,11 +42,12 @@ runs:
         PROD_DEPLOYMENT_HOOK_URL: ${{ inputs.prod-deployment-hook-url }}
         BUCKET_NAME: ${{ inputs.bucket-name }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
+        REACT_APP_RPC_TOKEN: ${{ inputs.react-app-rpc-token }}
 
     - name: Push changes
       uses: ad-m/github-push-action@8407731efefc0d8f72af254c74276b7a90be36e1
       with:
         github_token: ${{ inputs.github-token }}
-        branch: ${{ github.ref }}
+        branch: refs/heads/main-bump-versions
         force: true
         tags: true

@@ -82,6 +82,9 @@ jobs:
         run: |
           npx nx affected --target=test --parallel
           npx nx affected --target=build --parallel
+        env:
+          REACT_APP_RPC_TOKEN: ${{ secrets.REACT_APP_RPC_TOKEN }}
+
       # Script to deploy to the dev environment
       - name: 'Deploy to S3: Develop'
         if: github.ref == 'refs/heads/development'
@@ -108,12 +111,17 @@ jobs:
           ref: main
 
       - uses: ./.github/actions/setup-env
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: 'Deploy production'
         uses: ./.github/actions/release
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          prod_deployment_hook_token: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
-          prod_deployment_hook_url: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
-          bucket_name: ${{ secrets.STAGING_BUCKET_NAME }}/releases
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          prod-deployment-hook-token: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
+          prod-deployment-hook-url: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
+          bucket-name: ${{ secrets.STAGING_BUCKET_NAME }}/releases
+          react-app-rpc-token: ${{ secrets.REACT_APP_RPC_TOKEN }}
+

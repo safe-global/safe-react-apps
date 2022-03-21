@@ -34,7 +34,13 @@ const Dashboard = (): ReactElement => {
       try {
         if (isValidAddress(address)) {
           setIsABILoading(true);
-          setAbi(JSON.stringify(await interfaceRepo.loadAbi(address)));
+          const abiResponse = await interfaceRepo.loadAbi(address);
+
+          if (abiResponse) {
+            setAbi(JSON.stringify(abiResponse));
+          } else {
+            setAbi('');
+          }
         }
       } catch (e) {
         setAbi('');
@@ -163,7 +169,8 @@ const StyledDivider = styled(Divider)`
 `;
 
 const StyledWarningText = styled(Text)`
-  margin-top: -15px;
+  margin-top: -12px;
+  margin-bottom: 5px;
 `;
 
 const CheckIconAddressAdornment = styled(CheckCircle)`

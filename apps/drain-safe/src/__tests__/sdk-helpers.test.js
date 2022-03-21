@@ -51,7 +51,7 @@ describe('Safe SDK helpers', () => {
         balance: '2000000000000000000',
         fiatBalance: '4574.8946',
         fiatConversion: '2287.4473',
-        tokenInfo: { type: 'NATIVE_COIN', address: null },
+        tokenInfo: { type: 'NATIVE_TOKEN', address: null },
       });
 
       expect(tx).toEqual({
