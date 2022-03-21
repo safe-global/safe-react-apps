@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Button } from '@gnosis.pm/safe-react-components';
 
 import TransactionsBatchList from '../components/TransactionsBatchList';
-import { CREATE_BATCH_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
+import { CREATE_BATCH_PATH, EDIT_BATCH_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
 
 import { useTransactionLibrary, useTransactions } from '../store';
 import EditableLabel from '../components/EditableLabel';
@@ -31,7 +31,9 @@ const EditTransactionLibrary = () => {
         transactions={transactions}
         batchTitle={
           batch && (
-            <EditableLabel key={batch.name} onEdit={(newBatchName) => renameBatch(batch.id, newBatchName)}>{batch.name}</EditableLabel>
+            <EditableLabel key={batch.name} onEdit={(newBatchName) => renameBatch(batch.id, newBatchName)}>
+              {batch.name}
+            </EditableLabel>
           )
         }
         removeTransaction={removeTransaction}
@@ -55,7 +57,7 @@ const EditTransactionLibrary = () => {
           onClick={() => {
             const { name } = batch;
             updateBatch(batchId, name, transactions);
-            navigate(TRANSACTION_LIBRARY_PATH);
+            navigate(TRANSACTION_LIBRARY_PATH, { state: { from: EDIT_BATCH_PATH } });
           }}
         >
           Save Batch

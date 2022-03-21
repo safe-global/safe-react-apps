@@ -2,7 +2,13 @@ import { FixedIcon, Icon, Text, Title, Tooltip } from '@gnosis.pm/safe-react-com
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { CREATE_BATCH_PATH, HOME_PATH, SAVE_BATCH_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
+import {
+  CREATE_BATCH_PATH,
+  EDIT_BATCH_PATH,
+  HOME_PATH,
+  SAVE_BATCH_PATH,
+  TRANSACTION_LIBRARY_PATH,
+} from '../routes/routes';
 import { useTransactionLibrary } from '../store';
 import ChecksumWarning from './ChecksumWarning';
 
@@ -12,6 +18,8 @@ const HELP_ARTICLE_LINK =
 const goBackLabel: Record<string, string> = {
   [CREATE_BATCH_PATH]: 'Back to Transaction Creation',
   [TRANSACTION_LIBRARY_PATH]: 'Back to Your Transaction Library',
+  [EDIT_BATCH_PATH]: 'Back to Edit Batch',
+  [SAVE_BATCH_PATH]: 'Back to Transaction Creation',
 };
 
 type LocationType = {
