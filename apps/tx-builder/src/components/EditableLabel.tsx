@@ -24,7 +24,7 @@ export default EditableLabel;
 const EditableComponent = styled.span`
   display: block;
   white-space: nowrap;
-  overflow: scroll;
+  overflow: hidden;
 
   padding: 10px;
   cursor: text;
