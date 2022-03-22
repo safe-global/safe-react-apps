@@ -60,7 +60,7 @@ const batchFileObject = {
 test('Add checksum to BatchFile', () => {
   const batchFileWithChecksum = addChecksum(batchFileObject);
   expect(batchFileWithChecksum.meta.checksum).toBe(
-    '0x832ecdb6653751ed00b79dede73864163e46e71815b72e11e506d6399bedffc9',
+    '0x4ecbfd364aa6759983915644e73f8bd411e85a2dc306f252a387c2728c4db64c',
   );
 });
 
@@ -72,7 +72,7 @@ test('Validate checksum in BatchFile', () => {
 test('Checksum should remain the same when the properties order is not equal', () => {
   const batchFileWithChecksum = addChecksum(reverseBatchFileProps(batchFileObject));
   expect(batchFileWithChecksum.meta.checksum).toBe(
-    '0x832ecdb6653751ed00b79dede73864163e46e71815b72e11e506d6399bedffc9',
+    '0x4ecbfd364aa6759983915644e73f8bd411e85a2dc306f252a387c2728c4db64c',
   );
 });
 
