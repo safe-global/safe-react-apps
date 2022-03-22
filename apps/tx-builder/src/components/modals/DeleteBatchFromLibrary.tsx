@@ -50,7 +50,7 @@ const StyledModalBodyWrapper = styled.div`
 const StyledModalDot = styled(Dot)`
   height: 24px;
   width: 24px;
-
+  min-width: 24px;
   background-color: #566976;
 
   position: absolute;

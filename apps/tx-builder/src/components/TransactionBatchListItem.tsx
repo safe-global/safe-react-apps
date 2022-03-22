@@ -232,6 +232,7 @@ const PositionDot = styled(Dot).withConfig({
 })<{ isDragging: boolean }>`
   height: 24px;
   width: 24px;
+  min-width: 24px;
   background-color: ${({ isDragging }) => (isDragging ? '#92c9be' : ' #e2e3e3')};
   transition: background-color 0.5s linear;
 `;

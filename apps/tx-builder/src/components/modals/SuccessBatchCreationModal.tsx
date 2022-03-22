@@ -67,6 +67,7 @@ const StyledModalDot = styled(Dot)`
   position: absolute;
   height: 24px;
   width: 24px;
+  min-width: 24px;
   top: -1px;
 
   background-color: #566976;
