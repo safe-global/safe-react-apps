@@ -5,33 +5,23 @@ import styled from 'styled-components';
 type VirtualizedListProps<T> = {
   innerRef: any;
   items: T[];
-  renderVirtualWhenLengthGreaterThan: number;
   renderItem: (item: T, index: number) => React.ReactNode;
 };
 
-const VirtualizedList = <T extends unknown>({
-  items,
-  renderItem,
-  innerRef,
-  renderVirtualWhenLengthGreaterThan,
-}: VirtualizedListProps<T>) => {
-  if (items.length > renderVirtualWhenLengthGreaterThan) {
-    return (
-      <Virtuoso
-        style={{ height: 600 }}
-        scrollerRef={innerRef}
-        data={items}
-        itemContent={(index, item) => renderItem(item, index)}
-        components={{
-          Item: HeightPreservingItem,
-        }}
-        totalCount={items.length}
-        overscan={100}
-      />
-    );
-  }
-
-  return <>{items.map((item: any, index: number) => renderItem(item, index))}</>;
+const VirtualizedList = <T extends unknown>({ innerRef, items, renderItem }: VirtualizedListProps<T>) => {
+  return (
+    <Virtuoso
+      style={{ height: 600 }}
+      scrollerRef={innerRef}
+      data={items}
+      itemContent={(index, item) => renderItem(item, index)}
+      components={{
+        Item: HeightPreservingItem,
+      }}
+      totalCount={items.length}
+      overscan={100}
+    />
+  );
 };
 
 const HeightPreservingItem: React.FC = memo(({ children, ...props }: any) => {
