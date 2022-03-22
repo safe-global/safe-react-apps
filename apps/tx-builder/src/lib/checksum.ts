@@ -3,7 +3,7 @@ import { BatchFile } from '../typings/models';
 
 // JSON spec does not allow undefined so stringify removes the prop
 // That's a problem for calculating the checksum back so this function avoid the issue
-export const stringifyReplacer = (key: string, value: any) => (value === undefined ? null : value);
+export const stringifyReplacer = (_: string, value: any) => (value === undefined ? null : value);
 
 const serializeJSONObject = (json: any): string => {
   if (Array.isArray(json)) {
@@ -26,7 +26,7 @@ const serializeJSONObject = (json: any): string => {
 };
 
 const calculateChecksum = (batchFile: BatchFile): string | undefined => {
-  const serialized = serializeJSONObject(batchFile);
+  const serialized = serializeJSONObject({ ...batchFile, meta: { ...batchFile.meta, name: null } });
   const sha = web3.utils.sha3(serialized);
 
   return sha || undefined;
