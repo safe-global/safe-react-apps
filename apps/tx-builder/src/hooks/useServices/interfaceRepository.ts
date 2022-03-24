@@ -5,6 +5,7 @@ export interface ContractInput {
   internalType: string;
   name: string;
   type: string;
+  components: ContractInput[];
 }
 
 export interface ContractMethod {
