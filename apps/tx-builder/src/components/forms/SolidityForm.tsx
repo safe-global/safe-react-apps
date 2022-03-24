@@ -209,14 +209,16 @@ const SolidityForm = ({
         {/* Contract Fields */}
         {contractFields.map((contractField, index) => {
           const name = `${CONTRACT_VALUES_FIELD_NAME}.${contractField.name || index}`;
+          const fieldType = getInputTypeHelper(contractField);
+
           return (
             showContractFields && (
               <Field
                 key={name}
                 id={`contract-field-${contractField.name || index}`}
                 name={name}
-                label={`${contractField.name || `${index + 1}º contract field`} (${contractField.type})`}
-                fieldType={contractField.type as SolidityFieldTypes}
+                label={`${contractField.name || `${index + 1}º contract field`} (${fieldType})`}
+                fieldType={fieldType as SolidityFieldTypes}
                 fullWidth
                 required
                 shouldUnregister={false} // required to keep contract field values in the form state when the user switches between encoding and decoding data
@@ -258,6 +260,17 @@ const SolidityForm = ({
       {!isProdEnv && <DevTool control={control} />}
     </>
   );
+};
+
+const getInputTypeHelper = (input: any) => {
+  // This code renders a helper for the input text.
+  if (input.type.startsWith('tuple')) {
+    return `tuple(${input.components.map((c: any) => c.internalType).toString()})${
+      input.type.endsWith('[]') ? '[]' : ''
+    }`;
+  } else {
+    return input.type;
+  }
 };
 
 export default SolidityForm;
