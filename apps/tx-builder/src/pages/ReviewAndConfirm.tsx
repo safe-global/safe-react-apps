@@ -6,45 +6,33 @@ import DeleteBatchModal from '../components/modals/DeleteBatchModal';
 import TransactionsBatchList from '../components/TransactionsBatchList';
 import useModal from '../hooks/useModal/useModal';
 import { HOME_PATH } from '../routes/routes';
-import { ProposedTransaction } from '../typings/models';
 import { useEffect } from 'react';
 import SuccessBatchCreationModal from '../components/modals/SuccessBatchCreationModal';
+import { useTransactionLibrary, useTransactions } from '../store';
 
-type ReviewAndConfirmProps = {
-  transactions: ProposedTransaction[];
-  handleSubmitTransactions: () => void;
-  handleRemoveTransaction: (index: number) => void;
-  handleRemoveAllTransactions: () => void;
-  handleReorderTransactions: (sourceIndex: number, destinationIndex: number) => void;
-  handleReplaceTransaction: (newTransaction: ProposedTransaction, index: number) => void;
-  networkPrefix: string | undefined;
-  nativeCurrencySymbol: string | undefined;
-  getAddressFromDomain: (name: string) => Promise<string>;
-};
-
-const ReviewAndConfirm = ({
-  transactions,
-  handleRemoveTransaction,
-  handleRemoveAllTransactions,
-  handleSubmitTransactions,
-  handleReorderTransactions,
-  handleReplaceTransaction,
-  networkPrefix,
-  nativeCurrencySymbol,
-  getAddressFromDomain,
-}: ReviewAndConfirmProps) => {
+const ReviewAndConfirm = () => {
   const {
     open: showSuccessBatchModal,
     openModal: openSuccessBatchModal,
     closeModal: closeSuccessBatchModal,
   } = useModal();
+  const {
+    transactions,
+    removeTransaction,
+    removeAllTransactions,
+    replaceTransaction,
+    submitTransactions,
+    reorderTransactions,
+  } = useTransactions();
+  const { downloadBatch, saveBatch } = useTransactionLibrary();
+
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
 
   const navigate = useNavigate();
 
   const createBatch = async () => {
     try {
-      await handleSubmitTransactions();
+      await submitTransactions();
       openSuccessBatchModal();
     } catch (e) {
       console.error('Error sending transactions:', e);
@@ -65,15 +53,15 @@ const ReviewAndConfirm = ({
         <StyledTitle size="xl">Review and Confirm</StyledTitle>
 
         <TransactionsBatchList
+          batchTitle={'Transactions Batch'}
           transactions={transactions}
-          onRemoveTransaction={handleRemoveTransaction}
-          handleReorderTransactions={handleReorderTransactions}
-          onEditTransaction={handleReplaceTransaction}
+          removeTransaction={removeTransaction}
+          saveBatch={saveBatch}
+          downloadBatch={downloadBatch}
+          reorderTransactions={reorderTransactions}
+          replaceTransaction={replaceTransaction}
           showTransactionDetails
-          allowTransactionReordering
-          networkPrefix={networkPrefix}
-          getAddressFromDomain={getAddressFromDomain}
-          nativeCurrencySymbol={nativeCurrencySymbol}
+          showBatchHeader
         />
 
         <ButtonsWrapper>
@@ -106,11 +94,7 @@ const ReviewAndConfirm = ({
 
       {/* Delete batch modal */}
       {showDeleteBatchModal && (
-        <DeleteBatchModal
-          count={transactions.length}
-          onClick={handleRemoveAllTransactions}
-          onClose={closeDeleteBatchModal}
-        />
+        <DeleteBatchModal count={transactions.length} onClick={removeAllTransactions} onClose={closeDeleteBatchModal} />
       )}
 
       {/* Success batch modal */}
@@ -118,11 +102,11 @@ const ReviewAndConfirm = ({
         <SuccessBatchCreationModal
           count={transactions.length}
           onClick={() => {
-            handleRemoveAllTransactions();
+            removeAllTransactions();
             closeSuccessBatchModal();
           }}
           onClose={() => {
-            handleRemoveAllTransactions();
+            removeAllTransactions();
             closeSuccessBatchModal();
           }}
         />

@@ -13,7 +13,7 @@ import validateAmountField from './validateAmountField';
 import validateBooleanField from './validateBooleanField';
 import validateHexEncodedDataField from './validateHexEncodedDataField';
 
-type ValidationFunction = (value: string, fieldType: string) => ValidateResult;
+export type ValidationFunction = (value: string, fieldType: string) => ValidateResult;
 
 interface CustomValidationsType {
   [key: string]: ValidationFunction[];
@@ -29,9 +29,9 @@ const CUSTOM_VALIDATIONS: CustomValidationsType = {
   [NATIVE_AMOUNT_FIELD_TYPE]: [validateAmountField, uintBasicValidation],
 };
 
-const validateField = (fieldType: string): Validate<string> => {
+const validateField = (fieldType: string, validations: ValidationFunction[] = []): Validate<string> => {
   return (value: string): ValidateResult =>
-    [...(CUSTOM_VALIDATIONS?.[fieldType] || []), basicSolidityValidation].reduce<ValidateResult>(
+    [...(CUSTOM_VALIDATIONS?.[fieldType] || []), basicSolidityValidation, ...validations].reduce<ValidateResult>(
       (error, validation) => {
         return error || validation(value, fieldType);
       },

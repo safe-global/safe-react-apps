@@ -1,7 +1,6 @@
 import { AbiItem, toBN, isAddress, fromWei } from 'web3-utils';
 import abiCoder, { AbiCoder } from 'web3-eth-abi';
-
-import { ContractInput, ContractMethod } from './hooks/useServices/interfaceRepository';
+import { ContractInput, ContractMethod, ProposedTransaction } from './typings/models';
 
 export enum CHAINS {
   MAINNET = '1',
@@ -133,4 +132,27 @@ export const encodeToHexData = (contractMethod: ContractMethod | undefined, cont
 
 export const weiToEther = (wei: string) => {
   return fromWei(wei, 'ether');
+};
+
+export const getTransactionText = (description: ProposedTransaction['description']) => {
+  const { contractMethod, customTransactionData } = description;
+
+  const isCustomHexDataTx = !!customTransactionData;
+  const isContractInteractionTx = !!contractMethod;
+  const isTokenTransferTx = !isCustomHexDataTx && !isContractInteractionTx;
+
+  if (isTokenTransferTx) {
+    return 'Transfer';
+  }
+
+  if (isCustomHexDataTx) {
+    return 'Custom hex data';
+  }
+
+  if (isContractInteractionTx) {
+    return contractMethod.name;
+  }
+
+  // empty tx description as a fallback
+  return '';
 };

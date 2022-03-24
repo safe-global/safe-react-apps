@@ -14,7 +14,7 @@ import AddressContractField from './AddressContractField';
 import SelectContractField from './SelectContractField';
 import TextareaContractField from './TextareaContractField';
 import TextContractField from './TextContractField';
-import validateField from '../validations/validateField';
+import validateField, { ValidationFunction } from '../validations/validateField';
 
 const CUSTOM_SOLIDITY_COMPONENTS: CustomSolidityComponent = {
   [ADDRESS_FIELD_TYPE]: AddressContractField,
@@ -57,6 +57,7 @@ type FieldProps = {
   label: string;
   fullWidth?: boolean;
   required?: boolean;
+  validations?: ValidationFunction[];
   getAddressFromDomain?: (name: string) => Promise<string>;
   networkPrefix?: string;
   showErrorsInTheLabel?: boolean;
@@ -71,6 +72,7 @@ const Field = ({
   shouldUnregister = true,
   options,
   required = true,
+  validations, // you can define extra validations as a prop
   ...props
 }: FieldProps) => {
   // Component based on field type
@@ -88,7 +90,7 @@ const Field = ({
           value: required,
           message: 'Required',
         },
-        validate: validateField(fieldType),
+        validate: validateField(fieldType, validations),
       }}
       render={({ field, fieldState }) => (
         <Component

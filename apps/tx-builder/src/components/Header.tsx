@@ -1,35 +1,82 @@
 import { FixedIcon, Icon, Text, Title, Tooltip } from '@gnosis.pm/safe-react-components';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { HOME_PATH, REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
+
+import {
+  CREATE_BATCH_PATH,
+  EDIT_BATCH_PATH,
+  HOME_PATH,
+  SAVE_BATCH_PATH,
+  TRANSACTION_LIBRARY_PATH,
+} from '../routes/routes';
+import { useTransactionLibrary } from '../store';
+import ChecksumWarning from './ChecksumWarning';
+
+const HELP_ARTICLE_LINK =
+  'https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app';
+
+const goBackLabel: Record<string, string> = {
+  [CREATE_BATCH_PATH]: 'Back to Transaction Creation',
+  [TRANSACTION_LIBRARY_PATH]: 'Back to Your Transaction Library',
+  [EDIT_BATCH_PATH]: 'Back to Edit Batch',
+  [SAVE_BATCH_PATH]: 'Back to Transaction Creation',
+};
+
+type LocationType = {
+  state: { from: string } | null;
+};
 
 const Header = () => {
   const { pathname } = useLocation();
 
-  const isReviewAndConfirmPath = pathname === REVIEW_AND_CONFIRM_PATH;
+  const navigate = useNavigate();
+
+  const goBack = () => navigate(-1);
+
+  const { batches } = useTransactionLibrary();
+
+  const isTransactionCreationPath = pathname === CREATE_BATCH_PATH;
+  const isSaveBatchPath = pathname === SAVE_BATCH_PATH;
+
+  const showTitle = isTransactionCreationPath || isSaveBatchPath;
+  const showLinkToLibrary = isTransactionCreationPath || isSaveBatchPath;
+
+  const { state } = useLocation() as LocationType;
+
+  const previousUrl = state?.from || CREATE_BATCH_PATH;
 
   return (
-    <HeaderWrapper>
-      {isReviewAndConfirmPath ? (
-        <StyledLink to={HOME_PATH}>
-          <FixedIcon type={'chevronLeft'} />
-          <StyledLinkLabel size="xl">Back to Transaction Creation</StyledLinkLabel>
-        </StyledLink>
-      ) : (
-        <>
-          <StyledTitle size="xl">Transaction Builder</StyledTitle>
-          <Tooltip placement="top" title="Help Article" backgroundColor="primary" textColor="white" arrow>
-            <a
-              href="https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Icon size="md" type="info" />
-            </a>
-          </Tooltip>
-        </>
-      )}
-    </HeaderWrapper>
+    <>
+      <HeaderWrapper>
+        {showTitle ? (
+          <>
+            {/* Transaction Builder Title */}
+            <StyledTitle size="xl">Transaction Builder</StyledTitle>
+            <Tooltip placement="top" title="Help Article" backgroundColor="primary" textColor="white" arrow>
+              <a href={HELP_ARTICLE_LINK} target="_blank" rel="noreferrer">
+                <Icon size="md" type="info" />
+              </a>
+            </Tooltip>
+          </>
+        ) : (
+          <StyledLink to={HOME_PATH} onClick={goBack}>
+            {/* Go Back link */}
+            <FixedIcon type={'chevronLeft'} />
+            <StyledLeftLinkLabel size="xl">{goBackLabel[previousUrl]}</StyledLeftLinkLabel>
+          </StyledLink>
+        )}
+
+        {showLinkToLibrary && (
+          <RigthLinkWrapper>
+            <StyledLink to={TRANSACTION_LIBRARY_PATH}>
+              <StyledRightLinkLabel size="xl">{`(${batches.length}) Your transaction library`}</StyledRightLinkLabel>
+              <FixedIcon type={'chevronRight'} />
+            </StyledLink>
+          </RigthLinkWrapper>
+        )}
+      </HeaderWrapper>
+      <ChecksumWarning />
+    </>
   );
 };
 
@@ -45,6 +92,7 @@ const HeaderWrapper = styled.header`
   background-color: white;
   height: 70px;
   padding: 0 40px;
+  box-sizing: border-box;
 `;
 
 const StyledTitle = styled(Title)`
@@ -60,6 +108,16 @@ const StyledLink = styled(Link)`
   text-decoration: none;
 `;
 
-const StyledLinkLabel = styled(Text)`
-  margin-left: 12px;
+const StyledLeftLinkLabel = styled(Text)`
+  margin-left: 8px;
+`;
+
+const RigthLinkWrapper = styled.div`
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+`;
+
+const StyledRightLinkLabel = styled(Text)`
+  margin-right: 8px;
 `;

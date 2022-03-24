@@ -1,35 +1,35 @@
 import { Dot, Text, Button, GenericModal } from '@gnosis.pm/safe-react-components';
 import Box from '@material-ui/core/Box';
-import styled from 'styled-components';
 
-type DeleteBatchModalProps = {
-  count: number;
-  onClick: () => void;
+import styled from 'styled-components';
+import { Batch } from '../../typings/models';
+
+type DeleteBatchFromLibraryProps = {
+  batch: Batch;
+  onClick: (batch: Batch) => void;
   onClose: () => void;
 };
 
-const DeleteBatchModal = ({ count, onClick, onClose }: DeleteBatchModalProps) => {
+const DeleteBatchFromLibrary = ({ batch, onClick, onClose }: DeleteBatchFromLibraryProps) => {
   return (
     <GenericModal
-      title="Cancel Transaction Batch?"
+      title="Delete batch from the library?"
       withoutBodyPadding
       body={
         <StyledModalBodyWrapper>
           <StyledModalDot color="tag">
             <Text size="xl" color="white">
-              {count}
+              {batch.transactions.length}
             </Text>
           </StyledModalDot>
 
-          <StyledModalText size="xl">
-            Transaction Batch will be permanently deleted and the transaction data will be lost
-          </StyledModalText>
+          <StyledModalText size="xl">{`${batch.name} batch will be permanently deleted`}</StyledModalText>
           <StyledModalButtonsWrapper display="flex" alignItems="center" justifyContent="center" maxWidth={'450px'}>
             <Button size="md" variant="bordered" onClick={onClose}>
               Back
             </Button>
-            <Button size="md" style={{ marginLeft: 16 }} color="error" onClick={onClick}>
-              Yes, Cancel
+            <Button size="md" style={{ marginLeft: 16 }} color="error" onClick={() => onClick(batch)}>
+              Yes, Delete
             </Button>
           </StyledModalButtonsWrapper>
         </StyledModalBodyWrapper>
@@ -39,7 +39,7 @@ const DeleteBatchModal = ({ count, onClick, onClose }: DeleteBatchModalProps) =>
   );
 };
 
-export default DeleteBatchModal;
+export default DeleteBatchFromLibrary;
 
 const StyledModalBodyWrapper = styled.div`
   position: relative;

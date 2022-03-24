@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Switch, Text } from '@gnosis.pm/safe-react-components';
 import { DevTool } from '@hookform/devtools';
 import { toChecksumAddress, toWei } from 'web3-utils';
 
-import { ContractInterface } from '../../hooks/useServices/interfaceRepository';
 import {
   ADDRESS_FIELD_TYPE,
   CONTRACT_METHOD_FIELD_TYPE,
@@ -14,7 +12,7 @@ import {
 } from './fields/fields';
 import Field from './fields/Field';
 import { encodeToHexData } from '../../utils';
-import { ProposedTransaction } from '../../typings/models';
+import { ContractInterface, ProposedTransaction } from '../../typings/models';
 
 export const TO_ADDRESS_FIELD_NAME = 'toAddress';
 export const NATIVE_VALUE_FIELD_NAME = 'nativeAmount';
@@ -30,9 +28,9 @@ type SolidityFormPropsTypes = {
   contract: ContractInterface | null;
   onSubmit: SubmitHandler<SolidityFormValuesTypes>;
   initialValues?: Partial<SolidityInitialFormValuesTypes>;
-  defaultHexDataView?: boolean;
   showHexToggler?: boolean;
   children: React.ReactNode;
+  showHexEncodedData: boolean;
 };
 
 export type SolidityInitialFormValuesTypes = {
@@ -93,12 +91,9 @@ const SolidityForm = ({
   nativeCurrencySymbol,
   networkPrefix,
   contract,
-  defaultHexDataView,
-  showHexToggler = true,
   children,
+  showHexEncodedData,
 }: SolidityFormPropsTypes) => {
-  const [showHexEncodedData, setShowHexEncodedData] = useState<boolean>(!!defaultHexDataView);
-
   const {
     handleSubmit,
     control,
@@ -124,15 +119,14 @@ const SolidityForm = ({
 
   const isValueInputVisible = showHexEncodedData || !showContractFields || isPayableMethod;
 
-  const onClickShowHexEncodedData = (checked: boolean) => {
+  useEffect(() => {
     const contractFieldsValues = getValues(CONTRACT_VALUES_FIELD_NAME);
 
-    if (checked && contractMethod) {
+    if (showHexEncodedData && contractMethod) {
       const encodeData = encodeToHexData(contractMethod, contractFieldsValues);
       setValue(CUSTOM_TRANSACTION_DATA_FIELD_TYPE, encodeData || '');
     }
-    setShowHexEncodedData(checked);
-  };
+  }, [contractMethod, getValues, setValue, showHexEncodedData]);
 
   // Resets form to initial values if the user edited contract method and then switched to custom data and edited it
   useEffect(() => {
@@ -241,14 +235,6 @@ const SolidityForm = ({
             control={control}
             showErrorsInTheLabel={false}
           />
-        )}
-
-        {/* Switch button to encoding contract fields values to hex data */}
-        {showHexToggler && (
-          <Text size="lg">
-            <Switch checked={showHexEncodedData} onChange={onClickShowHexEncodedData} />
-            Use custom data (hex encoded)
-          </Text>
         )}
         {/* action buttons as a children */}
         {children}

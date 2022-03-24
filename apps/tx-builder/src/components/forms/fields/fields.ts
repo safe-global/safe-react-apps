@@ -33,12 +33,17 @@ export const CONTRACT_METHOD_FIELD_TYPE = 'contractMethod';
 // encoded hex data field
 export const CUSTOM_TRANSACTION_DATA_FIELD_TYPE = 'customTransactionData';
 
+// text field
+export const TEXT_FIELD_TYPE = 'text';
+
 export type CustomFieldTypes =
   | typeof NATIVE_AMOUNT_FIELD_TYPE
   | typeof CONTRACT_METHOD_FIELD_TYPE
-  | typeof CUSTOM_TRANSACTION_DATA_FIELD_TYPE;
+  | typeof CUSTOM_TRANSACTION_DATA_FIELD_TYPE
+  | typeof TEXT_FIELD_TYPE;
 
 export const NON_SOLIDITY_TYPES = [
+  TEXT_FIELD_TYPE,
   NATIVE_AMOUNT_FIELD_TYPE,
   CONTRACT_METHOD_FIELD_TYPE,
   CUSTOM_TRANSACTION_DATA_FIELD_TYPE,
