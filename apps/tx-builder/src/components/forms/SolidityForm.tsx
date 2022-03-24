@@ -265,9 +265,7 @@ const SolidityForm = ({
 const getInputTypeHelper = (input: any) => {
   // This code renders a helper for the input text.
   if (input.type.startsWith('tuple')) {
-    return `tuple(${input.components.map((c: any) => c.internalType).toString()})${
-      input.type.endsWith('[]') ? '[]' : ''
-    }`;
+    return `tuple(${input.components.map((c: any) => c.type).toString()})${input.type.endsWith('[]') ? '[]' : ''}`;
   } else {
     return input.type;
   }
