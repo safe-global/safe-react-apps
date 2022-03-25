@@ -1,34 +1,21 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import Header from './components/Header';
-import useServices from './hooks/useServices';
+import { Routes, Route } from 'react-router-dom';
 
-import useTransactions from './hooks/useTransactions';
+import Header from './components/Header';
+import CreateTransactions from './pages/CreateTransactions';
 import Dashboard from './pages/Dashboard';
+import EditTransactionLibrary from './pages/EditTransactionLibrary';
 import ReviewAndConfirm from './pages/ReviewAndConfirm';
-import { HOME_PATH, REVIEW_AND_CONFIRM_PATH } from './routes/routes';
+import SaveTransactionLibrary from './pages/SaveTransactionLibrary';
+import TransactionLibrary from './pages/TransactionLibrary';
+import {
+  HOME_PATH,
+  EDIT_BATCH_PATH,
+  REVIEW_AND_CONFIRM_PATH,
+  SAVE_BATCH_PATH,
+  TRANSACTION_LIBRARY_PATH,
+} from './routes/routes';
 
 const App = () => {
-  const {
-    transactions,
-    handleAddTransaction,
-    handleRemoveTransaction,
-    handleSubmitTransactions,
-    handleRemoveAllTransactions,
-    handleReorderTransactions,
-    handleReplaceTransaction,
-  } = useTransactions();
-
-  const { web3, interfaceRepo, chainInfo } = useServices();
-
-  const networkPrefix = chainInfo?.shortName;
-
-  const navigate = useNavigate();
-  const nativeCurrencySymbol = chainInfo?.nativeCurrency.symbol;
-
-  const getAddressFromDomain = (name: string): Promise<string> => {
-    return web3?.eth.ens.getAddress(name) || new Promise((resolve) => resolve(name));
-  };
-
   return (
     <>
       {/* App Header */}
@@ -36,42 +23,22 @@ const App = () => {
 
       <Routes>
         {/* Dashboard Screen (Create transactions) */}
-        <Route
-          path={HOME_PATH}
-          element={
-            <Dashboard
-              transactions={transactions}
-              handleAddTransaction={handleAddTransaction}
-              handleRemoveTransaction={handleRemoveTransaction}
-              handleSubmitTransactions={() => navigate(REVIEW_AND_CONFIRM_PATH)}
-              handleRemoveAllTransactions={handleRemoveAllTransactions}
-              handleReorderTransactions={handleReorderTransactions}
-              handleReplaceTransaction={handleReplaceTransaction}
-              interfaceRepo={interfaceRepo}
-              networkPrefix={networkPrefix}
-              nativeCurrencySymbol={nativeCurrencySymbol}
-              getAddressFromDomain={getAddressFromDomain}
-            />
-          }
-        />
+        <Route path={HOME_PATH} element={<Dashboard />}>
+          {/* Transactions Batch section */}
+          <Route index element={<CreateTransactions />} />
+
+          {/* Save Batch section */}
+          <Route path={SAVE_BATCH_PATH} element={<SaveTransactionLibrary />} />
+
+          {/* Edit Batch section */}
+          <Route path={EDIT_BATCH_PATH} element={<EditTransactionLibrary />} />
+        </Route>
 
         {/* Review & Confirm Screen */}
-        <Route
-          path={REVIEW_AND_CONFIRM_PATH}
-          element={
-            <ReviewAndConfirm
-              transactions={transactions}
-              handleRemoveTransaction={handleRemoveTransaction}
-              handleRemoveAllTransactions={handleRemoveAllTransactions}
-              handleSubmitTransactions={handleSubmitTransactions}
-              handleReorderTransactions={handleReorderTransactions}
-              handleReplaceTransaction={handleReplaceTransaction}
-              networkPrefix={networkPrefix}
-              nativeCurrencySymbol={nativeCurrencySymbol}
-              getAddressFromDomain={getAddressFromDomain}
-            />
-          }
-        />
+        <Route path={REVIEW_AND_CONFIRM_PATH} element={<ReviewAndConfirm />} />
+
+        {/* Transaction Library Screen */}
+        <Route path={TRANSACTION_LIBRARY_PATH} element={<TransactionLibrary />} />
       </Routes>
     </>
   );
