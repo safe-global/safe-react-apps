@@ -4,7 +4,7 @@ import { Switch, Text } from '@gnosis.pm/safe-react-components';
 import { DevTool } from '@hookform/devtools';
 import { toChecksumAddress, toWei } from 'web3-utils';
 
-import { ContractInput, ContractInterface } from '../../hooks/useServices/interfaceRepository';
+import { ContractInterface } from '../../hooks/useServices/interfaceRepository';
 import {
   ADDRESS_FIELD_TYPE,
   CONTRACT_METHOD_FIELD_TYPE,
@@ -13,7 +13,7 @@ import {
   SolidityFieldTypes,
 } from './fields/fields';
 import Field from './fields/Field';
-import { encodeToHexData } from '../../utils';
+import { encodeToHexData, getInputTypeHelper } from '../../utils';
 import { ProposedTransaction } from '../../typings/models';
 
 export const TO_ADDRESS_FIELD_NAME = 'toAddress';
@@ -260,19 +260,6 @@ const SolidityForm = ({
       {!isProdEnv && <DevTool control={control} />}
     </>
   );
-};
-
-const getInputTypeHelper = (input: ContractInput): string => {
-  // This code renders a helper for the input text.
-  if (input.type.startsWith('tuple')) {
-    return `tuple(${input.components
-      .map((i: ContractInput) => {
-        return getInputTypeHelper(i);
-      })
-      .toString()})${input.type.endsWith('[]') ? '[]' : ''}`;
-  } else {
-    return input.type;
-  }
 };
 
 export default SolidityForm;

@@ -134,3 +134,16 @@ export const encodeToHexData = (contractMethod: ContractMethod | undefined, cont
 export const weiToEther = (wei: string) => {
   return fromWei(wei, 'ether');
 };
+
+export const getInputTypeHelper = (input: ContractInput): string => {
+  // This code renders a helper for the input text.
+  if (input.type.startsWith('tuple') && input.components) {
+    return `tuple(${input.components
+      .map((i: ContractInput) => {
+        return getInputTypeHelper(i);
+      })
+      .toString()})${input.type.endsWith('[]') ? '[]' : ''}`;
+  } else {
+    return input.type;
+  }
+};
