@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button, Tooltip } from '@gnosis.pm/safe-react-components';
-import Hidden from '@material-ui/core/Hidden';
 import Grid from '@material-ui/core/Grid';
 
 import TransactionsBatchList from '../components/TransactionsBatchList';
