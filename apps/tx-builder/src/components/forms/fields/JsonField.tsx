@@ -149,13 +149,13 @@ const JSONFieldContainer = styled.div`
 
 const IconContainer = styled.div`
   position: absolute;
-  top: 20px;
-  right: 10px;
+  top: 14px;
+  right: 25px;
+  background-color: #fff;
 `;
 
 const StyledTextField = styled(TextFieldInput)`
   && {
-
     textarea {
       font-family: monospace;
       font-size: 12px;

@@ -65,22 +65,20 @@ const CreateTransactions = () => {
             )}
           </>
         ) : (
-          <Hidden smDown>
-            <CreateNewBatchCard
-              onFileSelected={async (uploadedFile: File | null) => {
-                if (uploadedFile) {
-                  setFileName(uploadedFile.name);
-                  const batchFile = await importBatch(uploadedFile);
-                  // we show a modal if the batch file is from a different chain
-                  const isWrongChain = batchFile.chainId !== chainInfo?.chainId;
-                  if (isWrongChain) {
-                    setFileChainId(batchFile.chainId);
-                    openWrongChainModal();
-                  }
+          <CreateNewBatchCard
+            onFileSelected={async (uploadedFile: File | null) => {
+              if (uploadedFile) {
+                setFileName(uploadedFile.name);
+                const batchFile = await importBatch(uploadedFile);
+                // we show a modal if the batch file is from a different chain
+                const isWrongChain = batchFile.chainId !== chainInfo?.chainId;
+                if (isWrongChain) {
+                  setFileChainId(batchFile.chainId);
+                  openWrongChainModal();
                 }
-              }}
-            />
-          </Hidden>
+              }
+            }}
+          />
         )}
       </TransactionsSectionWrapper>
 
