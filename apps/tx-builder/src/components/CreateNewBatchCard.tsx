@@ -1,6 +1,7 @@
+import { useRef } from 'react';
 import { ButtonLink, Icon, Text } from '@gnosis.pm/safe-react-components';
+import { alpha } from '@material-ui/core';
 import Hidden from '@material-ui/core/Hidden';
-import React, { useRef } from 'react';
 import styled from 'styled-components';
 
 import { ReactComponent as CreateNewBatchSVG } from '../assets/add-new-batch.svg';
@@ -12,9 +13,9 @@ type CreateNewBatchCardProps = {
 
 const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const [isOverDropZone, handlers] = useDropZone((file: File | null) => {
+  const { isOverDropZone, isAcceptError, dropHandlers } = useDropZone((file: File | null) => {
     onFileSelected(file);
-  });
+  }, '.json');
 
   const handleFileSelected = (event: any) => {
     event.preventDefault();
@@ -33,12 +34,20 @@ const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
       <Hidden smDown>
         <CreateNewBatchSVG />
       </Hidden>
-      <StyledDragAndDropFileContainer {...handlers} dragOver={isOverDropZone}>
-        <Icon type="termsOfUse" size="sm" />
-        <StyledText size={'xl'}>Drag and drop a JSON file or</StyledText>
-        <StyledButtonLink color="primary" onClick={handleBrowse}>
-          choose a file
-        </StyledButtonLink>
+      <StyledDragAndDropFileContainer {...dropHandlers} dragOver={isOverDropZone} error={isAcceptError}>
+        {isAcceptError ? (
+          <StyledText size={'xl'} error={isAcceptError}>
+            The file should be a proper JSON file
+          </StyledText>
+        ) : (
+          <>
+            <Icon type="termsOfUse" size="sm" />
+            <StyledText size={'xl'}>Drag and drop a JSON file or</StyledText>
+            <StyledButtonLink color="primary" onClick={handleBrowse}>
+              choose a file
+            </StyledButtonLink>
+          </>
+        )}
       </StyledDragAndDropFileContainer>
       <input ref={fileRef} id="logo-input" type="file" onChange={handleFileSelected} accept=".json" hidden />
     </Wrapper>
@@ -51,12 +60,12 @@ const Wrapper = styled.div`
   margin-top: 64px;
 `;
 
-const StyledDragAndDropFileContainer = styled.div<{ dragOver: Boolean }>`
+const StyledDragAndDropFileContainer = styled.div<{ dragOver: Boolean; error: Boolean }>`
   box-sizing: border-box;
   max-width: 420px;
-  border: 2px dashed #008c73;
+  border: 2px dashed ${({ theme, error }) => (error ? theme.colors.error : '#008c73')};
   border-radius: 8px;
-  background-color: #eaf7f4;
+  background-color: ${({ theme, error }) => (error ? alpha(theme.colors.error, 0.7) : '#eaf7f4')};
   padding: 24px;
   margin: 24px auto 0 auto;
 
@@ -64,7 +73,7 @@ const StyledDragAndDropFileContainer = styled.div<{ dragOver: Boolean }>`
   justify-content: center;
   align-items: center;
 
-  ${({ dragOver }) => {
+  ${({ dragOver, error, theme }) => {
     if (dragOver) {
       return `
         transition: all 0.2s ease-in-out;
@@ -73,15 +82,15 @@ const StyledDragAndDropFileContainer = styled.div<{ dragOver: Boolean }>`
     }
 
     return `
-      border-color: #008c73;
-      background-color: #eaf7f4;
+      border-color: ${error ? theme.colors.error : '#008c73'};
+      background-color: ${error ? alpha(theme.colors.error, 0.7) : '#eaf7f4'};
     `;
   }}
 `;
 
-const StyledText = styled(Text)`
+const StyledText = styled(Text)<{ error?: Boolean }>`
   margin-left: 4px;
-  color: #566976;
+  color: ${({ error }) => (error ? '#FFF' : '#566976')};
 `;
 
 const StyledButtonLink = styled(ButtonLink)`

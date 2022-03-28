@@ -7,8 +7,12 @@ export interface DropHandlers {
   onDrop: DragEventHandler;
 }
 
-const useDropZone = (onDrop: (file: File | null) => void): [Boolean, DropHandlers] => {
+const useDropZone = (
+  onDrop: (file: File | null) => void,
+  accept: string,
+): { isOverDropZone: Boolean; isAcceptError: Boolean; dropHandlers: DropHandlers } => {
   const [isOverDropZone, setIsOverDropZone] = useState<Boolean>(false);
+  const [isAcceptError, setIsAcceptError] = useState<Boolean>(false);
   const counter = useRef(0);
 
   const handlers: DropHandlers = useMemo(
@@ -33,18 +37,33 @@ const useDropZone = (onDrop: (file: File | null) => void): [Boolean, DropHandler
         counter.current = 0;
         setIsOverDropZone(false);
         event.persist();
+
         const files = Array.from(event?.dataTransfer?.files ?? []);
+
         if (files.length !== 1) {
           onDrop(null);
           return;
         }
+
+        const fileName = files[0].name;
+        const fileExtension = fileName.split('.').pop();
+
+        if (!accept.split(',').includes(`.${fileExtension}`)) {
+          onDrop(null);
+          setIsAcceptError(true);
+          setTimeout(() => {
+            setIsAcceptError(false);
+          }, 2000);
+          return;
+        }
+
         onDrop(files[0]);
       },
     }),
-    [onDrop],
+    [accept, onDrop],
   );
 
-  return [isOverDropZone, handlers];
+  return { isOverDropZone, isAcceptError, dropHandlers: handlers };
 };
 
 export default useDropZone;
