@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { isValidElement, useMemo, useState } from 'react';
 import { Dot, Text, Title, Icon, Tooltip } from '@gnosis.pm/safe-react-components';
 
 import IconButton from '@material-ui/core/IconButton';
@@ -23,7 +23,6 @@ import EditTransactionModal from './EditTransactionModal';
 import { useNetwork, useTransactionLibrary } from '../store';
 import Item from './TransactionBatchListItem';
 import VirtualizedList from './VirtualizedList';
-import DownloadBatchModal from './modals/downloadBatchModal';
 import { getTransactionText } from '../utils';
 
 type TransactionsBatchListProps = {
@@ -94,14 +93,17 @@ const TransactionsBatchList = ({
   const { open: showSaveBatchModal, openModal: openSaveBatchModal, closeModal: closeSaveBatchModal } = useModal();
   const { open: showDeleteTxModal, openModal: openDeleteTxModal, closeModal: closeDeleteTxModal } = useModal();
   const { open: showEditTxModal, openModal: openEditTxModal, closeModal: closeEditTxModal } = useModal();
-  const {
-    open: showDownloadBatchModal,
-    openModal: openDownloadBatchModal,
-    closeModal: closeDownloadBatchModal,
-  } = useModal();
 
   const [txIndexToRemove, setTxIndexToRemove] = useState<string>();
   const [txIndexToEdit, setTxIndexToEdit] = useState<string>();
+
+  const fileName = useMemo(() => {
+    if (isValidElement(batchTitle)) {
+      return batchTitle.props.children;
+    }
+
+    return batchTitle || 'Untitled';
+  }, [batchTitle]);
 
   return (
     <>
@@ -138,7 +140,7 @@ const TransactionsBatchList = ({
             )}
             {downloadBatch && (
               <Tooltip placement="top" title="Download" backgroundColor="primary" textColor="white" arrow>
-                <StyledHeaderIconButton onClick={openDownloadBatchModal}>
+                <StyledHeaderIconButton onClick={() => downloadBatch(fileName, transactions)}>
                   <Icon size="sm" type="importImg" color="primary" aria-label="Download" />
                 </StyledHeaderIconButton>
               </Tooltip>
@@ -322,17 +324,6 @@ const TransactionsBatchList = ({
             saveBatch?.(name, transactions);
           }}
           onClose={closeSaveBatchModal}
-        />
-      )}
-
-      {/* Download batch modal */}
-      {showDownloadBatchModal && (
-        <DownloadBatchModal
-          onClick={(fileName: string) => {
-            closeDownloadBatchModal();
-            downloadBatch?.(fileName, transactions);
-          }}
-          onClose={closeDownloadBatchModal}
         />
       )}
     </>
