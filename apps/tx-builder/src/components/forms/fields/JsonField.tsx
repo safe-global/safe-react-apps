@@ -19,6 +19,7 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
   const { open: showReplaceModal, toggleModal } = useModal();
   const [tempAbi, setTempAbi] = useState(value);
   const [isPrettified, setIsPrettified] = useState(false);
+  const hasError = isValidJSON(value) ? undefined : 'Invalid JSON value';
 
   const toggleFormatJSON = useCallback(() => {
     if (!value) {
@@ -77,15 +78,25 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
           }}
           spellCheck={false}
           showErrorsInTheLabel={false}
-          error={isValidJSON(value) ? undefined : 'Invalid JSON value'}
+          error={hasError}
         />
 
-        <IconContainer>
+        <IconContainer error={!!hasError}>
           {!isPrettified && (
-            <IconContainerButton tooltipLabel="Prettify JSON" iconType="code" onClick={toggleFormatJSON} />
+            <IconContainerButton
+              error={!!hasError}
+              tooltipLabel="Prettify JSON"
+              iconType="code"
+              onClick={toggleFormatJSON}
+            />
           )}
           {isPrettified && (
-            <IconContainerButton tooltipLabel="Stringify JSON" iconType="cross" onClick={toggleFormatJSON} />
+            <IconContainerButton
+              error={!!hasError}
+              tooltipLabel="Stringify JSON"
+              iconType="cross"
+              onClick={toggleFormatJSON}
+            />
           )}
         </IconContainer>
       </JSONFieldContainer>
@@ -131,14 +142,16 @@ const IconContainerButton = ({
   tooltipLabel,
   iconType,
   onClick,
+  error,
 }: {
   tooltipLabel: string;
   iconType: IconTypes;
   onClick: () => void;
+  error: boolean;
 }) => (
   <Tooltip title={tooltipLabel}>
     <StyledButton size="small" color="primary" onClick={onClick}>
-      <Icon size="sm" type={iconType} />
+      <Icon size="sm" color={error ? 'error' : 'inputDefault'} type={iconType} />
     </StyledButton>
   </Tooltip>
 );
@@ -147,10 +160,12 @@ const JSONFieldContainer = styled.div`
   position: relative;
 `;
 
-const IconContainer = styled.div`
+const IconContainer = styled.div<{ error: boolean }>`
   position: absolute;
-  top: 14px;
-  right: 25px;
+  top: -10px;
+  right: 15px;
+  border: 1px solid ${({ theme, error }) => (error ? theme.colors.error : theme.colors.inputDefault)};
+  border-radius: 50%;
   background-color: #fff;
 `;
 
