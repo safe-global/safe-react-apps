@@ -21,7 +21,7 @@ const EditableLabel = ({ children, onEdit }: EditableLabelProps) => {
 
 export default EditableLabel;
 
-const EditableComponent = styled.span`
+const EditableComponent = styled.div`
   display: block;
   white-space: nowrap;
   overflow: hidden;
