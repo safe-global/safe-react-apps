@@ -54,13 +54,13 @@ const TransactionLibrary = () => {
               </TransactionCounterDot>
 
               {/* editable batch name */}
-              <StyledBatchTitle size="xl">
+              <StyledBatchTitle>
                 <Tooltip placement="top" title="Edit batch name" backgroundColor="primary" textColor="white" arrow>
-                  <span>
+                  <div>
                     <EditableLabel onEdit={(newBatchName) => renameBatch(batch.id, newBatchName)}>
                       {batch.name}
                     </EditableLabel>
-                  </span>
+                  </div>
                 </Tooltip>
               </StyledBatchTitle>
 
@@ -213,7 +213,7 @@ const TransactionCounterDot = styled(Dot)`
   flex-shrink: 0;
 `;
 
-const StyledBatchTitle = styled(Text)`
+const StyledBatchTitle = styled.div`
   padding-left: 4px;
   min-width: 10px;
 `;
