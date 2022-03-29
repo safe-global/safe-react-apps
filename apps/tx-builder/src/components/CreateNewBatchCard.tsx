@@ -2,15 +2,20 @@ import { ButtonLink, Icon, Text } from '@gnosis.pm/safe-react-components';
 import Hidden from '@material-ui/core/Hidden';
 import React, { useRef } from 'react';
 import styled from 'styled-components';
+import { useTheme } from '@material-ui/core/styles';
 
 import { ReactComponent as CreateNewBatchSVG } from '../assets/add-new-batch.svg';
 import useDropZone from '../hooks/useDropZone';
+import { useMediaQuery } from '@material-ui/core';
 
 type CreateNewBatchCardProps = {
   onFileSelected: (file: File | null) => void;
 };
 
 const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [isOverDropZone, handlers] = useDropZone((file: File | null) => {
     onFileSelected(file);
@@ -29,11 +34,11 @@ const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
   };
 
   return (
-    <Wrapper>
+    <Wrapper isSmallScreen={isSmallScreen}>
       <Hidden smDown>
         <CreateNewBatchSVG />
       </Hidden>
-      <StyledDragAndDropFileContainer {...handlers} dragOver={isOverDropZone}>
+      <StyledDragAndDropFileContainer {...handlers} dragOver={isOverDropZone} fullWidth={isSmallScreen}>
         <Icon type="termsOfUse" size="sm" />
         <StyledText size={'xl'}>Drag and drop a JSON file or</StyledText>
         <StyledButtonLink color="primary" onClick={handleBrowse}>
@@ -47,13 +52,13 @@ const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
 
 export default CreateNewBatchCard;
 
-const Wrapper = styled.div`
-  margin-top: 64px;
+const Wrapper = styled.div<{ isSmallScreen: boolean }>`
+  margin-top: ${({ isSmallScreen }) => (isSmallScreen ? '0' : '64px')};
 `;
 
-const StyledDragAndDropFileContainer = styled.div<{ dragOver: Boolean }>`
+const StyledDragAndDropFileContainer = styled.div<{ dragOver: Boolean; fullWidth: boolean }>`
   box-sizing: border-box;
-  max-width: 420px;
+  max-width: ${({ fullWidth }) => (fullWidth ? '100%' : '420px')};
   border: 2px dashed #008c73;
   border-radius: 8px;
   background-color: #eaf7f4;
