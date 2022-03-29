@@ -29,7 +29,7 @@ const DeleteBatchFromLibrary = ({ batch, onClick, onClose }: DeleteBatchFromLibr
               Back
             </Button>
             <Button size="md" style={{ marginLeft: 16 }} color="error" onClick={() => onClick(batch)}>
-              Yes, Delete
+              Yes, delete
             </Button>
           </StyledModalButtonsWrapper>
         </StyledModalBodyWrapper>

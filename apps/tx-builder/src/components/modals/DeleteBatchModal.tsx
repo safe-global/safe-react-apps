@@ -11,7 +11,7 @@ type DeleteBatchModalProps = {
 const DeleteBatchModal = ({ count, onClick, onClose }: DeleteBatchModalProps) => {
   return (
     <GenericModal
-      title="Cancel Transaction Batch?"
+      title="Clear transaction list?"
       withoutBodyPadding
       body={
         <StyledModalBodyWrapper>
@@ -21,15 +21,13 @@ const DeleteBatchModal = ({ count, onClick, onClose }: DeleteBatchModalProps) =>
             </Text>
           </StyledModalDot>
 
-          <StyledModalText size="xl">
-            Transaction Batch will be permanently deleted and the transaction data will be lost
-          </StyledModalText>
+          <StyledModalText size="xl">{`transaction${count > 1 ? 's' : ''}`} will be cleared</StyledModalText>
           <StyledModalButtonsWrapper display="flex" alignItems="center" justifyContent="center" maxWidth={'450px'}>
             <Button size="md" variant="bordered" onClick={onClose}>
               Back
             </Button>
             <Button size="md" style={{ marginLeft: 16 }} color="error" onClick={onClick}>
-              Yes, Cancel
+              Yes, clear
             </Button>
           </StyledModalButtonsWrapper>
         </StyledModalBodyWrapper>
