@@ -155,4 +155,17 @@ export const getTransactionText = (description: ProposedTransaction['description
 
   // empty tx description as a fallback
   return '';
+}
+
+export const getInputTypeHelper = (input: ContractInput): string => {
+  // This code renders a helper for the input text.
+  if (input.type.startsWith('tuple') && input.components) {
+    return `tuple(${input.components
+      .map((i: ContractInput) => {
+        return getInputTypeHelper(i);
+      })
+      .toString()})${input.type.endsWith('[]') ? '[]' : ''}`;
+  } else {
+    return input.type;
+  }
 };

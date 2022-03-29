@@ -1,3 +1,4 @@
+import { getInputTypeHelper } from '../../../utils';
 import {
   ADDRESS_FIELD_TYPE,
   BOOLEAN_FIELD_TYPE,
@@ -385,6 +386,141 @@ describe('form validations', () => {
 
           expect(validationResult).toBe('format error. details: invalid arrayify value');
         });
+      });
+    });
+
+    describe.only('tuple field type', () => {
+      it('validates a tuple', () => {
+        const inputType = getInputTypeHelper({
+          components: [
+            {
+              internalType: 'uint128',
+              name: 'allocated',
+              type: 'uint128',
+            },
+            {
+              internalType: 'uint128',
+              name: 'loss',
+              type: 'uint128',
+            },
+          ],
+          internalType: 'struct AllocatorLimits',
+          name: 'limits',
+          type: 'tuple',
+        });
+
+        const tupleValidation = validateField(inputType);
+
+        let validationResult = tupleValidation('[1,1]');
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+
+        validationResult = tupleValidation('[1]');
+
+        expect(validationResult).toContain('format error. details: TypeError: Cannot read properties of undefined');
+      });
+
+      it('validates a tuple[]', () => {
+        const inputType = getInputTypeHelper({
+          components: [
+            {
+              internalType: 'address payable',
+              name: 'signer',
+              type: 'address',
+            },
+            {
+              internalType: 'address',
+              name: 'sender',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'minGasPrice',
+              type: 'uint256',
+            },
+          ],
+          internalType: 'struct IMetaTransactionsFeature.MetaTransactionData[]',
+          name: 'mtxs',
+          type: 'tuple[]',
+        });
+
+        const tupleValidation = validateField(inputType);
+
+        let validationResult = tupleValidation(
+          '[["0x57CB13cbef735FbDD65f5f2866638c546464E45F", "0x57CB13cbef735FbDD65f5f2866638c546464E45F", 1], ["0x57CB13cbef735FbDD65f5f2866638c546464E45F", "0x57CB13cbef735FbDD65f5f2866638c546464E45F", 1]]',
+        );
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+
+        validationResult = tupleValidation(
+          '["0x57CB13cbef735FbDD65f5f2866638c546464E45F", "0x57CB13cbef735FbDD65f5f2866638c546464E45F", 1], ["0x57CB13cbef735FbDD65f5f2866638c546464E45F", "0x57CB13cbef735FbDD65f5f2866638c546464E45F", 1]',
+        );
+
+        expect(validationResult).toContain('format error. details: SyntaxError: Unexpected token');
+      });
+
+      it('validates a tuple with nested tuples', () => {
+        const inputType = getInputTypeHelper({
+          name: 's',
+          type: 'tuple',
+          internalType: 'tuple',
+          components: [
+            {
+              name: 'a',
+              internalType: 'uint256',
+              type: 'uint256',
+            },
+            {
+              name: 'b',
+              internalType: 'uint256[]',
+              type: 'uint256[]',
+            },
+            {
+              name: 'c',
+              type: 'tuple[]',
+              internalType: 'tuple[]',
+              components: [
+                {
+                  name: 'x',
+                  internalType: 'uint256',
+                  type: 'uint256',
+                },
+                {
+                  name: 'y',
+                  internalType: 'uint256',
+                  type: 'uint256',
+                },
+                {
+                  name: 'z',
+                  internalType: 'tuple',
+                  type: 'tuple',
+                  components: [
+                    {
+                      name: 'a',
+                      internalType: 'uint256',
+                      type: 'uint256',
+                    },
+                    {
+                      name: 'b',
+                      internalType: 'uint256',
+                      type: 'uint256',
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        });
+
+        const tupleValidation = validateField(inputType);
+
+        let validationResult = tupleValidation('[1,[2,3],[[3,3,[5,5]],[4,4,[6,6]]]]');
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT);
+
+        validationResult = tupleValidation('[1,[2,3],[[3],[4]]]');
+
+        expect(validationResult).toContain('format error. details: types/value length mismatch');
       });
     });
   });

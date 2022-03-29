@@ -11,7 +11,7 @@ import {
   SolidityFieldTypes,
 } from './fields/fields';
 import Field from './fields/Field';
-import { encodeToHexData } from '../../utils';
+import { encodeToHexData, getInputTypeHelper } from '../../utils';
 import { ContractInterface, ProposedTransaction } from '../../typings/models';
 
 export const TO_ADDRESS_FIELD_NAME = 'toAddress';
@@ -203,14 +203,16 @@ const SolidityForm = ({
         {/* Contract Fields */}
         {contractFields.map((contractField, index) => {
           const name = `${CONTRACT_VALUES_FIELD_NAME}.${contractField.name || index}`;
+          const fieldType = getInputTypeHelper(contractField);
+
           return (
             showContractFields && (
               <Field
                 key={name}
                 id={`contract-field-${contractField.name || index}`}
                 name={name}
-                label={`${contractField.name || `${index + 1}º contract field`} (${contractField.type})`}
-                fieldType={contractField.type as SolidityFieldTypes}
+                label={`${contractField.name || `${index + 1}º contract field`} (${fieldType})`}
+                fieldType={fieldType as SolidityFieldTypes}
                 fullWidth
                 required
                 shouldUnregister={false} // required to keep contract field values in the form state when the user switches between encoding and decoding data

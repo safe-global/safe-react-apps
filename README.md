@@ -1,4 +1,4 @@
-# Gnosis Safe Apps 
+# Gnosis Safe Apps
 
 [![Logo](https://raw.githubusercontent.com/gnosis/safe-react-apps/main/assets/logo.png)](https://gnosis-safe.io/)
 
@@ -7,7 +7,6 @@
 ![tests](https://img.shields.io/github/workflow/status/gnosis/safe-react-apps/Test/main?label=tests)
 
 This project contains apps developed by Gnosis to be consumed by Gnosis Safe.
-
 
 ## Install
 
@@ -31,6 +30,7 @@ yarn build
 ```
 
 ### Run locally
+
 You can also run each app locally using the following commands:
 
 ```bash
@@ -40,7 +40,6 @@ yarn start:ramp
 yarn start:tx-builder
 yarn start:wallet-connect
 ```
-
 
 ## Project structure
 
@@ -67,30 +66,32 @@ headers: {
 ```
 
 ## Environments
+
 These apps are deployed in the following environments.
-* When the code is merged into `development`: https://safe-apps.dev.gnosisdev.com
 
-    [Compound](https://safe-apps.dev.gnosisdev.com/compound)
-    | [Drain Account](https://safe-apps.dev.gnosisdev.com/drain-safe)
-    | [Ramp Network](https://safe-apps.dev.gnosisdev.com/ramp-network)
-    | [Transaction Builder](https://safe-apps.dev.gnosisdev.com/tx-builder)
-    | [WalletConnect](https://safe-apps.dev.gnosisdev.com/wallet-connect)
+- When the code is merged into `development`: https://safe-apps.dev.gnosisdev.com
 
-* When the code is merged into `main`: https://safe-apps.staging.gnosisdev.com
+  [Compound](https://safe-apps.dev.gnosisdev.com/compound)
+  | [Drain Account](https://safe-apps.dev.gnosisdev.com/drain-safe)
+  | [Ramp Network](https://safe-apps.dev.gnosisdev.com/ramp-network)
+  | [Transaction Builder](https://safe-apps.dev.gnosisdev.com/tx-builder)
+  | [WalletConnect](https://safe-apps.dev.gnosisdev.com/wallet-connect)
 
-    [Compound](https://safe-apps.staging.gnosisdev.com/compound)
-    | [Drain Account](https://safe-apps.staging.gnosisdev.com/drain-safe)
-    | [Ramp Network](https://safe-apps.staging.gnosisdev.com/ramp-network)
-    | [Transaction Builder](https://safe-apps.staging.gnosisdev.com/tx-builder)
-    | [WalletConnect](https://safe-apps.staging.gnosisdev.com/wallet-connect)
+- When the code is merged into `main`: https://safe-apps.staging.gnosisdev.com
 
-* When the code is released: https://apps.gnosis-safe.io
+  [Compound](https://safe-apps.staging.gnosisdev.com/compound)
+  | [Drain Account](https://safe-apps.staging.gnosisdev.com/drain-safe)
+  | [Ramp Network](https://safe-apps.staging.gnosisdev.com/ramp-network)
+  | [Transaction Builder](https://safe-apps.staging.gnosisdev.com/tx-builder)
+  | [WalletConnect](https://safe-apps.staging.gnosisdev.com/wallet-connect)
 
-    [Compound](https://apps.gnosis-safe.io/compound)
-    | [Drain Account](https://apps.gnosis-safe.io/drain-safe)
-    | [Ramp Network](https://apps.gnosis-safe.io/ramp-network)
-    | [Transaction Builder](https://apps.gnosis-safe.io/tx-builder)
-    | [WalletConnect](https://apps.gnosis-safe.io/wallet-connect)
+- When the code is released: https://apps.gnosis-safe.io
+
+  [Compound](https://apps.gnosis-safe.io/compound)
+  | [Drain Account](https://apps.gnosis-safe.io/drain-safe)
+  | [Ramp Network](https://apps.gnosis-safe.io/ramp-network)
+  | [Transaction Builder](https://apps.gnosis-safe.io/tx-builder)
+  | [WalletConnect](https://apps.gnosis-safe.io/wallet-connect)
 
 ## License
 
