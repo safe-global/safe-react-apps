@@ -39,7 +39,12 @@ const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
       <Hidden smDown>
         <CreateNewBatchSVG />
       </Hidden>
-      <StyledDragAndDropFileContainer {...dropHandlers} dragOver={isOverDropZone} fullWidth={isSmallScreen} error={isAcceptError}>
+      <StyledDragAndDropFileContainer
+        {...dropHandlers}
+        dragOver={isOverDropZone}
+        fullWidth={isSmallScreen}
+        error={isAcceptError}
+      >
         {isAcceptError ? (
           <StyledText size={'xl'} error={isAcceptError}>
             The uploaded file is not a valid JSON file
@@ -65,7 +70,7 @@ const Wrapper = styled.div<{ isSmallScreen: boolean }>`
   margin-top: ${({ isSmallScreen }) => (isSmallScreen ? '0' : '64px')};
 `;
 
-const StyledDragAndDropFileContainer = styled.div<{ dragOver: Boolean; fullWidth: boolean, error: Boolean }>`
+const StyledDragAndDropFileContainer = styled.div<{ dragOver: Boolean; fullWidth: boolean; error: Boolean }>`
   box-sizing: border-box;
   max-width: ${({ fullWidth }) => (fullWidth ? '100%' : '420px')};
   border: 2px dashed ${({ theme, error }) => (error ? theme.colors.error : '#008c73')};
