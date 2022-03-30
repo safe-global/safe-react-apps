@@ -29,7 +29,7 @@ const DeleteTransactionModal = ({ txIndex, txDescription, onClick, onClose }: De
               Back
             </Button>
             <Button size="md" style={{ marginLeft: 16 }} color="error" onClick={onClick}>
-              Yes, Delete
+              Yes, delete
             </Button>
           </StyledModalButtonsWrapper>
         </StyledModalBodyWrapper>

@@ -89,7 +89,11 @@ const TransactionsBatchList = ({
   };
 
   // 5 modals needed: save batch modal, edit transaction modal, delete batch modal, delete transaction modal, download batch modal
-  const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
+  const {
+    open: showDeleteBatchModal,
+    openModal: openClearTransactions,
+    closeModal: closeDeleteBatchModal,
+  } = useModal();
   const { open: showSaveBatchModal, openModal: openSaveBatchModal, closeModal: closeSaveBatchModal } = useModal();
   const { open: showDeleteTxModal, openModal: openDeleteTxModal, closeModal: closeDeleteTxModal } = useModal();
   const { open: showEditTxModal, openModal: openEditTxModal, closeModal: closeEditTxModal } = useModal();
@@ -147,9 +151,9 @@ const TransactionsBatchList = ({
             )}
 
             {removeAllTransactions && (
-              <Tooltip placement="top" title="Delete Batch" backgroundColor="primary" textColor="white" arrow>
-                <StyledHeaderIconButton onClick={openDeleteBatchModal}>
-                  <Icon size="sm" type="delete" color="error" aria-label="Delete Batch" />
+              <Tooltip placement="top" title="Clear transactions" backgroundColor="primary" textColor="white" arrow>
+                <StyledHeaderIconButton onClick={openClearTransactions}>
+                  <Icon size="sm" type="delete" color="error" aria-label="Clear transactions" />
                 </StyledHeaderIconButton>
               </Tooltip>
             )}
