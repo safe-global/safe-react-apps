@@ -37,7 +37,7 @@ const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
       <StyledDragAndDropFileContainer {...dropHandlers} dragOver={isOverDropZone} error={isAcceptError}>
         {isAcceptError ? (
           <StyledText size={'xl'} error={isAcceptError}>
-            The file should be a proper JSON file
+            The uploaded file is not a valid JSON file
           </StyledText>
         ) : (
           <>
