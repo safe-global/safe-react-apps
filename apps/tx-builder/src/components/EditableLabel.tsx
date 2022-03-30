@@ -21,7 +21,8 @@ const EditableLabel = ({ children, onEdit }: EditableLabelProps) => {
 
 export default EditableLabel;
 
-const EditableComponent = styled.span`
+const EditableComponent = styled.div`
+  font-family: Averta, 'Roboto', sans-serif;
   display: block;
   white-space: nowrap;
   overflow: hidden;

@@ -3,15 +3,20 @@ import { ButtonLink, Icon, Text } from '@gnosis.pm/safe-react-components';
 import { alpha } from '@material-ui/core';
 import Hidden from '@material-ui/core/Hidden';
 import styled from 'styled-components';
+import { useTheme } from '@material-ui/core/styles';
 
 import { ReactComponent as CreateNewBatchSVG } from '../assets/add-new-batch.svg';
 import useDropZone from '../hooks/useDropZone';
+import { useMediaQuery } from '@material-ui/core';
 
 type CreateNewBatchCardProps = {
   onFileSelected: (file: File | null) => void;
 };
 
 const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   const fileRef = useRef<HTMLInputElement | null>(null);
   const { isOverDropZone, isAcceptError, dropHandlers } = useDropZone((file: File | null) => {
     onFileSelected(file);
@@ -30,11 +35,11 @@ const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
   };
 
   return (
-    <Wrapper>
+    <Wrapper isSmallScreen={isSmallScreen}>
       <Hidden smDown>
         <CreateNewBatchSVG />
       </Hidden>
-      <StyledDragAndDropFileContainer {...dropHandlers} dragOver={isOverDropZone} error={isAcceptError}>
+      <StyledDragAndDropFileContainer {...dropHandlers} dragOver={isOverDropZone} fullWidth={isSmallScreen} error={isAcceptError}>
         {isAcceptError ? (
           <StyledText size={'xl'} error={isAcceptError}>
             The uploaded file is not a valid JSON file
@@ -56,13 +61,13 @@ const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
 
 export default CreateNewBatchCard;
 
-const Wrapper = styled.div`
-  margin-top: 64px;
+const Wrapper = styled.div<{ isSmallScreen: boolean }>`
+  margin-top: ${({ isSmallScreen }) => (isSmallScreen ? '0' : '64px')};
 `;
 
-const StyledDragAndDropFileContainer = styled.div<{ dragOver: Boolean; error: Boolean }>`
+const StyledDragAndDropFileContainer = styled.div<{ dragOver: Boolean; fullWidth: boolean, error: Boolean }>`
   box-sizing: border-box;
-  max-width: 420px;
+  max-width: ${({ fullWidth }) => (fullWidth ? '100%' : '420px')};
   border: 2px dashed ${({ theme, error }) => (error ? theme.colors.error : '#008c73')};
   border-radius: 8px;
   background-color: ${({ theme, error }) => (error ? alpha(theme.colors.error, 0.7) : '#eaf7f4')};

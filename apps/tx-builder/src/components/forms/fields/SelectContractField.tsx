@@ -13,6 +13,7 @@ const SelectContractField = ({ value, onChange, options, label, name }: SelectCo
   return (
     <Select
       name={name}
+      disabled={options.length === 1}
       label={label}
       items={options}
       fullWidth

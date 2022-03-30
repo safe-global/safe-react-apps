@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button, Tooltip } from '@gnosis.pm/safe-react-components';
-import Hidden from '@material-ui/core/Hidden';
 import Grid from '@material-ui/core/Grid';
 
 import TransactionsBatchList from '../components/TransactionsBatchList';
@@ -65,22 +64,20 @@ const CreateTransactions = () => {
             )}
           </>
         ) : (
-          <Hidden smDown>
-            <CreateNewBatchCard
-              onFileSelected={async (uploadedFile: File | null) => {
-                if (uploadedFile) {
-                  setFileName(uploadedFile.name);
-                  const batchFile = await importBatch(uploadedFile);
-                  // we show a modal if the batch file is from a different chain
-                  const isWrongChain = batchFile.chainId !== chainInfo?.chainId;
-                  if (isWrongChain) {
-                    setFileChainId(batchFile.chainId);
-                    openWrongChainModal();
-                  }
+          <CreateNewBatchCard
+            onFileSelected={async (uploadedFile: File | null) => {
+              if (uploadedFile) {
+                setFileName(uploadedFile.name);
+                const batchFile = await importBatch(uploadedFile);
+                // we show a modal if the batch file is from a different chain
+                const isWrongChain = batchFile.chainId !== chainInfo?.chainId;
+                if (isWrongChain) {
+                  setFileChainId(batchFile.chainId);
+                  openWrongChainModal();
                 }
-              }}
-            />
-          </Hidden>
+              }
+            }}
+          />
         )}
       </TransactionsSectionWrapper>
 
