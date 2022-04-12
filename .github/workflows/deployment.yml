@@ -43,6 +43,9 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
           REVIEW_BUCKET_NAME: ${{ secrets.AWS_REVIEW_BUCKET_NAME }}
           REACT_APP_RPC_TOKEN: ${{ secrets.REACT_APP_RPC_TOKEN }}
+          REACT_APP_TENDERLY_ORG_NAME: ${{ secrets.REACT_APP_TENDERLY_ORG_NAME }}
+          REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ secrets.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL }}
+          REACT_APP_TENDERLY_PROJECT_NAME: ${{ secrets.REACT_APP_TENDERLY_PROJECT_NAME }}
 
       - name: 'PRaul: Comment PR with app URLs'
         if: success() && github.event.number
@@ -84,6 +87,9 @@ jobs:
           npx nx affected --target=build --parallel
         env:
           REACT_APP_RPC_TOKEN: ${{ secrets.REACT_APP_RPC_TOKEN }}
+          REACT_APP_TENDERLY_ORG_NAME: ${{ secrets.REACT_APP_TENDERLY_ORG_NAME }}
+          REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ secrets.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL }}
+          REACT_APP_TENDERLY_PROJECT_NAME: ${{ secrets.REACT_APP_TENDERLY_PROJECT_NAME }}
 
       # Script to deploy to the dev environment
       - name: 'Deploy to S3: Develop'
@@ -124,4 +130,3 @@ jobs:
           prod-deployment-hook-url: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
           bucket-name: ${{ secrets.STAGING_BUCKET_NAME }}/releases
           react-app-rpc-token: ${{ secrets.REACT_APP_RPC_TOKEN }}
-

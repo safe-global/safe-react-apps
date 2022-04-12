@@ -1,4 +1,5 @@
-import { Button, FixedIcon, Title } from '@gnosis.pm/safe-react-components';
+import { useEffect, useMemo } from 'react';
+import { Button, FixedIcon, Icon, Title, Loader, Text } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,9 +7,10 @@ import DeleteBatchModal from '../components/modals/DeleteBatchModal';
 import TransactionsBatchList from '../components/TransactionsBatchList';
 import useModal from '../hooks/useModal/useModal';
 import { HOME_PATH } from '../routes/routes';
-import { useEffect } from 'react';
 import SuccessBatchCreationModal from '../components/modals/SuccessBatchCreationModal';
 import { useTransactionLibrary, useTransactions } from '../store';
+import { useSimulation } from '../hooks/useSimulation';
+import { FETCH_STATUS } from '../utils';
 
 const ReviewAndConfirm = () => {
   const {
@@ -25,6 +27,8 @@ const ReviewAndConfirm = () => {
     reorderTransactions,
   } = useTransactions();
   const { downloadBatch, saveBatch } = useTransactionLibrary();
+  const rawTransactions = useMemo(() => transactions.map((t) => t.raw), [transactions]);
+  const { simulation, simulateTransaction, simulationRequestStatus, simulationLink } = useSimulation(rawTransactions);
 
   const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
 
@@ -79,7 +83,7 @@ const ReviewAndConfirm = () => {
           </Button>
 
           {/* Cancel batch button */}
-          <StyledCancelButton
+          <Button
             size="md"
             type="button"
             disabled={!transactions.length}
@@ -88,8 +92,51 @@ const ReviewAndConfirm = () => {
             onClick={openDeleteBatchModal}
           >
             Cancel
-          </StyledCancelButton>
+          </Button>
+
+          {/* Simulate batch button */}
+          <Button size="md" type="button" variant="bordered" color="secondary" onClick={simulateTransaction}>
+            Simulate
+          </Button>
         </ButtonsWrapper>
+
+        {/* Simulation statuses */}
+        <SimulationContainer>
+          {simulationRequestStatus === FETCH_STATUS.LOADING && (
+            <>
+              <Loader size="xs" />
+              <Text size="xl">The simulation is loading...</Text>
+            </>
+          )}
+
+          {simulationRequestStatus === FETCH_STATUS.SUCCESS && (
+            <>
+              {!simulation.simulation.status && (
+                <>
+                  <Icon size="md" type="cross" color="error" />
+                  <Text size="xl">
+                    The batch failed during the simulation with an error <b>{simulation.transaction.error_message}</b>{' '}
+                    in the contract at <b>{simulation.transaction.error_info?.address}</b>. Full simulation is available{' '}
+                    <a href={simulationLink} target="_blank" rel="noreferrer">
+                      on Tenderly.
+                    </a>
+                  </Text>
+                </>
+              )}
+              {simulation.simulation.status && (
+                <>
+                  <Icon size="md" type="check" color="error" />
+                  <Text size="xl">
+                    The batch was successfully simulated. Full simulation is available{' '}
+                    <a href={simulationLink} target="_blank" rel="noreferrer">
+                      on Tenderly.
+                    </a>
+                  </Text>
+                </>
+              )}
+            </>
+          )}
+        </SimulationContainer>
       </Wrapper>
 
       {/* Delete batch modal */}
@@ -117,12 +164,28 @@ const ReviewAndConfirm = () => {
 
 export default ReviewAndConfirm;
 
+const SimulationContainer = styled.div`
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  // first child is an icon
+  & > :first-child {
+    margin-right: 16px;
+  }
+`;
+
 const Wrapper = styled.main`
   && {
     padding: 48px;
     padding-top: 120px;
     max-width: 650px;
     margin: 0 auto;
+  }
+
+  button + button {
+    margin-left: 16px;
   }
 `;
 
@@ -140,11 +203,4 @@ const ButtonsWrapper = styled.div`
 
 const StyledButtonLabel = styled.span`
   margin-left: 8px;
-`;
-
-const StyledCancelButton = styled(Button)`
-  &&.MuiButton-root {
-    margin-left: 16px;
-    min-width: 0;
-  }
 `;

@@ -2,6 +2,13 @@ import { AbiItem, toBN, isAddress, fromWei } from 'web3-utils';
 import abiCoder, { AbiCoder } from 'web3-eth-abi';
 import { ContractInput, ContractMethod, ProposedTransaction } from './typings/models';
 
+export const enum FETCH_STATUS {
+  NOT_ASKED = 'NOT_ASKED',
+  LOADING = 'LOADING',
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
+}
+
 export enum CHAINS {
   MAINNET = '1',
   MORDEN = '2',
@@ -155,7 +162,7 @@ export const getTransactionText = (description: ProposedTransaction['description
 
   // empty tx description as a fallback
   return '';
-}
+};
 
 export const getInputTypeHelper = (input: ContractInput): string => {
   // This code renders a helper for the input text.
