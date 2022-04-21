@@ -176,6 +176,8 @@ const getSimulationPayload = (tx: SimulationTxParams): TenderlySimulatePayload =
     to: tx.safeAddress,
     input: executionData,
     gas: tx.gasLimit,
+    // with gas price 0 account don't need token for gas
+    gas_price: '0',
     state_objects: {
       [tx.safeAddress]: THRESHOLD_ONE_STATE_OVERRIDE,
     },
