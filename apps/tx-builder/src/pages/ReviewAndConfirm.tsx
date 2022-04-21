@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from 'react';
-import { Button, Card, FixedIcon, IconText, Link, Title, Loader, Text } from '@gnosis.pm/safe-react-components';
+import { useEffect, useMemo, useState } from 'react';
+import { Button, ButtonLink, Card, FixedIcon, IconText, Link, Title, Loader, Text } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,6 +19,11 @@ const ReviewAndConfirm = () => {
     closeModal: closeSuccessBatchModal,
   } = useModal();
   const {
+    open: showDeleteBatchModal,
+    openModal: openDeleteBatchModal,
+    closeModal: closeDeleteBatchModal,
+  } = useModal();
+  const {
     transactions,
     removeTransaction,
     removeAllTransactions,
@@ -28,11 +33,16 @@ const ReviewAndConfirm = () => {
   } = useTransactions();
   const { downloadBatch, saveBatch } = useTransactionLibrary();
   const rawTransactions = useMemo(() => transactions.map((t) => t.raw), [transactions]);
+  const [showSimulation, setShowSimulation] = useState<boolean>(false);
   const { simulation, simulateTransaction, simulationRequestStatus, simulationLink } = useSimulation(rawTransactions);
-
-  const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
-
   const navigate = useNavigate();
+
+  const clickSimulate = () => {
+    simulateTransaction()
+    setShowSimulation(true)
+  };
+
+  const closeSimulation = () => setShowSimulation(false);
 
   const createBatch = async () => {
     try {
@@ -95,17 +105,20 @@ const ReviewAndConfirm = () => {
           </Button>
 
           {/* Simulate batch button */}
-          <Button size="md" type="button" variant="contained" color="secondary" onClick={simulateTransaction}>
+          <Button size="md" type="button" variant="contained" color="secondary" onClick={clickSimulate}>
             Simulate
           </Button>
         </ButtonsWrapper>
 
         {/* Simulation statuses */}
+        {showSimulation && (
         <SimulationContainer>
+          <StyledButton iconType="cross" iconSize="sm" color="inputFilled" onClick={closeSimulation}>
+          </StyledButton>
           {simulationRequestStatus === FETCH_STATUS.LOADING && (
             <>
               <Loader size="xs" />
-              <Text color="inputFilled" size="lg">The simulation is loading...</Text>
+              <Text color="inputFilled" size="lg">Running simulation...</Text>
             </>
           )}
 
@@ -118,8 +131,8 @@ const ReviewAndConfirm = () => {
                     The batch failed during the simulation throwing error <b>{simulation.transaction.error_message}</b>{' '}
                     in the contract at <b>{simulation.transaction.error_info?.address}</b>. Full simulation report is available{' '}
                     <Link href={simulationLink} target="_blank" rel="noreferrer" size="lg">
-                      on Tenderly.
-                    </Link>
+                      <b>on Tenderly</b>
+                    </Link>.
                   </Text>
                 </>
               )}
@@ -129,14 +142,15 @@ const ReviewAndConfirm = () => {
                   <Text color="inputFilled" size="lg">
                     The batch was successfully simulated. Full simulation report is available{' '}
                     <Link href={simulationLink} target="_blank" rel="noreferrer" size="lg">
-                      on Tenderly.
-                    </Link>
+                      <b>on Tenderly</b>
+                    </Link>.
                   </Text>
                 </>
               )}
             </>
           )}
         </SimulationContainer>
+        )}
       </Wrapper>
 
       {/* Delete batch modal */}
@@ -164,14 +178,26 @@ const ReviewAndConfirm = () => {
 
 export default ReviewAndConfirm;
 
+const StyledButton = styled(ButtonLink)`
+  position: absolute;
+  right: 26px;
+  padding: 5px;
+  width: 26px;
+  height: 26px;
+
+  :hover {
+    background: ${({ theme }) => theme.colors.separator};
+    border-radius: 16px;
+  }
+`;
+
 const SimulationContainer = styled(Card)`
   box-shadow: none;
-  margin-top: 24px;
-  margin-left: 34px;
+  margin: 24px 0 0 34px;
 
-  // first child is the title
-  & > :first-child {
-    margin-bottom: 11px;
+  // last child is the status result
+  & > :last-child {
+    margin-top: 11px;
   }
 `;
 
