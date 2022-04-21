@@ -95,7 +95,7 @@ const ReviewAndConfirm = () => {
           </Button>
 
           {/* Simulate batch button */}
-          <Button size="md" type="button" variant="bordered" color="secondary" onClick={simulateTransaction}>
+          <Button size="md" type="button" variant="contained" color="secondary" onClick={simulateTransaction}>
             Simulate
           </Button>
         </ButtonsWrapper>
@@ -125,7 +125,7 @@ const ReviewAndConfirm = () => {
               )}
               {simulation.simulation.status && (
                 <>
-                  <Icon size="md" type="check" color="error" />
+                  <Icon size="md" type="check" color="primary" />
                   <Text size="xl">
                     The batch was successfully simulated. Full simulation is available{' '}
                     <a href={simulationLink} target="_blank" rel="noreferrer">
@@ -166,6 +166,7 @@ export default ReviewAndConfirm;
 
 const SimulationContainer = styled.div`
   margin-top: 24px;
+  padding: 0 0 0 34px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -183,10 +184,6 @@ const Wrapper = styled.main`
     max-width: 650px;
     margin: 0 auto;
   }
-
-  button + button {
-    margin-left: 16px;
-  }
 `;
 
 const StyledTitle = styled(Title)`
@@ -197,8 +194,18 @@ const StyledTitle = styled(Title)`
 `;
 
 const ButtonsWrapper = styled.div`
+  display: flex;
   margin-top: 24px;
-  padding: 0 34px;
+  padding: 0 0 0 34px;
+
+  > button + button {
+    margin-left: 16px;
+  }
+
+  > :last-child {
+    margin-left: auto;
+    margin-right: 0;
+  }
 `;
 
 const StyledButtonLabel = styled.span`
