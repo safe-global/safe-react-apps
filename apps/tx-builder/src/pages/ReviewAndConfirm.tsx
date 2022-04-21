@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { Button, FixedIcon, Icon, Title, Loader, Text } from '@gnosis.pm/safe-react-components';
+import { Button, Card, FixedIcon, IconText, Link, Title, Loader, Text } from '@gnosis.pm/safe-react-components';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -105,7 +105,7 @@ const ReviewAndConfirm = () => {
           {simulationRequestStatus === FETCH_STATUS.LOADING && (
             <>
               <Loader size="xs" />
-              <Text size="xl">The simulation is loading...</Text>
+              <Text color="inputFilled" size="lg">The simulation is loading...</Text>
             </>
           )}
 
@@ -113,24 +113,24 @@ const ReviewAndConfirm = () => {
             <>
               {!simulation.simulation.status && (
                 <>
-                  <Icon size="md" type="cross" color="error" />
-                  <Text size="xl">
-                    The batch failed during the simulation with an error <b>{simulation.transaction.error_message}</b>{' '}
-                    in the contract at <b>{simulation.transaction.error_info?.address}</b>. Full simulation is available{' '}
-                    <a href={simulationLink} target="_blank" rel="noreferrer">
+                  <IconText iconSize="md" iconType="alert" iconColor="error" text="Failed" textSize="lg" color="error" />
+                  <Text color="inputFilled" size="lg">
+                    The batch failed during the simulation throwing error <b>{simulation.transaction.error_message}</b>{' '}
+                    in the contract at <b>{simulation.transaction.error_info?.address}</b>. Full simulation report is available{' '}
+                    <Link href={simulationLink} target="_blank" rel="noreferrer" size="lg">
                       on Tenderly.
-                    </a>
+                    </Link>
                   </Text>
                 </>
               )}
               {simulation.simulation.status && (
                 <>
-                  <Icon size="md" type="check" color="primary" />
-                  <Text size="xl">
-                    The batch was successfully simulated. Full simulation is available{' '}
-                    <a href={simulationLink} target="_blank" rel="noreferrer">
+                  <IconText iconSize="md" iconType="check" iconColor="primary" text="Success" textSize="lg" color="primary" />
+                  <Text color="inputFilled" size="lg">
+                    The batch was successfully simulated. Full simulation report is available{' '}
+                    <Link href={simulationLink} target="_blank" rel="noreferrer" size="lg">
                       on Tenderly.
-                    </a>
+                    </Link>
                   </Text>
                 </>
               )}
@@ -164,16 +164,14 @@ const ReviewAndConfirm = () => {
 
 export default ReviewAndConfirm;
 
-const SimulationContainer = styled.div`
+const SimulationContainer = styled(Card)`
+  box-shadow: none;
   margin-top: 24px;
-  padding: 0 0 0 34px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  margin-left: 34px;
 
-  // first child is an icon
+  // first child is the title
   & > :first-child {
-    margin-right: 16px;
+    margin-bottom: 11px;
   }
 `;
 
