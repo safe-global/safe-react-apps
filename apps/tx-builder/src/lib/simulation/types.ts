@@ -1,7 +1,7 @@
 // types were found in Uniswap repository
 // https://github.com/Uniswap/governance-seatbelt/blob/e2c6a0b11d1660f3bd934dab0d9df3ca6f90a1a0/types.d.ts#L123
 
-type StateObject = {
+export type StateObject = {
   balance?: string;
   code?: string;
   storage?: Record<string, string>;

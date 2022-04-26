@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Web3 from 'web3';
 import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk';
-import { TenderlySimulatePayload, TenderlySimulation } from './types';
+import { TenderlySimulatePayload, TenderlySimulation, StateObject } from './types';
 import { encodeMultiSendCall, getMultiSendCallOnlyAddress } from './multisend';
 
 type OptionalExceptFor<T, TRequired extends keyof T = keyof T> = Partial<Pick<T, Exclude<keyof T, TRequired>>> &
@@ -27,11 +27,22 @@ const getSimulationLink = (simulationId: string): string => {
  The threshold is stored in storage slot 4 and uses full 32 bytes slot
  Safe storage layout can be found here:
  https://github.com/gnosis/safe-contracts/blob/main/contracts/libraries/GnosisSafeStorage.sol */
-const THRESHOLD_ONE_STATE_OVERRIDE = {
-  storage: {
-    [`0x${'4'.padStart(64, '0')}`]: `0x${'1'.padStart(64, '0')}`,
-  },
+const THRESHOLD_ONE_STORAGE_OVERRIDE = {
+  [`0x${'4'.padStart(64, '0')}`]: `0x${'1'.padStart(64, '0')}`,
 };
+
+const getStateOverride = (
+  address: string,
+  balance?: string,
+  code?: string,
+  storage?: Record<string, string>,
+): Record<string, StateObject> => ({
+  [address]: {
+    balance,
+    code,
+    storage,
+  },
+});
 
 interface SafeTransaction {
   to: string;
@@ -128,7 +139,7 @@ type SimulationTxParams = {
 const getSingleTransactionExecutionData = (tx: SimulationTxParams): string => {
   const safeTransaction = buildSafeTransaction({
     to: tx.transactions[0].to,
-    value: '0',
+    value: tx.transactions[0].value,
     data: tx.transactions[0].data,
     nonce: tx.safeNonce,
     operation: '0',
@@ -170,6 +181,13 @@ const getSimulationPayload = (tx: SimulationTxParams): TenderlySimulatePayload =
   const executionData =
     tx.transactions.length === 1 ? getSingleTransactionExecutionData(tx) : getMultiSendExecutionData(tx);
 
+  const safeThresholdStateOverride = getStateOverride(
+    tx.safeAddress,
+    undefined,
+    undefined,
+    THRESHOLD_ONE_STORAGE_OVERRIDE,
+  );
+
   return {
     network_id: tx.chainId,
     from: tx.executionOwner,
@@ -179,7 +197,7 @@ const getSimulationPayload = (tx: SimulationTxParams): TenderlySimulatePayload =
     // with gas price 0 account don't need token for gas
     gas_price: '0',
     state_objects: {
-      [tx.safeAddress]: THRESHOLD_ONE_STATE_OVERRIDE,
+      ...safeThresholdStateOverride,
     },
     save: true,
     save_if_fails: true,
