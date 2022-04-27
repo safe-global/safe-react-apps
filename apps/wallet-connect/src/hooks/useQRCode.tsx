@@ -36,14 +36,9 @@ export default useQRCode
 function getQRCode(video: HTMLVideoElement, canvas: HTMLCanvasElement) {
   const currentFrame = video && getCurrentVideoFrame(video, canvas)
   if (currentFrame) {
-    const QRCode = jsQR(
-      currentFrame.data,
-      currentFrame.width,
-      currentFrame.height,
-      {
-        inversionAttempts: 'dontInvert',
-      },
-    )
+    const QRCode = jsQR(currentFrame.data, currentFrame.width, currentFrame.height, {
+      inversionAttempts: 'dontInvert',
+    })
 
     if (QRCode) {
       return QRCode
@@ -51,10 +46,7 @@ function getQRCode(video: HTMLVideoElement, canvas: HTMLCanvasElement) {
   }
 }
 
-function getCurrentVideoFrame(
-  video: HTMLVideoElement,
-  canvas: HTMLCanvasElement,
-) {
+function getCurrentVideoFrame(video: HTMLVideoElement, canvas: HTMLCanvasElement) {
   const isVideoReady = video && video.readyState === video.HAVE_ENOUGH_DATA
 
   if (!isVideoReady) {

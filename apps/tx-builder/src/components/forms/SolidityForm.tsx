@@ -61,9 +61,7 @@ export const parseFormToProposedTransaction = (
   const contractMethod = contract?.methods[Number(contractMethodIndex)]
 
   const data =
-    customTransactionData ||
-    encodeToHexData(contractMethod, contractFieldsValues) ||
-    '0x'
+    customTransactionData || encodeToHexData(contractMethod, contractFieldsValues) || '0x'
   const to = toChecksumAddress(toAddress)
   const value = toWei(tokenValue || '0')
 
@@ -117,12 +115,10 @@ const SolidityForm = ({
   const contractMethod = contract?.methods[Number(contractMethodIndex)]
 
   const contractFields = contractMethod?.inputs || []
-  const showContractFields =
-    !!contract && contract.methods.length > 0 && !showHexEncodedData
+  const showContractFields = !!contract && contract.methods.length > 0 && !showHexEncodedData
   const isPayableMethod = !!contract && contractMethod?.payable
 
-  const isValueInputVisible =
-    showHexEncodedData || !showContractFields || isPayableMethod
+  const isValueInputVisible = showHexEncodedData || !showContractFields || isPayableMethod
 
   useEffect(() => {
     const contractFieldsValues = getValues(CONTRACT_VALUES_FIELD_NAME)
@@ -215,9 +211,7 @@ const SolidityForm = ({
 
         {/* Contract Fields */}
         {contractFields.map((contractField, index) => {
-          const name = `${CONTRACT_VALUES_FIELD_NAME}.${
-            contractField.name || index
-          }`
+          const name = `${CONTRACT_VALUES_FIELD_NAME}.${contractField.name || index}`
           const fieldType = getInputTypeHelper(contractField)
 
           return (
@@ -226,9 +220,7 @@ const SolidityForm = ({
                 key={name}
                 id={`contract-field-${contractField.name || index}`}
                 name={name}
-                label={`${
-                  contractField.name || `${index + 1}º contract field`
-                } (${fieldType})`}
+                label={`${contractField.name || `${index + 1}º contract field`} (${fieldType})`}
                 fieldType={fieldType as SolidityFieldTypes}
                 fullWidth
                 required

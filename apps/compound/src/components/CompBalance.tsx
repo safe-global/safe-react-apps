@@ -9,10 +9,7 @@ type Props = {
   onCollect: () => void
 }
 
-export default function CompBalance({
-  balance,
-  onCollect,
-}: Props): React.ReactElement {
+export default function CompBalance({ balance, onCollect }: Props): React.ReactElement {
   const handleOnCollect = useCallback(
     (event: SyntheticEvent) => {
       event.preventDefault()

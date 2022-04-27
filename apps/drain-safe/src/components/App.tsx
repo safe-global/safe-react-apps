@@ -94,14 +94,11 @@ const App = (): React.ReactElement => {
     }
 
     const assetsToTransferCount = selectedTokens.length
-    return `Transfer ${assetsToTransferCount} asset${
-      assetsToTransferCount > 1 ? 's' : ''
-    }`
+    return `Transfer ${assetsToTransferCount} asset${assetsToTransferCount > 1 ? 's' : ''}`
   }, [assets, selectedTokens])
 
   const getAddressFromDomain = useCallback(
-    (address: string) =>
-      web3?.eth.ens.getAddress(address) || Promise.resolve(address),
+    (address: string) => web3?.eth.ens.getAddress(address) || Promise.resolve(address),
     [web3],
   )
 
@@ -150,8 +147,7 @@ const App = (): React.ReactElement => {
           {isFinished && (
             <TimedComponent timeout={5000} onTimeout={() => setFinished(false)}>
               <Text size="lg">
-                The transaction has been created. ✅
-                <span role="img" aria-label="success"></span>
+                The transaction has been created. ✅<span role="img" aria-label="success"></span>
                 <br />
                 Refresh the app when it’s executed.
               </Text>
@@ -174,9 +170,7 @@ const App = (): React.ReactElement => {
           {submitting ? (
             <CancelButton>Cancel</CancelButton>
           ) : (
-            <SubmitButton disabled={!selectedTokens.length}>
-              {transferStatusText}
-            </SubmitButton>
+            <SubmitButton disabled={!selectedTokens.length}>{transferStatusText}</SubmitButton>
           )}
         </>
       ) : (

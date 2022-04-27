@@ -1,12 +1,6 @@
 import { ReactElement, useState, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
-import {
-  Text,
-  Title,
-  Divider,
-  AddressInput,
-  Switch,
-} from '@gnosis.pm/safe-react-components'
+import { Text, Title, Divider, AddressInput, Switch } from '@gnosis.pm/safe-react-components'
 import styled from 'styled-components'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import Grid from '@material-ui/core/Grid'
@@ -70,37 +64,24 @@ const Dashboard = (): ReactElement => {
 
   const isAddressInputFieldValid = isValidAddress(address) || !address
 
-  const contractHasMethods =
-    contract && contract.methods.length > 0 && !isABILoading
+  const contractHasMethods = contract && contract.methods.length > 0 && !isABILoading
 
   const isTransferTransaction = isValidAddress(address) && !abi && !isABILoading
   const isContractInteractionTransaction = abi && contract && !isABILoading
 
-  const showNewTransactionForm =
-    isTransferTransaction || isContractInteractionTransaction
+  const showNewTransactionForm = isTransferTransaction || isContractInteractionTransaction
 
   const showNoPublicMethodsWarning = contract && contract.methods.length === 0
 
   return (
     <Wrapper>
-      <Grid
-        alignItems="flex-start"
-        container
-        justifyContent="center"
-        spacing={6}
-      >
+      <Grid alignItems="flex-start" container justifyContent="center" spacing={6}>
         <AddNewTransactionFormWrapper item xs={12} md={6}>
           <Grid container alignItems="center">
             <Grid item xs={6}>
               <StyledTitle size="lg">New Transaction</StyledTitle>
             </Grid>
-            <Grid
-              container
-              item
-              xs={6}
-              alignItems="center"
-              justifyContent="flex-end"
-            >
+            <Grid container item xs={6} alignItems="center" justifyContent="flex-end">
               <Grid item>
                 <Switch
                   checked={showHexEncodedData}
@@ -146,13 +127,7 @@ const Dashboard = (): ReactElement => {
             </StyledWarningText>
           )}
 
-          <JsonField
-            id={'abi'}
-            name="abi"
-            label="Enter ABI"
-            value={abi}
-            onChange={setAbi}
-          />
+          <JsonField id={'abi'} name="abi" label="Enter ABI" value={abi} onChange={setAbi} />
 
           {/* No public methods Warning */}
           {showNoPublicMethodsWarning && (

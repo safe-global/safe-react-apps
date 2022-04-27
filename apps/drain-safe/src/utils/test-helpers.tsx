@@ -83,8 +83,7 @@ export const mockInitialBalances = [
       decimals: 18,
       symbol: 'ETH',
       name: 'Ether',
-      logoUri:
-        'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
+      logoUri: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
     },
     balance: '949938510499549077',
     fiatBalance: '3912.43897',

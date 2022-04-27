@@ -112,24 +112,14 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
       {showReplaceModal && (
         <GenericModal
           body={
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              width="100%"
-            >
+            <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
               <Text size="lg">Do you want to replace the current ABI?</Text>
             </Box>
           }
           onClose={toggleModal}
           title="Replace ABI"
           footer={
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              width="100%"
-            >
+            <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
               <Button size="md" color="secondary" onClick={toggleModal}>
                 Cancel
               </Button>
@@ -169,11 +159,7 @@ const IconContainerButton = ({
 }) => (
   <Tooltip title={tooltipLabel}>
     <StyledButton size="small" color="primary" onClick={onClick}>
-      <Icon
-        size="sm"
-        color={error ? 'error' : 'inputDefault'}
-        type={iconType}
-      />
+      <Icon size="sm" color={error ? 'error' : 'inputDefault'} type={iconType} />
     </StyledButton>
   </Tooltip>
 )
@@ -187,8 +173,7 @@ const IconContainer = styled.div<{ error: boolean }>`
   top: -10px;
   right: 15px;
   border: 1px solid
-    ${({ theme, error }) =>
-      error ? theme.colors.error : theme.colors.inputDefault};
+    ${({ theme, error }) => (error ? theme.colors.error : theme.colors.inputDefault)};
   border-radius: 50%;
   background-color: #fff;
 `

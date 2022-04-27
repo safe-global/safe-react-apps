@@ -27,9 +27,7 @@ describe('form validations', () => {
       })
 
       it('validates a valid address', () => {
-        const validationResult = validateAddressField(
-          '0x57CB13cbef735FbDD65f5f2866638c546464E45F',
-        )
+        const validationResult = validateAddressField('0x57CB13cbef735FbDD65f5f2866638c546464E45F')
 
         expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
       })
@@ -61,9 +59,7 @@ describe('form validations', () => {
       })
 
       it('validates invalid decimal amounts', () => {
-        const validationResult = validateAmountField(
-          '0.000000000000000000000000000000001',
-        )
+        const validationResult = validateAmountField('0.000000000000000000000000000000001')
 
         expect(validationResult).toBe('Invalid amount value')
       })
@@ -73,30 +69,23 @@ describe('form validations', () => {
       it('validates non hexadecimal values', () => {
         const validationResult = validateHexEncodedDataField('INVALID HEX DATA')
 
-        expect(validationResult).toBe(
-          'Has to be a valid strict hex data (it must start with 0x)',
-        )
+        expect(validationResult).toBe('Has to be a valid strict hex data (it must start with 0x)')
       })
 
       it('validates non hexadecimal values starting with 0x', () => {
-        const validationResult = validateHexEncodedDataField(
-          '0x INVALID HEX DATA',
-        )
+        const validationResult = validateHexEncodedDataField('0x INVALID HEX DATA')
 
         expect(validationResult).toBe('Has to be a valid strict hex data')
       })
 
       it('validates an invalid hexadecimal value', () => {
-        const validationResult = validateHexEncodedDataField(
-          '0x123456789ABCDEFGHI',
-        )
+        const validationResult = validateHexEncodedDataField('0x123456789ABCDEFGHI')
 
         expect(validationResult).toBe('Has to be a valid strict hex data')
       })
 
       it('validates a valid hexadecimal value', () => {
-        const validationResult =
-          validateHexEncodedDataField('0x123456789ABCDEF')
+        const validationResult = validateHexEncodedDataField('0x123456789ABCDEF')
 
         expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
       })
@@ -116,9 +105,7 @@ describe('form validations', () => {
       it('validates a valid address', () => {
         const addressValidations = validateField(ADDRESS_FIELD_TYPE)
 
-        const validationResult = addressValidations(
-          '0x57CB13cbef735FbDD65f5f2866638c546464E45F',
-        )
+        const validationResult = addressValidations('0x57CB13cbef735FbDD65f5f2866638c546464E45F')
 
         expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
       })
@@ -181,9 +168,7 @@ describe('form validations', () => {
 
           const validationResult = uint256Validation('-123')
 
-          expect(validationResult).toBe(
-            'format error. details: value out-of-bounds',
-          )
+          expect(validationResult).toBe('format error. details: value out-of-bounds')
         })
 
         it('validates a uint256 overflow value', () => {
@@ -193,9 +178,7 @@ describe('form validations', () => {
             '9999999999999999999999999999999999999999999999999999999999999999999999999999999',
           )
 
-          expect(validationResult).toBe(
-            'format error. details: value out-of-bounds',
-          )
+          expect(validationResult).toBe('format error. details: value out-of-bounds')
         })
 
         it('validates a uint256 valid value', () => {
@@ -213,9 +196,7 @@ describe('form validations', () => {
 
           const validationResult = uint32Validation('-123')
 
-          expect(validationResult).toBe(
-            'format error. details: value out-of-bounds',
-          )
+          expect(validationResult).toBe('format error. details: value out-of-bounds')
         })
 
         it('validates a uint32 overflow value', () => {
@@ -223,9 +204,7 @@ describe('form validations', () => {
 
           const validationResult = uint32Validation('4294967296')
 
-          expect(validationResult).toBe(
-            'format error. details: value out-of-bounds',
-          )
+          expect(validationResult).toBe('format error. details: value out-of-bounds')
         })
 
         it('validates a uint32 valid value', () => {
@@ -243,9 +222,7 @@ describe('form validations', () => {
 
           const validationResult = uint8Validation('-123')
 
-          expect(validationResult).toBe(
-            'format error. details: value out-of-bounds',
-          )
+          expect(validationResult).toBe('format error. details: value out-of-bounds')
         })
 
         it('validates a uint8 overflow value', () => {
@@ -253,9 +230,7 @@ describe('form validations', () => {
 
           const validationResult = uint8Validation('9999999')
 
-          expect(validationResult).toBe(
-            'format error. details: value out-of-bounds',
-          )
+          expect(validationResult).toBe('format error. details: value out-of-bounds')
         })
 
         it('validates a uint8 valid value', () => {
@@ -301,9 +276,7 @@ describe('form validations', () => {
             '-57896044618658097711785492504343953926634992332820282019728792003956564819969',
           )
 
-          expect(validationResult).toBe(
-            'format error. details: value out-of-bounds',
-          )
+          expect(validationResult).toBe('format error. details: value out-of-bounds')
         })
 
         it('validates a int256 overflow value', () => {
@@ -313,9 +286,7 @@ describe('form validations', () => {
             '57896044618658097711785492504343953926634992332820282019728792003956564819968',
           )
 
-          expect(validationResult).toBe(
-            'format error. details: value out-of-bounds',
-          )
+          expect(validationResult).toBe('format error. details: value out-of-bounds')
         })
 
         it('validates a int256 valid value', () => {
@@ -343,9 +314,7 @@ describe('form validations', () => {
 
           const validationResult = int32Validation('-2147483649')
 
-          expect(validationResult).toBe(
-            'format error. details: value out-of-bounds',
-          )
+          expect(validationResult).toBe('format error. details: value out-of-bounds')
         })
 
         it('validates a int32 overflow value', () => {
@@ -353,9 +322,7 @@ describe('form validations', () => {
 
           const validationResult = int32Validation('2147483648')
 
-          expect(validationResult).toBe(
-            'format error. details: value out-of-bounds',
-          )
+          expect(validationResult).toBe('format error. details: value out-of-bounds')
         })
 
         it('validates a int32 valid value', () => {
@@ -381,9 +348,7 @@ describe('form validations', () => {
 
           const validationResult = int8Validation('-129')
 
-          expect(validationResult).toBe(
-            'format error. details: value out-of-bounds',
-          )
+          expect(validationResult).toBe('format error. details: value out-of-bounds')
         })
 
         it('validates a int8 overflow value', () => {
@@ -391,9 +356,7 @@ describe('form validations', () => {
 
           const validationResult = int8Validation('9999999')
 
-          expect(validationResult).toBe(
-            'format error. details: value out-of-bounds',
-          )
+          expect(validationResult).toBe('format error. details: value out-of-bounds')
         })
 
         it('validates a int8 valid value', () => {
@@ -421,9 +384,7 @@ describe('form validations', () => {
 
           const validationResult = bytesValidation('INVALID VALUE')
 
-          expect(validationResult).toBe(
-            'format error. details: invalid arrayify value',
-          )
+          expect(validationResult).toBe('format error. details: invalid arrayify value')
         })
       })
     })
@@ -497,9 +458,7 @@ describe('form validations', () => {
           '["0x57CB13cbef735FbDD65f5f2866638c546464E45F", "0x57CB13cbef735FbDD65f5f2866638c546464E45F", 1], ["0x57CB13cbef735FbDD65f5f2866638c546464E45F", "0x57CB13cbef735FbDD65f5f2866638c546464E45F", 1]',
         )
 
-        expect(validationResult).toContain(
-          'format error. details: SyntaxError: Unexpected token',
-        )
+        expect(validationResult).toContain('format error. details: SyntaxError: Unexpected token')
       })
 
       it('validates a tuple with nested tuples', () => {
@@ -557,17 +516,13 @@ describe('form validations', () => {
 
         const tupleValidation = validateField(inputType)
 
-        let validationResult = tupleValidation(
-          '[1,[2,3],[[3,3,[5,5]],[4,4,[6,6]]]]',
-        )
+        let validationResult = tupleValidation('[1,[2,3],[[3,3,[5,5]],[4,4,[6,6]]]]')
 
         expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
 
         validationResult = tupleValidation('[1,[2,3],[[3],[4]]]')
 
-        expect(validationResult).toContain(
-          'format error. details: types/value length mismatch',
-        )
+        expect(validationResult).toContain('format error. details: types/value length mismatch')
       })
     })
   })

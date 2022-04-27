@@ -12,10 +12,7 @@ import { FETCH_STATUS } from '../utils'
 
 type UseSimulationReturn =
   | {
-      simulationRequestStatus:
-        | FETCH_STATUS.NOT_ASKED
-        | FETCH_STATUS.ERROR
-        | FETCH_STATUS.LOADING
+      simulationRequestStatus: FETCH_STATUS.NOT_ASKED | FETCH_STATUS.ERROR | FETCH_STATUS.LOADING
       simulation: undefined
       simulateTransaction: () => void
       simulationLink: string
@@ -27,12 +24,11 @@ type UseSimulationReturn =
       simulationLink: string
     }
 
-const useSimulation = (
-  transactions: BaseTransaction[],
-): UseSimulationReturn => {
+const useSimulation = (transactions: BaseTransaction[]): UseSimulationReturn => {
   const [simulation, setSimulation] = useState<TenderlySimulation | undefined>()
-  const [simulationRequestStatus, setSimulationRequestStatus] =
-    useState<FETCH_STATUS>(FETCH_STATUS.NOT_ASKED)
+  const [simulationRequestStatus, setSimulationRequestStatus] = useState<FETCH_STATUS>(
+    FETCH_STATUS.NOT_ASKED,
+  )
   const simulationLink = useMemo(
     () => getSimulationLink(simulation?.simulation.id || ''),
     [simulation],
@@ -44,10 +40,7 @@ const useSimulation = (
 
     setSimulationRequestStatus(FETCH_STATUS.LOADING)
     try {
-      const safeNonce = await web3.eth.getStorageAt(
-        safe.safeAddress,
-        `0x${'3'.padStart(64, '0')}`,
-      )
+      const safeNonce = await web3.eth.getStorageAt(safe.safeAddress, `0x${'3'.padStart(64, '0')}`)
       const blockGasLimit = await getBlockMaxGasLimit(web3)
 
       const simulationPayload = getSimulationPayload({

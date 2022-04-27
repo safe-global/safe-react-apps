@@ -1,9 +1,4 @@
-import {
-  ButtonLink,
-  EthHashInfo,
-  Text,
-  Title,
-} from '@gnosis.pm/safe-react-components'
+import { ButtonLink, EthHashInfo, Text, Title } from '@gnosis.pm/safe-react-components'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
@@ -65,9 +60,7 @@ const TransactionDetails = ({ transaction }: TransactionDetailsProp) => {
         <Text size="xl" color="secondaryHover">
           value:
         </Text>
-        <TxValueLabel>{`${weiToEther(
-          value,
-        )} ${nativeCurrencySymbol}`}</TxValueLabel>
+        <TxValueLabel>{`${weiToEther(value)} ${nativeCurrencySymbol}`}</TxValueLabel>
 
         {/* data */}
         <Text size="xl" color="secondaryHover">
@@ -81,9 +74,7 @@ const TransactionDetails = ({ transaction }: TransactionDetailsProp) => {
             <Text size="xl" color="secondaryHover">
               method:
             </Text>
-            <StyledTxValueLabel size="xl">
-              {contractMethod.name}
-            </StyledTxValueLabel>
+            <StyledTxValueLabel size="xl">{contractMethod.name}</StyledTxValueLabel>
 
             {/* method inputs */}
             {contractMethod.inputs.map(({ name, type }, index) => {
@@ -93,11 +84,7 @@ const TransactionDetails = ({ transaction }: TransactionDetailsProp) => {
               return (
                 <React.Fragment key={`${inputLabel}-${index}`}>
                   {/* input name */}
-                  <StyledMethodNameLabel
-                    size="xl"
-                    color="secondaryHover"
-                    tooltip={inputLabel}
-                  >
+                  <StyledMethodNameLabel size="xl" color="secondaryHover" tooltip={inputLabel}>
                     {inputLabel}
                   </StyledMethodNameLabel>
                   {/* input value */}
@@ -150,8 +137,7 @@ const TxValueLabel = ({ children }: { children: React.ReactNode }) => {
   const [showMore, setShowMore] = useState(false)
   const [showEllipsis, setShowEllipsis] = useState(false)
 
-  const { height: containerHeight, elementRef } =
-    useElementHeight<HTMLDivElement>()
+  const { height: containerHeight, elementRef } = useElementHeight<HTMLDivElement>()
 
   // we show the Show more/less button if the height is more than 44px (the height of 2 lines)
   const showMoreButton = containerHeight && containerHeight > MAX_HEIGHT
@@ -166,20 +152,13 @@ const TxValueLabel = ({ children }: { children: React.ReactNode }) => {
   return (
     <div ref={elementRef}>
       {/* value */}
-      <StyledTxValueLabel
-        size="xl"
-        showMore={showMore}
-        showEllipsis={showEllipsis}
-      >
+      <StyledTxValueLabel size="xl" showMore={showMore} showEllipsis={showEllipsis}>
         {children}
       </StyledTxValueLabel>
 
       {/* show more/less button */}
       {showMoreButton && (
-        <StyledButtonLink
-          color="primary"
-          onClick={() => setShowMore(showMore => !showMore)}
-        >
+        <StyledButtonLink color="primary" onClick={() => setShowMore(showMore => !showMore)}>
           {showMore ? 'Show less' : 'Show more'}
         </StyledButtonLink>
       )}
@@ -188,8 +167,7 @@ const TxValueLabel = ({ children }: { children: React.ReactNode }) => {
 }
 
 const StyledTxValueLabel = styled(Text).withConfig({
-  shouldForwardProp: prop =>
-    !['showMore'].includes(prop) || !['showEllipsis'].includes(prop),
+  shouldForwardProp: prop => !['showMore'].includes(prop) || !['showEllipsis'].includes(prop),
 })<{ showMore?: boolean; showEllipsis?: boolean }>`
   max-height: ${({ showMore }) => (showMore ? '100%' : `${MAX_HEIGHT + 1}px`)};
 

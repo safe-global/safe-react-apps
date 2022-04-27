@@ -22,9 +22,7 @@ const NetworkProvider: React.FC = ({ children }) => {
   const { sdk, safe } = useSafeAppsSDK()
   const [web3, setWeb3] = useState<Web3 | undefined>()
   const [chainInfo, setChainInfo] = useState<ChainInfo>()
-  const [interfaceRepo, setInterfaceRepo] = useState<
-    InterfaceRepository | undefined
-  >()
+  const [interfaceRepo, setInterfaceRepo] = useState<InterfaceRepository | undefined>()
 
   useEffect(() => {
     if (!chainInfo) {
@@ -62,9 +60,7 @@ const NetworkProvider: React.FC = ({ children }) => {
   const nativeCurrencySymbol = chainInfo?.nativeCurrency.symbol
 
   const getAddressFromDomain = (name: string): Promise<string> => {
-    return (
-      web3?.eth.ens.getAddress(name) || new Promise(resolve => resolve(name))
-    )
+    return web3?.eth.ens.getAddress(name) || new Promise(resolve => resolve(name))
   }
 
   return (

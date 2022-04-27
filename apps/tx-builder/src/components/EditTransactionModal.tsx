@@ -35,8 +35,7 @@ const EditTransactionModal = ({
 }: EditTransactionModalProps) => {
   const { description, contractInterface } = transaction
 
-  const { customTransactionData, contractFieldsValues, contractMethodIndex } =
-    description
+  const { customTransactionData, contractFieldsValues, contractMethodIndex } = description
 
   const isCustomHexDataTx = !!customTransactionData
 
@@ -77,13 +76,7 @@ const EditTransactionModal = ({
           >
             <ButtonContainer>
               {/* Remove transaction btn */}
-              <Button
-                type="button"
-                size="md"
-                color="error"
-                variant="bordered"
-                onClick={onDeleteTx}
-              >
+              <Button type="button" size="md" color="error" variant="bordered" onClick={onDeleteTx}>
                 Delete
               </Button>
 

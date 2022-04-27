@@ -1,11 +1,6 @@
 import { useMemo, useState, useEffect } from 'react'
 import { DataTable } from '@gnosis.pm/safe-react-components'
-import {
-  GridColDef,
-  GridRowsProp,
-  GridSelectionModel,
-  GridDensityTypes,
-} from '@mui/x-data-grid'
+import { GridColDef, GridRowsProp, GridSelectionModel, GridDensityTypes } from '@mui/x-data-grid'
 import { TokenBalance, TokenInfo, TokenType } from '@gnosis.pm/safe-apps-sdk'
 import BigNumber from 'bignumber.js'
 

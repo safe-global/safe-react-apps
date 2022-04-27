@@ -103,9 +103,7 @@ describe('WalletConnect unit tests', () => {
       const connectedNode = screen.getByText('CONNECTED')
       expect(connectedNode).toBeInTheDocument()
 
-      const connectedInstructionsNode = screen.getByText(
-        'How to confirm transactions?',
-      )
+      const connectedInstructionsNode = screen.getByText('How to confirm transactions?')
       expect(connectedInstructionsNode).toBeInTheDocument()
 
       const dappNameNode = screen.getByText('Test name')
@@ -152,9 +150,7 @@ describe('WalletConnect unit tests', () => {
     it('Shows scan QR dialog', async () => {
       renderWithProviders(<App />)
 
-      const openDialogNode = await screen.findByTitle(
-        'Start your camera and scan a QR',
-      )
+      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
 
       expect(openDialogNode).toBeDefined()
 
@@ -175,9 +171,7 @@ describe('WalletConnect unit tests', () => {
 
       renderWithProviders(<App />)
 
-      const openDialogNode = await screen.findByTitle(
-        'Start your camera and scan a QR',
-      )
+      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
 
       expect(openDialogNode).toBeInTheDocument()
 
@@ -187,26 +181,18 @@ describe('WalletConnect unit tests', () => {
 
       expect(scanQRCodeDialog).toBeDefined()
 
-      const permissionErrorTitle = await findByText(
-        scanQRCodeDialog,
-        'Check browser permissions',
-      )
+      const permissionErrorTitle = await findByText(scanQRCodeDialog, 'Check browser permissions')
 
       expect(permissionErrorTitle).toBeDefined()
 
-      const permissionErrorImg = await findByAltText(
-        scanQRCodeDialog,
-        'camera permission error',
-      )
+      const permissionErrorImg = await findByAltText(scanQRCodeDialog, 'camera permission error')
       expect(permissionErrorImg).toBeDefined()
     })
 
     it('Scans valid QR code', async () => {
       renderWithProviders(<App />)
 
-      const openDialogNode = await screen.findByTitle(
-        'Start your camera and scan a QR',
-      )
+      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
 
       fireEvent.click(openDialogNode)
 
@@ -256,9 +242,7 @@ describe('WalletConnect unit tests', () => {
       expect(openWebcamSpy).not.toHaveBeenCalled()
       expect(stopWebcamSpy).not.toHaveBeenCalled()
 
-      const openDialogNode = await screen.findByTitle(
-        'Start your camera and scan a QR',
-      )
+      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
 
       // we open webcam dialog
       fireEvent.click(openDialogNode)
@@ -271,9 +255,7 @@ describe('WalletConnect unit tests', () => {
       expect(stopWebcamSpy).not.toHaveBeenCalled()
 
       // we close webcam dialog
-      const closeQRCodeDialogButton = screen.getByLabelText(
-        'Close scan QR code dialog',
-      )
+      const closeQRCodeDialogButton = screen.getByLabelText('Close scan QR code dialog')
 
       expect(closeQRCodeDialogButton).toBeInTheDocument()
       fireEvent.click(closeQRCodeDialogButton)

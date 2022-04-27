@@ -32,9 +32,7 @@ function useBalances(safeAddress: string, chainId: number): BalancesType {
       const assets = balances.items.filter(transferableTokens)
 
       setAssets(assets)
-      setSelectedTokens(
-        assets.map((token: TokenBalance) => token.tokenInfo.address),
-      )
+      setSelectedTokens(assets.map((token: TokenBalance) => token.tokenInfo.address))
     } catch (err) {
       setError(err as Error)
     }

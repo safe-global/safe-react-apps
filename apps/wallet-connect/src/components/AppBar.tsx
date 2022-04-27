@@ -2,8 +2,7 @@ import MuiAppBar from '@material-ui/core/AppBar'
 import styled from 'styled-components'
 import { Icon, Link, Text } from '@gnosis.pm/safe-react-components'
 
-const WALLET_CONNECT_HELP =
-  'https://help.gnosis-safe.io/en/articles/4356253-walletconnect-safe-app'
+const WALLET_CONNECT_HELP = 'https://help.gnosis-safe.io/en/articles/4356253-walletconnect-safe-app'
 
 const AppBar = () => {
   return (

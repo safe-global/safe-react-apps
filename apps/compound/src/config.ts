@@ -26,10 +26,7 @@ const getSymbolIconUrl = (symbol: string) =>
 const filterTokens = (token: cToken) => !EXCLUDE_TOKENS.includes(token.symbol)
 const orderTokensBySymbol = (a: cToken, b: cToken) =>
   ('' + a.underlying_symbol).localeCompare(b.underlying_symbol)
-const transformFromCompoundResponse = (
-  token: cToken,
-  chainId: number,
-): TokenItem => {
+const transformFromCompoundResponse = (token: cToken, chainId: number): TokenItem => {
   return {
     id: token.underlying_symbol,
     label: token.underlying_symbol,

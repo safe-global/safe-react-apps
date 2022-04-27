@@ -1,9 +1,4 @@
-import {
-  Dot,
-  Text,
-  Button,
-  GenericModal,
-} from '@gnosis.pm/safe-react-components'
+import { Dot, Text, Button, GenericModal } from '@gnosis.pm/safe-react-components'
 import Box from '@material-ui/core/Box'
 
 import styled from 'styled-components'
@@ -15,11 +10,7 @@ type DeleteBatchFromLibraryProps = {
   onClose: () => void
 }
 
-const DeleteBatchFromLibrary = ({
-  batch,
-  onClick,
-  onClose,
-}: DeleteBatchFromLibraryProps) => {
+const DeleteBatchFromLibrary = ({ batch, onClick, onClose }: DeleteBatchFromLibraryProps) => {
   return (
     <GenericModal
       title="Delete batch from the library?"

@@ -10,9 +10,7 @@ export type cToken = {
   }
 }
 
-export async function getMarketAddressesForSafeAccount(
-  safeAddress: string,
-): Promise<string[]> {
+export async function getMarketAddressesForSafeAccount(safeAddress: string): Promise<string[]> {
   try {
     const response = await fetch(
       `${COMPOUND_API_BASE_URL}/governance/comp/account?address=${safeAddress}`,

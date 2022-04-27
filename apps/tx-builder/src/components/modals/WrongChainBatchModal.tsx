@@ -1,9 +1,4 @@
-import {
-  Button,
-  GenericModal,
-  Icon,
-  Text,
-} from '@gnosis.pm/safe-react-components'
+import { Button, GenericModal, Icon, Text } from '@gnosis.pm/safe-react-components'
 import Box from '@material-ui/core/Box'
 import styled from 'styled-components'
 
@@ -13,11 +8,7 @@ type WrongChainBatchModalProps = {
   fileChainId: string | undefined
 }
 
-const WrongChainBatchModal = ({
-  onClick,
-  onClose,
-  fileChainId,
-}: WrongChainBatchModalProps) => {
+const WrongChainBatchModal = ({ onClick, onClose, fileChainId }: WrongChainBatchModalProps) => {
   return (
     <GenericModal
       title={

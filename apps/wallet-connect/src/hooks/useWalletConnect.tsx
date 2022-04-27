@@ -5,11 +5,7 @@ import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 import { isMetaTxArray } from '../utils/transactions'
 import { areStringsEqual } from '../utils/strings'
 
-const rejectWithMessage = (
-  connector: WalletConnect,
-  id: number | undefined,
-  message: string,
-) => {
+const rejectWithMessage = (connector: WalletConnect, id: number | undefined, message: string) => {
   connector.rejectRequest({ id, error: { message } })
 }
 
@@ -31,13 +27,7 @@ const useWalletConnect = () => {
   }, [connector])
 
   const wcConnect = useCallback(
-    async ({
-      uri,
-      session,
-    }: {
-      uri?: string
-      session?: IWalletConnectSession
-    }) => {
+    async ({ uri, session }: { uri?: string; session?: IWalletConnectSession }) => {
       const wcConnector = new WalletConnect({
         uri,
         session,
@@ -118,10 +108,7 @@ const useWalletConnect = () => {
             case 'eth_sign': {
               const [address, messageHash] = payload.params
 
-              if (
-                !areStringsEqual(address, safe.safeAddress) ||
-                !messageHash.startsWith('0x')
-              ) {
+              if (!areStringsEqual(address, safe.safeAddress) || !messageHash.startsWith('0x')) {
                 throw new Error('The address or message hash is invalid')
               }
 

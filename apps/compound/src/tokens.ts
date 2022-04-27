@@ -15,8 +15,7 @@ const STATIC_CONFIG = [
   {
     id: 'DAI',
     label: 'DAI',
-    iconUrl:
-      'https://app.compound.finance/compound-components/assets/asset_DAI.svg',
+    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_DAI.svg',
     decimals: 18,
     tokenAddr: TOKENS.DAI,
     cTokenAddr: TOKENS.cDAI,
@@ -24,8 +23,7 @@ const STATIC_CONFIG = [
   {
     id: 'BAT',
     label: 'BAT',
-    iconUrl:
-      'https://app.compound.finance/compound-components/assets/asset_BAT.svg',
+    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_BAT.svg',
     decimals: 18,
     tokenAddr: TOKENS.BAT,
     cTokenAddr: TOKENS.cBAT,
@@ -33,8 +31,7 @@ const STATIC_CONFIG = [
   {
     id: 'ETH',
     label: 'ETH',
-    iconUrl:
-      'https://app.compound.finance/compound-components/assets/asset_ETH.svg',
+    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_ETH.svg',
     decimals: 18,
     tokenAddr: TOKENS.ETH,
     cTokenAddr: TOKENS.cETH,
@@ -42,8 +39,7 @@ const STATIC_CONFIG = [
   {
     id: 'USDC',
     label: 'USDC',
-    iconUrl:
-      'https://app.compound.finance/compound-components/assets/asset_USDC.svg',
+    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_USDC.svg',
     decimals: 6,
     tokenAddr: TOKENS.USDC,
     cTokenAddr: TOKENS.cUSDC,
@@ -51,8 +47,7 @@ const STATIC_CONFIG = [
   {
     id: 'ZRX',
     label: 'ZRX',
-    iconUrl:
-      'https://app.compound.finance/compound-components/assets/asset_ZRX.svg',
+    iconUrl: 'https://app.compound.finance/compound-components/assets/asset_ZRX.svg',
     decimals: 8,
     tokenAddr: TOKENS.ZRX,
     cTokenAddr: TOKENS.cZRX,

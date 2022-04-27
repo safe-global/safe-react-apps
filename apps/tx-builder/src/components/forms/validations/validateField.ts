@@ -13,10 +13,7 @@ import validateAmountField from './validateAmountField'
 import validateBooleanField from './validateBooleanField'
 import validateHexEncodedDataField from './validateHexEncodedDataField'
 
-export type ValidationFunction = (
-  value: string,
-  fieldType: string,
-) => ValidateResult
+export type ValidationFunction = (value: string, fieldType: string) => ValidateResult
 
 interface CustomValidationsType {
   [key: string]: ValidationFunction[]

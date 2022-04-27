@@ -5,9 +5,7 @@ type useElementHeightTypes<T extends HTMLElement> = {
   elementRef: RefObject<T>
 }
 
-const useElementHeight = <
-  T extends HTMLElement,
->(): useElementHeightTypes<T> => {
+const useElementHeight = <T extends HTMLElement>(): useElementHeightTypes<T> => {
   const elementRef = useRef<T>(null)
 
   const [height, setHeight] = useState<number | undefined>()

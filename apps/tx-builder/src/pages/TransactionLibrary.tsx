@@ -32,8 +32,7 @@ import { Box } from '@material-ui/core'
 import EditableLabel from '../components/EditableLabel'
 
 const TransactionLibrary = () => {
-  const { batches, removeBatch, executeBatch, downloadBatch, renameBatch } =
-    useTransactionLibrary()
+  const { batches, removeBatch, executeBatch, downloadBatch, renameBatch } = useTransactionLibrary()
   const navigate = useNavigate()
   const {
     open: showDeleteBatchModal,
@@ -44,9 +43,7 @@ const TransactionLibrary = () => {
 
   const hrefToHome = useHref(HOME_PATH)
   const internalOnClick = useLinkClickHandler(HOME_PATH)
-  const redirectToHome = (
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-  ) => {
+  const redirectToHome = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     internalOnClick(event)
   }
 
@@ -56,11 +53,7 @@ const TransactionLibrary = () => {
 
       {batches.length > 0 ? (
         batches.map(batch => (
-          <StyledAccordion
-            key={batch.id}
-            compact
-            TransitionProps={{ unmountOnExit: true }}
-          >
+          <StyledAccordion key={batch.id} compact TransitionProps={{ unmountOnExit: true }}>
             <StyledAccordionSummary style={{ backgroundColor: 'white' }}>
               {/* transactions count  */}
               <TransactionCounterDot color="tag">
@@ -79,11 +72,7 @@ const TransactionLibrary = () => {
                   arrow
                 >
                   <div>
-                    <EditableLabel
-                      onEdit={newBatchName =>
-                        renameBatch(batch.id, newBatchName)
-                      }
-                    >
+                    <EditableLabel onEdit={newBatchName => renameBatch(batch.id, newBatchName)}>
                       {batch.name}
                     </EditableLabel>
                   </div>
@@ -137,12 +126,7 @@ const TransactionLibrary = () => {
                       })
                     }}
                   >
-                    <Icon
-                      size="sm"
-                      type="edit"
-                      color="primary"
-                      aria-label="edit batch"
-                    />
+                    <Icon size="sm" type="edit" color="primary" aria-label="edit batch" />
                   </StyledIconButton>
                 </Tooltip>
 
@@ -160,12 +144,7 @@ const TransactionLibrary = () => {
                       downloadBatch(batch.name, batch.transactions)
                     }}
                   >
-                    <Icon
-                      size="sm"
-                      type="importImg"
-                      color="primary"
-                      aria-label="Download"
-                    />
+                    <Icon size="sm" type="importImg" color="primary" aria-label="Download" />
                   </StyledIconButton>
                 </Tooltip>
 
@@ -185,12 +164,7 @@ const TransactionLibrary = () => {
                       openDeleteBatchModal()
                     }}
                   >
-                    <Icon
-                      size="sm"
-                      type="delete"
-                      color="error"
-                      aria-label="Delete Batch"
-                    />
+                    <Icon size="sm" type="delete" color="error" aria-label="Delete Batch" />
                   </StyledIconButton>
                 </Tooltip>
               </BatchButtonsContainer>
@@ -206,12 +180,7 @@ const TransactionLibrary = () => {
           </StyledAccordion>
         ))
       ) : (
-        <Box
-          display="flex"
-          flexDirection={'column'}
-          alignItems={'center'}
-          paddingTop={'128px'}
-        >
+        <Box display="flex" flexDirection={'column'} alignItems={'center'} paddingTop={'128px'}>
           {/* Empty library Screen */}
           <EmptyLibrary />
           <StyledEmptyLibraryText size="xl">
@@ -219,11 +188,7 @@ const TransactionLibrary = () => {
           </StyledEmptyLibraryText>
           <StyledEmptyLibraryTextLink size="xl">
             Safe a batch by{' '}
-            <StyledEmptyLibraryLink
-              href={hrefToHome}
-              onClick={redirectToHome}
-              size="xl"
-            >
+            <StyledEmptyLibraryLink href={hrefToHome} onClick={redirectToHome} size="xl">
               <StyledLinkIcon
                 size="sm"
                 type="bookmark"

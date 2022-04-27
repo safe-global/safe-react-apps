@@ -1,11 +1,7 @@
 import axios from 'axios'
 import Web3 from 'web3'
 import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
-import {
-  TenderlySimulatePayload,
-  TenderlySimulation,
-  StateObject,
-} from './types'
+import { TenderlySimulatePayload, TenderlySimulation, StateObject } from './types'
 import { encodeMultiSendCall, getMultiSendCallOnlyAddress } from './multisend'
 
 type OptionalExceptFor<T, TRequired extends keyof T = keyof T> = Partial<
@@ -14,18 +10,12 @@ type OptionalExceptFor<T, TRequired extends keyof T = keyof T> = Partial<
   Required<Pick<T, TRequired>>
 
 // api docs: https://www.notion.so/Simulate-API-Documentation-6f7009fe6d1a48c999ffeb7941efc104
-const TENDERLY_SIMULATE_ENDPOINT_URL =
-  process.env.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL || ''
+const TENDERLY_SIMULATE_ENDPOINT_URL = process.env.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL || ''
 const TENDERLY_PROJECT_NAME = process.env.REACT_APP_TENDERLY_PROJECT_NAME || ''
 const TENDERLY_ORG_NAME = process.env.REACT_APP_TENDERLY_ORG_NAME || ''
 
-const getSimulation = async (
-  tx: TenderlySimulatePayload,
-): Promise<TenderlySimulation> => {
-  const response = await axios.post<TenderlySimulation>(
-    TENDERLY_SIMULATE_ENDPOINT_URL,
-    tx,
-  )
+const getSimulation = async (tx: TenderlySimulatePayload): Promise<TenderlySimulation> => {
+  const response = await axios.post<TenderlySimulation>(TENDERLY_SIMULATE_ENDPOINT_URL, tx)
 
   return response.data
 }
@@ -97,9 +87,7 @@ const buildSafeTransaction = (
   }
 }
 
-const encodeSafeExecuteTransactionCall = (
-  tx: SignedSafeTransaction,
-): string => {
+const encodeSafeExecuteTransactionCall = (tx: SignedSafeTransaction): string => {
   const web3 = new Web3()
 
   const encodedSafeExecuteTransactionCall = web3.eth.abi.encodeFunctionCall(
@@ -165,9 +153,7 @@ const getSingleTransactionExecutionData = (tx: SimulationTxParams): string => {
     signatures: getPreValidatedSignature(tx.executionOwner),
   }
 
-  const executionTransactionData = encodeSafeExecuteTransactionCall(
-    signedSafeTransaction,
-  )
+  const executionTransactionData = encodeSafeExecuteTransactionCall(signedSafeTransaction)
 
   return executionTransactionData
 }
@@ -187,16 +173,12 @@ const getMultiSendExecutionData = (tx: SimulationTxParams): string => {
     signatures: getPreValidatedSignature(tx.executionOwner),
   }
 
-  const executionTransactionData = encodeSafeExecuteTransactionCall(
-    signedSafeTransaction,
-  )
+  const executionTransactionData = encodeSafeExecuteTransactionCall(signedSafeTransaction)
 
   return executionTransactionData
 }
 
-const getSimulationPayload = (
-  tx: SimulationTxParams,
-): TenderlySimulatePayload => {
+const getSimulationPayload = (tx: SimulationTxParams): TenderlySimulatePayload => {
   // we need separate functions for encoding single and multi send transactions because
   // if there's only 1 transaction in the batch, the Safe interface doesn't route it through the multisend contract
   // instead it directly calls the contract in the batch transaction
@@ -228,9 +210,4 @@ const getSimulationPayload = (
   }
 }
 
-export {
-  getSimulationLink,
-  getSimulation,
-  getSimulationPayload,
-  getBlockMaxGasLimit,
-}
+export { getSimulationLink, getSimulation, getSimulationPayload, getBlockMaxGasLimit }

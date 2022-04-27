@@ -30,11 +30,7 @@ function ScanCode({ wcConnect, wcClientData }: Props) {
     if (QRCode) {
       const isValidWalletConnectQRCode = QRCode && QRCode.data.startsWith('wc:')
 
-      if (
-        isValidWalletConnectQRCode &&
-        !isAlreadyConnected &&
-        !hasBeenCalledToConnect
-      ) {
+      if (isValidWalletConnectQRCode && !isAlreadyConnected && !hasBeenCalledToConnect) {
         wcConnect({ uri: QRCode.data })
         setHasBeenCalledToConnect(true)
       }
@@ -56,9 +52,7 @@ function ScanCode({ wcConnect, wcClientData }: Props) {
       />
       {errorConnectingWebcam && (
         <StyledErrorContainer>
-          <StyledErrorTitle size="sm">
-            Check browser permissions
-          </StyledErrorTitle>
+          <StyledErrorTitle size="sm">Check browser permissions</StyledErrorTitle>
           <img src={ErrorImg} alt="camera permission error" />
         </StyledErrorContainer>
       )}

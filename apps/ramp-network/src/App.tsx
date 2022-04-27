@@ -14,11 +14,7 @@ const Container = styled.div`
   height: 30em;
 `
 
-const NetworkNotSupported = ({
-  name,
-}: {
-  name: string
-}): React.ReactElement => {
+const NetworkNotSupported = ({ name }: { name: string }): React.ReactElement => {
   return (
     <Container>
       <Title size="md">Network not supported</Title>

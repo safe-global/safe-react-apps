@@ -6,19 +6,13 @@ import { ReactComponent as WalletConnectLogo } from '../assets/wallet-connect-lo
 
 const Disconnected: React.FC = ({ children }) => {
   return (
-    <StyledContainer
-      container
-      alignItems="center"
-      justifyContent="center"
-      spacing={3}
-    >
+    <StyledContainer container alignItems="center" justifyContent="center" spacing={3}>
       <Grid item>
         <WalletConnectLogo />
       </Grid>
       <Grid item>
         <StyledText size="xl">
-          Connect your Safe to a dApp via the WalletConnect and trigger
-          transactions
+          Connect your Safe to a dApp via the WalletConnect and trigger transactions
         </StyledText>
       </Grid>
       <Grid item>{children}</Grid>

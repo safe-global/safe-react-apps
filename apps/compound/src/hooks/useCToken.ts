@@ -16,18 +16,12 @@ export default function useCToken(selectedToken: TokenItem | undefined) {
       return
     }
 
-    setTokenInstance(
-      new web3.eth.Contract(CErc20ABI as AbiItem[], selectedToken.tokenAddr),
-    )
+    setTokenInstance(new web3.eth.Contract(CErc20ABI as AbiItem[], selectedToken.tokenAddr))
 
     if (selectedToken.id === 'ETH') {
-      setCTokenInstance(
-        new web3.eth.Contract(CWethABI as AbiItem[], selectedToken.cTokenAddr),
-      )
+      setCTokenInstance(new web3.eth.Contract(CWethABI as AbiItem[], selectedToken.cTokenAddr))
     } else {
-      setCTokenInstance(
-        new web3.eth.Contract(CErc20ABI as AbiItem[], selectedToken.cTokenAddr),
-      )
+      setCTokenInstance(new web3.eth.Contract(CErc20ABI as AbiItem[], selectedToken.cTokenAddr))
     }
   }, [selectedToken, web3])
 

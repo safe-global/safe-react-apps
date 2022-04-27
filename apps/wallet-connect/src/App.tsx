@@ -21,9 +21,7 @@ enum CONNECTION_STATUS {
 const App = () => {
   const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect()
   const { findSafeApp, openSafeApp } = useApps()
-  const [connectionStatus, setConnectionStatus] = useState(
-    CONNECTION_STATUS.DISCONNECTED,
-  )
+  const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED)
   const [isNavigatingToSafeApp, setIsNavigatingToSafeApp] = useState(false)
 
   const handleOpenSafeApp = useCallback(
@@ -74,21 +72,14 @@ const App = () => {
             <StyledCard>
               {connectionStatus === CONNECTION_STATUS.DISCONNECTED && (
                 <Disconnected>
-                  <WalletConnectField
-                    client={wcClientData}
-                    onConnect={data => wcConnect(data)}
-                  />
+                  <WalletConnectField client={wcClientData} onConnect={data => wcConnect(data)} />
                 </Disconnected>
               )}
               {connectionStatus === CONNECTION_STATUS.CONNECTING && (
                 <Connecting
                   client={wcClientData}
-                  onOpenSafeApp={() =>
-                    handleOpenSafeApp(wcClientData?.url || '')
-                  }
-                  onKeepUsingWalletConnect={() =>
-                    setConnectionStatus(CONNECTION_STATUS.CONNECTED)
-                  }
+                  onOpenSafeApp={() => handleOpenSafeApp(wcClientData?.url || '')}
+                  onKeepUsingWalletConnect={() => setConnectionStatus(CONNECTION_STATUS.CONNECTED)}
                 />
               )}
               {connectionStatus === CONNECTION_STATUS.CONNECTED && (
@@ -107,10 +98,7 @@ const App = () => {
               <Help title={HELP_CONNECT.title} steps={HELP_CONNECT.steps} />
             )}
             {connectionStatus !== CONNECTION_STATUS.DISCONNECTED && (
-              <Help
-                title={HELP_TRANSACTIONS.title}
-                steps={HELP_TRANSACTIONS.steps}
-              />
+              <Help title={HELP_TRANSACTIONS.title} steps={HELP_TRANSACTIONS.steps} />
             )}
           </StyledHelpContainer>
         </StyledAppContainer>

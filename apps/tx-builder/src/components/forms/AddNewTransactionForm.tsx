@@ -28,8 +28,7 @@ const AddNewTransactionForm = ({
   }
 
   const { addTransaction } = useTransactions()
-  const { networkPrefix, getAddressFromDomain, nativeCurrencySymbol } =
-    useNetwork()
+  const { networkPrefix, getAddressFromDomain, nativeCurrencySymbol } = useNetwork()
 
   const onSubmit = (values: SolidityFormValuesTypes) => {
     const proposedTransaction = parseFormToProposedTransaction(

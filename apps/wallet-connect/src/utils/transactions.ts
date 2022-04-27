@@ -24,12 +24,7 @@ function isHexString(value: string, length?: number) {
 }
 
 function isNumberLike(object: any): object is MetaTx {
-  if (
-    typeof object === 'string' &&
-    !isHexString(object) &&
-    !isDecimalString(object)
-  )
-    return false
+  if (typeof object === 'string' && !isHexString(object) && !isDecimalString(object)) return false
   return typeof object in ['number', 'string', 'bigint']
 }
 

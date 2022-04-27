@@ -35,12 +35,7 @@ const Connected = ({ client, onDisconnect }: ConnectedProps) => {
       </Grid>
 
       <StyledCenteredGridItem item>
-        <Button
-          size="md"
-          color="error"
-          variant="contained"
-          onClick={onDisconnect}
-        >
+        <Button size="md" color="error" variant="contained" onClick={onDisconnect}>
           Disconnect
         </Button>
       </StyledCenteredGridItem>
@@ -49,9 +44,8 @@ const Connected = ({ client, onDisconnect }: ConnectedProps) => {
         <StyledMessage>
           <Icon type="info" color="primary" size="md" />
           <Text size="lg">
-            You need to have this WalletConnect Safe app open for transactions
-            to pop up. You will not receive transaction requests when you don't
-            have it open.
+            You need to have this WalletConnect Safe app open for transactions to pop up. You will
+            not receive transaction requests when you don't have it open.
           </Text>
         </StyledMessage>
       </Grid>

@@ -1,10 +1,6 @@
 import { AbiItem, toBN, isAddress, fromWei } from 'web3-utils'
 import abiCoder, { AbiCoder } from 'web3-eth-abi'
-import {
-  ContractInput,
-  ContractMethod,
-  ProposedTransaction,
-} from './typings/models'
+import { ContractInput, ContractMethod, ProposedTransaction } from './typings/models'
 
 export const enum FETCH_STATUS {
   NOT_ASKED = 'NOT_ASKED',
@@ -127,19 +123,16 @@ export const encodeToHexData = (
   const contractFields = contractMethod?.inputs || []
 
   const isValidContractMethod =
-    contractMethodName &&
-    !NON_VALID_CONTRACT_METHODS.includes(contractMethodName)
+    contractMethodName && !NON_VALID_CONTRACT_METHODS.includes(contractMethodName)
 
   if (isValidContractMethod) {
     try {
-      const parsedValues = contractFields.map(
-        (contractField: ContractInput, index) => {
-          const contractFieldName = contractField.name || index
-          const cleanValue = contractFieldsValues[contractFieldName] || ''
+      const parsedValues = contractFields.map((contractField: ContractInput, index) => {
+        const contractFieldName = contractField.name || index
+        const cleanValue = contractFieldsValues[contractFieldName] || ''
 
-          return parseInputValue(contractField, cleanValue)
-        },
-      )
+        return parseInputValue(contractField, cleanValue)
+      })
       const abi = abiCoder as unknown // a bug in the web3-eth-abi types
       const hexEncondedData = (abi as AbiCoder).encodeFunctionCall(
         contractMethod as AbiItem,
@@ -157,9 +150,7 @@ export const weiToEther = (wei: string) => {
   return fromWei(wei, 'ether')
 }
 
-export const getTransactionText = (
-  description: ProposedTransaction['description'],
-) => {
+export const getTransactionText = (description: ProposedTransaction['description']) => {
   const { contractMethod, customTransactionData } = description
 
   const isCustomHexDataTx = !!customTransactionData

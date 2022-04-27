@@ -4,20 +4,12 @@ import erc20 from '../abis/erc20'
 describe('Safe SDK helpers', () => {
   describe('encodeTxData', () => {
     it('encodes a simple transfer call', () => {
-      const data = encodeTxData(
-        erc20.transfer,
-        '0xb3b83bf204C458B461de9B0CD2739DB152b4fa5A',
-        1000,
-      )
+      const data = encodeTxData(erc20.transfer, '0xb3b83bf204C458B461de9B0CD2739DB152b4fa5A', 1000)
       expect(data).toEqual(
         '0xa9059cbb000000000000000000000000b3b83bf204c458b461de9b0cd2739db152b4fa5a00000000000000000000000000000000000000000000000000000000000003e8',
       )
 
-      const data2 = encodeTxData(
-        erc20.transfer,
-        '0xb3b83bf204C458B461de9B0CD2739DB152b4fa5A',
-        1,
-      )
+      const data2 = encodeTxData(erc20.transfer, '0xb3b83bf204C458B461de9B0CD2739DB152b4fa5A', 1)
       expect(data2).toEqual(
         '0xa9059cbb000000000000000000000000b3b83bf204c458b461de9b0cd2739db152b4fa5a0000000000000000000000000000000000000000000000000000000000000001',
       )

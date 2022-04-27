@@ -1,9 +1,4 @@
-import {
-  Dot,
-  Text,
-  Button,
-  GenericModal,
-} from '@gnosis.pm/safe-react-components'
+import { Dot, Text, Button, GenericModal } from '@gnosis.pm/safe-react-components'
 import Box from '@material-ui/core/Box'
 import styled from 'styled-components'
 
@@ -13,11 +8,7 @@ type DeleteBatchModalProps = {
   onClose: () => void
 }
 
-const DeleteBatchModal = ({
-  count,
-  onClick,
-  onClose,
-}: DeleteBatchModalProps) => {
+const DeleteBatchModal = ({ count, onClick, onClose }: DeleteBatchModalProps) => {
   return (
     <GenericModal
       title="Clear transaction list?"
@@ -42,12 +33,7 @@ const DeleteBatchModal = ({
             <Button size="md" variant="bordered" onClick={onClose}>
               Back
             </Button>
-            <Button
-              size="md"
-              style={{ marginLeft: 16 }}
-              color="error"
-              onClick={onClick}
-            >
+            <Button size="md" style={{ marginLeft: 16 }} color="error" onClick={onClick}>
               Yes, clear
             </Button>
           </StyledModalButtonsWrapper>

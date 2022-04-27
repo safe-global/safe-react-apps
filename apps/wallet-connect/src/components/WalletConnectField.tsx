@@ -2,12 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import IconButton from '@material-ui/core/IconButton'
 import Dialog from '@material-ui/core/Dialog'
-import {
-  Icon,
-  Loader,
-  TextFieldInput,
-  Tooltip,
-} from '@gnosis.pm/safe-react-components'
+import { Icon, Loader, TextFieldInput, Tooltip } from '@gnosis.pm/safe-react-components'
 import { IWalletConnectSession, IClientMeta } from '@walletconnect/types'
 import styled from 'styled-components'
 import format from 'date-fns/format'
@@ -25,10 +20,7 @@ type WalletConnectFieldProps = {
   onConnect: ({ uri }: WcConnectProps) => Promise<void>
 }
 
-const WalletConnectField = ({
-  client,
-  onConnect,
-}: WalletConnectFieldProps): React.ReactElement => {
+const WalletConnectField = ({ client, onConnect }: WalletConnectFieldProps): React.ReactElement => {
   const [invalidQRCode, setInvalidQRCode] = useState(false)
   const [isConnecting, setIsConnecting] = useState(false)
   const [inputValue, setInputValue] = useState('')
@@ -69,9 +61,7 @@ const WalletConnectField = ({
         const blob = item.getAsFile()
         const reader = new FileReader()
         reader.onload = async (event: ProgressEvent<FileReader>) => {
-          const imageData = await blobToImageData(
-            event.target?.result as string,
-          )
+          const imageData = await blobToImageData(event.target?.result as string)
           const code = jsQr(imageData.data, imageData.width, imageData.height)
           if (code?.data) {
             setIsConnecting(true)
@@ -153,10 +143,7 @@ const WalletConnectField = ({
         aria-describedby="Dialog to load a QR code"
       >
         <StyledCloseDialogContainer>
-          <Tooltip
-            title="Close scan QR code dialog"
-            aria-label="Close scan QR code dialog"
-          >
+          <Tooltip title="Close scan QR code dialog" aria-label="Close scan QR code dialog">
             <IconButton onClick={handleQRDialogClose}>
               <Icon size="md" type="cross" color="primary" />
             </IconButton>

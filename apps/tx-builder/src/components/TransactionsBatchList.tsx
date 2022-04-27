@@ -1,11 +1,5 @@
 import { isValidElement, useMemo, useState } from 'react'
-import {
-  Dot,
-  Text,
-  Title,
-  Icon,
-  Tooltip,
-} from '@gnosis.pm/safe-react-components'
+import { Dot, Text, Title, Icon, Tooltip } from '@gnosis.pm/safe-react-components'
 
 import IconButton from '@material-ui/core/IconButton'
 import styled from 'styled-components'
@@ -40,10 +34,7 @@ type TransactionsBatchListProps = {
   saveBatch?: (name: string, transactions: ProposedTransaction[]) => void
   downloadBatch?: (name: string, transactions: ProposedTransaction[]) => void
   removeAllTransactions?: () => void
-  replaceTransaction?: (
-    newTransaction: ProposedTransaction,
-    index: number,
-  ) => void
+  replaceTransaction?: (newTransaction: ProposedTransaction, index: number) => void
   reorderTransactions?: (sourceIndex: number, destinationIndex: number) => void
 }
 
@@ -65,11 +56,9 @@ const TransactionsBatchList = ({
   // we need those states to display the correct position in each tx during the drag & drop
   const { batch } = useTransactionLibrary()
   const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState<number>()
-  const [draggableTxIndexDestination, setDraggableTxIndexDestination] =
-    useState<number>()
+  const [draggableTxIndexDestination, setDraggableTxIndexDestination] = useState<number>()
 
-  const { networkPrefix, getAddressFromDomain, nativeCurrencySymbol } =
-    useNetwork()
+  const { networkPrefix, getAddressFromDomain, nativeCurrencySymbol } = useNetwork()
 
   const onDragStart = ({ source }: DragStart) => {
     setDraggableTxIndexOrigin(source.index)
@@ -87,8 +76,7 @@ const TransactionsBatchList = ({
     const destinationIndex = destination?.index
 
     const isDropEvent = reason === DROP_EVENT // because user can cancel the drag & drop
-    const hasTxPositionChanged =
-      sourceIndex !== destinationIndex && destinationIndex !== undefined
+    const hasTxPositionChanged = sourceIndex !== destinationIndex && destinationIndex !== undefined
 
     const shouldPerformTxReorder = isDropEvent && hasTxPositionChanged
 
@@ -180,15 +168,8 @@ const TransactionsBatchList = ({
                 textColor="white"
                 arrow
               >
-                <StyledHeaderIconButton
-                  onClick={() => downloadBatch(fileName, transactions)}
-                >
-                  <Icon
-                    size="sm"
-                    type="importImg"
-                    color="primary"
-                    aria-label="Download"
-                  />
+                <StyledHeaderIconButton onClick={() => downloadBatch(fileName, transactions)}>
+                  <Icon size="sm" type="importImg" color="primary" aria-label="Download" />
                 </StyledHeaderIconButton>
               </Tooltip>
             )}
@@ -202,12 +183,7 @@ const TransactionsBatchList = ({
                 arrow
               >
                 <StyledHeaderIconButton onClick={openClearTransactions}>
-                  <Icon
-                    size="sm"
-                    type="delete"
-                    color="error"
-                    aria-label="Clear transactions"
-                  />
+                  <Icon size="sm" type="delete" color="error" aria-label="Clear transactions" />
                 </StyledHeaderIconButton>
               </Tooltip>
             )}
@@ -221,15 +197,9 @@ const TransactionsBatchList = ({
             onDragUpdate={onDragUpdate}
             onDragEnd={onDragEnd}
           >
-            <Droppable
-              mode={'standard'}
-              droppableId={TRANSACTION_LIST_DROPPABLE_ID}
-            >
+            <Droppable mode={'standard'} droppableId={TRANSACTION_LIST_DROPPABLE_ID}>
               {(provided: DroppableProvided) => (
-                <TransactionList
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
+                <TransactionList {...provided.droppableProps} ref={provided.innerRef}>
                   {transactions.map((transaction: any, index: number) => (
                     <Draggable
                       key={transaction.id}
@@ -237,10 +207,7 @@ const TransactionsBatchList = ({
                       draggableId={transaction.id.toString()}
                       isDragDisabled={!reorderTransactions}
                     >
-                      {(
-                        provided: DraggableProvided,
-                        snapshot: DraggableStateSnapshot,
-                      ) => (
+                      {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
                         <Item
                           key={transaction.id}
                           transaction={transaction}
@@ -249,9 +216,7 @@ const TransactionsBatchList = ({
                           isLastTransaction={index === transactions.length - 1}
                           showTransactionDetails={showTransactionDetails}
                           index={index}
-                          draggableTxIndexDestination={
-                            draggableTxIndexDestination
-                          }
+                          draggableTxIndexDestination={draggableTxIndexDestination}
                           draggableTxIndexOrigin={draggableTxIndexOrigin}
                           reorderTransactions={reorderTransactions}
                           networkPrefix={networkPrefix}
@@ -292,9 +257,7 @@ const TransactionsBatchList = ({
                   transaction={transactions[rubric.source.index]}
                   provided={provided}
                   snapshot={snapshot}
-                  isLastTransaction={
-                    rubric.source.index === transactions.length - 1
-                  }
+                  isLastTransaction={rubric.source.index === transactions.length - 1}
                   showTransactionDetails={showTransactionDetails}
                   index={rubric.source.index}
                   draggableTxIndexDestination={draggableTxIndexDestination}
@@ -311,10 +274,7 @@ const TransactionsBatchList = ({
               )}
             >
               {(provided: DroppableProvided) => (
-                <TransactionList
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
+                <TransactionList {...provided.droppableProps} ref={provided.innerRef}>
                   <VirtualizedList
                     innerRef={provided.innerRef}
                     items={transactions}
@@ -325,23 +285,16 @@ const TransactionsBatchList = ({
                         draggableId={transaction.id.toString()}
                         isDragDisabled={!reorderTransactions}
                       >
-                        {(
-                          provided: DraggableProvided,
-                          snapshot: DraggableStateSnapshot,
-                        ) => (
+                        {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
                           <Item
                             key={transaction.id}
                             transaction={transaction}
                             provided={provided}
                             snapshot={snapshot}
-                            isLastTransaction={
-                              index === transactions.length - 1
-                            }
+                            isLastTransaction={index === transactions.length - 1}
                             showTransactionDetails={showTransactionDetails}
                             index={index}
-                            draggableTxIndexDestination={
-                              draggableTxIndexDestination
-                            }
+                            draggableTxIndexDestination={draggableTxIndexDestination}
                             draggableTxIndexOrigin={draggableTxIndexOrigin}
                             reorderTransactions={reorderTransactions}
                             networkPrefix={networkPrefix}
@@ -400,9 +353,7 @@ const TransactionsBatchList = ({
       {showDeleteTxModal && (
         <DeleteTransactionModal
           txIndex={Number(txIndexToRemove)}
-          txDescription={getTransactionText(
-            transactions[Number(txIndexToRemove)]?.description,
-          )}
+          txDescription={getTransactionText(transactions[Number(txIndexToRemove)]?.description)}
           onClick={() => {
             closeDeleteTxModal()
             removeTransaction?.(Number(txIndexToRemove))

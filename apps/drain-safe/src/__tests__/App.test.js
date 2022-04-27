@@ -1,11 +1,7 @@
 import { screen, waitFor, fireEvent } from '@testing-library/react'
 import { within } from '@testing-library/dom'
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
-import {
-  mockTxsRequest,
-  mockInitialBalances,
-  renderWithProviders,
-} from '../utils/test-helpers'
+import { mockTxsRequest, mockInitialBalances, renderWithProviders } from '../utils/test-helpers'
 import App from '../components/App'
 
 jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
@@ -66,9 +62,7 @@ describe('<App />', () => {
       target: { value: '0x301812eb4c89766875eFe61460f7a8bBC0CadB96' },
     })
     fireEvent.click(screen.getByText(/transfer everything/i))
-    await waitFor(() =>
-      expect(sdk.txs.send).toHaveBeenCalledWith(mockTxsRequest),
-    )
+    await waitFor(() => expect(sdk.txs.send).toHaveBeenCalledWith(mockTxsRequest))
   })
 
   it('should drain the safe when submit button is clicked removing the tokens excluded by the user', async () => {
@@ -99,9 +93,7 @@ describe('<App />', () => {
     await screen.findByText(/chainLink token/i)
     fireEvent.click(screen.getByText(/transfer everything/i))
 
-    expect(
-      await screen.findByText(/please enter a valid recipient address/i),
-    ).toBeInTheDocument()
+    expect(await screen.findByText(/please enter a valid recipient address/i)).toBeInTheDocument()
   })
 
   it('should allow to order token by string prop', async () => {
@@ -165,15 +157,9 @@ describe('<App />', () => {
       expect(within(makerRow).queryByTitle(warningTooltip)).toBeInTheDocument()
 
       // warning should NOT be present in other rows
-      expect(
-        within(tableRows[0]).queryByTitle(warningTooltip),
-      ).not.toBeInTheDocument()
-      expect(
-        within(tableRows[1]).queryByTitle(warningTooltip),
-      ).not.toBeInTheDocument()
-      expect(
-        within(tableRows[2]).queryByTitle(warningTooltip),
-      ).not.toBeInTheDocument()
+      expect(within(tableRows[0]).queryByTitle(warningTooltip)).not.toBeInTheDocument()
+      expect(within(tableRows[1]).queryByTitle(warningTooltip)).not.toBeInTheDocument()
+      expect(within(tableRows[2]).queryByTitle(warningTooltip)).not.toBeInTheDocument()
     })
   })
 

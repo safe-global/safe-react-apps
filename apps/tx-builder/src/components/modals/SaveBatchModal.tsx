@@ -41,30 +41,19 @@ const SaveBatchModal = ({ onClick, onClose }: SaveBatchModalProps) => {
       withoutBodyPadding
       body={
         <StyledModalBodyWrapper>
-          <form
-            id={'create-batch-form'}
-            onSubmit={handleSubmit(onSubmit)}
-            noValidate
-          >
+          <form id={'create-batch-form'} onSubmit={handleSubmit(onSubmit)} noValidate>
             <Field
               id="batch-name-input"
               name={BATCH_NAME_FIELD}
               label={'Batch name'}
               fieldType={TEXT_FIELD_TYPE}
-              validations={[
-                (value: string) => validateBatchName(value, batches),
-              ]}
+              validations={[(value: string) => validateBatchName(value, batches)]}
               fullWidth
               required
               control={control}
               showErrorsInTheLabel={false}
             />
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              maxWidth={'450px'}
-            >
+            <Box display="flex" alignItems="center" justifyContent="center" maxWidth={'450px'}>
               <Button size="md" type="submit">
                 Create
               </Button>
@@ -84,10 +73,7 @@ const StyledModalBodyWrapper = styled.div`
   max-width: 450px;
 `
 
-const validateBatchName = (
-  batchName: string,
-  batches: Batch[],
-): ValidateResult => {
+const validateBatchName = (batchName: string, batches: Batch[]): ValidateResult => {
   const batchNames = batches.map(({ name }) => name)
   const isBatchNameAlreadyTaken = batchNames.includes(batchName)
 

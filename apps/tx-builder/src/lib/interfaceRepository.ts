@@ -13,8 +13,7 @@ class InterfaceRepository {
     return await getAbi(address, this.chainInfo)
   }
 
-  private _isMethodPayable = (m: any) =>
-    m.payable || m.stateMutability === 'payable'
+  private _isMethodPayable = (m: any) => m.payable || m.stateMutability === 'payable'
 
   async loadAbi(address: string): Promise<string> {
     return await this._loadAbiFromBlockExplorer(address)

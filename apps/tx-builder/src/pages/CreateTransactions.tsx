@@ -43,13 +43,7 @@ const CreateTransactions = () => {
         {transactions.length > 0 ? (
           <>
             <TransactionsBatchList
-              batchTitle={
-                fileName ? (
-                  <FileNameTitle filename={fileName} />
-                ) : (
-                  'Transactions Batch'
-                )
-              }
+              batchTitle={fileName ? <FileNameTitle filename={fileName} /> : 'Transactions Batch'}
               transactions={transactions}
               removeTransaction={removeTransaction}
               saveBatch={saveBatch}

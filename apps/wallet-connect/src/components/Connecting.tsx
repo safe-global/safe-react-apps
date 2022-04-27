@@ -10,11 +10,7 @@ type ConnectingProps = {
   onKeepUsingWalletConnect: () => void
 }
 
-const Connecting = ({
-  client,
-  onOpenSafeApp,
-  onKeepUsingWalletConnect,
-}: ConnectingProps) => {
+const Connecting = ({ client, onOpenSafeApp, onKeepUsingWalletConnect }: ConnectingProps) => {
   if (!client) {
     return null
   }
@@ -33,15 +29,14 @@ const Connecting = ({
 
       <Grid item>
         <Text size="xl">
-          Trying to connect{' '}
-          <StyledBoldText as="span">{client.name}</StyledBoldText>
+          Trying to connect <StyledBoldText as="span">{client.name}</StyledBoldText>
         </Text>
       </Grid>
 
       <Grid item>
         <StyledCenteredText size="md">
-          For better experience use Safe optimised app. It allows you to operate
-          with an app without interruption.
+          For better experience use Safe optimised app. It allows you to operate with an app without
+          interruption.
         </StyledCenteredText>
       </Grid>
 
@@ -62,28 +57,19 @@ const Connecting = ({
             </StyledBoldText>
           </Grid>
           <Grid item>
-            <Text size="lg">
-              {client.name ? client.name : new URL(client.url).hostname}
-            </Text>
+            <Text size="lg">{client.name ? client.name : new URL(client.url).hostname}</Text>
           </Grid>
         </Grid>
       </StyledSafeAppContainer>
 
       <Grid item>
-        <Button
-          size="md"
-          color="primary"
-          variant="contained"
-          onClick={onOpenSafeApp}
-        >
+        <Button size="md" color="primary" variant="contained" onClick={onOpenSafeApp}>
           Open Dapp
         </Button>
       </Grid>
 
       <Grid item>
-        <StyledLink onClick={onKeepUsingWalletConnect}>
-          Keep using WalletConnect
-        </StyledLink>
+        <StyledLink onClick={onKeepUsingWalletConnect}>Keep using WalletConnect</StyledLink>
       </Grid>
     </StyledCardContainer>
   )

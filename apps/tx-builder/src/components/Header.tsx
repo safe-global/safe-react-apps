@@ -1,10 +1,4 @@
-import {
-  FixedIcon,
-  Icon,
-  Text,
-  Title,
-  Tooltip,
-} from '@gnosis.pm/safe-react-components'
+import { FixedIcon, Icon, Text, Title, Tooltip } from '@gnosis.pm/safe-react-components'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -74,9 +68,7 @@ const Header = () => {
           <StyledLink to={HOME_PATH} onClick={goBack}>
             {/* Go Back link */}
             <FixedIcon type={'chevronLeft'} />
-            <StyledLeftLinkLabel size="xl">
-              {goBackLabel[previousUrl]}
-            </StyledLeftLinkLabel>
+            <StyledLeftLinkLabel size="xl">{goBackLabel[previousUrl]}</StyledLeftLinkLabel>
           </StyledLink>
         )}
 

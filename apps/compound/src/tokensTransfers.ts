@@ -7,10 +7,8 @@ export type TokenInteractionData = {
   sender?: string
 }
 
-const RINKEBY =
-  'https://api.thegraph.com/subgraphs/name/protofire/token-registry-rinkeby'
-const MAINNET =
-  'https://api.thegraph.com/subgraphs/name/protofire/token-registry'
+const RINKEBY = 'https://api.thegraph.com/subgraphs/name/protofire/token-registry-rinkeby'
+const MAINNET = 'https://api.thegraph.com/subgraphs/name/protofire/token-registry'
 
 const subgraphUri: { [key in CHAINS.MAINNET | CHAINS.RINKEBY]: string } = {
   [CHAINS.RINKEBY]: RINKEBY,
@@ -18,20 +16,11 @@ const subgraphUri: { [key in CHAINS.MAINNET | CHAINS.RINKEBY]: string } = {
 }
 
 const TRANSFER_EVENTS = gql`
-  query TransferEvents(
-    $first: Int!
-    $skip: Int!
-    $token: String!
-    $addresses: [String!]!
-  ) {
+  query TransferEvents($first: Int!, $skip: Int!, $token: String!, $addresses: [String!]!) {
     transferEvents(
       first: $first
       skip: $skip
-      where: {
-        token: $token
-        destination_in: $addresses
-        sender_in: $addresses
-      }
+      where: { token: $token, destination_in: $addresses, sender_in: $addresses }
     ) {
       amount
       sender
@@ -78,17 +67,8 @@ async function getTransferEvents(
 }
 
 const MINT_EVENTS = gql`
-  query MintEvents(
-    $first: Int!
-    $skip: Int!
-    $token: String!
-    $safeAddress: String!
-  ) {
-    mintEvents(
-      first: $first
-      skip: $skip
-      where: { token: $token, destination: $safeAddress }
-    ) {
+  query MintEvents($first: Int!, $skip: Int!, $token: String!, $safeAddress: String!) {
+    mintEvents(first: $first, skip: $skip, where: { token: $token, destination: $safeAddress }) {
       amount
       destination
     }
@@ -147,12 +127,7 @@ export async function getTokenInteractions(
   })
 
   const mintEventsRes = await getMintEvents(client, safeAddress, tokenAddr)
-  const transferEventsRes = await getTransferEvents(
-    client,
-    safeAddress,
-    tokenAddr,
-    cTokenAddr,
-  )
+  const transferEventsRes = await getTransferEvents(client, safeAddress, tokenAddr, cTokenAddr)
   return [...mintEventsRes, ...transferEventsRes]
 }
 

@@ -38,10 +38,7 @@ const App = () => {
         <Route path={REVIEW_AND_CONFIRM_PATH} element={<ReviewAndConfirm />} />
 
         {/* Transaction Library Screen */}
-        <Route
-          path={TRANSACTION_LIBRARY_PATH}
-          element={<TransactionLibrary />}
-        />
+        <Route path={TRANSACTION_LIBRARY_PATH} element={<TransactionLibrary />} />
       </Routes>
     </>
   )

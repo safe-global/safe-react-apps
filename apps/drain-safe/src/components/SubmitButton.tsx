@@ -10,13 +10,7 @@ function SubmitButton({
 }): JSX.Element {
   return (
     <Flex centered>
-      <Button
-        size="lg"
-        color="primary"
-        variant="contained"
-        type="submit"
-        disabled={disabled}
-      >
+      <Button size="lg" color="primary" variant="contained" type="submit" disabled={disabled}>
         {children}
       </Button>
     </Flex>

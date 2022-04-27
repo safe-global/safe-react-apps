@@ -6,10 +6,7 @@ type TextContractFieldTypes = TextFieldInputProps & {
   networkPrefix?: undefined | string
 }
 
-const TextContractField = ({
-  networkPrefix,
-  ...props
-}: TextContractFieldTypes) => {
+const TextContractField = ({ networkPrefix, ...props }: TextContractFieldTypes) => {
   return <StyledTextField {...props} hiddenLabel={false} />
 }
 

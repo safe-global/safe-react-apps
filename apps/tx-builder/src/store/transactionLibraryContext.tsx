@@ -1,18 +1,7 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { useTransactions } from './transactionsContext'
 import StorageManager from '../lib/storage'
-import {
-  Batch,
-  BatchFile,
-  BatchTransaction,
-  ProposedTransaction,
-} from '../typings/models'
+import { Batch, BatchFile, BatchTransaction, ProposedTransaction } from '../typings/models'
 import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk'
 import { encodeToHexData } from '../utils'
 import { toChecksumAddress } from 'web3-utils'
@@ -27,11 +16,7 @@ type TransactionLibraryContextProps = {
   saveBatch: (name: string, transactions: ProposedTransaction[]) => void
   removeBatch: (batchId: string | number) => void
   renameBatch: (batchId: string | number, newName: string) => void
-  updateBatch: (
-    batchId: string | number,
-    name: string,
-    transactions: ProposedTransaction[],
-  ) => void
+  updateBatch: (batchId: string | number, name: string, transactions: ProposedTransaction[]) => void
   downloadBatch: (name: string, transactions: ProposedTransaction[]) => void
   executeBatch: (batch: Batch) => void
   importBatch: (file: File | null) => Promise<BatchFile>
@@ -39,8 +24,7 @@ type TransactionLibraryContextProps = {
   setHasChecksumWarning: (hasChecksumWarning: boolean) => void
 }
 
-export const TransactionLibraryContext =
-  createContext<TransactionLibraryContextProps | null>(null)
+export const TransactionLibraryContext = createContext<TransactionLibraryContextProps | null>(null)
 
 const TransactionLibraryProvider: React.FC = ({ children }) => {
   const [batches, setBatches] = useState<Batch[]>([])
@@ -108,11 +92,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
   )
 
   const updateBatch = useCallback(
-    async (
-      batchId: string | number,
-      name: string,
-      transactions: ProposedTransaction[],
-    ) => {
+    async (batchId: string | number, name: string, transactions: ProposedTransaction[]) => {
       const batch = await StorageManager.getBatch(String(batchId))
       if (batch) {
         await StorageManager.updateBatch(
@@ -178,10 +158,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
     (batchFile: BatchFile) => {
       if (chainInfo) {
         if (validateChecksum(batchFile)) {
-          console.info(
-            '[Checksum check] - Checksum validation success',
-            batchFile,
-          )
+          console.info('[Checksum check] - Checksum validation success', batchFile)
         } else {
           setHasChecksumWarning(true)
           console.error(
@@ -210,9 +187,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 
   const importBatch = useCallback(
     async file => {
-      const batchFile = await initializeBatch(
-        await StorageManager.importBatch(file),
-      )
+      const batchFile = await initializeBatch(await StorageManager.importBatch(file))
       return batchFile
     },
     [initializeBatch],
@@ -242,9 +217,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 export const useTransactionLibrary = () => {
   const contextValue = useContext(TransactionLibraryContext)
   if (contextValue === null) {
-    throw new Error(
-      'Component must be wrapped with <TransactionLibraryProvider>',
-    )
+    throw new Error('Component must be wrapped with <TransactionLibraryProvider>')
   }
 
   return contextValue
@@ -278,9 +251,7 @@ const generateBatchFile = ({
   }
 }
 
-const convertToBatchTransactions = (
-  transactions: ProposedTransaction[],
-): BatchTransaction[] => {
+const convertToBatchTransactions = (transactions: ProposedTransaction[]): BatchTransaction[] => {
   return transactions.map(
     ({ description }: ProposedTransaction): BatchTransaction => ({
       to: description.to,
@@ -335,10 +306,7 @@ const convertToProposedTransactions = (
         value: transaction.value,
         data:
           transaction.data ||
-          encodeToHexData(
-            transaction.contractMethod,
-            transaction.contractInputsValues,
-          ) ||
+          encodeToHexData(transaction.contractMethod, transaction.contractInputsValues) ||
           '0x',
       },
     }

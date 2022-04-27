@@ -42,17 +42,10 @@ const ReviewAndConfirm = () => {
     reorderTransactions,
   } = useTransactions()
   const { downloadBatch, saveBatch } = useTransactionLibrary()
-  const rawTransactions = useMemo(
-    () => transactions.map(t => t.raw),
-    [transactions],
-  )
+  const rawTransactions = useMemo(() => transactions.map(t => t.raw), [transactions])
   const [showSimulation, setShowSimulation] = useState<boolean>(false)
-  const {
-    simulation,
-    simulateTransaction,
-    simulationRequestStatus,
-    simulationLink,
-  } = useSimulation(rawTransactions)
+  const { simulation, simulateTransaction, simulationRequestStatus, simulationLink } =
+    useSimulation(rawTransactions)
   const navigate = useNavigate()
 
   const clickSimulate = () => {
@@ -166,16 +159,10 @@ const ReviewAndConfirm = () => {
                     />
                     <Text color="inputFilled" size="lg">
                       The batch failed during the simulation throwing error{' '}
-                      <b>{simulation.transaction.error_message}</b> in the
-                      contract at{' '}
-                      <b>{simulation.transaction.error_info?.address}</b>. Full
-                      simulation report is available{' '}
-                      <Link
-                        href={simulationLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        size="lg"
-                      >
+                      <b>{simulation.transaction.error_message}</b> in the contract at{' '}
+                      <b>{simulation.transaction.error_info?.address}</b>. Full simulation report is
+                      available{' '}
+                      <Link href={simulationLink} target="_blank" rel="noreferrer" size="lg">
                         <b>on Tenderly</b>
                       </Link>
                       .
@@ -193,14 +180,8 @@ const ReviewAndConfirm = () => {
                       color="primary"
                     />
                     <Text color="inputFilled" size="lg">
-                      The batch was successfully simulated. Full simulation
-                      report is available{' '}
-                      <Link
-                        href={simulationLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        size="lg"
-                      >
+                      The batch was successfully simulated. Full simulation report is available{' '}
+                      <Link href={simulationLink} target="_blank" rel="noreferrer" size="lg">
                         <b>on Tenderly</b>
                       </Link>
                       .

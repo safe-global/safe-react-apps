@@ -20,8 +20,7 @@ export default function useComp(selectedToken: TokenItem | undefined) {
   const [claimableComp, setClaimableComp] = useState<number>()
   const [comptrollerAddress, setComptrollerAddress] = useState<string>()
   const [cTokenSupplyAPY, setCTokenSupplyAPY] = useState<string>()
-  const [cDistributionTokenSupplyAPY, setCDistributionTokenSupplyAPY] =
-    useState<string>()
+  const [cDistributionTokenSupplyAPY, setCDistributionTokenSupplyAPY] = useState<string>()
   const { opfInstance } = usePriceFeed()
   const { cTokenInstance, tokenInstance } = useCToken(selectedToken)
 
@@ -37,14 +36,9 @@ export default function useComp(selectedToken: TokenItem | undefined) {
       return
     }
 
-    setComptrollerInstance(
-      new web3.eth.Contract(ComptrollerABI as AbiItem[], comptrollerAddress),
-    )
+    setComptrollerInstance(new web3.eth.Contract(ComptrollerABI as AbiItem[], comptrollerAddress))
     setCompoundLensInstance(
-      new web3.eth.Contract(
-        CompoundLensABI as AbiItem[],
-        COMPOUND_LENS_ADDRESS,
-      ),
+      new web3.eth.Contract(CompoundLensABI as AbiItem[], COMPOUND_LENS_ADDRESS),
     )
   }, [web3, comptrollerAddress])
 
@@ -58,15 +52,9 @@ export default function useComp(selectedToken: TokenItem | undefined) {
 
     ;(async () => {
       try {
-        const compAddress = await comptrollerInstance?.methods
-          ?.getCompAddress()
-          .call()
+        const compAddress = await comptrollerInstance?.methods?.getCompAddress().call()
         const accrued = await compoundLensInstance?.methods
-          ?.getCompBalanceMetadataExt(
-            compAddress,
-            comptrollerAddress,
-            safe?.safeAddress,
-          )
+          ?.getCompBalanceMetadataExt(compAddress, comptrollerAddress, safe?.safeAddress)
           .call()
         setClaimableComp(accrued?.allocated / 10 ** 18)
       } catch (e) {
@@ -111,16 +99,9 @@ export default function useComp(selectedToken: TokenItem | undefined) {
 
     // Calculate Supply APY
     ;(async () => {
-      const supplyRatePerBlock = await cTokenInstance.methods
-        .supplyRatePerBlock()
-        .call()
+      const supplyRatePerBlock = await cTokenInstance.methods.supplyRatePerBlock().call()
       const supplyApy =
-        (Math.pow(
-          (supplyRatePerBlock / ethMantissa) * blocksPerDay + 1,
-          daysPerYear,
-        ) -
-          1) *
-        100
+        (Math.pow((supplyRatePerBlock / ethMantissa) * blocksPerDay + 1, daysPerYear) - 1) * 100
       setCTokenSupplyAPY((Math.round(supplyApy * 100) / 100).toString())
     })()
 
@@ -134,42 +115,25 @@ export default function useComp(selectedToken: TokenItem | undefined) {
         ?.price(selectedToken.id === 'WBTC' ? 'BTC' : selectedToken.id)
         .call()
       let totalSupply = await cTokenInstance?.methods?.totalSupply().call()
-      let exchangeRate = await cTokenInstance?.methods
-        ?.exchangeRateCurrent()
-        .call()
+      let exchangeRate = await cTokenInstance?.methods?.exchangeRateCurrent().call()
 
       // Total supply needs to be converted from cTokens
       const apxBlockSpeedInSeconds = 13.15
-      exchangeRate =
-        +exchangeRate.toString() / Math.pow(10, selectedToken.decimals)
+      exchangeRate = +exchangeRate.toString() / Math.pow(10, selectedToken.decimals)
 
       compSpeedSupply = compSpeedSupply / 1e18 // COMP has 18 decimal places
       compPrice = compPrice / 1e6 // price feed is USD price with 6 decimal places
       assetPrice = assetPrice / 1e6
       totalSupply = (+totalSupply.toString() * exchangeRate) / Math.pow(10, 18)
 
-      const compPerDaySupply =
-        compSpeedSupply * ((60 * 60 * 24) / apxBlockSpeedInSeconds)
+      const compPerDaySupply = compSpeedSupply * ((60 * 60 * 24) / apxBlockSpeedInSeconds)
 
       const compSupplyApy =
-        100 *
-        (Math.pow(
-          1 + (compPrice * compPerDaySupply) / (totalSupply * assetPrice),
-          365,
-        ) -
-          1)
+        100 * (Math.pow(1 + (compPrice * compPerDaySupply) / (totalSupply * assetPrice), 365) - 1)
 
-      setCDistributionTokenSupplyAPY(
-        (Math.round(compSupplyApy * 100) / 100).toString(),
-      )
+      setCDistributionTokenSupplyAPY((Math.round(compSupplyApy * 100) / 100).toString())
     })()
-  }, [
-    cTokenInstance,
-    comptrollerInstance,
-    opfInstance,
-    selectedToken,
-    tokenInstance,
-  ])
+  }, [cTokenInstance, comptrollerInstance, opfInstance, selectedToken, tokenInstance])
 
   const claimComp = useCallback(async () => {
     if (!comptrollerAddress) {
@@ -177,18 +141,14 @@ export default function useComp(selectedToken: TokenItem | undefined) {
     }
 
     // Get all the cToken addresses the safe account is using
-    const allMarkets: string[] = await getMarketAddressesForSafeAccount(
-      safe.safeAddress,
-    )
+    const allMarkets: string[] = await getMarketAddressesForSafeAccount(safe.safeAddress)
 
     if (allMarkets.length) {
       const txs = [
         {
           to: comptrollerAddress,
           value: '0',
-          data: comptrollerInstance?.methods
-            .claimComp(safe?.safeAddress, allMarkets)
-            .encodeABI(),
+          data: comptrollerInstance?.methods.claimComp(safe?.safeAddress, allMarkets).encodeABI(),
         },
       ]
 

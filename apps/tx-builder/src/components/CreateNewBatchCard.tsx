@@ -18,12 +18,9 @@ const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   const fileRef = useRef<HTMLInputElement | null>(null)
-  const { isOverDropZone, isAcceptError, dropHandlers } = useDropZone(
-    (file: File | null) => {
-      onFileSelected(file)
-    },
-    '.json',
-  )
+  const { isOverDropZone, isAcceptError, dropHandlers } = useDropZone((file: File | null) => {
+    onFileSelected(file)
+  }, '.json')
 
   const handleFileSelected = (event: any) => {
     event.preventDefault()
@@ -87,11 +84,9 @@ const StyledDragAndDropFileContainer = styled.div<{
 }>`
   box-sizing: border-box;
   max-width: ${({ fullWidth }) => (fullWidth ? '100%' : '420px')};
-  border: 2px dashed
-    ${({ theme, error }) => (error ? theme.colors.error : '#008c73')};
+  border: 2px dashed ${({ theme, error }) => (error ? theme.colors.error : '#008c73')};
   border-radius: 8px;
-  background-color: ${({ theme, error }) =>
-    error ? alpha(theme.colors.error, 0.7) : '#eaf7f4'};
+  background-color: ${({ theme, error }) => (error ? alpha(theme.colors.error, 0.7) : '#eaf7f4')};
   padding: 24px;
   margin: 24px auto 0 auto;
 

@@ -6,11 +6,7 @@ import { Button } from '@gnosis.pm/safe-react-components'
 
 import TransactionsBatchList from '../components/TransactionsBatchList'
 import { useTransactionLibrary, useTransactions } from '../store'
-import {
-  CREATE_BATCH_PATH,
-  REVIEW_AND_CONFIRM_PATH,
-  SAVE_BATCH_PATH,
-} from '../routes/routes'
+import { CREATE_BATCH_PATH, REVIEW_AND_CONFIRM_PATH, SAVE_BATCH_PATH } from '../routes/routes'
 import EditableLabel from '../components/EditableLabel'
 
 const SaveTransactionLibrary = () => {
@@ -21,8 +17,7 @@ const SaveTransactionLibrary = () => {
     reorderTransactions,
     removeTransaction,
   } = useTransactions()
-  const { downloadBatch, saveBatch, batch, renameBatch } =
-    useTransactionLibrary()
+  const { downloadBatch, saveBatch, batch, renameBatch } = useTransactionLibrary()
 
   const navigate = useNavigate()
 

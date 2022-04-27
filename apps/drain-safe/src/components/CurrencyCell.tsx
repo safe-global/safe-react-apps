@@ -41,9 +41,7 @@ function CurrencyCell({
         })
 
         const gasCostInWei = gasPrice.multipliedBy(estimatedTransferGas)
-        const gasCostInEther = new BigNumber(
-          web3Utils.fromWei(gasCostInWei.toString(), 'ether'),
-        )
+        const gasCostInEther = new BigNumber(web3Utils.fromWei(gasCostInWei.toString(), 'ether'))
 
         const transferCostInFiat = gasCostInEther.multipliedBy(ethFiatPrice)
 

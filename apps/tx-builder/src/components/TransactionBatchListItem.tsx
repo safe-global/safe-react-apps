@@ -31,10 +31,7 @@ type TransactionProps = {
   draggableTxIndexOrigin: number | undefined
   reorderTransactions?: (sourceIndex: number, destinationIndex: number) => void
   networkPrefix: string | undefined
-  replaceTransaction?: (
-    newTransaction: ProposedTransaction,
-    index: number,
-  ) => void
+  replaceTransaction?: (newTransaction: ProposedTransaction, index: number) => void
   setTxIndexToEdit: (index: string) => void
   openEditTxModal: () => void
   removeTransaction?: (index: number) => void
@@ -130,20 +127,13 @@ const TransactionBatchListItem = memo(
               />
 
               {/* Transaction Description label */}
-              <TransactionsDescription size="lg">
-                {transactionDescription}
-              </TransactionsDescription>
+              <TransactionsDescription size="lg">{transactionDescription}</TransactionsDescription>
 
               {/* Transaction Actions */}
 
               {/* Edit transaction */}
               {replaceTransaction && (
-                <Tooltip
-                  title="Edit transaction"
-                  backgroundColor="primary"
-                  textColor="white"
-                  arrow
-                >
+                <Tooltip title="Edit transaction" backgroundColor="primary" textColor="white" arrow>
                   <TransactionActionButton
                     size="medium"
                     aria-label="Edit transaction"
@@ -232,17 +222,13 @@ const getDisplayedTxPosition = (
   // if a transaction is being dragged, we show the correct position in previous transactions
   if (index < Number(draggableTxIndexOrigin)) {
     // depending on the current destination we show the correct position
-    return index >= Number(draggableTxIndexDestination)
-      ? `${index + 2}`
-      : `${index + 1}`
+    return index >= Number(draggableTxIndexDestination) ? `${index + 2}` : `${index + 1}`
   }
 
   // if a transaction is being dragged, we show the correct position in next transactions
   if (index > Number(draggableTxIndexOrigin)) {
     // depending on the current destination we show the correct position
-    return index > Number(draggableTxIndexDestination)
-      ? `${index + 1}`
-      : `${index}`
+    return index > Number(draggableTxIndexDestination) ? `${index + 1}` : `${index}`
   }
 
   // otherwise we show the natural position
@@ -269,8 +255,7 @@ const PositionDot = styled(Dot).withConfig({
   height: 24px;
   width: 24px;
   min-width: 24px;
-  background-color: ${({ isDragging }) =>
-    isDragging ? '#92c9be' : ' #e2e3e3'};
+  background-color: ${({ isDragging }) => (isDragging ? '#92c9be' : ' #e2e3e3')};
   transition: background-color 0.5s linear;
 `
 
@@ -316,16 +301,14 @@ const StyledAccordion = styled(Accordion).withConfig({
 
   &.MuiAccordion-root {
     margin-bottom: 0;
-    border-color: ${({ isDragging, expanded }) =>
-      isDragging || expanded ? '#92c9be' : '#e8e7e6'};
+    border-color: ${({ isDragging, expanded }) => (isDragging || expanded ? '#92c9be' : '#e8e7e6')};
     transition: border-color 0.5s linear;
   }
 
   .MuiAccordionSummary-root {
     height: 52px;
     padding: 0px 8px;
-    background-color: ${({ isDragging }) =>
-      isDragging ? '#EFFAF8' : '#FFFFFF'};
+    background-color: ${({ isDragging }) => (isDragging ? '#EFFAF8' : '#FFFFFF')};
 
     &:hover {
       background-color: #ffffff;

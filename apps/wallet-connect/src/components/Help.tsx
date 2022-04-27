@@ -18,21 +18,11 @@ const Help = ({ title, steps }: HelpProps): React.ReactElement => {
   return (
     <StyledAccordion compact>
       <StyledAccordionSummary>
-        <StyledIconText
-          iconSize="sm"
-          textSize="xl"
-          iconType="question"
-          text={title}
-        />
+        <StyledIconText iconSize="sm" textSize="xl" iconType="question" text={title} />
       </StyledAccordionSummary>
       <StyledAccordionDetails>
         {steps.map((step, index) => (
-          <Box
-            key={index}
-            display="flex"
-            marginBottom={2}
-            alignItems="flex-start"
-          >
+          <Box key={index} display="flex" marginBottom={2} alignItems="flex-start">
             <StyledDot color="primary">
               <StyledDotText size="sm">{index + 1}</StyledDotText>
             </StyledDot>

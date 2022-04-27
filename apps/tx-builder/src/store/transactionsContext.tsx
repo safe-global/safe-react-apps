@@ -6,44 +6,33 @@ type TransactionContextProps = {
   transactions: ProposedTransaction[]
   resetTransactions: (transactions: ProposedTransaction[]) => void
   addTransaction: (newTransaction: ProposedTransaction) => void
-  replaceTransaction: (
-    newTransaction: ProposedTransaction,
-    index: number,
-  ) => void
+  replaceTransaction: (newTransaction: ProposedTransaction, index: number) => void
   removeTransaction: (index: number) => void
   submitTransactions: () => void
   removeAllTransactions: () => void
   reorderTransactions: (sourceIndex: number, destinationIndex: number) => void
 }
 
-export const TransactionContext = createContext<TransactionContextProps | null>(
-  null,
-)
+export const TransactionContext = createContext<TransactionContextProps | null>(null)
 
 const TransactionsProvider: React.FC = ({ children }) => {
   const [transactions, setTransactions] = useState<ProposedTransaction[]>([])
   const { sdk } = useNetwork()
 
-  const resetTransactions = useCallback(
-    (transactions: ProposedTransaction[]) => {
-      setTransactions([...transactions])
-    },
-    [],
-  )
+  const resetTransactions = useCallback((transactions: ProposedTransaction[]) => {
+    setTransactions([...transactions])
+  }, [])
 
   const addTransaction = useCallback((newTransaction: ProposedTransaction) => {
     setTransactions(transactions => [...transactions, newTransaction])
   }, [])
 
-  const replaceTransaction = useCallback(
-    (newTransaction: ProposedTransaction, index: number) => {
-      setTransactions(transactions => {
-        transactions[index] = newTransaction
-        return [...transactions]
-      })
-    },
-    [],
-  )
+  const replaceTransaction = useCallback((newTransaction: ProposedTransaction, index: number) => {
+    setTransactions(transactions => {
+      transactions[index] = newTransaction
+      return [...transactions]
+    })
+  }, [])
 
   const removeAllTransactions = useCallback(() => {
     setTransactions([])

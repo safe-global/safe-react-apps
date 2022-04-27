@@ -1,10 +1,4 @@
-import {
-  Dot,
-  Text,
-  Button,
-  GenericModal,
-  Title,
-} from '@gnosis.pm/safe-react-components'
+import { Dot, Text, Button, GenericModal, Title } from '@gnosis.pm/safe-react-components'
 import Box from '@material-ui/core/Box'
 import styled from 'styled-components'
 
@@ -16,11 +10,7 @@ type SuccessBatchCreationModalProps = {
   onClose: () => void
 }
 
-const SuccessBatchCreationModal = ({
-  count,
-  onClick,
-  onClose,
-}: SuccessBatchCreationModalProps) => {
+const SuccessBatchCreationModal = ({ count, onClick, onClose }: SuccessBatchCreationModalProps) => {
   return (
     <GenericModal
       title="Batch Created!"
@@ -46,9 +36,7 @@ const SuccessBatchCreationModal = ({
               </Text>
             </StyledModalDot>
 
-            <StyledModalText size="xl">
-              Transaction Batch in the queue.
-            </StyledModalText>
+            <StyledModalText size="xl">Transaction Batch in the queue.</StyledModalText>
 
             <Text size="xl">You can now sign and execute it.</Text>
           </StyledTextWrapper>

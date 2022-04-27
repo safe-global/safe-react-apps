@@ -22,9 +22,7 @@ const encodeMultiSendCall = (txs: BaseTransaction[]): string => {
         web3.eth.abi.encodeParameter('address', tx.to).slice(-40),
         // if you pass wei as number, it will overflow
         web3.eth.abi.encodeParameter('uint256', tx.value.toString()).slice(-64),
-        web3.eth.abi
-          .encodeParameter('uint256', web3.utils.hexToBytes(tx.data).length)
-          .slice(-64),
+        web3.eth.abi.encodeParameter('uint256', web3.utils.hexToBytes(tx.data).length).slice(-64),
         tx.data.replace(/^0x/, ''),
       ].join(''),
     )

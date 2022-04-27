@@ -1,8 +1,5 @@
 import { ChainInfo } from '@gnosis.pm/safe-apps-sdk'
-import {
-  RampInstantEvent,
-  RampInstantSDK,
-} from '@ramp-network/ramp-instant-sdk'
+import { RampInstantEvent, RampInstantSDK } from '@ramp-network/ramp-instant-sdk'
 
 const RINKEBY_STAGING_URL = 'https://ri-widget-staging.firebaseapp.com/'
 const WIDGET_CLOSE_EVENT = 'WIDGET_CLOSE'
@@ -28,12 +25,7 @@ type RampWidgetInitializer = {
   onClose?: () => void
 }
 
-export const initializeRampWidget = ({
-  url,
-  assets,
-  address,
-  onClose,
-}: RampWidgetInitializer) => {
+export const initializeRampWidget = ({ url, assets, address, onClose }: RampWidgetInitializer) => {
   return new RampInstantSDK({
     url,
     hostAppName: 'Ramp Network Safe App',

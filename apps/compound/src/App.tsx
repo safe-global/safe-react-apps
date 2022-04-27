@@ -1,13 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import Big from 'big.js'
-import {
-  Button,
-  Select,
-  Text,
-  Loader,
-  Tab,
-  ButtonLink,
-} from '@gnosis.pm/safe-react-components'
+import { Button, Select, Text, Loader, Tab, ButtonLink } from '@gnosis.pm/safe-react-components'
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 import { getTokenList, TokenItem } from './config'
 import {
@@ -49,12 +42,8 @@ const CompoundWidget = () => {
   const [inputError, setInputError] = useState<string | undefined>()
   const { web3 } = useWeb3()
   const { sdk: appsSdk, safe: safeInfo, connected } = useSafeAppsSDK()
-  const {
-    cTokenSupplyAPY,
-    cDistributionTokenSupplyAPY,
-    claimableComp,
-    claimComp,
-  } = useComp(selectedToken)
+  const { cTokenSupplyAPY, cDistributionTokenSupplyAPY, claimableComp, claimComp } =
+    useComp(selectedToken)
   const isMainnet = useMemo(() => safeInfo.chainId === 1, [safeInfo.chainId])
 
   // fetch eth balance
@@ -102,12 +91,7 @@ const CompoundWidget = () => {
 
   useEffect(() => {
     const getData = async () => {
-      if (
-        !safeInfo.safeAddress ||
-        !selectedToken ||
-        !cTokenInstance ||
-        !tokenInstance
-      ) {
+      if (!safeInfo.safeAddress || !selectedToken || !cTokenInstance || !tokenInstance) {
         return
       }
 
@@ -132,9 +116,7 @@ const CompoundWidget = () => {
       if (selectedToken.id === 'ETH') {
         tokenBalance = ethBalance
       } else {
-        tokenBalance = await tokenInstance.methods
-          .balanceOf(safeInfo.safeAddress)
-          .call()
+        tokenBalance = await tokenInstance.methods.balanceOf(safeInfo.safeAddress).call()
       }
 
       // get token Locked amount
@@ -149,10 +131,7 @@ const CompoundWidget = () => {
         selectedToken.tokenAddr,
         selectedToken.cTokenAddr,
       )
-      const { deposits, withdrawals } = parseEvents(
-        safeInfo.safeAddress,
-        tokenEvents,
-      )
+      const { deposits, withdrawals } = parseEvents(safeInfo.safeAddress, tokenEvents)
       const earned = new Big(underlyingBalance)
         .div(10 ** selectedToken.decimals)
         .plus(withdrawals)
@@ -160,9 +139,7 @@ const CompoundWidget = () => {
       const underlyingEarned = earned.lt('0') ? '0' : earned.toFixed(4)
 
       // update all the values in a row to avoid UI flickers
-      selectedToken.id === 'ETH'
-        ? setInterestEarn('-')
-        : setInterestEarn(underlyingEarned)
+      selectedToken.id === 'ETH' ? setInterestEarn('-') : setInterestEarn(underlyingEarned)
       setTokenBalance(tokenBalance)
       setUnderlyingBalance(underlyingBalance)
     }
@@ -198,10 +175,7 @@ const CompoundWidget = () => {
       return
     }
 
-    const supplyParameter = web3.eth.abi.encodeParameter(
-      'uint256',
-      inputValue.toString(),
-    )
+    const supplyParameter = web3.eth.abi.encodeParameter('uint256', inputValue.toString())
 
     let txs
 
@@ -244,17 +218,12 @@ const CompoundWidget = () => {
       return
     }
 
-    const supplyParameter = web3.eth.abi.encodeParameter(
-      'uint256',
-      inputValue.toString(),
-    )
+    const supplyParameter = web3.eth.abi.encodeParameter('uint256', inputValue.toString())
     const txs = [
       {
         to: selectedToken.cTokenAddr,
         value: '0',
-        data: cTokenInstance?.methods
-          .redeemUnderlying(supplyParameter)
-          .encodeABI(),
+        data: cTokenInstance?.methods.redeemUnderlying(supplyParameter).encodeABI(),
       },
     ]
 
@@ -347,20 +316,12 @@ const CompoundWidget = () => {
           label={`Supplied ${selectedToken.label}`}
           data={bNumberToHumanFormat(underlyingBalance)}
         />
-        <InfoRow
-          label="Interest earned"
-          data={`~ ${interestEarn} ${selectedToken.label}`}
-        />
-        <InfoRow
-          label="Supply APY"
-          data={cTokenSupplyAPY && `${cTokenSupplyAPY}%`}
-        />
+        <InfoRow label="Interest earned" data={`~ ${interestEarn} ${selectedToken.label}`} />
+        <InfoRow label="Supply APY" data={cTokenSupplyAPY && `${cTokenSupplyAPY}%`} />
         {isMainnet && (
           <InfoRow
             label="Distribution APY"
-            data={
-              cDistributionTokenSupplyAPY && `${cDistributionTokenSupplyAPY}%`
-            }
+            data={cDistributionTokenSupplyAPY && `${cDistributionTokenSupplyAPY}%`}
           />
         )}
       </InfoContainer>
@@ -393,9 +354,7 @@ const CompoundWidget = () => {
             disabled={isWithdrawDisabled()}
             fullWidth
           >
-            {parseFloat(underlyingBalance) > 0
-              ? 'Withdraw'
-              : 'No balance to withdraw'}
+            {parseFloat(underlyingBalance) > 0 ? 'Withdraw' : 'No balance to withdraw'}
           </Button>
         )}
 
@@ -413,9 +372,7 @@ const CompoundWidget = () => {
         )}
       </ButtonContainer>
 
-      {isMainnet && (
-        <CompBalance balance={claimableComp} onCollect={claimComp} />
-      )}
+      {isMainnet && <CompBalance balance={claimableComp} onCollect={claimComp} />}
     </WidgetWrapper>
   )
 }

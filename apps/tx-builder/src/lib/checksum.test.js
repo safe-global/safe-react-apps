@@ -75,9 +75,7 @@ test('Validate checksum in BatchFile', () => {
 })
 
 test('Checksum should remain the same when the properties order is not equal', () => {
-  const batchFileWithChecksum = addChecksum(
-    reverseBatchFileProps(batchFileObject),
-  )
+  const batchFileWithChecksum = addChecksum(reverseBatchFileProps(batchFileObject))
   expect(batchFileWithChecksum.meta.checksum).toBe(
     '0x4ecbfd364aa6759983915644e73f8bd411e85a2dc306f252a387c2728c4db64c',
   )
@@ -109,8 +107,7 @@ test('Validation should fail if we change transaction order', () => {
   const batchFileWithChecksum = addChecksum(batchFileObject)
   const batchFileObjectCopy = { ...batchFileObject }
   batchFileObjectCopy.transactions.reverse()
-  const batchFileCopyWithChecksumAndTransactionsReversed =
-    addChecksum(batchFileObjectCopy)
+  const batchFileCopyWithChecksumAndTransactionsReversed = addChecksum(batchFileObjectCopy)
   expect(batchFileWithChecksum.meta.checksum).not.toBe(
     batchFileCopyWithChecksumAndTransactionsReversed.meta.checksum,
   )
