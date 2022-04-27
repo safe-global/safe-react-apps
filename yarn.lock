@@ -1720,6 +1720,11 @@
     "@gnosis.pm/safe-react-gateway-sdk" "^2.10.0"
     ethers "^5.4.7"
 
+"@gnosis.pm/safe-deployments@^1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-deployments/-/safe-deployments-1.11.0.tgz#ab1cd1fe042e6fc4e06d845b21eef32b1b87b3cb"
+  integrity sha512-N5rpUGVTFXNxliFXFCOVbnawp6jUeQJPuZYRBlwmDXVzj0/C2Tp2NFa+pbDDsrNFm1bUneemRfaTzRLp96iP+w==
+
 "@gnosis.pm/safe-react-components@^0.9.7":
   version "0.9.8"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.9.8.tgz#b61f0641bbc00ada0c71428be824e69192110c17"
@@ -1728,10 +1733,10 @@
     react-media "^1.10.0"
     web3-utils "^1.6.0"
 
-"@gnosis.pm/safe-react-components@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-1.1.1.tgz#64c513123bee7a208572fe4d9b71a5638bdf0894"
-  integrity sha512-DnxpbgCb/Kzz1QwE4ZOY8WRMbXDI/t1pWnRuYFIv86Bc3kpWBDdRYmiOSQOfqZ5DzJkyedFIpsIaj7KqfZFvGw==
+"@gnosis.pm/safe-react-components@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-1.1.3.tgz#6c27043b9e7d0a3cf9e7c754b92bba10b7a3e0d5"
+  integrity sha512-OjgF5NTT7IjGkjp/kB4SLfN5gcyAg3yHDD505c4B+yUZ14RgwlF+cbDCKylC40uPRGl/pBrUlRbKOV8E6Y1L6w==
   dependencies:
     react-media "^1.10.0"
     web3-utils "^1.6.0"
@@ -4006,12 +4011,12 @@ axe-core@^4.3.5:
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.4.1.tgz#7dbdc25989298f9ad006645cd396782443757413"
   integrity sha512-gd1kmb21kwNuWr6BQz8fv6GNECPBnUasepcoLbekws23NVBLODdsClRZ+bQ8+9Uomf3Sm3+Vwn0oYG9NvwnJCw==
 
-axios@^0.24.0:
-  version "0.24.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
-  integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
+axios@^0.26.1:
+  version "0.26.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.26.1.tgz#1ede41c51fcf51bbbd6fd43669caaa4f0495aaa9"
+  integrity sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==
   dependencies:
-    follow-redirects "^1.14.4"
+    follow-redirects "^1.14.8"
 
 axobject-query@^2.2.0:
   version "2.2.0"
@@ -7019,7 +7024,7 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.5.tgz#76c8584f4fc843db64702a6bd04ab7a8bd666da3"
   integrity sha512-WIWGi2L3DyTUvUrwRKgGi9TwxQMUEqPOPQBVi71R96jZXJdFskXEmf54BoZaS1kknGODoIGASGEzBUYdyMCBJg==
 
-follow-redirects@^1.0.0, follow-redirects@^1.14.4:
+follow-redirects@^1.0.0, follow-redirects@^1.14.8:
   version "1.14.9"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.9.tgz#dd4ea157de7bfaf9ea9b3fbd85aa16951f78d8d7"
   integrity sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==
@@ -11241,10 +11246,10 @@ react-error-overlay@^6.0.10:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.10.tgz#0fe26db4fa85d9dbb8624729580e90e7159a59a6"
   integrity sha512-mKR90fX7Pm5seCOfz8q9F+66VCc1PGsWSBxKbITjfKVQHMNF2zudxHnMdJiB1fRCb+XsbQV9sO9DCkgsMQgBIA==
 
-react-hook-form@^7.27.0:
-  version "7.27.1"
-  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.27.1.tgz#fe5fbcb6bf58751f66d9569e998d671480cc57f6"
-  integrity sha512-N3a7A6zIQ8DJeThisVZGtOUabTbJw+7DHJidmB9w8m3chckv2ZWKb5MHps9d2pPJqmCDoWe53Bos56bYmJms5w==
+react-hook-form@^7.28.0:
+  version "7.28.0"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.28.0.tgz#40f385da1f31a3c26bb7491d7d77c111b6ad6909"
+  integrity sha512-mmLpT86BkMGPr0r6ca8zxV0WH4Y1FW5MKs7Rq1+uHLVeeg5pSWbF5Z/qLCnM5vPVblHNM6lRBRRotnfEAf0ALA==
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
@@ -11368,10 +11373,10 @@ react-transition-group@^4.4.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react-virtuoso@^2.8.0:
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-2.8.0.tgz#96c4edc0feb2171fa4710e610911bcf947faf108"
-  integrity sha512-iQlLS9wrtj9o5dUsODSIepIpb0U8kcU0TWM+WNd+kNi7m4cEeG+ko4bZ5VSTb3ado4RXPi5jtx8ludnSwPEZnA==
+react-virtuoso@^2.8.2:
+  version "2.8.2"
+  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-2.8.2.tgz#6b98c62d5e3807b41b3e52e3576784f8b6142f33"
+  integrity sha512-iH48/OOsh12BPqZX3LNgT9zshcqO7ALwG/AxXDTqPYwHSolzwj+V8fpHRBLEbvfBl4EEnMZI+yxvs1DblZT/jQ==
   dependencies:
     "@virtuoso.dev/react-urx" "^0.2.12"
     "@virtuoso.dev/urx" "^0.2.12"

@@ -6,6 +6,13 @@ import {
   ProposedTransaction,
 } from './typings/models'
 
+export const enum FETCH_STATUS {
+  NOT_ASKED = 'NOT_ASKED',
+  LOADING = 'LOADING',
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
+}
+
 export enum CHAINS {
   MAINNET = '1',
   MORDEN = '2',
