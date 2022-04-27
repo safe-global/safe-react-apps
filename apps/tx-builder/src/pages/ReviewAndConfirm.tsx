@@ -1,21 +1,21 @@
-import { Button, FixedIcon, Title } from '@gnosis.pm/safe-react-components';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { Button, FixedIcon, Title } from '@gnosis.pm/safe-react-components'
+import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
-import DeleteBatchModal from '../components/modals/DeleteBatchModal';
-import TransactionsBatchList from '../components/TransactionsBatchList';
-import useModal from '../hooks/useModal/useModal';
-import { HOME_PATH } from '../routes/routes';
-import { useEffect } from 'react';
-import SuccessBatchCreationModal from '../components/modals/SuccessBatchCreationModal';
-import { useTransactionLibrary, useTransactions } from '../store';
+import DeleteBatchModal from '../components/modals/DeleteBatchModal'
+import TransactionsBatchList from '../components/TransactionsBatchList'
+import useModal from '../hooks/useModal/useModal'
+import { HOME_PATH } from '../routes/routes'
+import { useEffect } from 'react'
+import SuccessBatchCreationModal from '../components/modals/SuccessBatchCreationModal'
+import { useTransactionLibrary, useTransactions } from '../store'
 
 const ReviewAndConfirm = () => {
   const {
     open: showSuccessBatchModal,
     openModal: openSuccessBatchModal,
     closeModal: closeSuccessBatchModal,
-  } = useModal();
+  } = useModal()
   const {
     transactions,
     removeTransaction,
@@ -23,29 +23,33 @@ const ReviewAndConfirm = () => {
     replaceTransaction,
     submitTransactions,
     reorderTransactions,
-  } = useTransactions();
-  const { downloadBatch, saveBatch } = useTransactionLibrary();
+  } = useTransactions()
+  const { downloadBatch, saveBatch } = useTransactionLibrary()
 
-  const { open: showDeleteBatchModal, openModal: openDeleteBatchModal, closeModal: closeDeleteBatchModal } = useModal();
+  const {
+    open: showDeleteBatchModal,
+    openModal: openDeleteBatchModal,
+    closeModal: closeDeleteBatchModal,
+  } = useModal()
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const createBatch = async () => {
     try {
-      await submitTransactions();
-      openSuccessBatchModal();
+      await submitTransactions()
+      openSuccessBatchModal()
     } catch (e) {
-      console.error('Error sending transactions:', e);
+      console.error('Error sending transactions:', e)
     }
-  };
+  }
 
   useEffect(() => {
-    const hasTransactions = transactions.length > 0;
+    const hasTransactions = transactions.length > 0
 
     if (!hasTransactions) {
-      navigate(HOME_PATH);
+      navigate(HOME_PATH)
     }
-  }, [transactions, navigate]);
+  }, [transactions, navigate])
 
   return (
     <>
@@ -94,7 +98,11 @@ const ReviewAndConfirm = () => {
 
       {/* Delete batch modal */}
       {showDeleteBatchModal && (
-        <DeleteBatchModal count={transactions.length} onClick={removeAllTransactions} onClose={closeDeleteBatchModal} />
+        <DeleteBatchModal
+          count={transactions.length}
+          onClick={removeAllTransactions}
+          onClose={closeDeleteBatchModal}
+        />
       )}
 
       {/* Success batch modal */}
@@ -102,20 +110,20 @@ const ReviewAndConfirm = () => {
         <SuccessBatchCreationModal
           count={transactions.length}
           onClick={() => {
-            removeAllTransactions();
-            closeSuccessBatchModal();
+            removeAllTransactions()
+            closeSuccessBatchModal()
           }}
           onClose={() => {
-            removeAllTransactions();
-            closeSuccessBatchModal();
+            removeAllTransactions()
+            closeSuccessBatchModal()
           }}
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default ReviewAndConfirm;
+export default ReviewAndConfirm
 
 const Wrapper = styled.main`
   && {
@@ -124,27 +132,27 @@ const Wrapper = styled.main`
     max-width: 650px;
     margin: 0 auto;
   }
-`;
+`
 
 const StyledTitle = styled(Title)`
   margin-top: 0px;
   margin-bottom: 5px;
   font-size: 20px;
   line-height: normal;
-`;
+`
 
 const ButtonsWrapper = styled.div`
   margin-top: 24px;
   padding: 0 34px;
-`;
+`
 
 const StyledButtonLabel = styled.span`
   margin-left: 8px;
-`;
+`
 
 const StyledCancelButton = styled(Button)`
   &&.MuiButton-root {
     margin-left: 16px;
     min-width: 0;
   }
-`;
+`

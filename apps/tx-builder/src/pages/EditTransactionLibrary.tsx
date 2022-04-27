@@ -1,29 +1,39 @@
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import Grid from '@material-ui/core/Grid';
-import styled from 'styled-components';
-import { Button } from '@gnosis.pm/safe-react-components';
+import { useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import Grid from '@material-ui/core/Grid'
+import styled from 'styled-components'
+import { Button } from '@gnosis.pm/safe-react-components'
 
-import TransactionsBatchList from '../components/TransactionsBatchList';
-import { CREATE_BATCH_PATH, EDIT_BATCH_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes';
+import TransactionsBatchList from '../components/TransactionsBatchList'
+import {
+  CREATE_BATCH_PATH,
+  EDIT_BATCH_PATH,
+  TRANSACTION_LIBRARY_PATH,
+} from '../routes/routes'
 
-import { useTransactionLibrary, useTransactions } from '../store';
-import EditableLabel from '../components/EditableLabel';
+import { useTransactionLibrary, useTransactions } from '../store'
+import EditableLabel from '../components/EditableLabel'
 
 const EditTransactionLibrary = () => {
-  const { transactions, removeAllTransactions, replaceTransaction, reorderTransactions, removeTransaction } =
-    useTransactions();
-  const { batch, downloadBatch, saveBatch, updateBatch, renameBatch } = useTransactionLibrary();
+  const {
+    transactions,
+    removeAllTransactions,
+    replaceTransaction,
+    reorderTransactions,
+    removeTransaction,
+  } = useTransactions()
+  const { batch, downloadBatch, saveBatch, updateBatch, renameBatch } =
+    useTransactionLibrary()
 
-  const { batchId } = useParams();
+  const { batchId } = useParams()
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (transactions.length === 0) {
-      navigate(CREATE_BATCH_PATH);
+      navigate(CREATE_BATCH_PATH)
     }
-  }, [transactions, navigate]);
+  }, [transactions, navigate])
 
   return (
     <TransactionsSectionWrapper item xs={12} md={6}>
@@ -31,7 +41,10 @@ const EditTransactionLibrary = () => {
         transactions={transactions}
         batchTitle={
           batch && (
-            <EditableLabel key={batch.name} onEdit={(newBatchName) => renameBatch(batch.id, newBatchName)}>
+            <EditableLabel
+              key={batch.name}
+              onEdit={newBatchName => renameBatch(batch.id, newBatchName)}
+            >
               {batch.name}
             </EditableLabel>
           )
@@ -55,22 +68,24 @@ const EditTransactionLibrary = () => {
           variant="contained"
           color="primary"
           onClick={() => {
-            const { name } = batch;
-            updateBatch(batchId, name, transactions);
-            navigate(TRANSACTION_LIBRARY_PATH, { state: { from: EDIT_BATCH_PATH } });
+            const { name } = batch
+            updateBatch(batchId, name, transactions)
+            navigate(TRANSACTION_LIBRARY_PATH, {
+              state: { from: EDIT_BATCH_PATH },
+            })
           }}
         >
           Save Batch
         </Button>
       )}
     </TransactionsSectionWrapper>
-  );
-};
+  )
+}
 
-export default EditTransactionLibrary;
+export default EditTransactionLibrary
 
 const TransactionsSectionWrapper = styled(Grid)`
   position: sticky;
   top: 40px;
   align-self: flex-start;
-`;
+`

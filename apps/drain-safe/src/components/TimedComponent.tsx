@@ -1,14 +1,14 @@
-import useTimeout from '../hooks/useTimeout';
+import useTimeout from '../hooks/useTimeout'
 
 type Props = {
-  onTimeout: () => void;
-  timeout: number;
-};
+  onTimeout: () => void
+  timeout: number
+}
 
 const TimedComponent: React.FC<Props> = ({ onTimeout, timeout, children }) => {
-  useTimeout(onTimeout, timeout);
+  useTimeout(onTimeout, timeout)
 
-  return children as React.ReactElement;
-};
+  return children as React.ReactElement
+}
 
-export default TimedComponent;
+export default TimedComponent

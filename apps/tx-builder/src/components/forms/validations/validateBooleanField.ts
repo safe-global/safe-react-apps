@@ -1,13 +1,13 @@
-import { ValidateResult } from 'react-hook-form';
+import { ValidateResult } from 'react-hook-form'
 
 const validateBooleanField = (value: string): ValidateResult => {
-  const cleanValue = value?.toLowerCase();
+  const cleanValue = value?.toLowerCase()
 
-  const isValidBoolean = cleanValue === 'true' || cleanValue === 'false';
+  const isValidBoolean = cleanValue === 'true' || cleanValue === 'false'
 
   if (!isValidBoolean) {
-    return 'Invalid boolean value';
+    return 'Invalid boolean value'
   }
-};
+}
 
-export default validateBooleanField;
+export default validateBooleanField

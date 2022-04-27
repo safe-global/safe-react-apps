@@ -1,5 +1,5 @@
-import { ReactElement } from 'react';
-import { AddressInput } from '@gnosis.pm/safe-react-components';
+import { ReactElement } from 'react'
+import { AddressInput } from '@gnosis.pm/safe-react-components'
 
 const AddressContractField = ({
   id,
@@ -29,7 +29,7 @@ const AddressContractField = ({
       onChangeAddress={onChange}
       showErrorsInTheLabel={false}
     />
-  );
-};
+  )
+}
 
-export default AddressContractField;
+export default AddressContractField

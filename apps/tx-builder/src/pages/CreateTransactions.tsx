@@ -1,32 +1,41 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { Button, Tooltip } from '@gnosis.pm/safe-react-components';
-import Grid from '@material-ui/core/Grid';
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
+import { Button, Tooltip } from '@gnosis.pm/safe-react-components'
+import Grid from '@material-ui/core/Grid'
 
-import TransactionsBatchList from '../components/TransactionsBatchList';
-import CreateNewBatchCard from '../components/CreateNewBatchCard';
-import { CREATE_BATCH_PATH, REVIEW_AND_CONFIRM_PATH } from '../routes/routes';
-import QuickTip from '../components/QuickTip';
-import { useNetwork, useTransactionLibrary, useTransactions } from '../store';
-import useModal from '../hooks/useModal/useModal';
-import WrongChainBatchModal from '../components/modals/WrongChainBatchModal';
+import TransactionsBatchList from '../components/TransactionsBatchList'
+import CreateNewBatchCard from '../components/CreateNewBatchCard'
+import { CREATE_BATCH_PATH, REVIEW_AND_CONFIRM_PATH } from '../routes/routes'
+import QuickTip from '../components/QuickTip'
+import { useNetwork, useTransactionLibrary, useTransactions } from '../store'
+import useModal from '../hooks/useModal/useModal'
+import WrongChainBatchModal from '../components/modals/WrongChainBatchModal'
 
 const CreateTransactions = () => {
-  const [fileName, setFileName] = useState('');
+  const [fileName, setFileName] = useState('')
 
-  const { transactions, removeAllTransactions, replaceTransaction, reorderTransactions, removeTransaction } =
-    useTransactions();
-  const { importBatch, downloadBatch, saveBatch } = useTransactionLibrary();
+  const {
+    transactions,
+    removeAllTransactions,
+    replaceTransaction,
+    reorderTransactions,
+    removeTransaction,
+  } = useTransactions()
+  const { importBatch, downloadBatch, saveBatch } = useTransactionLibrary()
 
-  const { chainInfo } = useNetwork();
+  const { chainInfo } = useNetwork()
 
-  const [quickTipOpen, setQuickTipOpen] = useState(true);
-  const [fileChainId, setFileChainId] = useState<string>();
+  const [quickTipOpen, setQuickTipOpen] = useState(true)
+  const [fileChainId, setFileChainId] = useState<string>()
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  const { open: showWrongChainModal, openModal: openWrongChainModal, closeModal: closeWrongChainModal } = useModal();
+  const {
+    open: showWrongChainModal,
+    openModal: openWrongChainModal,
+    closeModal: closeWrongChainModal,
+  } = useModal()
 
   return (
     <>
@@ -34,7 +43,13 @@ const CreateTransactions = () => {
         {transactions.length > 0 ? (
           <>
             <TransactionsBatchList
-              batchTitle={fileName ? <FileNameTitle filename={fileName} /> : 'Transactions Batch'}
+              batchTitle={
+                fileName ? (
+                  <FileNameTitle filename={fileName} />
+                ) : (
+                  'Transactions Batch'
+                )
+              }
               transactions={transactions}
               removeTransaction={removeTransaction}
               saveBatch={saveBatch}
@@ -53,7 +68,11 @@ const CreateTransactions = () => {
               style={{ marginLeft: 35 }}
               variant="contained"
               color="primary"
-              onClick={() => navigate(REVIEW_AND_CONFIRM_PATH, { state: { from: CREATE_BATCH_PATH } })}
+              onClick={() =>
+                navigate(REVIEW_AND_CONFIRM_PATH, {
+                  state: { from: CREATE_BATCH_PATH },
+                })
+              }
             >
               Create Batch
             </Button>
@@ -67,13 +86,13 @@ const CreateTransactions = () => {
           <CreateNewBatchCard
             onFileSelected={async (uploadedFile: File | null) => {
               if (uploadedFile) {
-                setFileName(uploadedFile.name);
-                const batchFile = await importBatch(uploadedFile);
+                setFileName(uploadedFile.name)
+                const batchFile = await importBatch(uploadedFile)
                 // we show a modal if the batch file is from a different chain
-                const isWrongChain = batchFile.chainId !== chainInfo?.chainId;
+                const isWrongChain = batchFile.chainId !== chainInfo?.chainId
                 if (isWrongChain) {
-                  setFileChainId(batchFile.chainId);
-                  openWrongChainModal();
+                  setFileChainId(batchFile.chainId)
+                  openWrongChainModal()
                 }
               }
             }}
@@ -83,36 +102,40 @@ const CreateTransactions = () => {
 
       {/* Uploaded batch network modal */}
       {showWrongChainModal && (
-        <WrongChainBatchModal onClick={closeWrongChainModal} onClose={closeWrongChainModal} fileChainId={fileChainId} />
+        <WrongChainBatchModal
+          onClick={closeWrongChainModal}
+          onClose={closeWrongChainModal}
+          fileChainId={fileChainId}
+        />
       )}
     </>
-  );
-};
+  )
+}
 
-export default CreateTransactions;
+export default CreateTransactions
 
 const TransactionsSectionWrapper = styled(Grid)`
   position: sticky;
   top: 40px;
   align-self: flex-start;
-`;
+`
 
 const QuickTipWrapper = styled.div`
   margin-left: 35px;
   margin-top: 20px;
-`;
+`
 
 const UploadedLabel = styled.span`
   margin-left: 4px;
   color: #b2bbc0;
-`;
+`
 
 const FilenameLabel = styled.div`
   max-width: 150px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
+`
 
 const FileNameTitle = ({ filename }: { filename: string }) => {
   return (
@@ -122,5 +145,5 @@ const FileNameTitle = ({ filename }: { filename: string }) => {
       </Tooltip>{' '}
       <UploadedLabel>uploaded</UploadedLabel>
     </>
-  );
-};
+  )
+}

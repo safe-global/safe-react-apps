@@ -1,19 +1,19 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react'
 
 const useModal = (initialValue = false) => {
-  const [open, setOpen] = useState<boolean>(initialValue);
+  const [open, setOpen] = useState<boolean>(initialValue)
 
   const openModal = useCallback(() => {
-    setOpen(true);
-  }, []);
+    setOpen(true)
+  }, [])
 
   const closeModal = useCallback(() => {
-    setOpen(false);
-  }, []);
+    setOpen(false)
+  }, [])
 
   const toggleModal = useCallback(() => {
-    setOpen((open) => !open);
-  }, []);
+    setOpen(open => !open)
+  }, [])
 
   return {
     open,
@@ -22,7 +22,7 @@ const useModal = (initialValue = false) => {
     openModal,
     closeModal,
     toggleModal,
-  };
-};
+  }
+}
 
-export default useModal;
+export default useModal

@@ -1,16 +1,16 @@
-import { useState, useEffect, useCallback } from 'react';
-import styled from 'styled-components';
-import { Grid } from '@material-ui/core';
-import Container from '@material-ui/core/Container';
-import { Card, Loader } from '@gnosis.pm/safe-react-components';
-import useWalletConnect from './hooks/useWalletConnect';
-import { useApps } from './hooks/useApps';
-import AppBar from './components/AppBar';
-import Help from './components/Help';
-import Disconnected from './components/Disconnected';
-import Connected from './components/Connected';
-import Connecting from './components/Connecting';
-import WalletConnectField from './components/WalletConnectField';
+import { useState, useEffect, useCallback } from 'react'
+import styled from 'styled-components'
+import { Grid } from '@material-ui/core'
+import Container from '@material-ui/core/Container'
+import { Card, Loader } from '@gnosis.pm/safe-react-components'
+import useWalletConnect from './hooks/useWalletConnect'
+import { useApps } from './hooks/useApps'
+import AppBar from './components/AppBar'
+import Help from './components/Help'
+import Disconnected from './components/Disconnected'
+import Connected from './components/Connected'
+import Connecting from './components/Connecting'
+import WalletConnectField from './components/WalletConnectField'
 
 enum CONNECTION_STATUS {
   CONNECTED,
@@ -19,48 +19,50 @@ enum CONNECTION_STATUS {
 }
 
 const App = () => {
-  const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect();
-  const { findSafeApp, openSafeApp } = useApps();
-  const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED);
-  const [isNavigatingToSafeApp, setIsNavigatingToSafeApp] = useState(false);
+  const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect()
+  const { findSafeApp, openSafeApp } = useApps()
+  const [connectionStatus, setConnectionStatus] = useState(
+    CONNECTION_STATUS.DISCONNECTED,
+  )
+  const [isNavigatingToSafeApp, setIsNavigatingToSafeApp] = useState(false)
 
   const handleOpenSafeApp = useCallback(
     (url: string) => {
-      openSafeApp(url);
-      wcDisconnect();
-      setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
-      setIsNavigatingToSafeApp(true);
+      openSafeApp(url)
+      wcDisconnect()
+      setConnectionStatus(CONNECTION_STATUS.DISCONNECTED)
+      setIsNavigatingToSafeApp(true)
     },
     [openSafeApp, wcDisconnect],
-  );
+  )
 
   useEffect(() => {
     if (wcClientData) {
-      setConnectionStatus(CONNECTION_STATUS.CONNECTING);
+      setConnectionStatus(CONNECTION_STATUS.CONNECTING)
     }
-  }, [wcClientData]);
+  }, [wcClientData])
 
   useEffect(() => {
     if (!wcClientData) {
-      setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
-      return;
+      setConnectionStatus(CONNECTION_STATUS.DISCONNECTED)
+      return
     }
 
     if (connectionStatus === CONNECTION_STATUS.CONNECTING) {
-      const safeApp = findSafeApp(wcClientData.url);
+      const safeApp = findSafeApp(wcClientData.url)
 
       if (!safeApp) {
-        setConnectionStatus(CONNECTION_STATUS.CONNECTED);
+        setConnectionStatus(CONNECTION_STATUS.CONNECTED)
       }
     }
-  }, [connectionStatus, findSafeApp, wcClientData]);
+  }, [connectionStatus, findSafeApp, wcClientData])
 
   if (isNavigatingToSafeApp) {
     return (
       <StyledMainContainer>
         <Loader size="md" />
       </StyledMainContainer>
-    );
+    )
   }
 
   return (
@@ -72,22 +74,29 @@ const App = () => {
             <StyledCard>
               {connectionStatus === CONNECTION_STATUS.DISCONNECTED && (
                 <Disconnected>
-                  <WalletConnectField client={wcClientData} onConnect={(data) => wcConnect(data)} />
+                  <WalletConnectField
+                    client={wcClientData}
+                    onConnect={data => wcConnect(data)}
+                  />
                 </Disconnected>
               )}
               {connectionStatus === CONNECTION_STATUS.CONNECTING && (
                 <Connecting
                   client={wcClientData}
-                  onOpenSafeApp={() => handleOpenSafeApp(wcClientData?.url || '')}
-                  onKeepUsingWalletConnect={() => setConnectionStatus(CONNECTION_STATUS.CONNECTED)}
+                  onOpenSafeApp={() =>
+                    handleOpenSafeApp(wcClientData?.url || '')
+                  }
+                  onKeepUsingWalletConnect={() =>
+                    setConnectionStatus(CONNECTION_STATUS.CONNECTED)
+                  }
                 />
               )}
               {connectionStatus === CONNECTION_STATUS.CONNECTED && (
                 <Connected
                   client={wcClientData}
                   onDisconnect={() => {
-                    setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
-                    wcDisconnect();
+                    setConnectionStatus(CONNECTION_STATUS.DISCONNECTED)
+                    wcDisconnect()
                   }}
                 />
               )}
@@ -98,14 +107,17 @@ const App = () => {
               <Help title={HELP_CONNECT.title} steps={HELP_CONNECT.steps} />
             )}
             {connectionStatus !== CONNECTION_STATUS.DISCONNECTED && (
-              <Help title={HELP_TRANSACTIONS.title} steps={HELP_TRANSACTIONS.steps} />
+              <Help
+                title={HELP_TRANSACTIONS.title}
+                steps={HELP_TRANSACTIONS.steps}
+              />
             )}
           </StyledHelpContainer>
         </StyledAppContainer>
       </StyledMainContainer>
     </>
-  );
-};
+  )
+}
 
 const StyledMainContainer = styled(Container)`
   && {
@@ -117,32 +129,32 @@ const StyledMainContainer = styled(Container)`
     align-items: center;
     flex-direction: column;
   }
-`;
+`
 
 const StyledAppContainer = styled(Grid)`
   height: 100%;
   padding-top: 45px;
-`;
+`
 
 const StyledCardContainer = styled(Grid)`
   width: 484px;
   margin-top: 45px;
-`;
+`
 
 const StyledHelpContainer = styled(Grid)`
   && {
     width: 484px;
     margin-top: 16px;
   }
-`;
+`
 
 const StyledCard = styled(Card)`
   && {
     box-shadow: none;
   }
-`;
+`
 
-export default App;
+export default App
 
 const HELP_CONNECT = {
   title: 'How to connect to a Dapp?',
@@ -153,7 +165,7 @@ const HELP_CONNECT = {
     'WalletConnect connection is established automatically.',
     'Now you can trigger transactions via the Dapp to your Safe.',
   ],
-};
+}
 
 const HELP_TRANSACTIONS = {
   title: 'How to confirm transactions?',
@@ -162,4 +174,4 @@ const HELP_TRANSACTIONS = {
     'Come back here to confirm the transaction. You will see a popup with transaction details. Review the details and submit the transaction.',
     'The transaction has to be confirmed by owners and executed just like any other Safe transaction.',
   ],
-};
+}

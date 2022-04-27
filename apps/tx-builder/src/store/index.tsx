@@ -1,7 +1,7 @@
-import TransactionsProvider from './transactionsContext';
-import TransactionLibraryProvider from './transactionLibraryContext';
-import React from 'react';
-import NetworkProvider from './networkContext';
+import TransactionsProvider from './transactionsContext'
+import TransactionLibraryProvider from './transactionLibraryContext'
+import React from 'react'
+import NetworkProvider from './networkContext'
 
 const StoreProvider: React.FC = ({ children }) => {
   return (
@@ -10,11 +10,11 @@ const StoreProvider: React.FC = ({ children }) => {
         <TransactionLibraryProvider>{children}</TransactionLibraryProvider>
       </TransactionsProvider>
     </NetworkProvider>
-  );
-};
+  )
+}
 
-export { useTransactions } from './transactionsContext';
-export { useTransactionLibrary } from './transactionLibraryContext';
-export { useNetwork } from './networkContext';
+export { useTransactions } from './transactionsContext'
+export { useTransactionLibrary } from './transactionLibraryContext'
+export { useNetwork } from './networkContext'
 
-export default StoreProvider;
+export default StoreProvider

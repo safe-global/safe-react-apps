@@ -1,6 +1,10 @@
-import { AbiItem, toBN, isAddress, fromWei } from 'web3-utils';
-import abiCoder, { AbiCoder } from 'web3-eth-abi';
-import { ContractInput, ContractMethod, ProposedTransaction } from './typings/models';
+import { AbiItem, toBN, isAddress, fromWei } from 'web3-utils'
+import abiCoder, { AbiCoder } from 'web3-eth-abi'
+import {
+  ContractInput,
+  ContractMethod,
+  ProposedTransaction,
+} from './typings/models'
 
 export enum CHAINS {
   MAINNET = '1',
@@ -21,12 +25,12 @@ export enum CHAINS {
 }
 
 export const rpcUrlGetterByNetwork: {
-  [key in CHAINS]: null | ((token?: string) => string);
+  [key in CHAINS]: null | ((token?: string) => string)
 } = {
-  [CHAINS.MAINNET]: (token) => `https://mainnet.infura.io/v3/${token}`,
+  [CHAINS.MAINNET]: token => `https://mainnet.infura.io/v3/${token}`,
   [CHAINS.MORDEN]: null,
   [CHAINS.ROPSTEN]: null,
-  [CHAINS.RINKEBY]: (token) => `https://rinkeby.infura.io/v3/${token}`,
+  [CHAINS.RINKEBY]: token => `https://rinkeby.infura.io/v3/${token}`,
   [CHAINS.GOERLI]: null,
   [CHAINS.OPTIMISM]: () => 'https://mainnet.optimism.io',
   [CHAINS.KOVAN]: null,
@@ -38,123 +42,137 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.AVALANCHE]: () => 'https://api.avax.network/ext/bc/C/rpc',
   [CHAINS.VOLTA]: () => 'https://volta-rpc.energyweb.org',
   [CHAINS.AURORA]: () => 'https://mainnet.aurora.dev',
-};
+}
 
 // Same regex used for web3@1.3.6
-export const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/);
+export const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/)
 
 // This function is used to apply some parsing to some value types
 export const parseInputValue = (input: any, value: string): any => {
   // If there is a match with this regular expression we get an array value like the following
   // ex: ['uint16', 'uint', '16']. If no match, null is returned
-  const isNumberInput = paramTypeNumber.test(input.type);
-  const isBooleanInput = input.type === 'bool';
+  const isNumberInput = paramTypeNumber.test(input.type)
+  const isBooleanInput = input.type === 'bool'
 
   if (value.charAt(0) === '[') {
-    const parsed = JSON.parse(value.replace(/"/g, '"'));
+    const parsed = JSON.parse(value.replace(/"/g, '"'))
 
     if (input.type === 'bool[]') {
       return parsed.map((value: boolean | string) => {
         if (typeof value == 'string') {
-          return value.toLowerCase() === 'true';
+          return value.toLowerCase() === 'true'
         }
 
-        return value;
-      });
+        return value
+      })
     }
 
-    return parsed;
+    return parsed
   }
 
   if (isBooleanInput) {
-    return value.toLowerCase() === 'true';
+    return value.toLowerCase() === 'true'
   }
 
   if (isNumberInput && value) {
     // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
     // To fix that we pad the numeric values here as the encode function is expecting a string
     // more info here https://github.com/ChainSafe/web3.js/issues/3772
-    const bitWidth = input.type.match(paramTypeNumber)[2];
-    return toBN(value).toString(10, bitWidth);
+    const bitWidth = input.type.match(paramTypeNumber)[2]
+    return toBN(value).toString(10, bitWidth)
   }
 
-  return value;
-};
+  return value
+}
 
 export const isInputValueValid = (val: string) => {
-  const value = Number(val);
-  const isHexValue = val?.startsWith?.('0x');
-  const isNegativeValue = value < 0;
+  const value = Number(val)
+  const isHexValue = val?.startsWith?.('0x')
+  const isNegativeValue = value < 0
 
   if (isNaN(value) || isNegativeValue || isHexValue) {
-    return false;
+    return false
   }
 
-  return true;
-};
+  return true
+}
 
 export const getCustomDataError = (value: string | undefined) => {
-  return `Has to be a valid strict hex data${!value?.startsWith('0x') ? ' (it must start with 0x)' : ''}`;
-};
+  return `Has to be a valid strict hex data${
+    !value?.startsWith('0x') ? ' (it must start with 0x)' : ''
+  }`
+}
 
 export const isValidAddress = (address: string | null) => {
   if (!address) {
-    return false;
+    return false
   }
-  return isAddress(address);
-};
+  return isAddress(address)
+}
 
-const NON_VALID_CONTRACT_METHODS = ['receive', 'fallback'];
+const NON_VALID_CONTRACT_METHODS = ['receive', 'fallback']
 
-export const encodeToHexData = (contractMethod: ContractMethod | undefined, contractFieldsValues: any) => {
-  const contractMethodName = contractMethod?.name;
-  const contractFields = contractMethod?.inputs || [];
+export const encodeToHexData = (
+  contractMethod: ContractMethod | undefined,
+  contractFieldsValues: any,
+) => {
+  const contractMethodName = contractMethod?.name
+  const contractFields = contractMethod?.inputs || []
 
-  const isValidContractMethod = contractMethodName && !NON_VALID_CONTRACT_METHODS.includes(contractMethodName);
+  const isValidContractMethod =
+    contractMethodName &&
+    !NON_VALID_CONTRACT_METHODS.includes(contractMethodName)
 
   if (isValidContractMethod) {
     try {
-      const parsedValues = contractFields.map((contractField: ContractInput, index) => {
-        const contractFieldName = contractField.name || index;
-        const cleanValue = contractFieldsValues[contractFieldName] || '';
+      const parsedValues = contractFields.map(
+        (contractField: ContractInput, index) => {
+          const contractFieldName = contractField.name || index
+          const cleanValue = contractFieldsValues[contractFieldName] || ''
 
-        return parseInputValue(contractField, cleanValue);
-      });
-      const abi = abiCoder as unknown; // a bug in the web3-eth-abi types
-      const hexEncondedData = (abi as AbiCoder).encodeFunctionCall(contractMethod as AbiItem, parsedValues);
+          return parseInputValue(contractField, cleanValue)
+        },
+      )
+      const abi = abiCoder as unknown // a bug in the web3-eth-abi types
+      const hexEncondedData = (abi as AbiCoder).encodeFunctionCall(
+        contractMethod as AbiItem,
+        parsedValues,
+      )
 
-      return hexEncondedData;
+      return hexEncondedData
     } catch (error) {
-      console.log('Error encoding current form values to hex data: ', error);
+      console.log('Error encoding current form values to hex data: ', error)
     }
   }
-};
+}
 
 export const weiToEther = (wei: string) => {
-  return fromWei(wei, 'ether');
-};
+  return fromWei(wei, 'ether')
+}
 
-export const getTransactionText = (description: ProposedTransaction['description']) => {
-  const { contractMethod, customTransactionData } = description;
+export const getTransactionText = (
+  description: ProposedTransaction['description'],
+) => {
+  const { contractMethod, customTransactionData } = description
 
-  const isCustomHexDataTx = !!customTransactionData;
-  const isContractInteractionTx = !!contractMethod;
-  const isTokenTransferTx = !isCustomHexDataTx && !isContractInteractionTx;
+  const isCustomHexDataTx = !!customTransactionData
+  const isContractInteractionTx = !!contractMethod
+  const isTokenTransferTx = !isCustomHexDataTx && !isContractInteractionTx
 
   if (isTokenTransferTx) {
-    return 'Transfer';
+    return 'Transfer'
   }
 
   if (isCustomHexDataTx) {
-    return 'Custom hex data';
+    return 'Custom hex data'
   }
 
   if (isContractInteractionTx) {
-    return contractMethod.name;
+    return contractMethod.name
   }
 
   // empty tx description as a fallback
-  return '';
+  return ''
 }
 
 export const getInputTypeHelper = (input: ContractInput): string => {
@@ -162,10 +180,10 @@ export const getInputTypeHelper = (input: ContractInput): string => {
   if (input.type.startsWith('tuple') && input.components) {
     return `tuple(${input.components
       .map((i: ContractInput) => {
-        return getInputTypeHelper(i);
+        return getInputTypeHelper(i)
       })
-      .toString()})${input.type.endsWith('[]') ? '[]' : ''}`;
+      .toString()})${input.type.endsWith('[]') ? '[]' : ''}`
   } else {
-    return input.type;
+    return input.type
   }
-};
+}

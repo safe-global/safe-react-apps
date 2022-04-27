@@ -6,15 +6,15 @@ import {
   waitForElementToBeRemoved,
   findByAltText,
   findByText,
-} from '@testing-library/react';
-import App from './App';
-import { renderWithProviders } from './utils/test-helpers';
+} from '@testing-library/react'
+import App from './App'
+import { renderWithProviders } from './utils/test-helpers'
 
-const CONNECTION_INPUT_TEXT = 'QR code or connection link';
-const HELP_TITLE = 'How to connect to a Dapp?';
+const CONNECTION_INPUT_TEXT = 'QR code or connection link'
+const HELP_TITLE = 'How to connect to a Dapp?'
 
 jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
-  const originalModule = jest.requireActual('@gnosis.pm/safe-apps-react-sdk');
+  const originalModule = jest.requireActual('@gnosis.pm/safe-apps-react-sdk')
   return {
     ...originalModule,
     useSafeAppsSDK: () => ({
@@ -29,8 +29,8 @@ jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
         chainId: 4,
       },
     }),
-  };
-});
+  }
+})
 
 jest.mock('@walletconnect/client', () => {
   return function () {
@@ -43,43 +43,43 @@ jest.mock('@walletconnect/client', () => {
       },
       on: jest.fn(),
       killSession: jest.fn(),
-    };
-  };
-});
+    }
+  }
+})
 
 jest.mock('jsqr', () => {
   return function () {
     return {
       data: 'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.gnosis.io&key=xxxxxxxxxxx',
-    };
-  };
-});
+    }
+  }
+})
 
 describe('WalletConnect unit tests', () => {
   it('Renders Wallet Connect Safe App', () => {
-    renderWithProviders(<App />);
+    renderWithProviders(<App />)
 
-    const titleNode = screen.getByText('Wallet Connect');
+    const titleNode = screen.getByText('Wallet Connect')
 
-    expect(titleNode).toBeInTheDocument();
+    expect(titleNode).toBeInTheDocument()
 
-    const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT);
-    expect(inputNode).toBeInTheDocument();
+    const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)
+    expect(inputNode).toBeInTheDocument()
 
-    const instructionsNode = screen.getByText(HELP_TITLE);
+    const instructionsNode = screen.getByText(HELP_TITLE)
 
-    expect(instructionsNode).toBeInTheDocument();
-  });
+    expect(instructionsNode).toBeInTheDocument()
+  })
 
   describe('URI connection', () => {
     it('Connects via onPaste valid URI', () => {
-      renderWithProviders(<App />);
+      renderWithProviders(<App />)
 
-      const instructionsNode = screen.getByText(HELP_TITLE);
+      const instructionsNode = screen.getByText(HELP_TITLE)
 
-      expect(instructionsNode).toBeInTheDocument();
+      expect(instructionsNode).toBeInTheDocument()
 
-      const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT);
+      const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)
 
       const URIPasteEvent = {
         clipboardData: {
@@ -92,36 +92,40 @@ describe('WalletConnect unit tests', () => {
           getData: () =>
             'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.gnosis.io&key=xxxxxxxxxxx',
         },
-      };
+      }
 
-      const pasteEvent = createEvent.paste(inputNode, URIPasteEvent);
+      const pasteEvent = createEvent.paste(inputNode, URIPasteEvent)
 
-      fireEvent(inputNode, pasteEvent);
+      fireEvent(inputNode, pasteEvent)
 
-      expect(instructionsNode).not.toBeInTheDocument();
+      expect(instructionsNode).not.toBeInTheDocument()
 
-      const connectedNode = screen.getByText('CONNECTED');
-      expect(connectedNode).toBeInTheDocument();
+      const connectedNode = screen.getByText('CONNECTED')
+      expect(connectedNode).toBeInTheDocument()
 
-      const connectedInstructionsNode = screen.getByText('How to confirm transactions?');
-      expect(connectedInstructionsNode).toBeInTheDocument();
+      const connectedInstructionsNode = screen.getByText(
+        'How to confirm transactions?',
+      )
+      expect(connectedInstructionsNode).toBeInTheDocument()
 
-      const dappNameNode = screen.getByText('Test name');
-      expect(dappNameNode).toBeInTheDocument();
+      const dappNameNode = screen.getByText('Test name')
+      expect(dappNameNode).toBeInTheDocument()
 
-      const dappImgNode = screen.getByRole('img');
-      expect(dappImgNode).toBeInTheDocument();
-      expect(dappImgNode).toHaveStyle("background-image: url('https://cowswap.exchange/./favicon.png')");
-    });
+      const dappImgNode = screen.getByRole('img')
+      expect(dappImgNode).toBeInTheDocument()
+      expect(dappImgNode).toHaveStyle(
+        "background-image: url('https://cowswap.exchange/./favicon.png')",
+      )
+    })
 
     it('No connection is set if an invalid URI is provided', () => {
-      renderWithProviders(<App />);
+      renderWithProviders(<App />)
 
-      const instructionsNode = screen.getByText(HELP_TITLE);
+      const instructionsNode = screen.getByText(HELP_TITLE)
 
-      expect(instructionsNode).toBeInTheDocument();
+      expect(instructionsNode).toBeInTheDocument()
 
-      const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT);
+      const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)
 
       const URIPasteEvent = {
         clipboardData: {
@@ -133,80 +137,94 @@ describe('WalletConnect unit tests', () => {
           ],
           getData: () => 'Invalid URI',
         },
-      };
+      }
 
-      const pasteEvent = createEvent.paste(inputNode, URIPasteEvent);
+      const pasteEvent = createEvent.paste(inputNode, URIPasteEvent)
 
-      fireEvent(inputNode, pasteEvent);
+      fireEvent(inputNode, pasteEvent)
 
-      const connectedNode = screen.queryByText('CONNECTED');
-      expect(connectedNode).not.toBeInTheDocument();
-    });
-  });
+      const connectedNode = screen.queryByText('CONNECTED')
+      expect(connectedNode).not.toBeInTheDocument()
+    })
+  })
 
   describe('Scan QR code connection', () => {
     it('Shows scan QR dialog', async () => {
-      renderWithProviders(<App />);
+      renderWithProviders(<App />)
 
-      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR');
+      const openDialogNode = await screen.findByTitle(
+        'Start your camera and scan a QR',
+      )
 
-      expect(openDialogNode).toBeDefined();
+      expect(openDialogNode).toBeDefined()
 
-      fireEvent.click(openDialogNode);
+      fireEvent.click(openDialogNode)
 
-      const scanQRCodeDialog = await screen.findByRole('dialog');
+      const scanQRCodeDialog = await screen.findByRole('dialog')
 
-      await waitFor(() => expect(scanQRCodeDialog).toBeDefined());
-    });
+      await waitFor(() => expect(scanQRCodeDialog).toBeDefined())
+    })
 
     it('Shows Permissions error image', async () => {
       Object.defineProperty(window.HTMLMediaElement.prototype, 'play', {
         writable: true,
         value: jest.fn().mockImplementationOnce(() => {
-          throw 'Expected error, testing camera permission error...';
+          throw 'Expected error, testing camera permission error...'
         }),
-      });
+      })
 
-      renderWithProviders(<App />);
+      renderWithProviders(<App />)
 
-      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR');
+      const openDialogNode = await screen.findByTitle(
+        'Start your camera and scan a QR',
+      )
 
-      expect(openDialogNode).toBeInTheDocument();
+      expect(openDialogNode).toBeInTheDocument()
 
-      fireEvent.click(openDialogNode);
+      fireEvent.click(openDialogNode)
 
-      const scanQRCodeDialog = await screen.findByRole('dialog');
+      const scanQRCodeDialog = await screen.findByRole('dialog')
 
-      expect(scanQRCodeDialog).toBeDefined();
+      expect(scanQRCodeDialog).toBeDefined()
 
-      const permissionErrorTitle = await findByText(scanQRCodeDialog, 'Check browser permissions');
+      const permissionErrorTitle = await findByText(
+        scanQRCodeDialog,
+        'Check browser permissions',
+      )
 
-      expect(permissionErrorTitle).toBeDefined();
+      expect(permissionErrorTitle).toBeDefined()
 
-      const permissionErrorImg = await findByAltText(scanQRCodeDialog, 'camera permission error');
-      expect(permissionErrorImg).toBeDefined();
-    });
+      const permissionErrorImg = await findByAltText(
+        scanQRCodeDialog,
+        'camera permission error',
+      )
+      expect(permissionErrorImg).toBeDefined()
+    })
 
     it('Scans valid QR code', async () => {
-      renderWithProviders(<App />);
+      renderWithProviders(<App />)
 
-      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR');
+      const openDialogNode = await screen.findByTitle(
+        'Start your camera and scan a QR',
+      )
 
-      fireEvent.click(openDialogNode);
+      fireEvent.click(openDialogNode)
 
-      const scanQRCodeDialog = await screen.findByRole('dialog');
-      expect(scanQRCodeDialog).toBeDefined();
+      const scanQRCodeDialog = await screen.findByRole('dialog')
+      expect(scanQRCodeDialog).toBeDefined()
 
-      const dappNameNode = await screen.findByText('Test name');
-      expect(dappNameNode).toBeInTheDocument();
+      const dappNameNode = await screen.findByText('Test name')
+      expect(dappNameNode).toBeInTheDocument()
 
-      const dappImgNode = await screen.findByRole('img');
-      expect(dappImgNode).toBeInTheDocument();
-      expect(dappImgNode).toHaveStyle("background-image: url('https://cowswap.exchange/./favicon.png')");
-    });
+      const dappImgNode = await screen.findByRole('img')
+      expect(dappImgNode).toBeInTheDocument()
+      expect(dappImgNode).toHaveStyle(
+        "background-image: url('https://cowswap.exchange/./favicon.png')",
+      )
+    })
 
     it('Closes webcam connection by closing the dialog', async () => {
-      const stopWebcamSpy = jest.fn();
+      const stopWebcamSpy = jest.fn()
 
       const openWebcamSpy = jest.fn().mockImplementation(() => ({
         getTracks: () => [
@@ -214,14 +232,14 @@ describe('WalletConnect unit tests', () => {
             stop: stopWebcamSpy,
           },
         ],
-      }));
+      }))
 
       Object.defineProperty(window.navigator, 'mediaDevices', {
         writable: true,
         value: {
           getUserMedia: openWebcamSpy,
         },
-      });
+      })
 
       Object.defineProperty(window.HTMLCanvasElement.prototype, 'getContext', {
         writable: false,
@@ -229,49 +247,53 @@ describe('WalletConnect unit tests', () => {
           return {
             drawImage: jest.fn(),
             getImageData: jest.fn(),
-          };
+          }
         },
-      });
+      })
 
-      renderWithProviders(<App />);
+      renderWithProviders(<App />)
 
-      expect(openWebcamSpy).not.toHaveBeenCalled();
-      expect(stopWebcamSpy).not.toHaveBeenCalled();
+      expect(openWebcamSpy).not.toHaveBeenCalled()
+      expect(stopWebcamSpy).not.toHaveBeenCalled()
 
-      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR');
+      const openDialogNode = await screen.findByTitle(
+        'Start your camera and scan a QR',
+      )
 
       // we open webcam dialog
-      fireEvent.click(openDialogNode);
+      fireEvent.click(openDialogNode)
 
-      const scanQRCodeDialog = await screen.findByRole('dialog');
-      expect(scanQRCodeDialog).toBeDefined();
+      const scanQRCodeDialog = await screen.findByRole('dialog')
+      expect(scanQRCodeDialog).toBeDefined()
 
       // only webcam connection should be called at this point of the test
-      expect(openWebcamSpy).toHaveBeenCalled();
-      expect(stopWebcamSpy).not.toHaveBeenCalled();
+      expect(openWebcamSpy).toHaveBeenCalled()
+      expect(stopWebcamSpy).not.toHaveBeenCalled()
 
       // we close webcam dialog
-      const closeQRCodeDialogButton = screen.getByLabelText('Close scan QR code dialog');
+      const closeQRCodeDialogButton = screen.getByLabelText(
+        'Close scan QR code dialog',
+      )
 
-      expect(closeQRCodeDialogButton).toBeInTheDocument();
-      fireEvent.click(closeQRCodeDialogButton);
+      expect(closeQRCodeDialogButton).toBeInTheDocument()
+      fireEvent.click(closeQRCodeDialogButton)
 
-      await waitForElementToBeRemoved(() => screen.queryByRole('dialog'));
+      await waitForElementToBeRemoved(() => screen.queryByRole('dialog'))
 
       // webcam connection should be closed
-      expect(stopWebcamSpy).toHaveBeenCalled();
-    });
-  });
+      expect(stopWebcamSpy).toHaveBeenCalled()
+    })
+  })
 
   describe('Disconnect WC', () => {
     it('Disconnects if user clicks on Disconnect button', () => {
-      renderWithProviders(<App />);
+      renderWithProviders(<App />)
 
-      const instructionsNode = screen.getByText(HELP_TITLE);
+      const instructionsNode = screen.getByText(HELP_TITLE)
 
-      expect(instructionsNode).toBeInTheDocument();
+      expect(instructionsNode).toBeInTheDocument()
 
-      const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT);
+      const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)
 
       const URIPasteEvent = {
         clipboardData: {
@@ -284,21 +306,21 @@ describe('WalletConnect unit tests', () => {
           getData: () =>
             'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.gnosis.io&key=xxxxxxxxxxx',
         },
-      };
+      }
 
-      const pasteEvent = createEvent.paste(inputNode, URIPasteEvent);
+      const pasteEvent = createEvent.paste(inputNode, URIPasteEvent)
 
-      fireEvent(inputNode, pasteEvent);
+      fireEvent(inputNode, pasteEvent)
 
-      const disconnectButtonNode = screen.getByText('Disconnect');
-      expect(disconnectButtonNode).toBeInTheDocument();
+      const disconnectButtonNode = screen.getByText('Disconnect')
+      expect(disconnectButtonNode).toBeInTheDocument()
 
-      fireEvent.click(disconnectButtonNode);
+      fireEvent.click(disconnectButtonNode)
 
       waitFor(() => {
-        expect(inputNode).toBeInTheDocument();
-        expect(instructionsNode).toBeInTheDocument();
-      });
-    });
-  });
-});
+        expect(inputNode).toBeInTheDocument()
+        expect(instructionsNode).toBeInTheDocument()
+      })
+    })
+  })
+})

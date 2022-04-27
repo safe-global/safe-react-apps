@@ -1,24 +1,27 @@
-import React from 'react';
-import MuiAlert from '@material-ui/lab/Alert';
-import MuiAlertTitle from '@material-ui/lab/AlertTitle';
-import styled from 'styled-components';
-import { useTransactionLibrary } from '../store';
+import React from 'react'
+import MuiAlert from '@material-ui/lab/Alert'
+import MuiAlertTitle from '@material-ui/lab/AlertTitle'
+import styled from 'styled-components'
+import { useTransactionLibrary } from '../store'
 
 const ChecksumWarning = () => {
-  const { hasChecksumWarning, setHasChecksumWarning } = useTransactionLibrary();
+  const { hasChecksumWarning, setHasChecksumWarning } = useTransactionLibrary()
 
   if (!hasChecksumWarning) {
-    return null;
+    return null
   }
 
   return (
     <ChecksumWrapper>
       <MuiAlert severity="warning" onClose={() => setHasChecksumWarning(false)}>
-        <MuiAlertTitle>This batch contains some changed properties since you saved or downloaded it</MuiAlertTitle>
+        <MuiAlertTitle>
+          This batch contains some changed properties since you saved or
+          downloaded it
+        </MuiAlertTitle>
       </MuiAlert>
     </ChecksumWrapper>
-  );
-};
+  )
+}
 
 const ChecksumWrapper = styled.div`
   position: fixed;
@@ -26,6 +29,6 @@ const ChecksumWrapper = styled.div`
   z-index: 10;
   background-color: transparent;
   height: 70px;
-`;
+`
 
-export default ChecksumWarning;
+export default ChecksumWarning

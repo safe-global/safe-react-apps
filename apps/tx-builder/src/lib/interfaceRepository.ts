@@ -1,48 +1,49 @@
-import { ChainInfo } from '@gnosis.pm/safe-apps-sdk';
-import { ContractInterface } from '../typings/models';
-import getAbi from './getAbi';
+import { ChainInfo } from '@gnosis.pm/safe-apps-sdk'
+import { ContractInterface } from '../typings/models'
+import getAbi from './getAbi'
 
 class InterfaceRepository {
-  chainInfo: ChainInfo;
+  chainInfo: ChainInfo
 
   constructor(chainInfo: ChainInfo) {
-    this.chainInfo = chainInfo;
+    this.chainInfo = chainInfo
   }
 
   private async _loadAbiFromBlockExplorer(address: string): Promise<string> {
-    return await getAbi(address, this.chainInfo);
+    return await getAbi(address, this.chainInfo)
   }
 
-  private _isMethodPayable = (m: any) => m.payable || m.stateMutability === 'payable';
+  private _isMethodPayable = (m: any) =>
+    m.payable || m.stateMutability === 'payable'
 
   async loadAbi(address: string): Promise<string> {
-    return await this._loadAbiFromBlockExplorer(address);
+    return await this._loadAbiFromBlockExplorer(address)
   }
 
   getMethods(abi: string): ContractInterface {
-    let parsedAbi;
+    let parsedAbi
 
     try {
-      parsedAbi = JSON.parse(abi);
+      parsedAbi = JSON.parse(abi)
     } catch {
-      return { methods: [] };
+      return { methods: [] }
     }
 
     if (!Array.isArray(parsedAbi)) {
-      return { methods: [] };
+      return { methods: [] }
     }
 
     const methods = parsedAbi
       .filter((e: any) => {
         if (['pure', 'view'].includes(e.stateMutability)) {
-          return false;
+          return false
         }
 
         if (e?.type.toLowerCase() === 'event') {
-          return false;
+          return false
         }
 
-        return !e.constant;
+        return !e.constant
       })
       .filter((m: any) => m.type !== 'constructor')
       .map((m: any) => {
@@ -50,13 +51,13 @@ class InterfaceRepository {
           inputs: m.inputs || [],
           name: m.name || (m.type === 'fallback' ? 'fallback' : 'receive'),
           payable: this._isMethodPayable(m),
-        };
-      });
+        }
+      })
 
-    return { methods };
+    return { methods }
   }
 }
 
-export type InterfaceRepo = InstanceType<typeof InterfaceRepository>;
+export type InterfaceRepo = InstanceType<typeof InterfaceRepository>
 
-export default InterfaceRepository;
+export default InterfaceRepository

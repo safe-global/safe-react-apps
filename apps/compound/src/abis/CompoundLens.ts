@@ -3,7 +3,11 @@ const CompoundLensABI = [
     constant: false,
     inputs: [
       { internalType: 'contract Comp', name: 'comp', type: 'address' },
-      { internalType: 'contract ComptrollerLensInterface', name: 'comptroller', type: 'address' },
+      {
+        internalType: 'contract ComptrollerLensInterface',
+        name: 'comptroller',
+        type: 'address',
+      },
       { internalType: 'address', name: 'account', type: 'address' },
     ],
     name: 'getCompBalanceMetadataExt',
@@ -24,6 +28,6 @@ const CompoundLensABI = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+]
 
-export default CompoundLensABI;
+export default CompoundLensABI

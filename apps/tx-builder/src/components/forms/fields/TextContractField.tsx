@@ -1,16 +1,19 @@
-import { TextFieldInput } from '@gnosis.pm/safe-react-components';
-import { TextFieldInputProps } from '@gnosis.pm/safe-react-components/dist/inputs/TextFieldInput';
-import styled from 'styled-components';
+import { TextFieldInput } from '@gnosis.pm/safe-react-components'
+import { TextFieldInputProps } from '@gnosis.pm/safe-react-components/dist/inputs/TextFieldInput'
+import styled from 'styled-components'
 
 type TextContractFieldTypes = TextFieldInputProps & {
-  networkPrefix?: undefined | string;
-};
+  networkPrefix?: undefined | string
+}
 
-const TextContractField = ({ networkPrefix, ...props }: TextContractFieldTypes) => {
-  return <StyledTextField {...props} hiddenLabel={false} />;
-};
+const TextContractField = ({
+  networkPrefix,
+  ...props
+}: TextContractFieldTypes) => {
+  return <StyledTextField {...props} hiddenLabel={false} />
+}
 
-export default TextContractField;
+export default TextContractField
 
 const StyledTextField = styled(TextFieldInput)`
   && {
@@ -20,4 +23,4 @@ const StyledTextField = styled(TextFieldInput)`
       }
     }
   }
-`;
+`

@@ -1,5 +1,10 @@
 const ComptrollerABI = [
-  { inputs: [], payable: false, stateMutability: 'nonpayable', type: 'constructor' },
+  {
+    inputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
   {
     constant: false,
     inputs: [
@@ -30,6 +35,6 @@ const ComptrollerABI = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+]
 
-export default ComptrollerABI;
+export default ComptrollerABI

@@ -1,4 +1,4 @@
-import { AbiItem } from 'web3-utils';
+import { AbiItem } from 'web3-utils'
 
 const erc20: { [key: string]: AbiItem } = {
   transfer: {
@@ -24,6 +24,6 @@ const erc20: { [key: string]: AbiItem } = {
     stateMutability: 'nonpayable',
     type: 'function',
   },
-};
+}
 
-export default erc20;
+export default erc20

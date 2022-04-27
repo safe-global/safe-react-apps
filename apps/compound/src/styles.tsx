@@ -1,5 +1,5 @@
-import { TextField, Title } from '@gnosis.pm/safe-react-components';
-import styled from 'styled-components';
+import { TextField, Title } from '@gnosis.pm/safe-react-components'
+import styled from 'styled-components'
 
 export const SelectContainer = styled.div`
   display: flex;
@@ -11,7 +11,7 @@ export const SelectContainer = styled.div`
   *:first-child {
     margin-right: 5px;
   }
-`;
+`
 
 export const InfoContainer = styled.div`
   margin-top: 20px;
@@ -19,7 +19,7 @@ export const InfoContainer = styled.div`
   flex-direction: column;
   align-items: left;
   width: 100%;
-`;
+`
 
 export const ButtonContainer = styled.div`
   display: flex;
@@ -29,17 +29,17 @@ export const ButtonContainer = styled.div`
   button:not(:first-child) {
     margin-left: 10px;
   }
-`;
+`
 
 export const StyledTextField = styled(TextField)`
   &.MuiTextField-root {
     width: 100%;
   }
-`;
+`
 
 export const StyledTitle = styled(Title)`
   margin-top: 0;
-`;
+`
 
 export const LoaderContainer = styled.div`
   display: flex;
@@ -48,4 +48,4 @@ export const LoaderContainer = styled.div`
   justify-content: center;
   width: calc(100vw - 50px);
   height: calc(100vh);
-`;
+`
