@@ -1,63 +1,71 @@
-import { useState, useCallback, ClipboardEvent } from 'react';
-import styled from 'styled-components';
-import { Icon, TextFieldInput, Tooltip, GenericModal, Text, Button, IconTypes } from '@gnosis.pm/safe-react-components';
-import IconButton from '@material-ui/core/IconButton';
-import { Box } from '@material-ui/core';
-import useModal from '../../../hooks/useModal/useModal';
+import { useState, useCallback, ClipboardEvent } from 'react'
+import styled from 'styled-components'
+import {
+  Icon,
+  TextFieldInput,
+  Tooltip,
+  GenericModal,
+  Text,
+  Button,
+  IconTypes,
+} from '@gnosis.pm/safe-react-components'
+import IconButton from '@material-ui/core/IconButton'
+import { Box } from '@material-ui/core'
+import useModal from '../../../hooks/useModal/useModal'
 
-const DEFAULT_ROWS = 4;
+const DEFAULT_ROWS = 4
 
 type Props = {
-  id: string;
-  name: string;
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-};
+  id: string
+  name: string
+  label: string
+  value: string
+  onChange: (value: string) => void
+}
 
 const JsonField = ({ id, name, label, value, onChange }: Props) => {
-  const { open: showReplaceModal, toggleModal } = useModal();
-  const [tempAbi, setTempAbi] = useState(value);
-  const [isPrettified, setIsPrettified] = useState(false);
-  const hasError = isValidJSON(value) ? undefined : 'Invalid JSON value';
+  const { open: showReplaceModal, toggleModal } = useModal()
+  const [tempAbi, setTempAbi] = useState(value)
+  const [isPrettified, setIsPrettified] = useState(false)
+  const hasError = isValidJSON(value) ? undefined : 'Invalid JSON value'
 
   const toggleFormatJSON = useCallback(() => {
     if (!value) {
-      return;
+      return
     }
 
     try {
-      onChange(JSON.stringify(JSON.parse(value), null, isPrettified ? 0 : 2));
-      setIsPrettified(!isPrettified);
+      onChange(JSON.stringify(JSON.parse(value), null, isPrettified ? 0 : 2))
+      setIsPrettified(!isPrettified)
     } catch (e) {
-      console.error(e);
-      onChange(value);
+      console.error(e)
+      onChange(value)
     }
-  }, [onChange, value, isPrettified]);
+  }, [onChange, value, isPrettified])
 
   const changeAbi = useCallback(() => {
-    onChange(tempAbi);
-    setIsPrettified(false);
-    toggleModal();
-  }, [tempAbi, onChange, toggleModal]);
+    onChange(tempAbi)
+    setIsPrettified(false)
+    toggleModal()
+  }, [tempAbi, onChange, toggleModal])
 
   const handlePaste = useCallback(
     (event: ClipboardEvent<HTMLInputElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
+      event.preventDefault()
+      event.stopPropagation()
 
-      const clipboardData = event.clipboardData;
-      const pastedData = clipboardData?.getData('Text') || '';
+      const clipboardData = event.clipboardData
+      const pastedData = clipboardData?.getData('Text') || ''
 
       if (value && pastedData) {
-        setTempAbi(pastedData);
-        toggleModal();
+        setTempAbi(pastedData)
+        toggleModal()
       } else {
-        onChange(pastedData);
+        onChange(pastedData)
       }
     },
     [onChange, toggleModal, value],
-  );
+  )
 
   return (
     <>
@@ -73,8 +81,8 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
           fullWidth
           hiddenLabel={false}
           onPaste={handlePaste}
-          onChange={(event) => {
-            onChange(event.target.value);
+          onChange={event => {
+            onChange(event.target.value)
           }}
           spellCheck={false}
           showErrorsInTheLabel={false}
@@ -123,20 +131,20 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
         />
       )}
     </>
-  );
-};
+  )
+}
 
 const isValidJSON = (value: string | undefined) => {
   if (value) {
     try {
-      JSON.parse(value);
+      JSON.parse(value)
     } catch {
-      return false;
+      return false
     }
   }
 
-  return true;
-};
+  return true
+}
 
 const IconContainerButton = ({
   tooltipLabel,
@@ -144,30 +152,31 @@ const IconContainerButton = ({
   onClick,
   error,
 }: {
-  tooltipLabel: string;
-  iconType: IconTypes;
-  onClick: () => void;
-  error: boolean;
+  tooltipLabel: string
+  iconType: IconTypes
+  onClick: () => void
+  error: boolean
 }) => (
   <Tooltip title={tooltipLabel}>
     <StyledButton size="small" color="primary" onClick={onClick}>
       <Icon size="sm" color={error ? 'error' : 'inputDefault'} type={iconType} />
     </StyledButton>
   </Tooltip>
-);
+)
 
 const JSONFieldContainer = styled.div`
   position: relative;
-`;
+`
 
 const IconContainer = styled.div<{ error: boolean }>`
   position: absolute;
   top: -10px;
   right: 15px;
-  border: 1px solid ${({ theme, error }) => (error ? theme.colors.error : theme.colors.inputDefault)};
+  border: 1px solid
+    ${({ theme, error }) => (error ? theme.colors.error : theme.colors.inputDefault)};
   border-radius: 50%;
   background-color: #fff;
-`;
+`
 
 const StyledTextField = styled(TextFieldInput)`
   && {
@@ -179,10 +188,10 @@ const StyledTextField = styled(TextFieldInput)`
       }
     }
   }
-`;
+`
 
 const StyledButton = styled(IconButton)`
   margin: 0 5px;
-`;
+`
 
-export default JsonField;
+export default JsonField

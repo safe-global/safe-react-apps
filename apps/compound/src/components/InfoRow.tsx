@@ -1,10 +1,10 @@
-import { Divider, Text } from '@gnosis.pm/safe-react-components';
-import styled from 'styled-components';
+import { Divider, Text } from '@gnosis.pm/safe-react-components'
+import styled from 'styled-components'
 
 type Props = {
-  label: string;
-  data: string | React.ReactElement | undefined;
-};
+  label: string
+  data: string | React.ReactElement | undefined
+}
 
 export default function InfoRow({ label, data }: Props): React.ReactElement {
   return (
@@ -15,11 +15,11 @@ export default function InfoRow({ label, data }: Props): React.ReactElement {
       </InfoRowContainer>
       <Divider />
     </>
-  );
+  )
 }
 
 const InfoRowContainer = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
-`;
+`

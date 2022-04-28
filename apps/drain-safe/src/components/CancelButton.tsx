@@ -1,5 +1,5 @@
-import { Button, Loader } from '@gnosis.pm/safe-react-components';
-import Flex from './Flex';
+import { Button, Loader } from '@gnosis.pm/safe-react-components'
+import Flex from './Flex'
 
 function CancelButton({ children }: { children: string }): JSX.Element {
   return (
@@ -13,7 +13,7 @@ function CancelButton({ children }: { children: string }): JSX.Element {
         </Button>
       </Flex>
     </>
-  );
+  )
 }
 
-export default CancelButton;
+export default CancelButton

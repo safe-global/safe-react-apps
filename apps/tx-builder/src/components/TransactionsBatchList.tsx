@@ -1,8 +1,8 @@
-import { isValidElement, useMemo, useState } from 'react';
-import { Dot, Text, Title, Icon, Tooltip } from '@gnosis.pm/safe-react-components';
+import { isValidElement, useMemo, useState } from 'react'
+import { Dot, Text, Title, Icon, Tooltip } from '@gnosis.pm/safe-react-components'
 
-import IconButton from '@material-ui/core/IconButton';
-import styled from 'styled-components';
+import IconButton from '@material-ui/core/IconButton'
+import styled from 'styled-components'
 import {
   DragDropContext,
   Droppable,
@@ -13,33 +13,33 @@ import {
   Draggable,
   DraggableProvided,
   DraggableStateSnapshot,
-} from 'react-beautiful-dnd';
-import { ProposedTransaction } from '../typings/models';
-import useModal from '../hooks/useModal/useModal';
-import DeleteTransactionModal from './modals/DeleteTransactionModal';
-import DeleteBatchModal from './modals/DeleteBatchModal';
-import SaveBatchModal from './modals/SaveBatchModal';
-import EditTransactionModal from './EditTransactionModal';
-import { useNetwork, useTransactionLibrary } from '../store';
-import Item from './TransactionBatchListItem';
-import VirtualizedList from './VirtualizedList';
-import { getTransactionText } from '../utils';
+} from 'react-beautiful-dnd'
+import { ProposedTransaction } from '../typings/models'
+import useModal from '../hooks/useModal/useModal'
+import DeleteTransactionModal from './modals/DeleteTransactionModal'
+import DeleteBatchModal from './modals/DeleteBatchModal'
+import SaveBatchModal from './modals/SaveBatchModal'
+import EditTransactionModal from './EditTransactionModal'
+import { useNetwork, useTransactionLibrary } from '../store'
+import Item from './TransactionBatchListItem'
+import VirtualizedList from './VirtualizedList'
+import { getTransactionText } from '../utils'
 
 type TransactionsBatchListProps = {
-  transactions: ProposedTransaction[];
-  showTransactionDetails: boolean;
-  showBatchHeader: boolean;
-  batchTitle?: string | React.ReactNode;
-  removeTransaction?: (index: number) => void;
-  saveBatch?: (name: string, transactions: ProposedTransaction[]) => void;
-  downloadBatch?: (name: string, transactions: ProposedTransaction[]) => void;
-  removeAllTransactions?: () => void;
-  replaceTransaction?: (newTransaction: ProposedTransaction, index: number) => void;
-  reorderTransactions?: (sourceIndex: number, destinationIndex: number) => void;
-};
+  transactions: ProposedTransaction[]
+  showTransactionDetails: boolean
+  showBatchHeader: boolean
+  batchTitle?: string | React.ReactNode
+  removeTransaction?: (index: number) => void
+  saveBatch?: (name: string, transactions: ProposedTransaction[]) => void
+  downloadBatch?: (name: string, transactions: ProposedTransaction[]) => void
+  removeAllTransactions?: () => void
+  replaceTransaction?: (newTransaction: ProposedTransaction, index: number) => void
+  reorderTransactions?: (sourceIndex: number, destinationIndex: number) => void
+}
 
-const TRANSACTION_LIST_DROPPABLE_ID = 'Transaction_List';
-const DROP_EVENT = 'DROP';
+const TRANSACTION_LIST_DROPPABLE_ID = 'Transaction_List'
+const DROP_EVENT = 'DROP'
 
 const TransactionsBatchList = ({
   transactions,
@@ -54,60 +54,72 @@ const TransactionsBatchList = ({
   batchTitle,
 }: TransactionsBatchListProps) => {
   // we need those states to display the correct position in each tx during the drag & drop
-  const { batch } = useTransactionLibrary();
-  const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState<number>();
-  const [draggableTxIndexDestination, setDraggableTxIndexDestination] = useState<number>();
+  const { batch } = useTransactionLibrary()
+  const [draggableTxIndexOrigin, setDraggableTxIndexOrigin] = useState<number>()
+  const [draggableTxIndexDestination, setDraggableTxIndexDestination] = useState<number>()
 
-  const { networkPrefix, getAddressFromDomain, nativeCurrencySymbol } = useNetwork();
+  const { networkPrefix, getAddressFromDomain, nativeCurrencySymbol } = useNetwork()
 
   const onDragStart = ({ source }: DragStart) => {
-    setDraggableTxIndexOrigin(source.index);
-    setDraggableTxIndexDestination(source.index);
-  };
+    setDraggableTxIndexOrigin(source.index)
+    setDraggableTxIndexDestination(source.index)
+  }
 
   const onDragUpdate = ({ source, destination }: DragUpdate) => {
-    setDraggableTxIndexOrigin(source.index);
-    setDraggableTxIndexDestination(destination?.index);
-  };
+    setDraggableTxIndexOrigin(source.index)
+    setDraggableTxIndexDestination(destination?.index)
+  }
 
   // we only perform the reorder if its present
   const onDragEnd = ({ reason, source, destination }: DropResult) => {
-    const sourceIndex = source.index;
-    const destinationIndex = destination?.index;
+    const sourceIndex = source.index
+    const destinationIndex = destination?.index
 
-    const isDropEvent = reason === DROP_EVENT; // because user can cancel the drag & drop
-    const hasTxPositionChanged = sourceIndex !== destinationIndex && destinationIndex !== undefined;
+    const isDropEvent = reason === DROP_EVENT // because user can cancel the drag & drop
+    const hasTxPositionChanged = sourceIndex !== destinationIndex && destinationIndex !== undefined
 
-    const shouldPerformTxReorder = isDropEvent && hasTxPositionChanged;
+    const shouldPerformTxReorder = isDropEvent && hasTxPositionChanged
 
     if (shouldPerformTxReorder) {
-      reorderTransactions?.(sourceIndex, destinationIndex);
+      reorderTransactions?.(sourceIndex, destinationIndex)
     }
 
-    setDraggableTxIndexOrigin(undefined);
-    setDraggableTxIndexDestination(undefined);
-  };
+    setDraggableTxIndexOrigin(undefined)
+    setDraggableTxIndexDestination(undefined)
+  }
 
   // 5 modals needed: save batch modal, edit transaction modal, delete batch modal, delete transaction modal, download batch modal
   const {
     open: showDeleteBatchModal,
     openModal: openClearTransactions,
     closeModal: closeDeleteBatchModal,
-  } = useModal();
-  const { open: showSaveBatchModal, openModal: openSaveBatchModal, closeModal: closeSaveBatchModal } = useModal();
-  const { open: showDeleteTxModal, openModal: openDeleteTxModal, closeModal: closeDeleteTxModal } = useModal();
-  const { open: showEditTxModal, openModal: openEditTxModal, closeModal: closeEditTxModal } = useModal();
+  } = useModal()
+  const {
+    open: showSaveBatchModal,
+    openModal: openSaveBatchModal,
+    closeModal: closeSaveBatchModal,
+  } = useModal()
+  const {
+    open: showDeleteTxModal,
+    openModal: openDeleteTxModal,
+    closeModal: closeDeleteTxModal,
+  } = useModal()
+  const {
+    open: showEditTxModal,
+    openModal: openEditTxModal,
+    closeModal: closeEditTxModal,
+  } = useModal()
 
-  const [txIndexToRemove, setTxIndexToRemove] = useState<string>();
-  const [txIndexToEdit, setTxIndexToEdit] = useState<string>();
+  const [txIndexToRemove, setTxIndexToRemove] = useState<string>()
+  const [txIndexToEdit, setTxIndexToEdit] = useState<string>()
 
   const fileName = useMemo(() => {
     if (isValidElement(batchTitle)) {
-      return batchTitle.props.children;
+      return batchTitle.props.children
     }
 
-    return batchTitle || 'Untitled';
-  }, [batchTitle]);
+    return batchTitle || 'Untitled'
+  }, [batchTitle])
 
   return (
     <>
@@ -131,7 +143,13 @@ const TransactionsBatchList = ({
 
             {/* Transactions Batch Actions */}
             {saveBatch && (
-              <Tooltip placement="top" title="Save to Library" backgroundColor="primary" textColor="white" arrow>
+              <Tooltip
+                placement="top"
+                title="Save to Library"
+                backgroundColor="primary"
+                textColor="white"
+                arrow
+              >
                 <StyledHeaderIconButton onClick={openSaveBatchModal}>
                   <Icon
                     size="sm"
@@ -143,7 +161,13 @@ const TransactionsBatchList = ({
               </Tooltip>
             )}
             {downloadBatch && (
-              <Tooltip placement="top" title="Download" backgroundColor="primary" textColor="white" arrow>
+              <Tooltip
+                placement="top"
+                title="Download"
+                backgroundColor="primary"
+                textColor="white"
+                arrow
+              >
                 <StyledHeaderIconButton onClick={() => downloadBatch(fileName, transactions)}>
                   <Icon size="sm" type="importImg" color="primary" aria-label="Download" />
                 </StyledHeaderIconButton>
@@ -151,7 +175,13 @@ const TransactionsBatchList = ({
             )}
 
             {removeAllTransactions && (
-              <Tooltip placement="top" title="Clear transactions" backgroundColor="primary" textColor="white" arrow>
+              <Tooltip
+                placement="top"
+                title="Clear transactions"
+                backgroundColor="primary"
+                textColor="white"
+                arrow
+              >
                 <StyledHeaderIconButton onClick={openClearTransactions}>
                   <Icon size="sm" type="delete" color="error" aria-label="Clear transactions" />
                 </StyledHeaderIconButton>
@@ -162,7 +192,11 @@ const TransactionsBatchList = ({
 
         {/* Standard Transactions List */}
         {transactions.length <= 20 && (
-          <DragDropContext onDragStart={onDragStart} onDragUpdate={onDragUpdate} onDragEnd={onDragEnd}>
+          <DragDropContext
+            onDragStart={onDragStart}
+            onDragUpdate={onDragUpdate}
+            onDragEnd={onDragEnd}
+          >
             <Droppable mode={'standard'} droppableId={TRANSACTION_LIST_DROPPABLE_ID}>
               {(provided: DroppableProvided) => (
                 <TransactionList {...provided.droppableProps} ref={provided.innerRef}>
@@ -205,11 +239,19 @@ const TransactionsBatchList = ({
 
         {/* Virtualized Transaction List */}
         {transactions.length > 20 && (
-          <DragDropContext onDragStart={onDragStart} onDragUpdate={onDragUpdate} onDragEnd={onDragEnd}>
+          <DragDropContext
+            onDragStart={onDragStart}
+            onDragUpdate={onDragUpdate}
+            onDragEnd={onDragEnd}
+          >
             <Droppable
               mode={'virtual'}
               droppableId={TRANSACTION_LIST_DROPPABLE_ID}
-              renderClone={(provided: DraggableProvided, snapshot: DraggableStateSnapshot, rubric) => (
+              renderClone={(
+                provided: DraggableProvided,
+                snapshot: DraggableStateSnapshot,
+                rubric,
+              ) => (
                 <Item
                   key={transactions[rubric.source.index].id}
                   transaction={transactions[rubric.source.index]}
@@ -281,12 +323,12 @@ const TransactionsBatchList = ({
           txIndex={Number(txIndexToEdit)}
           transaction={transactions[Number(txIndexToEdit)]}
           onSubmit={(updatedTransaction: ProposedTransaction) => {
-            closeEditTxModal();
-            replaceTransaction?.(updatedTransaction, Number(txIndexToEdit));
+            closeEditTxModal()
+            replaceTransaction?.(updatedTransaction, Number(txIndexToEdit))
           }}
           onDeleteTx={() => {
-            closeEditTxModal();
-            removeTransaction?.(Number(txIndexToEdit));
+            closeEditTxModal()
+            removeTransaction?.(Number(txIndexToEdit))
           }}
           onClose={closeEditTxModal}
           networkPrefix={networkPrefix}
@@ -300,8 +342,8 @@ const TransactionsBatchList = ({
         <DeleteBatchModal
           count={transactions.length}
           onClick={() => {
-            closeDeleteBatchModal();
-            removeAllTransactions();
+            closeDeleteBatchModal()
+            removeAllTransactions()
           }}
           onClose={closeDeleteBatchModal}
         />
@@ -313,8 +355,8 @@ const TransactionsBatchList = ({
           txIndex={Number(txIndexToRemove)}
           txDescription={getTransactionText(transactions[Number(txIndexToRemove)]?.description)}
           onClick={() => {
-            closeDeleteTxModal();
-            removeTransaction?.(Number(txIndexToRemove));
+            closeDeleteTxModal()
+            removeTransaction?.(Number(txIndexToRemove))
           }}
           onClose={closeDeleteTxModal}
         />
@@ -324,24 +366,24 @@ const TransactionsBatchList = ({
       {showSaveBatchModal && (
         <SaveBatchModal
           onClick={(name: string) => {
-            closeSaveBatchModal();
-            saveBatch?.(name, transactions);
+            closeSaveBatchModal()
+            saveBatch?.(name, transactions)
           }}
           onClose={closeSaveBatchModal}
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default TransactionsBatchList;
+export default TransactionsBatchList
 
 // tx positions can change during drag & drop
 
 const TransactionsBatchWrapper = styled.section`
   width: 100%;
   user-select: none;
-`;
+`
 
 // batch header styles
 
@@ -349,14 +391,14 @@ const TransactionHeader = styled.header`
   margin-top: 24px;
   display: flex;
   align-items: center;
-`;
+`
 
 const TransactionCounterDot = styled(Dot)`
   height: 24px;
   width: 24px;
   min-width: 24px;
   background-color: #566976;
-`;
+`
 
 const TransactionsTitle = styled(Title)`
   flex-grow: 1;
@@ -367,7 +409,7 @@ const TransactionsTitle = styled(Title)`
   line-height: normal;
   display: flex;
   align-items: center;
-`;
+`
 
 const StyledHeaderIconButton = styled(IconButton)`
   &.MuiIconButton-root {
@@ -375,11 +417,11 @@ const StyledHeaderIconButton = styled(IconButton)`
     background-color: white;
     margin-left: 8px;
   }
-`;
+`
 
 // transactions list styles
 
 const TransactionList = styled.ol`
   list-style: none;
   padding: 0;
-`;
+`

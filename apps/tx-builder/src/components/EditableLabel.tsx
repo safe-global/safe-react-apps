@@ -1,25 +1,27 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 type EditableLabelProps = {
-  children: React.ReactNode;
-  onEdit: (value: string) => void;
-};
+  children: React.ReactNode
+  onEdit: (value: string) => void
+}
 
 const EditableLabel = ({ children, onEdit }: EditableLabelProps) => {
   return (
     <EditableComponent
       contentEditable="true"
       suppressContentEditableWarning={true}
-      onBlur={(event) => onEdit(event.target.innerText)}
-      onKeyPress={(event: any) => event.key === 'Enter' && event.target.blur() && event.preventDefault()}
-      onClick={(event) => event.stopPropagation()}
+      onBlur={event => onEdit(event.target.innerText)}
+      onKeyPress={(event: any) =>
+        event.key === 'Enter' && event.target.blur() && event.preventDefault()
+      }
+      onClick={event => event.stopPropagation()}
     >
       {children}
     </EditableComponent>
-  );
-};
+  )
+}
 
-export default EditableLabel;
+export default EditableLabel
 
 const EditableComponent = styled.div`
   font-family: Averta, 'Roboto', sans-serif;
@@ -39,4 +41,4 @@ const EditableComponent = styled.div`
   &:focus {
     outline-color: #008c73;
   }
-`;
+`

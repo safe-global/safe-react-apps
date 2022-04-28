@@ -1,170 +1,197 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { useTransactions } from './transactionsContext';
-import StorageManager from '../lib/storage';
-import { Batch, BatchFile, BatchTransaction, ProposedTransaction } from '../typings/models';
-import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk';
-import { encodeToHexData } from '../utils';
-import { toChecksumAddress } from 'web3-utils';
-import { addChecksum, validateChecksum } from '../lib/checksum';
-import { useNetwork } from './networkContext';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { useTransactions } from './transactionsContext'
+import StorageManager from '../lib/storage'
+import { Batch, BatchFile, BatchTransaction, ProposedTransaction } from '../typings/models'
+import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk'
+import { encodeToHexData } from '../utils'
+import { toChecksumAddress } from 'web3-utils'
+import { addChecksum, validateChecksum } from '../lib/checksum'
+import { useNetwork } from './networkContext'
 
-const packageJson = require('../../package.json');
+const packageJson = require('../../package.json')
 
 type TransactionLibraryContextProps = {
-  batches: Batch[];
-  batch?: Batch;
-  saveBatch: (name: string, transactions: ProposedTransaction[]) => void;
-  removeBatch: (batchId: string | number) => void;
-  renameBatch: (batchId: string | number, newName: string) => void;
-  updateBatch: (batchId: string | number, name: string, transactions: ProposedTransaction[]) => void;
-  downloadBatch: (name: string, transactions: ProposedTransaction[]) => void;
-  executeBatch: (batch: Batch) => void;
-  importBatch: (file: File | null) => Promise<BatchFile>;
-  hasChecksumWarning: boolean;
-  setHasChecksumWarning: (hasChecksumWarning: boolean) => void;
-};
+  batches: Batch[]
+  batch?: Batch
+  saveBatch: (name: string, transactions: ProposedTransaction[]) => void
+  removeBatch: (batchId: string | number) => void
+  renameBatch: (batchId: string | number, newName: string) => void
+  updateBatch: (batchId: string | number, name: string, transactions: ProposedTransaction[]) => void
+  downloadBatch: (name: string, transactions: ProposedTransaction[]) => void
+  executeBatch: (batch: Batch) => void
+  importBatch: (file: File | null) => Promise<BatchFile>
+  hasChecksumWarning: boolean
+  setHasChecksumWarning: (hasChecksumWarning: boolean) => void
+}
 
-export const TransactionLibraryContext = createContext<TransactionLibraryContextProps | null>(null);
+export const TransactionLibraryContext = createContext<TransactionLibraryContextProps | null>(null)
 
 const TransactionLibraryProvider: React.FC = ({ children }) => {
-  const [batches, setBatches] = useState<Batch[]>([]);
-  const [batch, setBatch] = useState<Batch>();
-  const [hasChecksumWarning, setHasChecksumWarning] = useState<boolean>(false);
-  const { resetTransactions } = useTransactions();
-  const { chainInfo, safe } = useNetwork();
+  const [batches, setBatches] = useState<Batch[]>([])
+  const [batch, setBatch] = useState<Batch>()
+  const [hasChecksumWarning, setHasChecksumWarning] = useState<boolean>(false)
+  const { resetTransactions } = useTransactions()
+  const { chainInfo, safe } = useNetwork()
 
   const loadBatches = useCallback(async (): Promise<Batch[]> => {
     if (chainInfo) {
-      const batchesRecords = await StorageManager.getBatches();
+      const batchesRecords = await StorageManager.getBatches()
       const batches: Batch[] = Object.keys(batchesRecords)
-        .filter((key) => batchesRecords[key].chainId === chainInfo.chainId) // batches filtered by chain
+        .filter(key => batchesRecords[key].chainId === chainInfo.chainId) // batches filtered by chain
         .reduce((batches: Batch[], key: string) => {
-          const batchFile = batchesRecords[key];
+          const batchFile = batchesRecords[key]
           const batch = {
             id: key,
             name: batchFile.meta.name,
             transactions: convertToProposedTransactions(batchFile, chainInfo),
-          };
+          }
 
-          return [...batches, batch];
-        }, []);
+          return [...batches, batch]
+        }, [])
 
-      setBatches(batches);
+      setBatches(batches)
 
-      return batches;
+      return batches
     }
-    return [];
-  }, [chainInfo]);
+    return []
+  }, [chainInfo])
 
   // on App init we load stored batches
   useEffect(() => {
-    loadBatches();
-  }, [loadBatches]);
+    loadBatches()
+  }, [loadBatches])
 
   useEffect(() => {
-    let id: ReturnType<typeof setTimeout>;
+    let id: ReturnType<typeof setTimeout>
 
     if (hasChecksumWarning) {
-      id = setTimeout(() => setHasChecksumWarning(false), 5000);
+      id = setTimeout(() => setHasChecksumWarning(false), 5000)
     }
 
-    return () => clearTimeout(id);
-  }, [hasChecksumWarning]);
+    return () => clearTimeout(id)
+  }, [hasChecksumWarning])
 
   const saveBatch = useCallback(
     async (name, transactions) => {
       const { id: batchId } = await StorageManager.saveBatch(
-        addChecksum(generateBatchFile({ name, description: '', transactions, chainInfo, safe })),
-      );
-      const batches = await loadBatches();
-      const batch = batches.find((batch) => batch.id === batchId);
-      setBatch(batch);
+        addChecksum(
+          generateBatchFile({
+            name,
+            description: '',
+            transactions,
+            chainInfo,
+            safe,
+          }),
+        ),
+      )
+      const batches = await loadBatches()
+      const batch = batches.find(batch => batch.id === batchId)
+      setBatch(batch)
     },
     [chainInfo, safe, loadBatches],
-  );
+  )
 
   const updateBatch = useCallback(
     async (batchId: string | number, name: string, transactions: ProposedTransaction[]) => {
-      const batch = await StorageManager.getBatch(String(batchId));
+      const batch = await StorageManager.getBatch(String(batchId))
       if (batch) {
         await StorageManager.updateBatch(
           String(batchId),
-          addChecksum(generateBatchFile({ name, description: '', transactions, chainInfo, safe })),
-        );
+          addChecksum(
+            generateBatchFile({
+              name,
+              description: '',
+              transactions,
+              chainInfo,
+              safe,
+            }),
+          ),
+        )
       }
-      const batches = await loadBatches();
-      setBatch(batches.find((batch) => batch.id === batchId));
+      const batches = await loadBatches()
+      setBatch(batches.find(batch => batch.id === batchId))
     },
     [loadBatches, chainInfo, safe],
-  );
+  )
 
   const removeBatch = useCallback(
     async (batchId: string | number) => {
-      await StorageManager.removeBatch(String(batchId));
-      await loadBatches();
-      setBatch(undefined);
+      await StorageManager.removeBatch(String(batchId))
+      await loadBatches()
+      setBatch(undefined)
     },
     [loadBatches],
-  );
+  )
 
   const renameBatch = useCallback(
     async (batchId: string | number, newName: string) => {
-      const batch = await StorageManager.getBatch(String(batchId));
-      const trimmedName = newName.trim();
+      const batch = await StorageManager.getBatch(String(batchId))
+      const trimmedName = newName.trim()
       if (batch && trimmedName) {
-        batch.meta.name = trimmedName;
-        await StorageManager.updateBatch(String(batchId), batch);
+        batch.meta.name = trimmedName
+        await StorageManager.updateBatch(String(batchId), batch)
       }
-      const batches = await loadBatches();
-      setBatch(batches.find((batch) => batch.id === batchId));
+      const batches = await loadBatches()
+      setBatch(batches.find(batch => batch.id === batchId))
     },
     [loadBatches],
-  );
+  )
 
   const downloadBatch = useCallback(
     async (name, transactions) => {
       await StorageManager.downloadBatch(
-        addChecksum(generateBatchFile({ name, description: '', transactions, chainInfo, safe })),
-      );
+        addChecksum(
+          generateBatchFile({
+            name,
+            description: '',
+            transactions,
+            chainInfo,
+            safe,
+          }),
+        ),
+      )
     },
     [chainInfo, safe],
-  );
+  )
 
   const initializeBatch = useCallback(
     (batchFile: BatchFile) => {
       if (chainInfo) {
         if (validateChecksum(batchFile)) {
-          console.info('[Checksum check] - Checksum validation success', batchFile);
+          console.info('[Checksum check] - Checksum validation success', batchFile)
         } else {
-          setHasChecksumWarning(true);
-          console.error('[Checksum check] - This file was modified since it was generated', batchFile);
+          setHasChecksumWarning(true)
+          console.error(
+            '[Checksum check] - This file was modified since it was generated',
+            batchFile,
+          )
         }
-        resetTransactions(convertToProposedTransactions(batchFile, chainInfo));
+        resetTransactions(convertToProposedTransactions(batchFile, chainInfo))
       }
-      return batchFile;
+      return batchFile
     },
     [chainInfo, resetTransactions],
-  );
+  )
 
   const executeBatch = useCallback(
     async (batch: Batch) => {
-      setBatch(batch);
-      const batchFile = await StorageManager.getBatch(batch.id as string);
+      setBatch(batch)
+      const batchFile = await StorageManager.getBatch(batch.id as string)
 
       if (batchFile) {
-        initializeBatch(batchFile);
+        initializeBatch(batchFile)
       }
     },
     [initializeBatch],
-  );
+  )
 
   const importBatch = useCallback(
-    async (file) => {
-      const batchFile = await initializeBatch(await StorageManager.importBatch(file));
-      return batchFile;
+    async file => {
+      const batchFile = await initializeBatch(await StorageManager.importBatch(file))
+      return batchFile
     },
     [initializeBatch],
-  );
+  )
 
   return (
     <TransactionLibraryContext.Provider
@@ -184,17 +211,17 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
     >
       {children}
     </TransactionLibraryContext.Provider>
-  );
-};
+  )
+}
 
 export const useTransactionLibrary = () => {
-  const contextValue = useContext(TransactionLibraryContext);
+  const contextValue = useContext(TransactionLibraryContext)
   if (contextValue === null) {
-    throw new Error('Component must be wrapped with <TransactionLibraryProvider>');
+    throw new Error('Component must be wrapped with <TransactionLibraryProvider>')
   }
 
-  return contextValue;
-};
+  return contextValue
+}
 
 const generateBatchFile = ({
   name,
@@ -203,11 +230,11 @@ const generateBatchFile = ({
   chainInfo,
   safe,
 }: {
-  name: string;
-  description: string;
-  transactions: ProposedTransaction[];
-  chainInfo: ChainInfo | undefined;
-  safe: SafeInfo;
+  name: string
+  description: string
+  transactions: ProposedTransaction[]
+  chainInfo: ChainInfo | undefined
+  safe: SafeInfo
 }): BatchFile => {
   return {
     version: '1.0',
@@ -221,8 +248,8 @@ const generateBatchFile = ({
       createdFromOwnerAddress: '',
     },
     transactions: convertToBatchTransactions(transactions),
-  };
-};
+  }
+}
 
 const convertToBatchTransactions = (transactions: ProposedTransaction[]): BatchTransaction[] => {
   return transactions.map(
@@ -233,10 +260,13 @@ const convertToBatchTransactions = (transactions: ProposedTransaction[]): BatchT
       contractMethod: description.contractMethod,
       contractInputsValues: description.contractFieldsValues,
     }),
-  );
-};
+  )
+}
 
-const convertToProposedTransactions = (batchFile: BatchFile, chainInfo: ChainInfo): ProposedTransaction[] => {
+const convertToProposedTransactions = (
+  batchFile: BatchFile,
+  chainInfo: ChainInfo,
+): ProposedTransaction[] => {
   return batchFile.transactions.map((transaction, index) => {
     if (transaction.data) {
       return {
@@ -254,12 +284,14 @@ const convertToProposedTransactions = (batchFile: BatchFile, chainInfo: ChainInf
           value: transaction.value,
           data: transaction.data || '',
         },
-      };
+      }
     }
 
     return {
       id: index,
-      contractInterface: !!transaction.contractMethod ? { methods: [transaction.contractMethod] } : null,
+      contractInterface: !!transaction.contractMethod
+        ? { methods: [transaction.contractMethod] }
+        : null,
       description: {
         to: transaction.to,
         value: transaction.value,
@@ -272,10 +304,13 @@ const convertToProposedTransactions = (batchFile: BatchFile, chainInfo: ChainInf
       raw: {
         to: toChecksumAddress(transaction.to),
         value: transaction.value,
-        data: transaction.data || encodeToHexData(transaction.contractMethod, transaction.contractInputsValues) || '0x',
+        data:
+          transaction.data ||
+          encodeToHexData(transaction.contractMethod, transaction.contractInputsValues) ||
+          '0x',
       },
-    };
-  });
-};
+    }
+  })
+}
 
-export default TransactionLibraryProvider;
+export default TransactionLibraryProvider

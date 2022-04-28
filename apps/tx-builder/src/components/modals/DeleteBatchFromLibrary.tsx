@@ -1,14 +1,14 @@
-import { Dot, Text, Button, GenericModal } from '@gnosis.pm/safe-react-components';
-import Box from '@material-ui/core/Box';
+import { Dot, Text, Button, GenericModal } from '@gnosis.pm/safe-react-components'
+import Box from '@material-ui/core/Box'
 
-import styled from 'styled-components';
-import { Batch } from '../../typings/models';
+import styled from 'styled-components'
+import { Batch } from '../../typings/models'
 
 type DeleteBatchFromLibraryProps = {
-  batch: Batch;
-  onClick: (batch: Batch) => void;
-  onClose: () => void;
-};
+  batch: Batch
+  onClick: (batch: Batch) => void
+  onClose: () => void
+}
 
 const DeleteBatchFromLibrary = ({ batch, onClick, onClose }: DeleteBatchFromLibraryProps) => {
   return (
@@ -24,11 +24,21 @@ const DeleteBatchFromLibrary = ({ batch, onClick, onClose }: DeleteBatchFromLibr
           </StyledModalDot>
 
           <StyledModalText size="xl">{`${batch.name} batch will be permanently deleted`}</StyledModalText>
-          <StyledModalButtonsWrapper display="flex" alignItems="center" justifyContent="center" maxWidth={'450px'}>
+          <StyledModalButtonsWrapper
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            maxWidth={'450px'}
+          >
             <Button size="md" variant="bordered" onClick={onClose}>
               Back
             </Button>
-            <Button size="md" style={{ marginLeft: 16 }} color="error" onClick={() => onClick(batch)}>
+            <Button
+              size="md"
+              style={{ marginLeft: 16 }}
+              color="error"
+              onClick={() => onClick(batch)}
+            >
               Yes, delete
             </Button>
           </StyledModalButtonsWrapper>
@@ -36,16 +46,16 @@ const DeleteBatchFromLibrary = ({ batch, onClick, onClose }: DeleteBatchFromLibr
       }
       onClose={onClose}
     />
-  );
-};
+  )
+}
 
-export default DeleteBatchFromLibrary;
+export default DeleteBatchFromLibrary
 
 const StyledModalBodyWrapper = styled.div`
   position: relative;
   padding: 24px;
   max-width: 450px;
-`;
+`
 
 const StyledModalDot = styled(Dot)`
   height: 24px;
@@ -55,12 +65,12 @@ const StyledModalDot = styled(Dot)`
 
   position: absolute;
   top: 22px;
-`;
+`
 
 const StyledModalText = styled(Text)`
   text-indent: 30px;
-`;
+`
 
 const StyledModalButtonsWrapper = styled(Box)`
   margin-top: 24px;
-`;
+`

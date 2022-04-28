@@ -4,10 +4,10 @@ enum CHAINS {
 }
 
 const networkByChainId: {
-  [key in CHAINS]: string;
+  [key in CHAINS]: string
 } = {
   [CHAINS.MAINNET]: 'MAINNET',
   [CHAINS.RINKEBY]: 'RINKEBY',
-};
+}
 
-export { CHAINS, networkByChainId };
+export { CHAINS, networkByChainId }

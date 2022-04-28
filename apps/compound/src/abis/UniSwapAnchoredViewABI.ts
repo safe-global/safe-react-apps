@@ -6,6 +6,6 @@ const UniSwapAnchoredViewABI = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+]
 
-export default UniSwapAnchoredViewABI;
+export default UniSwapAnchoredViewABI

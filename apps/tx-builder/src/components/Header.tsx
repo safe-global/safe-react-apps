@@ -1,6 +1,6 @@
-import { FixedIcon, Icon, Text, Title, Tooltip } from '@gnosis.pm/safe-react-components';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import { FixedIcon, Icon, Text, Title, Tooltip } from '@gnosis.pm/safe-react-components'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
 
 import {
   CREATE_BATCH_PATH,
@@ -8,42 +8,42 @@ import {
   HOME_PATH,
   SAVE_BATCH_PATH,
   TRANSACTION_LIBRARY_PATH,
-} from '../routes/routes';
-import { useTransactionLibrary } from '../store';
-import ChecksumWarning from './ChecksumWarning';
+} from '../routes/routes'
+import { useTransactionLibrary } from '../store'
+import ChecksumWarning from './ChecksumWarning'
 
 const HELP_ARTICLE_LINK =
-  'https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app';
+  'https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app'
 
 const goBackLabel: Record<string, string> = {
   [CREATE_BATCH_PATH]: 'Back to Transaction Creation',
   [TRANSACTION_LIBRARY_PATH]: 'Back to Your Transaction Library',
   [EDIT_BATCH_PATH]: 'Back to Edit Batch',
   [SAVE_BATCH_PATH]: 'Back to Transaction Creation',
-};
+}
 
 type LocationType = {
-  state: { from: string } | null;
-};
+  state: { from: string } | null
+}
 
 const Header = () => {
-  const { pathname } = useLocation();
+  const { pathname } = useLocation()
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  const goBack = () => navigate(-1);
+  const goBack = () => navigate(-1)
 
-  const { batches } = useTransactionLibrary();
+  const { batches } = useTransactionLibrary()
 
-  const isTransactionCreationPath = pathname === CREATE_BATCH_PATH;
-  const isSaveBatchPath = pathname === SAVE_BATCH_PATH;
+  const isTransactionCreationPath = pathname === CREATE_BATCH_PATH
+  const isSaveBatchPath = pathname === SAVE_BATCH_PATH
 
-  const showTitle = isTransactionCreationPath || isSaveBatchPath;
-  const showLinkToLibrary = isTransactionCreationPath || isSaveBatchPath;
+  const showTitle = isTransactionCreationPath || isSaveBatchPath
+  const showLinkToLibrary = isTransactionCreationPath || isSaveBatchPath
 
-  const { state } = useLocation() as LocationType;
+  const { state } = useLocation() as LocationType
 
-  const previousUrl = state?.from || CREATE_BATCH_PATH;
+  const previousUrl = state?.from || CREATE_BATCH_PATH
 
   return (
     <>
@@ -52,7 +52,13 @@ const Header = () => {
           <>
             {/* Transaction Builder Title */}
             <StyledTitle size="xl">Transaction Builder</StyledTitle>
-            <Tooltip placement="top" title="Help Article" backgroundColor="primary" textColor="white" arrow>
+            <Tooltip
+              placement="top"
+              title="Help Article"
+              backgroundColor="primary"
+              textColor="white"
+              arrow
+            >
               <a href={HELP_ARTICLE_LINK} target="_blank" rel="noreferrer">
                 <Icon size="md" type="info" />
               </a>
@@ -77,10 +83,10 @@ const Header = () => {
       </HeaderWrapper>
       <ChecksumWarning />
     </>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
 
 const HeaderWrapper = styled.header`
   position: fixed;
@@ -93,12 +99,12 @@ const HeaderWrapper = styled.header`
   height: 70px;
   padding: 0 40px;
   box-sizing: border-box;
-`;
+`
 
 const StyledTitle = styled(Title)`
   font-size: 20px;
   margin: 0 10px 0 0;
-`;
+`
 
 const StyledLink = styled(Link)`
   display: flex;
@@ -106,18 +112,18 @@ const StyledLink = styled(Link)`
   color: #000000;
   font-size: 16px;
   text-decoration: none;
-`;
+`
 
 const StyledLeftLinkLabel = styled(Text)`
   margin-left: 8px;
-`;
+`
 
 const RigthLinkWrapper = styled.div`
   display: flex;
   flex-grow: 1;
   justify-content: flex-end;
-`;
+`
 
 const StyledRightLinkLabel = styled(Text)`
   margin-right: 8px;
-`;
+`

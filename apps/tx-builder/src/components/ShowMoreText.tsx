@@ -1,15 +1,15 @@
-import { useState, SyntheticEvent } from 'react';
-import { Link } from '@gnosis.pm/safe-react-components';
+import { useState, SyntheticEvent } from 'react'
+import { Link } from '@gnosis.pm/safe-react-components'
 
 type ShowMoreTextProps = {
-  children: string;
-  moreLabel?: string;
-  lessLabel?: string;
-  splitIndex?: number;
-};
+  children: string
+  moreLabel?: string
+  lessLabel?: string
+  splitIndex?: number
+}
 
-const SHOW_MORE = 'Show more';
-const SHOW_LESS = 'Show less';
+const SHOW_MORE = 'Show more'
+const SHOW_LESS = 'Show less'
 
 export const ShowMoreText = ({
   children,
@@ -17,15 +17,15 @@ export const ShowMoreText = ({
   lessLabel = SHOW_LESS,
   splitIndex = 50,
 }: ShowMoreTextProps) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(false)
 
   const handleToggle = (event: SyntheticEvent) => {
-    event.preventDefault();
-    setExpanded(!expanded);
-  };
+    event.preventDefault()
+    setExpanded(!expanded)
+  }
 
   if (children.length < splitIndex) {
-    return <span>{children}</span>;
+    return <span>{children}</span>
   }
 
   return (
@@ -33,5 +33,5 @@ export const ShowMoreText = ({
       {expanded ? `${children}  ` : `${children.substr(0, splitIndex)}  ...  `}
       <Link onClick={handleToggle}>{expanded ? lessLabel : moreLabel}</Link>
     </>
-  );
-};
+  )
+}

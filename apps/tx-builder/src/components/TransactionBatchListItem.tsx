@@ -7,37 +7,37 @@ import {
   Icon,
   Text,
   Tooltip,
-} from '@gnosis.pm/safe-react-components';
-import { AccordionDetails, IconButton } from '@material-ui/core';
-import { memo, useState } from 'react';
-import { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
-import styled from 'styled-components';
-import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
-import { ProposedTransaction } from '../typings/models';
-import TransactionDetails from './TransactionDetails';
-import { getTransactionText } from '../utils';
+} from '@gnosis.pm/safe-react-components'
+import { AccordionDetails, IconButton } from '@material-ui/core'
+import { memo, useState } from 'react'
+import { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd'
+import styled from 'styled-components'
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator'
+import { ProposedTransaction } from '../typings/models'
+import TransactionDetails from './TransactionDetails'
+import { getTransactionText } from '../utils'
 
-const UNKNOWN_POSITION_LABEL = '?';
-const minArrowSize = '12';
+const UNKNOWN_POSITION_LABEL = '?'
+const minArrowSize = '12'
 
 type TransactionProps = {
-  transaction: ProposedTransaction;
-  provided: DraggableProvided;
-  snapshot: DraggableStateSnapshot;
-  isLastTransaction: boolean;
-  showTransactionDetails: boolean;
-  index: number;
-  draggableTxIndexDestination: number | undefined;
-  draggableTxIndexOrigin: number | undefined;
-  reorderTransactions?: (sourceIndex: number, destinationIndex: number) => void;
-  networkPrefix: string | undefined;
-  replaceTransaction?: (newTransaction: ProposedTransaction, index: number) => void;
-  setTxIndexToEdit: (index: string) => void;
-  openEditTxModal: () => void;
-  removeTransaction?: (index: number) => void;
-  setTxIndexToRemove: (index: string) => void;
-  openDeleteTxModal: () => void;
-};
+  transaction: ProposedTransaction
+  provided: DraggableProvided
+  snapshot: DraggableStateSnapshot
+  isLastTransaction: boolean
+  showTransactionDetails: boolean
+  index: number
+  draggableTxIndexDestination: number | undefined
+  draggableTxIndexOrigin: number | undefined
+  reorderTransactions?: (sourceIndex: number, destinationIndex: number) => void
+  networkPrefix: string | undefined
+  replaceTransaction?: (newTransaction: ProposedTransaction, index: number) => void
+  setTxIndexToEdit: (index: string) => void
+  openEditTxModal: () => void
+  removeTransaction?: (index: number) => void
+  setTxIndexToRemove: (index: string) => void
+  openDeleteTxModal: () => void
+}
 
 const TransactionBatchListItem = memo(
   ({
@@ -58,21 +58,21 @@ const TransactionBatchListItem = memo(
     setTxIndexToRemove,
     openDeleteTxModal,
   }: TransactionProps) => {
-    const { description } = transaction;
-    const { to } = description;
+    const { description } = transaction
+    const { to } = description
 
-    const transactionDescription = getTransactionText(description);
+    const transactionDescription = getTransactionText(description)
 
-    const [isTxExpanded, setTxExpanded] = useState(false);
+    const [isTxExpanded, setTxExpanded] = useState(false)
 
     const onClickShowTransactionDetails = () => {
       if (showTransactionDetails) {
-        setTxExpanded((isTxExpanded) => !isTxExpanded);
+        setTxExpanded(isTxExpanded => !isTxExpanded)
       }
-    };
-    const isThisTxBeingDragging = snapshot.isDragging;
+    }
+    const isThisTxBeingDragging = snapshot.isDragging
 
-    const showArrowAdornment = !isLastTransaction && !isThisTxBeingDragging;
+    const showArrowAdornment = !isLastTransaction && !isThisTxBeingDragging
 
     // displayed order can change if the user uses the drag and drop feature
     const displayedTxPosition = getDisplayedTxPosition(
@@ -80,7 +80,7 @@ const TransactionBatchListItem = memo(
       isThisTxBeingDragging,
       draggableTxIndexDestination,
       draggableTxIndexOrigin,
-    );
+    )
 
     return (
       <TransactionListItem ref={provided.innerRef} {...provided.draggableProps}>
@@ -101,16 +101,30 @@ const TransactionBatchListItem = memo(
           TransitionProps={{ unmountOnExit: true }}
         >
           <div {...provided.dragHandleProps}>
-            <AccordionSummary expandIcon={false} style={{ cursor: reorderTransactions ? 'grab' : 'pointer' }}>
+            <AccordionSummary
+              expandIcon={false}
+              style={{ cursor: reorderTransactions ? 'grab' : 'pointer' }}
+            >
               {/* Drag & Drop Indicator */}
               {reorderTransactions && (
-                <Tooltip placement="top" title="Drag and Drop" backgroundColor="primary" textColor="white" arrow>
+                <Tooltip
+                  placement="top"
+                  title="Drag and Drop"
+                  backgroundColor="primary"
+                  textColor="white"
+                  arrow
+                >
                   <DragAndDropIndicatorIcon fontSize="small" />
                 </Tooltip>
               )}
 
               {/* Destination Address label */}
-              <EthHashInfo shortName={networkPrefix || ''} hash={to} shortenHash={4} shouldShowShortName />
+              <EthHashInfo
+                shortName={networkPrefix || ''}
+                hash={to}
+                shortenHash={4}
+                shouldShowShortName
+              />
 
               {/* Transaction Description label */}
               <TransactionsDescription size="lg">{transactionDescription}</TransactionsDescription>
@@ -123,10 +137,10 @@ const TransactionBatchListItem = memo(
                   <TransactionActionButton
                     size="medium"
                     aria-label="Edit transaction"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setTxIndexToEdit(String(index));
-                      openEditTxModal();
+                    onClick={event => {
+                      event.stopPropagation()
+                      setTxIndexToEdit(String(index))
+                      openEditTxModal()
                     }}
                   >
                     <Icon size="sm" type="edit" />
@@ -136,12 +150,18 @@ const TransactionBatchListItem = memo(
 
               {/* Delete transaction */}
               {removeTransaction && (
-                <Tooltip placement="top" title="Delete transaction" backgroundColor="primary" textColor="white" arrow>
+                <Tooltip
+                  placement="top"
+                  title="Delete transaction"
+                  backgroundColor="primary"
+                  textColor="white"
+                  arrow
+                >
                   <TransactionActionButton
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setTxIndexToRemove(String(index));
-                      openDeleteTxModal();
+                    onClick={event => {
+                      event.stopPropagation()
+                      setTxIndexToRemove(String(index))
+                      openDeleteTxModal()
                     }}
                     size="medium"
                     aria-label="Delete transaction"
@@ -161,9 +181,9 @@ const TransactionBatchListItem = memo(
                   arrow
                 >
                   <TransactionActionButton
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      onClickShowTransactionDetails();
+                    onClick={event => {
+                      event.stopPropagation()
+                      onClickShowTransactionDetails()
                     }}
                     size="medium"
                     aria-label="Expand transaction details"
@@ -181,9 +201,9 @@ const TransactionBatchListItem = memo(
           </AccordionDetails>
         </StyledAccordion>
       </TransactionListItem>
-    );
+    )
   },
-);
+)
 
 const getDisplayedTxPosition = (
   index: number,
@@ -193,30 +213,32 @@ const getDisplayedTxPosition = (
 ): string => {
   // we show the correct position in the transaction that is being dragged
   if (isDraggingThisTx) {
-    const isAwayFromDroppableZone = draggableTxIndexDestination === undefined;
-    return isAwayFromDroppableZone ? UNKNOWN_POSITION_LABEL : String(draggableTxIndexDestination + 1);
+    const isAwayFromDroppableZone = draggableTxIndexDestination === undefined
+    return isAwayFromDroppableZone
+      ? UNKNOWN_POSITION_LABEL
+      : String(draggableTxIndexDestination + 1)
   }
 
   // if a transaction is being dragged, we show the correct position in previous transactions
   if (index < Number(draggableTxIndexOrigin)) {
     // depending on the current destination we show the correct position
-    return index >= Number(draggableTxIndexDestination) ? `${index + 2}` : `${index + 1}`;
+    return index >= Number(draggableTxIndexDestination) ? `${index + 2}` : `${index + 1}`
   }
 
   // if a transaction is being dragged, we show the correct position in next transactions
   if (index > Number(draggableTxIndexOrigin)) {
     // depending on the current destination we show the correct position
-    return index > Number(draggableTxIndexDestination) ? `${index + 1}` : `${index}`;
+    return index > Number(draggableTxIndexDestination) ? `${index + 1}` : `${index}`
   }
 
   // otherwise we show the natural position
-  return `${index + 1}`;
-};
+  return `${index + 1}`
+}
 
 const TransactionListItem = styled.li`
   display: flex;
   margin-bottom: 8px;
-`;
+`
 
 // transaction postion dot styles
 
@@ -225,7 +247,7 @@ const PositionWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 14px 10px 0 0;
-`;
+`
 
 const PositionDot = styled(Dot).withConfig({
   shouldForwardProp: (prop, defaultValidatorFn) => defaultValidatorFn(prop),
@@ -235,7 +257,7 @@ const PositionDot = styled(Dot).withConfig({
   min-width: 24px;
   background-color: ${({ isDragging }) => (isDragging ? '#92c9be' : ' #e2e3e3')};
   transition: background-color 0.5s linear;
-`;
+`
 
 const ArrowAdornment = styled.div`
   position: relative;
@@ -268,12 +290,12 @@ const ArrowAdornment = styled.div`
 
     transform: rotate(45deg);
   }
-`;
+`
 
 // transaction description styles
 
 const StyledAccordion = styled(Accordion).withConfig({
-  shouldForwardProp: (prop) => !['isDragging'].includes(prop),
+  shouldForwardProp: prop => !['isDragging'].includes(prop),
 })<{ isDragging: boolean }>`
   flex-grow: 1;
 
@@ -298,7 +320,8 @@ const StyledAccordion = styled(Accordion).withConfig({
 
     &.Mui-expanded {
       background-color: #effaf8;
-      border-color: ${({ isDragging, expanded }) => (isDragging || expanded ? '#92c9be' : '#e8e7e6')};
+      border-color: ${({ isDragging, expanded }) =>
+        isDragging || expanded ? '#92c9be' : '#e8e7e6'};
     }
   }
 
@@ -306,13 +329,13 @@ const StyledAccordion = styled(Accordion).withConfig({
     max-width: 100%;
     align-items: center;
   }
-`;
+`
 
 const TransactionActionButton = styled(IconButton)`
   height: 32px;
   width: 32px;
   padding: 0;
-`;
+`
 
 const TransactionsDescription = styled(Text)`
   flex-grow: 1;
@@ -321,11 +344,11 @@ const TransactionsDescription = styled(Text)`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
+`
 
 const DragAndDropIndicatorIcon = styled(DragIndicatorIcon)`
   color: #b2bbc0;
   margin-right: 4px;
-`;
+`
 
-export default TransactionBatchListItem;
+export default TransactionBatchListItem

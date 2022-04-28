@@ -1,43 +1,43 @@
-import { useEffect, useState } from 'react';
-import { IWalletConnectSession, IClientMeta } from '@walletconnect/types';
-import useWebcam from '../hooks/useWebcam';
-import useQRCode from '../hooks/useQRCode';
-import styled from 'styled-components';
-import { Loader, Title, Text } from '@gnosis.pm/safe-react-components';
-import ErrorImg from '../assets/cam-permissions.png';
+import { useEffect, useState } from 'react'
+import { IWalletConnectSession, IClientMeta } from '@walletconnect/types'
+import useWebcam from '../hooks/useWebcam'
+import useQRCode from '../hooks/useQRCode'
+import styled from 'styled-components'
+import { Loader, Title, Text } from '@gnosis.pm/safe-react-components'
+import ErrorImg from '../assets/cam-permissions.png'
 
 type WcConnectProps = {
-  uri?: string | undefined;
-  session?: IWalletConnectSession | undefined;
-};
+  uri?: string | undefined
+  session?: IWalletConnectSession | undefined
+}
 
 type Props = {
-  wcConnect: ({ uri }: WcConnectProps) => Promise<void>;
-  wcClientData: IClientMeta | null;
-};
+  wcConnect: ({ uri }: WcConnectProps) => Promise<void>
+  wcClientData: IClientMeta | null
+}
 
 function ScanCode({ wcConnect, wcClientData }: Props) {
-  const { videoRef, isLoadingWebcam, errorConnectingWebcam } = useWebcam();
+  const { videoRef, isLoadingWebcam, errorConnectingWebcam } = useWebcam()
 
-  const { QRCode } = useQRCode({ videoRef, errorConnectingWebcam });
+  const { QRCode } = useQRCode({ videoRef, errorConnectingWebcam })
 
   // this flag is needed to avoid to call multiple times to wcConnect
-  const [hasBeenCalledToConnect, setHasBeenCalledToConnect] = useState(false);
+  const [hasBeenCalledToConnect, setHasBeenCalledToConnect] = useState(false)
 
-  const isAlreadyConnected = !!wcClientData;
+  const isAlreadyConnected = !!wcClientData
 
   useEffect(() => {
     if (QRCode) {
-      const isValidWalletConnectQRCode = QRCode && QRCode.data.startsWith('wc:');
+      const isValidWalletConnectQRCode = QRCode && QRCode.data.startsWith('wc:')
 
       if (isValidWalletConnectQRCode && !isAlreadyConnected && !hasBeenCalledToConnect) {
-        wcConnect({ uri: QRCode.data });
-        setHasBeenCalledToConnect(true);
+        wcConnect({ uri: QRCode.data })
+        setHasBeenCalledToConnect(true)
       }
     }
-  }, [QRCode, wcConnect, isAlreadyConnected, hasBeenCalledToConnect]);
+  }, [QRCode, wcConnect, isAlreadyConnected, hasBeenCalledToConnect])
 
-  const showVideo = !errorConnectingWebcam && !isLoadingWebcam;
+  const showVideo = !errorConnectingWebcam && !isLoadingWebcam
 
   return (
     <>
@@ -66,10 +66,10 @@ function ScanCode({ wcConnect, wcClientData }: Props) {
       )}
       {showVideo && <StyledVideoBorder />}
     </>
-  );
+  )
 }
 
-export default ScanCode;
+export default ScanCode
 
 const StyledVideoBorder = styled.div`
   top: 0px;
@@ -92,7 +92,7 @@ const StyledVideoBorder = styled.div`
 
   background-repeat: no-repeat;
   background-size: 40px 40px;
-`;
+`
 
 const StyledLoaderContainer = styled.div`
   display: flex;
@@ -102,16 +102,16 @@ const StyledLoaderContainer = styled.div`
 
   min-width: 200px;
   min-height: 200px;
-`;
+`
 
 const StyledLoaderText = styled(Text)`
   margin-top: 12px;
-`;
+`
 
 const StyledErrorContainer = styled.div`
   padding: 20px;
-`;
+`
 
 const StyledErrorTitle = styled(Title)`
   margin-top: 0;
-`;
+`

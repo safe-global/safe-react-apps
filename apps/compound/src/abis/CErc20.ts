@@ -614,6 +614,6 @@ const CErc20ABI = [
     name: 'Approval',
     type: 'event',
   },
-];
+]
 
-export default CErc20ABI;
+export default CErc20ABI

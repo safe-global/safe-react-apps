@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { AddressInput } from '@gnosis.pm/safe-react-components';
+import styled from 'styled-components'
+import { AddressInput } from '@gnosis.pm/safe-react-components'
 
 export default styled(AddressInput)`
   && {
@@ -14,4 +14,4 @@ export default styled(AddressInput)`
       color: #008c73;
     }
   }
-`;
+`

@@ -1,133 +1,133 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Title, Text } from '@gnosis.pm/safe-react-components';
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import web3Utils from 'web3-utils';
-import { BigNumber } from 'bignumber.js';
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import { Title, Text } from '@gnosis.pm/safe-react-components'
+import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
+import web3Utils from 'web3-utils'
+import { BigNumber } from 'bignumber.js'
 
-import useBalances, { BalancesType } from '../hooks/use-balances';
-import { tokenToTx } from '../utils/sdk-helpers';
-import FormContainer from './FormContainer';
-import Flex from './Flex';
-import Logo from './Logo';
-import Balances from './Balances';
-import SubmitButton from './SubmitButton';
-import CancelButton from './CancelButton';
-import AddressInput from './AddressInput';
-import useWeb3 from '../hooks/useWeb3';
-import TimedComponent from './TimedComponent';
+import useBalances, { BalancesType } from '../hooks/use-balances'
+import { tokenToTx } from '../utils/sdk-helpers'
+import FormContainer from './FormContainer'
+import Flex from './Flex'
+import Logo from './Logo'
+import Balances from './Balances'
+import SubmitButton from './SubmitButton'
+import CancelButton from './CancelButton'
+import AddressInput from './AddressInput'
+import useWeb3 from '../hooks/useWeb3'
+import TimedComponent from './TimedComponent'
 
 const App = (): React.ReactElement => {
-  const { sdk, safe } = useSafeAppsSDK();
-  const { web3 } = useWeb3();
+  const { sdk, safe } = useSafeAppsSDK()
+  const { web3 } = useWeb3()
   const {
     assets,
     selectedTokens,
     setSelectedTokens,
     error: balancesError,
-  }: BalancesType = useBalances(safe.safeAddress, safe.chainId);
-  const [submitting, setSubmitting] = useState(false);
-  const [toAddress, setToAddress] = useState<string>('');
-  const [isFinished, setFinished] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-  const [gasPrice, setGasPrice] = useState<BigNumber>(new BigNumber(0));
-  const [networkPrefix, setNetworkPrefix] = useState<string>('');
+  }: BalancesType = useBalances(safe.safeAddress, safe.chainId)
+  const [submitting, setSubmitting] = useState(false)
+  const [toAddress, setToAddress] = useState<string>('')
+  const [isFinished, setFinished] = useState<boolean>(false)
+  const [error, setError] = useState<string>('')
+  const [gasPrice, setGasPrice] = useState<BigNumber>(new BigNumber(0))
+  const [networkPrefix, setNetworkPrefix] = useState<string>('')
 
   const onError = (userMsg: string, err: Error) => {
-    setError(`${userMsg}: ${err.message}`);
-    console.error(userMsg, err);
-  };
+    setError(`${userMsg}: ${err.message}`)
+    console.error(userMsg, err)
+  }
 
   const sendTxs = async (): Promise<string> => {
     const txs = assets
-      .filter((item) => selectedTokens.includes(item.tokenInfo.address))
-      .map((item) => tokenToTx(toAddress, item));
-    const data = await sdk.txs.send({ txs });
+      .filter(item => selectedTokens.includes(item.tokenInfo.address))
+      .map(item => tokenToTx(toAddress, item))
+    const data = await sdk.txs.send({ txs })
 
-    return data?.safeTxHash;
-  };
+    return data?.safeTxHash
+  }
 
   const submitTx = async (): Promise<void> => {
     if (!web3Utils.isAddress(toAddress)) {
-      setError('Please enter a valid recipient address');
-      return;
+      setError('Please enter a valid recipient address')
+      return
     }
 
-    setError('');
-    setSubmitting(true);
+    setError('')
+    setSubmitting(true)
 
     try {
-      await sendTxs();
+      await sendTxs()
     } catch (e) {
-      setSubmitting(false);
-      onError('Failed sending transactions', e as Error);
-      return;
+      setSubmitting(false)
+      onError('Failed sending transactions', e as Error)
+      return
     }
 
-    setSubmitting(false);
-    setFinished(true);
-    setToAddress('');
-    setSelectedTokens(assets.map((token) => token.tokenInfo.address));
-  };
+    setSubmitting(false)
+    setFinished(true)
+    setToAddress('')
+    setSelectedTokens(assets.map(token => token.tokenInfo.address))
+  }
 
   const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    submitTx();
-  };
+    e.preventDefault()
+    submitTx()
+  }
 
   const onCancel = () => {
-    setError('');
-    setSubmitting(false);
-  };
+    setError('')
+    setSubmitting(false)
+  }
 
   const onToAddressChange = useCallback((address: string): void => {
-    setToAddress(address);
-    setError('');
-  }, []);
+    setToAddress(address)
+    setError('')
+  }, [])
 
   const transferStatusText = useMemo(() => {
     if (!selectedTokens.length) {
-      return 'No tokens selected';
+      return 'No tokens selected'
     }
 
     if (selectedTokens.length === assets.length) {
-      return 'Transfer everything';
+      return 'Transfer everything'
     }
 
-    const assetsToTransferCount = selectedTokens.length;
-    return `Transfer ${assetsToTransferCount} asset${assetsToTransferCount > 1 ? 's' : ''}`;
-  }, [assets, selectedTokens]);
+    const assetsToTransferCount = selectedTokens.length
+    return `Transfer ${assetsToTransferCount} asset${assetsToTransferCount > 1 ? 's' : ''}`
+  }, [assets, selectedTokens])
 
   const getAddressFromDomain = useCallback(
     (address: string) => web3?.eth.ens.getAddress(address) || Promise.resolve(address),
     [web3],
-  );
+  )
 
   useEffect(() => {
     if (balancesError) {
-      onError('Failed fetching balances', balancesError);
+      onError('Failed fetching balances', balancesError)
     }
-  }, [balancesError]);
+  }, [balancesError])
 
   useEffect(() => {
     sdk.eth.getGasPrice().then((gasPrice: string) => {
-      setGasPrice(new BigNumber(gasPrice));
-    });
-  }, [sdk.eth]);
+      setGasPrice(new BigNumber(gasPrice))
+    })
+  }, [sdk.eth])
 
-  const ethFiatPrice = Number(assets[0]?.fiatConversion || 0);
+  const ethFiatPrice = Number(assets[0]?.fiatConversion || 0)
 
   useEffect(() => {
     const getChainInfo = async () => {
       try {
-        const { shortName } = await sdk.safe.getChainInfo();
-        setNetworkPrefix(shortName);
+        const { shortName } = await sdk.safe.getChainInfo()
+        setNetworkPrefix(shortName)
       } catch (e) {
-        console.error('Unable to get chain info:', e);
+        console.error('Unable to get chain info:', e)
       }
-    };
+    }
 
-    getChainInfo();
-  }, [sdk]);
+    getChainInfo()
+  }, [sdk])
 
   return (
     <FormContainer onSubmit={onSubmit} onReset={onCancel}>
@@ -177,7 +177,7 @@ const App = (): React.ReactElement => {
         <Text size="xl">You don't have any transferable assets</Text>
       )}
     </FormContainer>
-  );
-};
+  )
+}
 
-export default App;
+export default App

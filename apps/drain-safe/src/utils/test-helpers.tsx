@@ -1,5 +1,5 @@
-import { ThemeProvider } from 'styled-components';
-import { render } from '@testing-library/react';
+import { ThemeProvider } from 'styled-components'
+import { render } from '@testing-library/react'
 
 export const mockTheme = {
   buttons: {
@@ -43,7 +43,7 @@ export const mockTheme = {
       },
     },
   },
-};
+}
 
 export const mockTxsRequest = {
   txs: [
@@ -73,7 +73,7 @@ export const mockTxsRequest = {
       value: '0',
     },
   ],
-};
+}
 
 export const mockInitialBalances = [
   {
@@ -96,7 +96,8 @@ export const mockInitialBalances = [
       decimals: 18,
       symbol: 'LINK',
       name: 'ChainLink Token',
-      logoUri: 'https://gnosis-safe-token-logos.s3.amazonaws.com/0x01BE23585060835E02B77ef475b0Cc51aA1e0709.png',
+      logoUri:
+        'https://gnosis-safe-token-logos.s3.amazonaws.com/0x01BE23585060835E02B77ef475b0Cc51aA1e0709.png',
     },
     balance: '10000000000000000000',
     fiatBalance: '32.17898',
@@ -109,7 +110,8 @@ export const mockInitialBalances = [
       decimals: 18,
       symbol: 'DAI',
       name: 'Dai Stablecoin',
-      logoUri: 'https://gnosis-safe-token-logos.s3.amazonaws.com/0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735.png',
+      logoUri:
+        'https://gnosis-safe-token-logos.s3.amazonaws.com/0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735.png',
     },
     balance: '342342323423000000000000000000',
     fiatBalance: '24.89904',
@@ -122,7 +124,8 @@ export const mockInitialBalances = [
       decimals: 18,
       symbol: 'MKR',
       name: 'Maker',
-      logoUri: 'https://gnosis-safe-token-logos.s3.amazonaws.com/0xF9bA5210F91D0474bd1e1DcDAeC4C58E359AaD85.png',
+      logoUri:
+        'https://gnosis-safe-token-logos.s3.amazonaws.com/0xF9bA5210F91D0474bd1e1DcDAeC4C58E359AaD85.png',
     },
     balance: '318438539290761',
     fiatBalance: '0.00000',
@@ -135,16 +138,17 @@ export const mockInitialBalances = [
       decimals: 18,
       symbol: 'UNI',
       name: 'Uniswap',
-      logoUri: 'https://gnosis-safe-token-logos.s3.amazonaws.com/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984.png',
+      logoUri:
+        'https://gnosis-safe-token-logos.s3.amazonaws.com/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984.png',
     },
     balance: '1050000000000000044',
     fiatBalance: '3971.92584',
     fiatConversion: '3782.786514637171',
   },
-];
+]
 
 export function renderWithProviders(ui: JSX.Element) {
   return {
     ...render(<ThemeProvider theme={mockTheme}>{ui}</ThemeProvider>),
-  };
+  }
 }

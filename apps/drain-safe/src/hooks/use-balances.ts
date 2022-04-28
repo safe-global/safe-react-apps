@@ -1,45 +1,48 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk';
-import { TokenBalance } from '@gnosis.pm/safe-apps-sdk';
-import { NATIVE_TOKEN } from '../utils/sdk-helpers';
+import { useState, useEffect, useCallback } from 'react'
+import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
+import { TokenBalance } from '@gnosis.pm/safe-apps-sdk'
+import { NATIVE_TOKEN } from '../utils/sdk-helpers'
 
 export type BalancesType = {
-  error?: Error;
-  assets: TokenBalance[];
-  selectedTokens: string[];
-  setSelectedTokens: (tokens: string[]) => void;
-};
+  error?: Error
+  assets: TokenBalance[]
+  selectedTokens: string[]
+  setSelectedTokens: (tokens: string[]) => void
+}
 
 const transferableTokens = (item: TokenBalance) =>
-  item.tokenInfo.type !== NATIVE_TOKEN || (item.tokenInfo.type === NATIVE_TOKEN && Number(item.fiatBalance) !== 0);
+  item.tokenInfo.type !== NATIVE_TOKEN ||
+  (item.tokenInfo.type === NATIVE_TOKEN && Number(item.fiatBalance) !== 0)
 
 function useBalances(safeAddress: string, chainId: number): BalancesType {
-  const { sdk } = useSafeAppsSDK();
-  const [assets, setAssets] = useState<TokenBalance[]>([]);
-  const [selectedTokens, setSelectedTokens] = useState<string[]>([]);
-  const [error, setError] = useState<Error>();
+  const { sdk } = useSafeAppsSDK()
+  const [assets, setAssets] = useState<TokenBalance[]>([])
+  const [selectedTokens, setSelectedTokens] = useState<string[]>([])
+  const [error, setError] = useState<Error>()
 
   const loadBalances = useCallback(async () => {
     if (!safeAddress || !chainId) {
-      return;
+      return
     }
 
     try {
-      const balances = await sdk.safe.experimental_getBalances({ currency: 'USD' });
-      const assets = balances.items.filter(transferableTokens);
+      const balances = await sdk.safe.experimental_getBalances({
+        currency: 'USD',
+      })
+      const assets = balances.items.filter(transferableTokens)
 
-      setAssets(assets);
-      setSelectedTokens(assets.map((token: TokenBalance) => token.tokenInfo.address));
+      setAssets(assets)
+      setSelectedTokens(assets.map((token: TokenBalance) => token.tokenInfo.address))
     } catch (err) {
-      setError(err as Error);
+      setError(err as Error)
     }
-  }, [safeAddress, chainId, sdk]);
+  }, [safeAddress, chainId, sdk])
 
   useEffect(() => {
-    loadBalances();
-  }, [loadBalances]);
+    loadBalances()
+  }, [loadBalances])
 
-  return { error, assets, selectedTokens, setSelectedTokens };
+  return { error, assets, selectedTokens, setSelectedTokens }
 }
 
-export default useBalances;
+export default useBalances

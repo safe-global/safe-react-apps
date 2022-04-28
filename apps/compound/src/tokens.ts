@@ -9,7 +9,7 @@ const TOKENS = {
   cUSDC: '0x5B281A6DdA0B271e91ae35DE655Ad301C976edb1',
   ZRX: '0xddea378A6dDC8AfeC82C36E9b0078826bf9e68B6',
   cZRX: '0x52201ff1720134bBbBB2f6BC97Bf3715490EC19B',
-};
+}
 
 const STATIC_CONFIG = [
   {
@@ -52,6 +52,6 @@ const STATIC_CONFIG = [
     tokenAddr: TOKENS.ZRX,
     cTokenAddr: TOKENS.cZRX,
   },
-];
+]
 
-export default STATIC_CONFIG;
+export default STATIC_CONFIG

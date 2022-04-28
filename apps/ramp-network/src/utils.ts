@@ -1,1 +1,1 @@
-export const goBack = () => window.history.back();
+export const goBack = () => window.history.back()

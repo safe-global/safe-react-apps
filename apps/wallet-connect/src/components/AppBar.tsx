@@ -1,8 +1,8 @@
-import MuiAppBar from '@material-ui/core/AppBar';
-import styled from 'styled-components';
-import { Icon, Link, Text } from '@gnosis.pm/safe-react-components';
+import MuiAppBar from '@material-ui/core/AppBar'
+import styled from 'styled-components'
+import { Icon, Link, Text } from '@gnosis.pm/safe-react-components'
 
-const WALLET_CONNECT_HELP = 'https://help.gnosis-safe.io/en/articles/4356253-walletconnect-safe-app';
+const WALLET_CONNECT_HELP = 'https://help.gnosis-safe.io/en/articles/4356253-walletconnect-safe-app'
 
 const AppBar = () => {
   return (
@@ -12,8 +12,8 @@ const AppBar = () => {
         <Icon size="md" type="info" />
       </Link>
     </StyledAppBar>
-  );
-};
+  )
+}
 
 const StyledAppBar = styled(MuiAppBar)`
   && {
@@ -24,12 +24,12 @@ const StyledAppBar = styled(MuiAppBar)`
     flex-direction: row;
     border-bottom: 2px solid #e8e7e6;
   }
-`;
+`
 
 const StyledAppBarText = styled(Text)`
   font-size: 20px;
   margin-left: 38px;
   margin-right: 16px;
-`;
+`
 
-export default AppBar;
+export default AppBar

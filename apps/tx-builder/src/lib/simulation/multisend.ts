@@ -1,22 +1,22 @@
-import Web3 from 'web3';
-import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk';
-import { getMultiSendCallOnlyDeployment } from '@gnosis.pm/safe-deployments';
+import Web3 from 'web3'
+import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
+import { getMultiSendCallOnlyDeployment } from '@gnosis.pm/safe-deployments'
 
 const getMultiSendCallOnlyAddress = (chainId: string): string => {
-  const deployment = getMultiSendCallOnlyDeployment({ network: chainId });
+  const deployment = getMultiSendCallOnlyDeployment({ network: chainId })
 
   if (!deployment) {
-    throw new Error('MultiSendCallOnly deployment not found');
+    throw new Error('MultiSendCallOnly deployment not found')
   }
 
-  return deployment.networkAddresses[chainId];
-};
+  return deployment.networkAddresses[chainId]
+}
 
 const encodeMultiSendCall = (txs: BaseTransaction[]): string => {
-  const web3 = new Web3();
+  const web3 = new Web3()
 
   const joinedTxs = txs
-    .map((tx) =>
+    .map(tx =>
       [
         web3.eth.abi.encodeParameter('uint8', 0).slice(-2),
         web3.eth.abi.encodeParameter('address', tx.to).slice(-40),
@@ -26,7 +26,7 @@ const encodeMultiSendCall = (txs: BaseTransaction[]): string => {
         tx.data.replace(/^0x/, ''),
       ].join(''),
     )
-    .join('');
+    .join('')
 
   const encodedMultiSendCallData = web3.eth.abi.encodeFunctionCall(
     {
@@ -40,9 +40,9 @@ const encodeMultiSendCall = (txs: BaseTransaction[]): string => {
       ],
     },
     [`0x${joinedTxs}`],
-  );
+  )
 
-  return encodedMultiSendCallData;
-};
+  return encodedMultiSendCallData
+}
 
-export { encodeMultiSendCall, getMultiSendCallOnlyAddress };
+export { encodeMultiSendCall, getMultiSendCallOnlyAddress }

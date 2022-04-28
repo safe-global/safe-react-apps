@@ -1121,6 +1121,6 @@ const CTokenABI = [
     name: 'Approval',
     type: 'event',
   },
-];
+]
 
-export default CTokenABI;
+export default CTokenABI

@@ -1,11 +1,18 @@
-import { Box } from '@material-ui/core';
-import styled from 'styled-components';
-import { Accordion, AccordionSummary, IconText, AccordionDetails, Text, Dot } from '@gnosis.pm/safe-react-components';
+import { Box } from '@material-ui/core'
+import styled from 'styled-components'
+import {
+  Accordion,
+  AccordionSummary,
+  IconText,
+  AccordionDetails,
+  Text,
+  Dot,
+} from '@gnosis.pm/safe-react-components'
 
 type HelpProps = {
-  title: string;
-  steps: string[];
-};
+  title: string
+  steps: string[]
+}
 
 const Help = ({ title, steps }: HelpProps): React.ReactElement => {
   return (
@@ -24,8 +31,8 @@ const Help = ({ title, steps }: HelpProps): React.ReactElement => {
         ))}
       </StyledAccordionDetails>
     </StyledAccordion>
-  );
-};
+  )
+}
 
 const StyledIconText = styled(IconText)`
   svg {
@@ -36,7 +43,7 @@ const StyledIconText = styled(IconText)`
   p {
     margin-left: 13px;
   }
-`;
+`
 
 const StyledAccordion = styled(Accordion)`
   && {
@@ -45,13 +52,13 @@ const StyledAccordion = styled(Accordion)`
       border: 0;
     }
   }
-`;
+`
 
 const StyledAccordionSummary = styled(AccordionSummary)`
   && {
     border: 2px solid #e2e3e3;
   }
-`;
+`
 
 const StyledAccordionDetails = styled(AccordionDetails)`
   && {
@@ -64,7 +71,7 @@ const StyledAccordionDetails = styled(AccordionDetails)`
       padding-bottom: 8px;
     }
   }
-`;
+`
 
 const StyledDot = styled(Dot)`
   min-width: 20px;
@@ -73,11 +80,11 @@ const StyledDot = styled(Dot)`
   margin-right: 20px;
   background: #f0efee;
   color: #566976;
-`;
+`
 
 const StyledDotText = styled(Text)`
   position: absolute;
   font-size: 10px;
-`;
+`
 
-export default Help;
+export default Help

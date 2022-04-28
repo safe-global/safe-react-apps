@@ -1,8 +1,8 @@
-const webpack = require('webpack');
+const webpack = require('webpack')
 
 module.exports = {
   webpack: function (config, env) {
-    const fallback = config.resolve.fallback || {};
+    const fallback = config.resolve.fallback || {}
 
     // https://github.com/ChainSafe/web3.js#web3-and-create-react-app
     Object.assign(fallback, {
@@ -15,39 +15,39 @@ module.exports = {
       url: require.resolve('url'),
       // https://stackoverflow.com/questions/68707553/uncaught-referenceerror-buffer-is-not-defined
       buffer: require.resolve('buffer'),
-    });
+    })
 
-    config.resolve.fallback = fallback;
+    config.resolve.fallback = fallback
 
     config.plugins = (config.plugins || []).concat([
       new webpack.ProvidePlugin({
         process: 'process/browser',
         Buffer: ['buffer', 'Buffer'],
       }),
-    ]);
+    ])
 
     // https://github.com/facebook/create-react-app/issues/11924
-    config.ignoreWarnings = [/to parse source map/i];
+    config.ignoreWarnings = [/to parse source map/i]
 
-    return config;
+    return config
   },
   jest: function (config) {
-    return config;
+    return config
   },
   devServer: function (configFunction) {
     return function (proxy, allowedHost) {
-      const config = configFunction(proxy, allowedHost);
+      const config = configFunction(proxy, allowedHost)
 
       config.headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET',
         'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
-      };
+      }
 
-      return config;
-    };
+      return config
+    }
   },
   paths: function (paths) {
-    return paths;
+    return paths
   },
-};
+}

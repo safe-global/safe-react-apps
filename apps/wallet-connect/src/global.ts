@@ -1,6 +1,6 @@
-import { createGlobalStyle } from 'styled-components';
-import avertaFont from '@gnosis.pm/safe-react-components/dist/fonts/averta-normal.woff2';
-import avertaBoldFont from '@gnosis.pm/safe-react-components/dist/fonts/averta-bold.woff2';
+import { createGlobalStyle } from 'styled-components'
+import avertaFont from '@gnosis.pm/safe-react-components/dist/fonts/averta-normal.woff2'
+import avertaBoldFont from '@gnosis.pm/safe-react-components/dist/fonts/averta-bold.woff2'
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -27,6 +27,6 @@ const GlobalStyle = createGlobalStyle`
         src: local('Averta Bold'), url(${avertaBoldFont}) format('woff');
         font-weight: bold;
     }
-`;
+`
 
-export default GlobalStyle;
+export default GlobalStyle

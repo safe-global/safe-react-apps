@@ -1,19 +1,19 @@
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
-import { CHAINS } from './utils/networks';
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
+import { CHAINS } from './utils/networks'
 
 export type TokenInteractionData = {
-  amount: string;
-  destination: string;
-  sender?: string;
-};
+  amount: string
+  destination: string
+  sender?: string
+}
 
-const RINKEBY = 'https://api.thegraph.com/subgraphs/name/protofire/token-registry-rinkeby';
-const MAINNET = 'https://api.thegraph.com/subgraphs/name/protofire/token-registry';
+const RINKEBY = 'https://api.thegraph.com/subgraphs/name/protofire/token-registry-rinkeby'
+const MAINNET = 'https://api.thegraph.com/subgraphs/name/protofire/token-registry'
 
 const subgraphUri: { [key in CHAINS.MAINNET | CHAINS.RINKEBY]: string } = {
   [CHAINS.RINKEBY]: RINKEBY,
   [CHAINS.MAINNET]: MAINNET,
-};
+}
 
 const TRANSFER_EVENTS = gql`
   query TransferEvents($first: Int!, $skip: Int!, $token: String!, $addresses: [String!]!) {
@@ -27,7 +27,7 @@ const TRANSFER_EVENTS = gql`
       destination
     }
   }
-`;
+`
 
 async function getTransferEvents(
   client: any,
@@ -35,10 +35,10 @@ async function getTransferEvents(
   tokenAddr: string,
   cTokenAddr: string,
 ): Promise<Array<TokenInteractionData>> {
-  let ended = false;
-  let first = 100;
-  let skip = 0;
-  let transferEvents: Array<TokenInteractionData> = [];
+  let ended = false
+  let first = 100
+  let skip = 0
+  let transferEvents: Array<TokenInteractionData> = []
 
   while (!ended) {
     try {
@@ -50,20 +50,20 @@ async function getTransferEvents(
           token: tokenAddr.toLocaleLowerCase(),
           addresses: [cTokenAddr, safeAddress],
         },
-      });
-      skip += first;
+      })
+      skip += first
 
-      transferEvents = [...transferEvents, ...res.data.transferEvents];
+      transferEvents = [...transferEvents, ...res.data.transferEvents]
       if (res.data.transferEvents.length < first) {
-        ended = true;
+        ended = true
       }
     } catch (error) {
-      ended = true;
-      throw error;
+      ended = true
+      throw error
     }
   }
 
-  return transferEvents;
+  return transferEvents
 }
 
 const MINT_EVENTS = gql`
@@ -73,17 +73,17 @@ const MINT_EVENTS = gql`
       destination
     }
   }
-`;
+`
 
 async function getMintEvents(
   client: any,
   safeAddress: string,
   tokenAddr: string,
 ): Promise<Array<TokenInteractionData>> {
-  let ended = false;
-  let first = 100;
-  let skip = 0;
-  let mintEvents: Array<TokenInteractionData> = [];
+  let ended = false
+  let first = 100
+  let skip = 0
+  let mintEvents: Array<TokenInteractionData> = []
 
   while (!ended) {
     try {
@@ -95,20 +95,20 @@ async function getMintEvents(
           token: tokenAddr.toLocaleLowerCase(),
           safeAddress: safeAddress,
         },
-      });
-      skip += first;
+      })
+      skip += first
 
-      mintEvents = [...mintEvents, ...res.data.mintEvents];
+      mintEvents = [...mintEvents, ...res.data.mintEvents]
       if (res.data.mintEvents.length < first) {
-        ended = true;
+        ended = true
       }
     } catch (error) {
-      ended = true;
-      throw error;
+      ended = true
+      throw error
     }
   }
 
-  return mintEvents;
+  return mintEvents
 }
 
 export async function getTokenInteractions(
@@ -118,33 +118,33 @@ export async function getTokenInteractions(
   cTokenAddr: string,
 ) {
   if (chainId !== CHAINS.RINKEBY && chainId !== CHAINS.MAINNET) {
-    return [];
+    return []
   }
 
   const client = new ApolloClient({
     uri: subgraphUri[chainId],
-    cache: new InMemoryCache()
-  });
+    cache: new InMemoryCache(),
+  })
 
-  const mintEventsRes = await getMintEvents(client, safeAddress, tokenAddr);
-  const transferEventsRes = await getTransferEvents(client, safeAddress, tokenAddr, cTokenAddr);
-  return [...mintEventsRes, ...transferEventsRes];
+  const mintEventsRes = await getMintEvents(client, safeAddress, tokenAddr)
+  const transferEventsRes = await getTransferEvents(client, safeAddress, tokenAddr, cTokenAddr)
+  return [...mintEventsRes, ...transferEventsRes]
 }
 
 export function parseEvents(senderAddress: string, tokenEvents: Array<any>) {
-  let deposits = 0;
-  let withdrawals = 0;
+  let deposits = 0
+  let withdrawals = 0
 
-  tokenEvents.forEach((event) => {
-    const parsedAmount = Number(event.amount);
+  tokenEvents.forEach(event => {
+    const parsedAmount = Number(event.amount)
     if (!Number.isNaN(parsedAmount)) {
       event.sender && event.sender.toLowerCase() === senderAddress.toLowerCase()
         ? (deposits += parsedAmount)
-        : (withdrawals += parsedAmount);
+        : (withdrawals += parsedAmount)
     }
-  });
+  })
   return {
     deposits,
     withdrawals,
-  };
+  }
 }

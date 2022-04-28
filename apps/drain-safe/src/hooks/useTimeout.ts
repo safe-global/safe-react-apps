@@ -1,21 +1,21 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
 function useTimeout(callback: () => void, delay: number | null) {
-  const savedCallback = useRef(callback);
+  const savedCallback = useRef(callback)
 
   useLayoutEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
+    savedCallback.current = callback
+  }, [callback])
 
   useEffect(() => {
     if (!delay && delay !== 0) {
-      return;
+      return
     }
 
-    const id = setTimeout(() => savedCallback.current(), delay);
+    const id = setTimeout(() => savedCallback.current(), delay)
 
-    return () => clearTimeout(id);
-  }, [delay]);
+    return () => clearTimeout(id)
+  }, [delay])
 }
 
-export default useTimeout;
+export default useTimeout

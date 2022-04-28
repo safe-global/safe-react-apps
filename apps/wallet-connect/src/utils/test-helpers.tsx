@@ -1,8 +1,8 @@
-import { render } from '@testing-library/react';
-import { ThemeProvider } from 'styled-components';
-import { theme } from '@gnosis.pm/safe-react-components';
+import { render } from '@testing-library/react'
+import { ThemeProvider } from 'styled-components'
+import { theme } from '@gnosis.pm/safe-react-components'
 
-import GlobalStyles from '../global';
+import GlobalStyles from '../global'
 
 function renderWithProviders(ui: JSX.Element) {
   return render(
@@ -10,7 +10,7 @@ function renderWithProviders(ui: JSX.Element) {
       <GlobalStyles />
       <ThemeProvider theme={theme}>{ui}</ThemeProvider>
     </>,
-  );
+  )
 }
 
-export { renderWithProviders };
+export { renderWithProviders }

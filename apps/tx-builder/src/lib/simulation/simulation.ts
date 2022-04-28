@@ -1,26 +1,28 @@
-import axios from 'axios';
-import Web3 from 'web3';
-import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk';
-import { TenderlySimulatePayload, TenderlySimulation, StateObject } from './types';
-import { encodeMultiSendCall, getMultiSendCallOnlyAddress } from './multisend';
+import axios from 'axios'
+import Web3 from 'web3'
+import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
+import { TenderlySimulatePayload, TenderlySimulation, StateObject } from './types'
+import { encodeMultiSendCall, getMultiSendCallOnlyAddress } from './multisend'
 
-type OptionalExceptFor<T, TRequired extends keyof T = keyof T> = Partial<Pick<T, Exclude<keyof T, TRequired>>> &
-  Required<Pick<T, TRequired>>;
+type OptionalExceptFor<T, TRequired extends keyof T = keyof T> = Partial<
+  Pick<T, Exclude<keyof T, TRequired>>
+> &
+  Required<Pick<T, TRequired>>
 
 // api docs: https://www.notion.so/Simulate-API-Documentation-6f7009fe6d1a48c999ffeb7941efc104
-const TENDERLY_SIMULATE_ENDPOINT_URL = process.env.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL || '';
-const TENDERLY_PROJECT_NAME = process.env.REACT_APP_TENDERLY_PROJECT_NAME || '';
-const TENDERLY_ORG_NAME = process.env.REACT_APP_TENDERLY_ORG_NAME || '';
+const TENDERLY_SIMULATE_ENDPOINT_URL = process.env.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL || ''
+const TENDERLY_PROJECT_NAME = process.env.REACT_APP_TENDERLY_PROJECT_NAME || ''
+const TENDERLY_ORG_NAME = process.env.REACT_APP_TENDERLY_ORG_NAME || ''
 
 const getSimulation = async (tx: TenderlySimulatePayload): Promise<TenderlySimulation> => {
-  const response = await axios.post<TenderlySimulation>(TENDERLY_SIMULATE_ENDPOINT_URL, tx);
+  const response = await axios.post<TenderlySimulation>(TENDERLY_SIMULATE_ENDPOINT_URL, tx)
 
-  return response.data;
-};
+  return response.data
+}
 
 const getSimulationLink = (simulationId: string): string => {
-  return `https://dashboard.tenderly.co/public/${TENDERLY_ORG_NAME}/${TENDERLY_PROJECT_NAME}/simulator/${simulationId}`;
-};
+  return `https://dashboard.tenderly.co/public/${TENDERLY_ORG_NAME}/${TENDERLY_PROJECT_NAME}/simulator/${simulationId}`
+}
 
 /* We need to overwrite the threshold stored in smart contract storage to 1
  to do a proper simulation that takes transaction guards into account.
@@ -29,7 +31,7 @@ const getSimulationLink = (simulationId: string): string => {
  https://github.com/gnosis/safe-contracts/blob/main/contracts/libraries/GnosisSafeStorage.sol */
 const THRESHOLD_ONE_STORAGE_OVERRIDE = {
   [`0x${'4'.padStart(64, '0')}`]: `0x${'1'.padStart(64, '0')}`,
-};
+}
 
 const getStateOverride = (
   address: string,
@@ -42,33 +44,35 @@ const getStateOverride = (
     code,
     storage,
   },
-});
+})
 
 interface SafeTransaction {
-  to: string;
-  value: string;
-  data: string;
-  safeTxGas: string;
-  baseGas: string;
-  gasPrice: string;
-  gasToken: string;
-  refundReceiver: string;
-  nonce: string;
-  operation: string;
+  to: string
+  value: string
+  data: string
+  safeTxGas: string
+  baseGas: string
+  gasPrice: string
+  gasToken: string
+  refundReceiver: string
+  nonce: string
+  operation: string
 }
 
 interface SignedSafeTransaction extends SafeTransaction {
-  signatures: string;
+  signatures: string
 }
 
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 const getBlockMaxGasLimit = async (web3: Web3): Promise<string> => {
-  const block = await web3.eth.getBlock('latest');
-  return block.gasLimit.toString();
-};
+  const block = await web3.eth.getBlock('latest')
+  return block.gasLimit.toString()
+}
 
-const buildSafeTransaction = (template: OptionalExceptFor<SafeTransaction, 'to' | 'nonce'>): SafeTransaction => {
+const buildSafeTransaction = (
+  template: OptionalExceptFor<SafeTransaction, 'to' | 'nonce'>,
+): SafeTransaction => {
   return {
     to: template.to,
     value: template.value || '0',
@@ -80,11 +84,11 @@ const buildSafeTransaction = (template: OptionalExceptFor<SafeTransaction, 'to' 
     gasToken: template.gasToken || ZERO_ADDRESS,
     refundReceiver: template.refundReceiver || ZERO_ADDRESS,
     nonce: template.nonce,
-  };
-};
+  }
+}
 
 const encodeSafeExecuteTransactionCall = (tx: SignedSafeTransaction): string => {
-  const web3 = new Web3();
+  const web3 = new Web3()
 
   const encodedSafeExecuteTransactionCall = web3.eth.abi.encodeFunctionCall(
     {
@@ -115,26 +119,26 @@ const encodeSafeExecuteTransactionCall = (tx: SignedSafeTransaction): string => 
       tx.refundReceiver,
       tx.signatures,
     ],
-  );
+  )
 
-  return encodedSafeExecuteTransactionCall;
-};
+  return encodedSafeExecuteTransactionCall
+}
 
 const getPreValidatedSignature = (address: string): string => {
   return `0x000000000000000000000000${address.replace(
     '0x',
     '',
-  )}000000000000000000000000000000000000000000000000000000000000000001`;
-};
+  )}000000000000000000000000000000000000000000000000000000000000000001`
+}
 
 type SimulationTxParams = {
-  safeAddress: string;
-  safeNonce: string;
-  executionOwner: string;
-  transactions: BaseTransaction[];
-  chainId: string;
-  gasLimit: number;
-};
+  safeAddress: string
+  safeNonce: string
+  executionOwner: string
+  transactions: BaseTransaction[]
+  chainId: string
+  gasLimit: number
+}
 
 const getSingleTransactionExecutionData = (tx: SimulationTxParams): string => {
   const safeTransaction = buildSafeTransaction({
@@ -143,50 +147,52 @@ const getSingleTransactionExecutionData = (tx: SimulationTxParams): string => {
     data: tx.transactions[0].data,
     nonce: tx.safeNonce,
     operation: '0',
-  });
+  })
   const signedSafeTransaction: SignedSafeTransaction = {
     ...safeTransaction,
     signatures: getPreValidatedSignature(tx.executionOwner),
-  };
+  }
 
-  const executionTransactionData = encodeSafeExecuteTransactionCall(signedSafeTransaction);
+  const executionTransactionData = encodeSafeExecuteTransactionCall(signedSafeTransaction)
 
-  return executionTransactionData;
-};
+  return executionTransactionData
+}
 
 const getMultiSendExecutionData = (tx: SimulationTxParams): string => {
-  const safeTransactionData = encodeMultiSendCall(tx.transactions);
-  const multiSendAddress = getMultiSendCallOnlyAddress(tx.chainId);
+  const safeTransactionData = encodeMultiSendCall(tx.transactions)
+  const multiSendAddress = getMultiSendCallOnlyAddress(tx.chainId)
   const safeTransaction = buildSafeTransaction({
     to: multiSendAddress,
     value: '0',
     data: safeTransactionData,
     nonce: tx.safeNonce,
     operation: '1',
-  });
+  })
   const signedSafeTransaction: SignedSafeTransaction = {
     ...safeTransaction,
     signatures: getPreValidatedSignature(tx.executionOwner),
-  };
+  }
 
-  const executionTransactionData = encodeSafeExecuteTransactionCall(signedSafeTransaction);
+  const executionTransactionData = encodeSafeExecuteTransactionCall(signedSafeTransaction)
 
-  return executionTransactionData;
-};
+  return executionTransactionData
+}
 
 const getSimulationPayload = (tx: SimulationTxParams): TenderlySimulatePayload => {
   // we need separate functions for encoding single and multi send transactions because
   // if there's only 1 transaction in the batch, the Safe interface doesn't route it through the multisend contract
   // instead it directly calls the contract in the batch transaction
   const executionData =
-    tx.transactions.length === 1 ? getSingleTransactionExecutionData(tx) : getMultiSendExecutionData(tx);
+    tx.transactions.length === 1
+      ? getSingleTransactionExecutionData(tx)
+      : getMultiSendExecutionData(tx)
 
   const safeThresholdStateOverride = getStateOverride(
     tx.safeAddress,
     undefined,
     undefined,
     THRESHOLD_ONE_STORAGE_OVERRIDE,
-  );
+  )
 
   return {
     network_id: tx.chainId,
@@ -201,7 +207,7 @@ const getSimulationPayload = (tx: SimulationTxParams): TenderlySimulatePayload =
     },
     save: true,
     save_if_fails: true,
-  };
-};
+  }
+}
 
-export { getSimulationLink, getSimulation, getSimulationPayload, getBlockMaxGasLimit };
+export { getSimulationLink, getSimulation, getSimulationPayload, getBlockMaxGasLimit }

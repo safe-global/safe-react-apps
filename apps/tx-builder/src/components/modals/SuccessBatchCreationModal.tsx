@@ -1,14 +1,14 @@
-import { Dot, Text, Button, GenericModal, Title } from '@gnosis.pm/safe-react-components';
-import Box from '@material-ui/core/Box';
-import styled from 'styled-components';
+import { Dot, Text, Button, GenericModal, Title } from '@gnosis.pm/safe-react-components'
+import Box from '@material-ui/core/Box'
+import styled from 'styled-components'
 
-import { ReactComponent as SuccessBatchSVG } from '../../assets/success-batch.svg';
+import { ReactComponent as SuccessBatchSVG } from '../../assets/success-batch.svg'
 
 type SuccessBatchCreationModalProps = {
-  count: number;
-  onClick: () => void;
-  onClose: () => void;
-};
+  count: number
+  onClick: () => void
+  onClose: () => void
+}
 
 const SuccessBatchCreationModal = ({ count, onClick, onClose }: SuccessBatchCreationModalProps) => {
   return (
@@ -16,7 +16,12 @@ const SuccessBatchCreationModal = ({ count, onClick, onClose }: SuccessBatchCrea
       title="Batch Created!"
       withoutBodyPadding
       body={
-        <StyledBodyWrapper display="flex" flexDirection={'column'} alignItems="center" justifyContent="center">
+        <StyledBodyWrapper
+          display="flex"
+          flexDirection={'column'}
+          alignItems="center"
+          justifyContent="center"
+        >
           {/* Image Success */}
           <SuccessBatchSVG />
 
@@ -44,24 +49,24 @@ const SuccessBatchCreationModal = ({ count, onClick, onClose }: SuccessBatchCrea
       }
       onClose={onClose}
     />
-  );
-};
+  )
+}
 
-export default SuccessBatchCreationModal;
+export default SuccessBatchCreationModal
 
 const StyledBodyWrapper = styled(Box)`
   padding: 50px;
-`;
+`
 
 const StyledBodyTitle = styled(Title)`
   font-size: 32px;
   margin: 16px 0;
-`;
+`
 
 const StyledTextWrapper = styled.div`
   position: relative;
   margin-bottom: 32px;
-`;
+`
 
 const StyledModalDot = styled(Dot)`
   position: absolute;
@@ -71,8 +76,8 @@ const StyledModalDot = styled(Dot)`
   top: -1px;
 
   background-color: #566976;
-`;
+`
 
 const StyledModalText = styled(Text)`
   text-indent: 28px;
-`;
+`
