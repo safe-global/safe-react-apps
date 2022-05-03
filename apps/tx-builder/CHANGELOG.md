@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.8.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.7.0...tx-builder-1.8.0) (2022-05-03)
+
+
+### Features
+
+* **tx-builder:** tenderly simulation ([#391](https://github.com/safe-global/safe-react-apps/issues/391)) ([761cef7](https://github.com/safe-global/safe-react-apps/commit/761cef7a746db28f277ec55b94524f11c656c407))
+
+
+
 # [1.7.0](https://github.com/gnosis/safe-react-apps/compare/tx-builder-1.6.0...tx-builder-1.7.0) (2022-04-05)
 
 
