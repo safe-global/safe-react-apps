@@ -130,3 +130,6 @@ jobs:
           prod-deployment-hook-url: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
           bucket-name: ${{ secrets.STAGING_BUCKET_NAME }}/releases
           react-app-rpc-token: ${{ secrets.REACT_APP_RPC_TOKEN }}
+          react-app-tenderly-org-name: ${{ secrets.REACT_APP_TENDERLY_ORG_NAME }}
+          react-app-tenderly-project-name: ${{ secrets.REACT_APP_TENDERLY_PROJECT_NAME }}
+          react-app-tenderly-simulate-endpoint-url: ${{ secrets.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL }}

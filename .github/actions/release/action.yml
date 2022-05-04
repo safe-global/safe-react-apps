@@ -18,6 +18,15 @@ inputs:
   react-app-rpc-token:
     description: Infura RPC API token
     required: true
+  react-app-tenderly-org-name:
+    description: Tenderly simulation organization name
+    required: true
+  react-app-tenderly-project-name:
+    description: Tenderly simulation project name
+    required: true
+  react-app-tenderly-simulate-endpoint-url:
+    description: Tenderly simulation endpoint
+    required: true
 
 runs:
   using: composite
@@ -43,6 +52,9 @@ runs:
         BUCKET_NAME: ${{ inputs.bucket-name }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
         REACT_APP_RPC_TOKEN: ${{ inputs.react-app-rpc-token }}
+        REACT_APP_TENDERLY_ORG_NAME: ${{ inputs.react-app-tenderly-org-name }}
+        REACT_APP_TENDERLY_PROJECT_NAME: ${{ inputs.react-app-tenderly-project-name }}
+        REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ inputs.react-app-tenderly-simulate-endpoint-url }}
 
     - name: Push changes
       uses: ad-m/github-push-action@8407731efefc0d8f72af254c74276b7a90be36e1
