@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.1](https://github.com/safe-global/safe-react-apps/compare/drain-safe-1.2.0...drain-safe-1.2.1) (2022-05-04)
+
+
+
 ## [1.2.1](https://github.com/safe-global/safe-react-apps/compare/drain-safe-1.2.0...drain-safe-1.2.1) (2022-05-03)
 
 
