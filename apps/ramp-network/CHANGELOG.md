@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.1](https://github.com/safe-global/safe-react-apps/compare/ramp-network-0.1.0...ramp-network-0.1.1) (2022-05-04)
+
+
+
 ## [0.1.1](https://github.com/safe-global/safe-react-apps/compare/ramp-network-0.1.0...ramp-network-0.1.1) (2022-05-03)
 
 
