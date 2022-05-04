@@ -1,11 +1,10 @@
-import React from "react"
-import ReactDOM from "react-dom"
-import App from "./App"
-import { SafeProvider } from "@gnosis.pm/safe-apps-react-sdk"
-import { Loader, theme } from "@gnosis.pm/safe-react-components"
-import { ThemeProvider } from "styled-components"
+import ReactDOM from 'react-dom'
+import App from './App'
+import { SafeProvider } from '@gnosis.pm/safe-apps-react-sdk'
+import { Loader, theme } from '@gnosis.pm/safe-react-components'
+import { ThemeProvider } from 'styled-components'
 
-import GlobalStyles from "./global"
+import GlobalStyles from './global'
 
 ReactDOM.render(
   <>
@@ -16,5 +15,5 @@ ReactDOM.render(
       </SafeProvider>
     </ThemeProvider>
   </>,
-  document.getElementById("root")
+  document.getElementById('root'),
 )

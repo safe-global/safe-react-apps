@@ -1,200 +1,165 @@
-import React, { useState, useEffect } from 'react';
-import jsQr from 'jsqr';
-import styled from 'styled-components';
-import format from 'date-fns/format';
+import { useState, useEffect, useCallback } from 'react'
+import styled from 'styled-components'
+import { Grid } from '@material-ui/core'
+import Container from '@material-ui/core/Container'
+import { Card, Loader } from '@gnosis.pm/safe-react-components'
+import useWalletConnect from './hooks/useWalletConnect'
+import { useApps } from './hooks/useApps'
+import AppBar from './components/AppBar'
+import Help from './components/Help'
+import Disconnected from './components/Disconnected'
+import Connected from './components/Connected'
+import Connecting from './components/Connecting'
+import WalletConnectField from './components/WalletConnectField'
 
-import { TextField, Button, Text, Title, Icon, Loader } from '@gnosis.pm/safe-react-components';
-
-import { blobToImageData } from './utils/images';
-import { Wrapper } from './components/layout';
-import WCClientInfo from './components/WCClientInfo';
-import useWalletConnect from './hooks/useWalletConnect';
-
-const StyledTitle = styled(Title)`
-  margin-top: 0;
-`;
-
-const StyledText = styled(Text)`
-  margin-bottom: 8px;
-`;
-
-const StyledHelpLink = styled.div`
-  display: flex;
-
-  > :first-of-type {
-    margin-right: 5px;
-  }
-`;
-
-const WCContent = styled.div`
-  min-width: 400px;
-  margin-right: 20px;
-`;
-
-const HelpLink = () => (
-  <StyledHelpLink>
-    <a
-      target="_blank"
-      href="https://help.gnosis-safe.io/en/articles/4356253-how-to-use-walletconnect-with-the-gnosis-safe-multisig"
-      rel="noopener noreferrer"
-    >
-      <Text color="primary" size="lg">
-        How to use WalletConnect with the Gnosis Safe Multisig
-      </Text>
-    </a>
-    <Icon type="externalLink" color="primary" size="sm" />
-  </StyledHelpLink>
-);
-
-const ConnectedInstructions = () => (
-  <>
-    <StyledTitle size="sm">How to confirm transactions</StyledTitle>
-
-    <StyledText size="lg">1) Trigger a transaction from the Dapp.</StyledText>
-
-    <StyledText size="lg">
-      2) Come back here to confirm the transaction. You will see a popup with transactions details. Review the details
-      and submit the transaction.
-    </StyledText>
-
-    <StyledText size="lg">
-      3) The transaction has to be confirmed be owners and executed just like any other Safe transaction.
-    </StyledText>
-
-    <HelpLink />
-  </>
-);
-
-const DisconnectedInstructions = () => (
-  <>
-    <StyledTitle size="sm">How to connect to a Dapp</StyledTitle>
-
-    <StyledText size="lg">1) Open a Dapp with WalletConnect support.</StyledText>
-
-    <StyledText size="lg">
-      2) Copy QR code image (Command+Control+Shift+4 on Mac, Windows key+PrtScn on Windows) or connection URI into
-      clipboard.
-    </StyledText>
-
-    <StyledText size="lg">
-      3) Paste QR code image or connection URI into the input field (Command+V on Mac, Ctrl+V on Windows)
-    </StyledText>
-
-    <StyledText size="lg">4) WalletConnect connection will be established automatically.</StyledText>
-
-    <StyledText size="lg">5) Now you can trigger transactions via the Dapp to your Safe.</StyledText>
-
-    <HelpLink />
-  </>
-);
+enum CONNECTION_STATUS {
+  CONNECTED,
+  DISCONNECTED,
+  CONNECTING,
+}
 
 const App = () => {
-  const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect();
-  const [inputValue, setInputValue] = useState('');
-  const [invalidQRCode, setInvalidQRCode] = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
+  const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect()
+  const { findSafeApp, openSafeApp } = useApps()
+  const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED)
+  const [isNavigatingToSafeApp, setIsNavigatingToSafeApp] = useState(false)
 
-  const onPaste = React.useCallback(
-    (event: React.ClipboardEvent) => {
-      const connectWithUri = (data: string) => {
-        if (data.startsWith('wc:')) {
-          setIsConnecting(true);
-          wcConnect(data);
-        }
-      };
-
-      const connectWithQR = (item: DataTransferItem) => {
-        const blob = item.getAsFile();
-        const reader = new FileReader();
-        reader.onload = async (event: ProgressEvent<FileReader>) => {
-          const imageData = await blobToImageData(event.target?.result as string);
-          const code = jsQr(imageData.data, imageData.width, imageData.height);
-          if (code?.data) {
-            setIsConnecting(true);
-            wcConnect(code.data);
-          } else {
-            setInvalidQRCode(true);
-            setInputValue(`Screen Shot ${format(new Date(), 'yyyy-MM-dd')} at ${format(new Date(), 'hh.mm.ss')}`);
-          }
-        };
-        reader.readAsDataURL(blob as Blob);
-      };
-
-      setInvalidQRCode(false);
-      setInputValue('');
-
-      if (wcClientData) {
-        return;
-      }
-
-      const items = event.clipboardData.items;
-
-      for (const index in items) {
-        const item = items[index];
-
-        if (item.kind === 'string' && item.type === 'text/plain') {
-          connectWithUri(event.clipboardData.getData('Text'));
-        }
-
-        if (item.kind === 'file') {
-          connectWithQR(item);
-        }
-      }
+  const handleOpenSafeApp = useCallback(
+    (url: string) => {
+      openSafeApp(url)
+      wcDisconnect()
+      setConnectionStatus(CONNECTION_STATUS.DISCONNECTED)
+      setIsNavigatingToSafeApp(true)
     },
-    [wcClientData, wcConnect],
-  );
+    [openSafeApp, wcDisconnect],
+  )
 
-  const getDisconnectedContent = () => {
-    if (isConnecting) {
-      return <Loader size="md" />;
-    }
-    return (
-      <TextField
-        id="wc-uri"
-        label="Paste WalletConnect QR code or connection URI"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        onPaste={onPaste}
-        meta={{
-          error: invalidQRCode ? 'Invalid QR code' : undefined,
-        }}
-      />
-    );
-  };
-
-  const getConnectedContent = () => (
-    <>
-      <WCClientInfo name={wcClientData!.name} url={wcClientData!.url} iconSrc={wcClientData!.icons[0]} />
-
-      <Button size="md" color="primary" variant="contained" onClick={() => wcDisconnect()}>
-        Disconnect
-      </Button>
-    </>
-  );
-
-  // WalletConnect does not provide a loading/connecting status
-  // This effects simulates a connecting status, and prevents
-  // the user to initiate two connections in simultaneous.
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isConnecting) {
-      interval = setTimeout(() => setIsConnecting(false), 2_000);
+    if (wcClientData) {
+      setConnectionStatus(CONNECTION_STATUS.CONNECTING)
     }
-    return () => clearTimeout(interval);
-  }, [isConnecting]);
+  }, [wcClientData])
+
+  useEffect(() => {
+    if (!wcClientData) {
+      setConnectionStatus(CONNECTION_STATUS.DISCONNECTED)
+      return
+    }
+
+    if (connectionStatus === CONNECTION_STATUS.CONNECTING) {
+      const safeApp = findSafeApp(wcClientData.url)
+
+      if (!safeApp) {
+        setConnectionStatus(CONNECTION_STATUS.CONNECTED)
+      }
+    }
+  }, [connectionStatus, findSafeApp, wcClientData])
+
+  if (isNavigatingToSafeApp) {
+    return (
+      <StyledMainContainer>
+        <Loader size="md" />
+      </StyledMainContainer>
+    )
+  }
 
   return (
-    <Wrapper>
-      {/* WalletConnect */}
-      <WCContent>
-        <StyledTitle size="sm">Wallet Connect</StyledTitle>
-        {wcClientData ? getConnectedContent() : getDisconnectedContent()}
-      </WCContent>
+    <>
+      <AppBar />
+      <StyledMainContainer as="main">
+        <StyledAppContainer container direction="column" alignItems="center">
+          <StyledCardContainer item>
+            <StyledCard>
+              {connectionStatus === CONNECTION_STATUS.DISCONNECTED && (
+                <Disconnected>
+                  <WalletConnectField client={wcClientData} onConnect={data => wcConnect(data)} />
+                </Disconnected>
+              )}
+              {connectionStatus === CONNECTION_STATUS.CONNECTING && (
+                <Connecting
+                  client={wcClientData}
+                  onOpenSafeApp={() => handleOpenSafeApp(wcClientData?.url || '')}
+                  onKeepUsingWalletConnect={() => setConnectionStatus(CONNECTION_STATUS.CONNECTED)}
+                />
+              )}
+              {connectionStatus === CONNECTION_STATUS.CONNECTED && (
+                <Connected
+                  client={wcClientData}
+                  onDisconnect={() => {
+                    setConnectionStatus(CONNECTION_STATUS.DISCONNECTED)
+                    wcDisconnect()
+                  }}
+                />
+              )}
+            </StyledCard>
+          </StyledCardContainer>
+          <StyledHelpContainer item>
+            {connectionStatus === CONNECTION_STATUS.DISCONNECTED && (
+              <Help title={HELP_CONNECT.title} steps={HELP_CONNECT.steps} />
+            )}
+            {connectionStatus !== CONNECTION_STATUS.DISCONNECTED && (
+              <Help title={HELP_TRANSACTIONS.title} steps={HELP_TRANSACTIONS.steps} />
+            )}
+          </StyledHelpContainer>
+        </StyledAppContainer>
+      </StyledMainContainer>
+    </>
+  )
+}
 
-      {/* Instructions */}
-      <div>{wcClientData ? <ConnectedInstructions /> : <DisconnectedInstructions />}</div>
-    </Wrapper>
-  );
-};
+const StyledMainContainer = styled(Container)`
+  && {
+    max-width: 100%;
+    background-color: #f3f5f6;
+    display: flex;
+    height: calc(100% - 70px);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+`
 
-export default App;
+const StyledAppContainer = styled(Grid)`
+  height: 100%;
+  padding-top: 45px;
+`
+
+const StyledCardContainer = styled(Grid)`
+  width: 484px;
+  margin-top: 45px;
+`
+
+const StyledHelpContainer = styled(Grid)`
+  && {
+    width: 484px;
+    margin-top: 16px;
+  }
+`
+
+const StyledCard = styled(Card)`
+  && {
+    box-shadow: none;
+  }
+`
+
+export default App
+
+const HELP_CONNECT = {
+  title: 'How to connect to a Dapp?',
+  steps: [
+    'Open a Dapp with WalletConnect support.',
+    'Copy the QR code image into clipboard (Command+Control+Shift+4 on Mac, Windows key+PrtScn on Windows) or copy the link.',
+    'Paste the QR code image or link into the input field (Command+V on Mac, Ctrl+V on Windows).',
+    'WalletConnect connection is established automatically.',
+    'Now you can trigger transactions via the Dapp to your Safe.',
+  ],
+}
+
+const HELP_TRANSACTIONS = {
+  title: 'How to confirm transactions?',
+  steps: [
+    'Trigger a transaction from the Dapp.',
+    'Come back here to confirm the transaction. You will see a popup with transaction details. Review the details and submit the transaction.',
+    'The transaction has to be confirmed by owners and executed just like any other Safe transaction.',
+  ],
+}

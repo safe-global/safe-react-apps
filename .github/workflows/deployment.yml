@@ -1,70 +1,132 @@
-name: Deploy Dev/Master
-
-# Run on pushes to dev/master
+name: Deploy Apps
+# Run on pushes to dev/main or PR
 on:
+  # Pull request hook without any config. Launches for every pull request
+  pull_request:
+  # Launches for pushes to main or dev
   push:
     branches:
-      - master
+      - main
       - development
+  # Run manually to version/production deployment/github releases
+  workflow_dispatch:
 env:
-  REPO_NAME_SLUG: safe-react-apps
+  REPO_NAME_ALPHANUMERIC: safereactapps
+  HUSKY: 0
 
 jobs:
-  deploy:
-    name: Deployment
+  pr:
+    name: Pull Request
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-env
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+
+      - name: Test, Build, Deploy PR
+        run: |
+          npx nx affected --target=test
+          npx nx affected --target=build 
+          npx nx affected --target=deploy:pr
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+          REVIEW_BUCKET_NAME: ${{ secrets.AWS_REVIEW_BUCKET_NAME }}
+          REACT_APP_RPC_TOKEN: ${{ secrets.REACT_APP_RPC_TOKEN }}
+          REACT_APP_TENDERLY_ORG_NAME: ${{ secrets.REACT_APP_TENDERLY_ORG_NAME }}
+          REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ secrets.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL }}
+          REACT_APP_TENDERLY_PROJECT_NAME: ${{ secrets.REACT_APP_TENDERLY_PROJECT_NAME }}
+
+      - name: 'PRaul: Comment PR with app URLs'
+        if: success() && github.event.number
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            * [Compound app](${{ env.REVIEW_FEATURE_URL }}/compound/)
+            * [WalletConnect app](${{ env.REVIEW_FEATURE_URL }}/wallet-connect/)
+            * [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)
+            * [Drain Account App](${{ env.REVIEW_FEATURE_URL }}/drain-safe/)
+            * [RAMP Network App](${{ env.REVIEW_FEATURE_URL }}/ramp-network/)
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
+        env:
+          REVIEW_FEATURE_URL: https://pr${{ github.event.number }}--${{ env.REPO_NAME_ALPHANUMERIC }}.review.gnosisdev.com
+
+  deploy:
+    name: Deploy Dev/Staging
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' && github.event_name != 'workflow_dispatch'
 
     steps:
-      - name: Remove broken apt repos [Ubuntu]
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
-
       - uses: actions/checkout@v2
-
-      - name: Node.js setup
-        uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          fetch-depth: 0
 
-      - uses: actions/cache@v2
+      - uses: ./.github/actions/setup-env
         with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
-      - name: Env dependencies setup
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+
+      - name: Test and Build
         run: |
-          sudo apt-get update
-          sudo apt-get -y install python3-pip python3-dev
-          pip install awscli --upgrade --user
-
-      - name: Project dependencies setup, node version ${{ matrix.node-version }}
-        run: |
-          # If you have dependencies from git (wc app), yarn may randomly throw an error about invalid cache
-          # This approach is taken from https://github.com/yarnpkg/yarn/issues/7212#issuecomment-506155894 to fix the issue
-          # Another approach is to install with flag --network-concurrency 1, but this will make the installation pretty slow (default value is 8)
-          mkdir .yarncache
-          yarn install --cache-folder ./.yarncache --frozen-lockfile
-          rm -rf .yarncache
-          yarn cache clean
-
-      - name: Build apps
-        run: npx lerna run build
-
-      - name: 'Deploy to S3: Develop'
-        run: bash ./scripts/deploy_to_s3_bucket.sh
-        if: github.ref == 'refs/heads/development'
+          npx nx affected --target=test --parallel
+          npx nx affected --target=build --parallel
         env:
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          REACT_APP_RPC_TOKEN: ${{ secrets.REACT_APP_RPC_TOKEN }}
+          REACT_APP_TENDERLY_ORG_NAME: ${{ secrets.REACT_APP_TENDERLY_ORG_NAME }}
+          REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ secrets.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL }}
+          REACT_APP_TENDERLY_PROJECT_NAME: ${{ secrets.REACT_APP_TENDERLY_PROJECT_NAME }}
+
+      # Script to deploy to the dev environment
+      - name: 'Deploy to S3: Develop'
+        if: github.ref == 'refs/heads/development'
+        run: npx nx affected --target=deploy:s3
+        env:
           BUCKET_NAME: ${{ secrets.AWS_DEV_BUCKET_NAME }}
 
+      # Script to deploy to staging environment
       - name: 'Deploy to S3: Staging'
-        run: bash ./scripts/deploy_to_s3_bucket.sh
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
+        run: npx nx affected --base=last-release --target=deploy:s3
         env:
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          BUCKET_NAME: ${{ secrets.STAGING_BUCKET_NAME }}
+          BUCKET_NAME: ${{ secrets.STAGING_BUCKET_NAME }}/current
+
+  release:
+    name: Production release
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - uses: ./.github/actions/setup-env
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: 'Deploy production'
+        uses: ./.github/actions/release
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          prod-deployment-hook-token: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
+          prod-deployment-hook-url: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
+          bucket-name: ${{ secrets.STAGING_BUCKET_NAME }}/releases
+          react-app-rpc-token: ${{ secrets.REACT_APP_RPC_TOKEN }}

@@ -1,5 +1,12 @@
 {
   "name": "Compound",
   "description": "Money markets on the Ethereum blockchain",
-  "iconPath": "Compound.png"
+  "iconPath": "Compound.png",
+  "icons": [
+    {
+      "src": "Compound.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ]
 }

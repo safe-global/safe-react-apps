@@ -1,26 +1,29 @@
 {
   "name": "compound",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "@apollo/react-hooks": "^3.1.3",
-    "@gnosis.pm/safe-react-components": "^0.3.0",
-    "apollo-boost": "^0.4.7",
+    "@apollo/client": "^3.5.5",
+    "@gnosis.pm/safe-react-components": "^0.9.7",
+    "@material-ui/core": "^4.12.3",
     "big-number-input": "^1.0.3",
-    "big.js": "^6.0.3",
-    "graphql": "^14.6.0",
-    "lodash": "^4.17.15",
-    "web3": "^1.2.5"
+    "big.js": "^6.1.1",
+    "graphql": "^16.3.0",
+    "lodash": "^4.17.21",
+    "web3": "~1.7.0"
   },
   "devDependencies": {
-    "@types/big.js": "^6.0.2",
-    "@types/lodash": "^4.14.168"
+    "@types/big.js": "^6.1.2",
+    "@types/lodash": "^4.14.178"
   },
   "scripts": {
     "start": "dotenv -e .env -- react-app-rewired start",
     "build": "dotenv -e .env -- react-app-rewired build",
-    "test": "react-app-rewired test --passWithNoTests"
+    "test": "react-app-rewired test --passWithNoTests",
+    "deploy:s3": "bash ../../scripts/deploy_to_s3_bucket.sh",
+    "deploy:pr": "bash ../../scripts/deploy_pr.sh",
+    "deploy:prod-hook": "bash ../../scripts/prepare_production_deployment.sh"
   },
   "eslintConfig": {
     "extends": "react-app"

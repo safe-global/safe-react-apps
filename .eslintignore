@@ -1,0 +1,15 @@
+!.eslintrc.js
+build
+config
+contracts
+flow-typed
+flow-typed/npm
+migrations
+node_modules
+public
+scripts
+src/assets
+src/config
+test
+*.spec*
+*.test*

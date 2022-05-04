@@ -1,1 +1,1 @@
-declare module 'ethers/utils';
+declare module 'ethers/utils'

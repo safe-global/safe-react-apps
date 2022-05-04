@@ -593,6 +593,6 @@ const CWethABI = [
     name: 'Approval',
     type: 'event',
   },
-];
+]
 
-export default CWethABI;
+export default CWethABI

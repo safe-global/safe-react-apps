@@ -1,19 +1,22 @@
 {
   "name": "wallet-connect",
-  "version": "1.1.0",
+  "version": "1.5.0",
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "@ethersproject/abi": "^5.0.10",
-    "@gnosis.pm/safe-react-components": "https://github.com/gnosis/safe-react-components.git#ff29c3c",
-    "@walletconnect/client": "^1.3.4",
-    "date-fns": "^2.16.1",
+    "@gnosis.pm/safe-react-components": "^0.9.7",
+    "@gnosis.pm/safe-react-gateway-sdk": "^2.10.1",
+    "@walletconnect/client": "^1.7.1",
+    "date-fns": "^2.28.0",
     "jsqr": "^1.3.1"
   },
   "scripts": {
-    "start": "dotenv -e .env -- react-app-rewired start",
-    "build": "dotenv -e .env -- react-app-rewired build",
-    "test": "react-app-rewired test --passWithNoTests"
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --passWithNoTests",
+    "deploy:s3": "bash ../../scripts/deploy_to_s3_bucket.sh",
+    "deploy:pr": "bash ../../scripts/deploy_pr.sh",
+    "deploy:prod-hook": "bash ../../scripts/prepare_production_deployment.sh"
   },
   "eslintConfig": {
     "extends": "react-app"

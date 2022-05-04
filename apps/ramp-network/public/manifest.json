@@ -1,0 +1,12 @@
+{
+  "name": "Ramp Network",
+  "description": "Buy crypto directly from your Safe",
+  "iconPath": "ramp.svg",
+  "icons": [
+    {
+      "src": "ramp.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+name: Release
+
+description: Release Apps
+
+inputs:
+  github-token:
+    description: GitHub token
+    required: true
+  bucket-name:
+    description: S3 bucket name
+    required: true
+  prod-deployment-hook-token:
+    description: Token for the webhook that triggers the deployment to production
+    required: true
+  prod-deployment-hook-url:
+    description: URL of the webhook that triggers the deployment to production
+    required: true
+  react-app-rpc-token:
+    description: Infura RPC API token
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup git user to "🦉🤖 Safe Bot"
+      shell: bash
+      run: git config user.email "-" && git config user.name "🦉🤖 Safe Bot"
+
+      # Script to upload release files and notify production deployments
+    - name: 'Upload build files to S3 and call the hook to notify '
+      run: |
+        npx nx affected --base=last-release --target=test
+        npx nx affected --base=last-release --target=build
+        # Version step has to be run before the deployment, because the scripts will use changed version in package.json
+        npx nx affected --base=last-release --target=version --parallel=1
+        APPEND_TAG=1 npx nx affected --base=last-release --target=deploy:s3
+        npx nx affected --base=last-release --target=deploy:prod-hook
+        git tag -f last-release
+      shell: bash
+      env:
+        PROD_DEPLOYMENT_HOOK_TOKEN: ${{ inputs.prod-deployment-hook-token }}
+        PROD_DEPLOYMENT_HOOK_URL: ${{ inputs.prod-deployment-hook-url }}
+        BUCKET_NAME: ${{ inputs.bucket-name }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        REACT_APP_RPC_TOKEN: ${{ inputs.react-app-rpc-token }}
+
+    - name: Push changes
+      uses: ad-m/github-push-action@8407731efefc0d8f72af254c74276b7a90be36e1
+      with:
+        github_token: ${{ inputs.github-token }}
+        branch: refs/heads/main-bump-versions
+        force: true
+        tags: true
