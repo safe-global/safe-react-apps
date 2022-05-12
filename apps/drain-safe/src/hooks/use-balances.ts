@@ -4,8 +4,9 @@ import { TokenBalance } from '@gnosis.pm/safe-apps-sdk'
 import { NATIVE_TOKEN } from '../utils/sdk-helpers'
 
 export type BalancesType = {
-  error?: Error
   assets: TokenBalance[]
+  error?: Error
+  loaded: boolean
   selectedTokens: string[]
   setSelectedTokens: (tokens: string[]) => void
 }
@@ -19,6 +20,7 @@ function useBalances(safeAddress: string, chainId: number): BalancesType {
   const [assets, setAssets] = useState<TokenBalance[]>([])
   const [selectedTokens, setSelectedTokens] = useState<string[]>([])
   const [error, setError] = useState<Error>()
+  const [loaded, setLoaded] = useState(false)
 
   const loadBalances = useCallback(async () => {
     if (!safeAddress || !chainId) {
@@ -33,6 +35,7 @@ function useBalances(safeAddress: string, chainId: number): BalancesType {
 
       setAssets(assets)
       setSelectedTokens(assets.map((token: TokenBalance) => token.tokenInfo.address))
+      setLoaded(true)
     } catch (err) {
       setError(err as Error)
     }
@@ -42,7 +45,7 @@ function useBalances(safeAddress: string, chainId: number): BalancesType {
     loadBalances()
   }, [loadBalances])
 
-  return { error, assets, selectedTokens, setSelectedTokens }
+  return { assets, error, loaded, selectedTokens, setSelectedTokens }
 }
 
 export default useBalances
