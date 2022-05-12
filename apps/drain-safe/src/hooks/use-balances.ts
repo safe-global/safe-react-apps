@@ -35,9 +35,10 @@ function useBalances(safeAddress: string, chainId: number): BalancesType {
 
       setAssets(assets)
       setSelectedTokens(assets.map((token: TokenBalance) => token.tokenInfo.address))
-      setLoaded(true)
     } catch (err) {
       setError(err as Error)
+    } finally {
+      setLoaded(true)
     }
   }, [safeAddress, chainId, sdk])
 

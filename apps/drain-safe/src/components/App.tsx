@@ -141,6 +141,13 @@ const App = (): React.ReactElement => {
         <Logo />
         <Title size="md">Drain Account</Title>
       </Flex>
+
+      {error && (
+        <Text size="xl" color="error">
+          {error}
+        </Text>
+      )}
+
       {assets.length ? (
         <>
           <Balances
@@ -149,7 +156,6 @@ const App = (): React.ReactElement => {
             assets={assets}
             onSelectionChange={setSelectedTokens}
           />
-          {error && <Text size="lg">{error}</Text>}
           {isFinished && (
             <TimedComponent timeout={5000} onTimeout={() => setFinished(false)}>
               <Text size="lg">
