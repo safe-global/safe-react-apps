@@ -16,12 +16,12 @@ jobs:
 
       - name: Install Cypress
         run: |
-          npm ci
+          yarn install --frozen-lockfile
           $(npm bin)/cypress cache path
           $(npm bin)/cypress cache list
           $(npm bin)/cypress verify
       - name: Run Cypress tests
-        run: npm run cy:run
+        run: yarn cy:run
 
       - name: Slack notification to alerts-safe-apps-prod
         if: always()
