@@ -1,6 +1,20 @@
 import { AbiItem, toBN, isAddress, fromWei } from 'web3-utils'
 import abiCoder, { AbiCoder } from 'web3-eth-abi'
 import { ContractInput, ContractMethod, ProposedTransaction } from './typings/models'
+import {
+  isArrayFieldType,
+  isArrayOfBooleansFieldType,
+  isArrayOfIntsFieldType,
+  isBooleanFieldType,
+  isIntFieldType,
+  isMatrixFieldType,
+  isMatrixOfBooleansFieldType,
+  isMatrixOfIntsFieldType,
+  isMultiDimensionalArrayFieldType,
+  isMultiDimensionalArrayOfBooleansFieldType,
+  isMultiDimensionalArrayOfIntsFieldType,
+  isTupleFieldType,
+} from './components/forms/fields/fields'
 
 export const enum FETCH_STATUS {
   NOT_ASKED = 'NOT_ASKED',
@@ -47,42 +61,99 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.AURORA]: () => 'https://mainnet.aurora.dev',
 }
 
-// Same regex used for web3@1.3.6
-export const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/)
+const parseBooleanValue = (value: string): boolean =>
+  typeof value === 'string' ? value.trim().toLowerCase() === 'true' : !!value
+
+const parseArrayOfBooleansValues = (value: string): any =>
+  Array.isArray(value)
+    ? value.map(itemValue => parseArrayOfBooleansValues(itemValue)) // recursive to address MultiDimensional Arrays field types
+    : parseBooleanValue(value)
+
+const parseIntValue = (value: string) => toBN(value.replace(/"/g, '').replace(/'/g, ''))
+
+// parse a string to an Array. Example: from "[1, 2, [3,4]]" to [ "1", "2", "[3, 4]" ]
+const parseStringToArray = (value: string): string[] => {
+  let numberOfItems = 0
+  let numberOfOtherArrays = 0
+  return value
+    .slice(1, -1) // remove the first "[" and the last "]"
+    .split('')
+    .reduce<string[]>((array, char) => {
+      const isCommaChar = char === ','
+
+      if (isCommaChar && numberOfOtherArrays === 0) {
+        numberOfItems++
+        return array
+      }
+
+      const isOpenArrayChar = char === '['
+
+      if (isOpenArrayChar) {
+        numberOfOtherArrays++
+      }
+
+      const isCloseArrayChar = char === ']'
+
+      if (isCloseArrayChar) {
+        numberOfOtherArrays--
+      }
+
+      array[numberOfItems] = `${array[numberOfItems] || ''}${char}`.trim()
+
+      return array
+    }, [])
+}
+
+const parseArrayOfIntsValues = (values: string): any => {
+  const parsed = parseStringToArray(values)
+
+  return parsed.map(
+    itemValue =>
+      Array.isArray(JSON.parse(itemValue))
+        ? parseArrayOfIntsValues(itemValue) // recursive to address MultiDimensional Arrays field types
+        : itemValue.replaceAll('"', '').replaceAll("'", ''), // to remove chars like " and '
+  )
+}
 
 // This function is used to apply some parsing to some value types
-export const parseInputValue = (input: any, value: string): any => {
-  // If there is a match with this regular expression we get an array value like the following
-  // ex: ['uint16', 'uint', '16']. If no match, null is returned
-  const isNumberInput = paramTypeNumber.test(input.type)
-  const isBooleanInput = input.type === 'bool'
+export const parseInputValue = (fieldType: string, value: string): any => {
+  const trimmedValue = typeof value === 'string' ? value.trim() : value
 
-  if (value.charAt(0) === '[') {
-    const parsed = JSON.parse(value.replace(/"/g, '"'))
-
-    if (input.type === 'bool[]') {
-      return parsed.map((value: boolean | string) => {
-        if (typeof value == 'string') {
-          return value.toLowerCase() === 'true'
-        }
-
-        return value
-      })
-    }
-
-    return parsed
+  if (isBooleanFieldType(fieldType)) {
+    return parseBooleanValue(trimmedValue)
   }
 
-  if (isBooleanInput) {
-    return value.toLowerCase() === 'true'
+  if (isIntFieldType(fieldType)) {
+    return parseIntValue(trimmedValue)
   }
 
-  if (isNumberInput && value) {
-    // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
-    // To fix that we pad the numeric values here as the encode function is expecting a string
-    // more info here https://github.com/ChainSafe/web3.js/issues/3772
-    const bitWidth = input.type.match(paramTypeNumber)[2]
-    return toBN(value).toString(10, bitWidth)
+  if (
+    isArrayOfBooleansFieldType(fieldType) ||
+    isMatrixOfBooleansFieldType(fieldType) ||
+    isMultiDimensionalArrayOfBooleansFieldType(fieldType)
+  ) {
+    const parsedValues = JSON.parse(trimmedValue)
+    return parseArrayOfBooleansValues(parsedValues)
+  }
+
+  if (
+    isArrayOfIntsFieldType(fieldType) ||
+    isMatrixOfIntsFieldType(fieldType) ||
+    isMultiDimensionalArrayOfIntsFieldType(fieldType)
+  ) {
+    return parseArrayOfIntsValues(trimmedValue)
+  }
+
+  if (
+    isArrayFieldType(fieldType) ||
+    isMatrixFieldType(fieldType) ||
+    isMultiDimensionalArrayFieldType(fieldType)
+  ) {
+    return JSON.parse(trimmedValue)
+  }
+
+  if (isTupleFieldType(fieldType)) {
+    return JSON.parse(trimmedValue)
   }
 
   return value
@@ -131,7 +202,7 @@ export const encodeToHexData = (
         const contractFieldName = contractField.name || index
         const cleanValue = contractFieldsValues[contractFieldName] || ''
 
-        return parseInputValue(contractField, cleanValue)
+        return parseInputValue(contractField.type, cleanValue)
       })
       const abi = abiCoder as unknown // a bug in the web3-eth-abi types
       const hexEncondedData = (abi as AbiCoder).encodeFunctionCall(

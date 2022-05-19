@@ -1,19 +1,17 @@
 import { getInputTypeHelper } from '../../../utils'
-import {
-  ADDRESS_FIELD_TYPE,
-  BOOLEAN_FIELD_TYPE,
-  U_INT_256_FIELD_TYPE,
-  U_INT_32_FIELD_TYPE,
-  U_INT_8_FIELD_TYPE,
-  INT_256_FIELD_TYPE,
-  INT_32_FIELD_TYPE,
-  INT_8_FIELD_TYPE,
-  BYTES_FIELD_TYPE,
-} from '../fields/fields'
+import { ADDRESS_FIELD_TYPE, BOOLEAN_FIELD_TYPE } from '../fields/fields'
 import validateAddressField from './validateAddressField'
 import validateAmountField from './validateAmountField'
 import validateField from './validateField'
 import validateHexEncodedDataField from './validateHexEncodedDataField'
+
+const U_INT_256_FIELD_TYPE = 'uint256'
+const U_INT_32_FIELD_TYPE = 'uint32'
+const U_INT_8_FIELD_TYPE = 'uint8'
+const INT_256_FIELD_TYPE = 'int256'
+const INT_32_FIELD_TYPE = 'int32'
+const INT_8_FIELD_TYPE = 'int8'
+const BYTES_FIELD_TYPE = 'bytes'
 
 const NO_ERROR_IS_PRESENT = undefined
 
@@ -389,7 +387,7 @@ describe('form validations', () => {
       })
     })
 
-    describe.only('tuple field type', () => {
+    describe('tuple field type', () => {
       it('validates a tuple', () => {
         const inputType = getInputTypeHelper({
           components: [
@@ -523,6 +521,190 @@ describe('form validations', () => {
         validationResult = tupleValidation('[1,[2,3],[[3],[4]]]')
 
         expect(validationResult).toContain('format error. details: types/value length mismatch')
+      })
+    })
+
+    describe('Array of Integers', () => {
+      it('empty array is a valid value for variable-length arrays', () => {
+        const arrayOfIntsValidation = validateField('int[]')
+
+        const validationResult = arrayOfIntsValidation('[]')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('empty array is NOT a valid value for fixed-length arrays', () => {
+        const arrayOfIntsValidation = validateField('int[3]')
+
+        const validationResult = arrayOfIntsValidation('[]')
+
+        expect(validationResult).toBe('format error. details: missing argument: coder array')
+      })
+
+      it('validates valid number values', () => {
+        const arrayOfIntsValidation = validateField('int[]')
+
+        const validationResult = arrayOfIntsValidation('[1, 2]')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('validates valid string values', () => {
+        const arrayOfIntsValidation = validateField('int[]')
+
+        const validationResult = arrayOfIntsValidation('["1", "2"]')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('validates mix valid string and number values', () => {
+        const arrayOfIntsValidation = validateField('int[]')
+
+        const validationResult = arrayOfIntsValidation('["1", "2", 3, 4]')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('validates invalid fixed length array too many arguments', () => {
+        const arrayOfIntsValidation = validateField('int[3]')
+
+        const validationResult = arrayOfIntsValidation('[1,2,3,4]')
+
+        expect(validationResult).toBe('format error. details: too many arguments: coder array')
+      })
+
+      it('validates invalid fixed length array missing arguments', () => {
+        const arrayOfIntsValidation = validateField('int[4]')
+
+        const validationResult = arrayOfIntsValidation('[1,2]')
+
+        expect(validationResult).toBe('format error. details: missing argument: coder array')
+      })
+
+      it('validates valid fixed length array missing arguments', () => {
+        const arrayOfIntsValidation = validateField('int[3]')
+
+        const validationResult = arrayOfIntsValidation('[1,2, 3]')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      describe('negative values', () => {
+        describe('negative integers int', () => {
+          it('validates valid negative values as string values', () => {
+            const arrayOfIntsValidation = validateField('int[]')
+
+            const validationResult = arrayOfIntsValidation('["-1", "-2"]')
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates valid negative values as number values', () => {
+            const arrayOfIntsValidation = validateField('int[]')
+
+            const validationResult = arrayOfIntsValidation('[-1, -2]')
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates valid negative values with string and number values', () => {
+            const arrayOfIntsValidation = validateField('int[]')
+
+            const validationResult = arrayOfIntsValidation('[-1, -2, "-3", "4"]')
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates out of range values with number values', () => {
+            const arrayOfIntsValidation = validateField('int8[]')
+
+            const validationResult = arrayOfIntsValidation('[8888, 8888, 1]')
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates out of range values with string values', () => {
+            const arrayOfIntsValidation = validateField('int8[]')
+
+            const validationResult = arrayOfIntsValidation('["8888", "8888", "1"]')
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates valid values with number values', () => {
+            const arrayOfIntsValidation = validateField('int8[]')
+
+            const validationResult = arrayOfIntsValidation('[1, 2]')
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates valid values with string values', () => {
+            const arrayOfIntsValidation = validateField('int8[]')
+
+            const validationResult = arrayOfIntsValidation('["1", "2"]')
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+        })
+
+        describe('negative integers uint', () => {
+          it('validates invalid negative values as string values', () => {
+            const arrayOfIntsValidation = validateField('uint[]')
+
+            const validationResult = arrayOfIntsValidation('["-1", "-2"]')
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates invalid negative values as number values', () => {
+            const arrayOfIntsValidation = validateField('uint[]')
+
+            const validationResult = arrayOfIntsValidation('[-1, -2]')
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates invalid negative values with string and number values', () => {
+            const arrayOfIntsValidation = validateField('uint[]')
+
+            const validationResult = arrayOfIntsValidation('[-1, -2, "-3", "-4"]')
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+        })
+      })
+
+      describe('out of range javascript numbers issue', () => {
+        it('validates out of range javascript numbers values', () => {
+          const arrayOfIntsValidation = validateField('int[]')
+
+          const validationResult = arrayOfIntsValidation(
+            '[6426191757410075707, 6426191757410075707]',
+          )
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
+
+        it('validates out of range javascript numbers as string values', () => {
+          const arrayOfIntsValidation = validateField('int[]')
+
+          const validationResult = arrayOfIntsValidation(
+            '["6426191757410075707", "6426191757410075707"]',
+          )
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
+
+        it('validates out of range javascript numbers as string and number values', () => {
+          const arrayOfIntsValidation = validateField('int[2]')
+
+          const validationResult = arrayOfIntsValidation(
+            '["6426191757410075707", 6426191757410075707]',
+          )
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
       })
     })
   })
