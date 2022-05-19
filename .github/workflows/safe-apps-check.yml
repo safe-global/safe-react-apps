@@ -1,0 +1,37 @@
+name: Test Safe Apps
+on:
+  workflow_dispatch:
+  push:
+  schedule:
+    # At 9:00 on every day-of-week from Monday through Friday
+    - cron: '0 9 * * 1-5'
+
+jobs:
+  e2e:
+    name: Run tests on Chrome 100
+    runs-on: ubuntu-18.04
+    container: cypress/browsers:node14.17.6-chrome100-ff98
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Cypress
+        run: |
+          npm ci
+          $(npm bin)/cypress cache path
+          $(npm bin)/cypress cache list
+          $(npm bin)/cypress verify
+      - name: Run Cypress tests
+        run: npm run cy:run
+
+      - name: Slack notification to alerts-safe-apps-prod
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          npx cypress-slack-reporter --report-dir cypress/reports --ci-provider none
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress-assets
+          path: cypress/videos/*

@@ -14,4 +14,8 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
   },
-};
+  globals: {
+    cy: 'readonly',
+    Cypress: 'readonly',
+  },
+}
