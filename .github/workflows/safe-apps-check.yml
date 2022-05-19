@@ -29,9 +29,3 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           npx cypress-slack-reporter --report-dir cypress/reports --ci-provider none
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: cypress-assets
-          path: cypress/videos/*

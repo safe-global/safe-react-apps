@@ -17,7 +17,7 @@
     "start:drain-safe": "yarn workspace drain-safe start",
     "prepare": "husky install",
     "cy:open": "npx cypress open",
-    "cy:run": "npx cypress run -- --record --spec 'cypress/integration/safe-apps-check.spec.js'"
+    "cy:run": "npx cypress run -- --spec 'cypress/integration/safe-apps-check.spec.js'"
   },
   "version": "2.5.1",
   "workspaces": [
