@@ -5,7 +5,7 @@ describe('Safe Apps List', () => {
     expect(safeAppsList).to.be.an('array').and.to.have.length.greaterThan(0)
   })
 
-  safeAppsList.slice(0, 10).forEach(safeApp => {
+  safeAppsList.slice.forEach(safeApp => {
     it(safeApp.name, () => {
       cy.visit(
         `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
