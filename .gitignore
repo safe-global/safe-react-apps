@@ -29,3 +29,7 @@ yarn-error.log*
 
 # vscode folders
 .vscode
+
+# contract artifacts
+**/cache
+**/artifacts
