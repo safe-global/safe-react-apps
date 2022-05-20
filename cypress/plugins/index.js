@@ -5,12 +5,12 @@ module.exports = async (on, config) => {
   on('after:run', async results => {
     if (results) {
       try {
-        const url = process.env.CYPRESS_SLACK_WEBHOOK_URL
+        const url = process.env.SLACK_WEBHOOK_URL
         if (!url) {
           return
         }
 
-        await axios.post(process.env.CYPRESS_SLACK_WEBHOOK_URL, buildSlackMessage(results))
+        await axios.post(process.env.SLACK_WEBHOOK_URL, buildSlackMessage(results))
       } catch (error) {
         console.error(error)
       }
