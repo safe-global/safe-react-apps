@@ -46,10 +46,3 @@ jobs:
           CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
           SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
         run: yarn cy:run
-
-      - name: Slack notification to alerts-safe-apps-prod
-        if: always()
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          npx cypress-slack-reporter --report-dir cypress/reports --ci-provider none
