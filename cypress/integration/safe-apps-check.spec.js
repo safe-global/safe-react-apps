@@ -1,11 +1,11 @@
-const safeAppsList = Cypress.env('SAFE_APPS_LIST')
+const safeAppsList = Cypress.env('SAFE_APPS_LIST') || []
 
 describe('Safe Apps List', () => {
   before(() => {
     expect(safeAppsList).to.be.an('array').and.to.have.length.greaterThan(0)
   })
 
-  safeAppsList.slice.forEach(safeApp => {
+  safeAppsList.forEach(safeApp => {
     it(safeApp.name, () => {
       cy.visit(
         `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
