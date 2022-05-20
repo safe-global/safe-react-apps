@@ -706,6 +706,52 @@ describe('form validations', () => {
           expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
         })
       })
+
+      describe('invalid array values', () => {
+        it('validates array of invalid string values', () => {
+          const arrayOfIntsValidation = validateField('int[]')
+
+          const validationResult = arrayOfIntsValidation('["invalid_array_value"]')
+
+          expect(validationResult).toBe('format error. details: invalid BigNumber string')
+        })
+
+        it('validates invalid array value', () => {
+          const arrayOfIntsValidation = validateField('int[]')
+
+          const validationResult = arrayOfIntsValidation('invalid_array_value')
+
+          expect(validationResult).toBe(
+            'format error. details: SyntaxError: Unexpected token i in JSON at position 0',
+          )
+        })
+
+        it('validates invalid item value within the array', () => {
+          const arrayOfIntsValidation = validateField('int[]')
+
+          const validationResult = arrayOfIntsValidation('[invalid_array_value]')
+
+          expect(validationResult).toBe(
+            'format error. details: SyntaxError: Unexpected token i in JSON at position 1',
+          )
+        })
+
+        it('validates invalid number value', () => {
+          const arrayOfIntsValidation = validateField('int[]')
+
+          const validationResult = arrayOfIntsValidation('1234')
+
+          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+        })
+
+        it('validates invalid string value', () => {
+          const arrayOfIntsValidation = validateField('int[]')
+
+          const validationResult = arrayOfIntsValidation('"1234"')
+
+          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+        })
+      })
     })
   })
 })

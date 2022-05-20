@@ -61,8 +61,32 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.AURORA]: () => 'https://mainnet.aurora.dev',
 }
 
-const parseBooleanValue = (value: string): boolean =>
-  typeof value === 'string' ? value.trim().toLowerCase() === 'true' : !!value
+export const parseBooleanValue = (value: any): boolean => {
+  const isStringValue = typeof value === 'string'
+  if (isStringValue) {
+    const truthyStrings = ['true', 'True', 'TRUE', '1']
+    const isTruthyValue = truthyStrings.some(
+      truthyString => truthyString === value.trim().toLowerCase(),
+    )
+
+    if (isTruthyValue) {
+      return true
+    }
+
+    const falsyStrings = ['false', 'False', 'FALSE', '0']
+    const isFalsyValue = falsyStrings.some(
+      falsyString => falsyString === value.trim().toLowerCase(),
+    )
+
+    if (isFalsyValue) {
+      return false
+    }
+
+    throw SyntaxError('Invalid Boolean value')
+  }
+
+  return !!value
+}
 
 const parseArrayOfBooleansValues = (value: string): any =>
   Array.isArray(value)
@@ -72,10 +96,11 @@ const parseArrayOfBooleansValues = (value: string): any =>
 const parseIntValue = (value: string) => toBN(value.replace(/"/g, '').replace(/'/g, ''))
 
 // parse a string to an Array. Example: from "[1, 2, [3,4]]" to [ "1", "2", "[3, 4]" ]
-const parseStringToArray = (value: string): string[] => {
+export const parseStringOfIntsToArray = (value: string): string[] => {
   let numberOfItems = 0
   let numberOfOtherArrays = 0
   return value
+    .trim()
     .slice(1, -1) // remove the first "[" and the last "]"
     .split('')
     .reduce<string[]>((array, char) => {
@@ -105,11 +130,15 @@ const parseStringToArray = (value: string): string[] => {
 }
 
 const parseArrayOfIntsValues = (values: string): any => {
-  const parsed = parseStringToArray(values)
+  const isArray = Array.isArray(JSON.parse(values))
 
-  return parsed.map(
+  if (!isArray) {
+    throw new SyntaxError('Invalid Array value')
+  }
+
+  return parseStringOfIntsToArray(values).map(
     itemValue =>
-      Array.isArray(JSON.parse(itemValue))
+      Array.isArray(itemValue)
         ? parseArrayOfIntsValues(itemValue) // recursive to address MultiDimensional Arrays field types
         : itemValue.replaceAll('"', '').replaceAll("'", ''), // to remove chars like " and '
   )
