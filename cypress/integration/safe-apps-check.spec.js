@@ -13,6 +13,7 @@ describe('Safe Apps List', () => {
         )}/apps?appUrl=${safeApp.url}`,
       )
       const iframeSelector = `iframe[id="iframe-${safeApp.url}"]`
+
       cy.findByText('Accept all').click({ force: true })
       cy.findByText('Confirm').click({ force: true })
       cy.frameLoaded(iframeSelector)

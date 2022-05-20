@@ -1,40 +1,17 @@
 import '@testing-library/cypress/add-commands'
 
-Cypress.Commands.add('getSafeAppsIframe', () => {
-  // get the iframe > document > body
-  // and retry until the body element is not empty
-  return (
-    cy
-      .get('iframe[id^="iframe-"]', { timeout: 35000 })
-      .its('0.contentDocument.body')
-      .should('not.be.empty')
-      // wraps "body" DOM element to allow
-      // chaining more Cypress commands, like ".find(...)"
-      // https://on.cypress.io/wrap
-      .then(cy.wrap)
-  )
-})
-
 const DEFAULT_OPTS = {
   log: true,
   timeout: 30000,
 }
+
 const DEFAULT_IFRAME_SELECTOR = 'iframe'
 
 function sleep(timeout) {
   return new Promise(resolve => setTimeout(resolve, timeout))
 }
 
-function timeout(cb, timeout) {
-  return new Promise(resolve => {
-    let done = false
-    let finish = () => done || resolve()
-    cb().then(finish)
-    sleep(timeout).then(finish)
-  })
-}
-
-const frameLoaded = (selector, opts) => {
+Cypress.Commands.add('frameLoaded', (selector, opts) => {
   if (selector === undefined) {
     selector = DEFAULT_IFRAME_SELECTOR
   } else if (typeof selector === 'object') {
@@ -89,10 +66,9 @@ const frameLoaded = (selector, opts) => {
     log?.finish()
     return $frame
   })
-}
-Cypress.Commands.add('frameLoaded', frameLoaded)
+})
 
-const iframe = (selector, opts) => {
+Cypress.Commands.add('iframe', (selector, opts) => {
   if (selector === undefined) {
     selector = DEFAULT_IFRAME_SELECTOR
   } else if (typeof selector === 'object') {
@@ -116,10 +92,9 @@ const iframe = (selector, opts) => {
     const contentWindow = $frame.prop('contentWindow')
     return Cypress.$(contentWindow.document.body)
   })
-}
-Cypress.Commands.add('iframe', iframe)
+})
 
-const enter = (selector, opts) => {
+Cypress.Commands.add('enter', (selector, opts) => {
   if (selector === undefined) {
     selector = DEFAULT_IFRAME_SELECTOR
   } else if (typeof selector === 'object') {
@@ -144,5 +119,4 @@ const enter = (selector, opts) => {
     log?.set('$el', $body).end()
     return () => cy.wrap($body, { log: false })
   })
-}
-Cypress.Commands.add('enter', enter)
+})
