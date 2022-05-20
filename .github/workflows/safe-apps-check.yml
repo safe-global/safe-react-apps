@@ -6,7 +6,7 @@ on:
         description: 'Safe Web URL'
         required: true
         default: 'http://gnosis-safe.io/app'
-      networkAddressPrefix:
+      networkPrefix:
         description: 'Address prefix (eth,rin...)'
         required: true
         default: 'eth'
@@ -41,7 +41,7 @@ jobs:
         env:
           CI: 'true'
           CYPRESS_BASE_URL: ${{ github.event.inputs.baseUrl || 'http://gnosis-safe.io/app' }}
-          CYPRESS_NETWORK_ADDRESS_PREFIX: ${{ github.event.inputs.networkAddressPrefix || 'eth' }}
+          CYPRESS_NETWORK_PREFIX: ${{ github.event.inputs.networkPrefix || 'eth' }}
           CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70' }}
           CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
           SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
