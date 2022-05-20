@@ -1,4 +1,4 @@
-const safeAppsList = Cypress.env('safeAppsList')
+const safeAppsList = Cypress.env('SAFE_APPS_LIST')
 
 describe('Safe Apps List', () => {
   before(() => {
@@ -6,11 +6,11 @@ describe('Safe Apps List', () => {
   })
 
   safeAppsList.slice(0, 10).forEach(safeApp => {
-    it(`${safeApp.name} - (${safeApp.url})`, () => {
+    it(safeApp.name, () => {
       cy.visit(
-        `/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env('TESTING_SAFE_ADDRESS')}/apps?appUrl=${
-          safeApp.url
-        }`,
+        `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
+          'TESTING_SAFE_ADDRESS',
+        )}/apps?appUrl=${safeApp.url}`,
       )
       const iframeSelector = `iframe[id="iframe-${safeApp.url}"]`
       cy.findByText('Accept all').click({ force: true })

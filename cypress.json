@@ -1,18 +1,8 @@
 {
-  "baseUrl": "http://gnosis-safe.io/app",
   "chromeWebSecurity": false,
-  "env": {
-    "TESTING_SAFE_ADDRESS": "0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70",
-    "NETWORK_PREFIX": "eth"
-  },
-  "reporter": "cypress-multi-reporters",
-  "reporterOptions": {
-    "reporterEnabled": "mochawesome",
-    "mochawesomeReporterOptions": {
-      "reportDir": "cypress/reports",
-      "overwrite": false,
-      "html": false,
-      "json": true
-    }
+  "video": false,
+  "retries": {
+    "runMode": 1,
+    "openMode": 0
   }
 }

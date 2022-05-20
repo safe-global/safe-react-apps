@@ -1,6 +1,23 @@
 name: Test Safe Apps
 on:
   workflow_dispatch:
+    inputs:
+      baseUrl:
+        description: 'Safe Web URL'
+        required: true
+        default: 'http://gnosis-safe.io/app'
+      networkAddressPrefix:
+        description: 'Address prefix (eth,rin...)'
+        required: true
+        default: 'eth'
+      safeAddress:
+        description: 'Safe address'
+        required: true
+        default: '0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70'
+      configServiceBaseUrl:
+        description: 'Config service base URL'
+        required: true
+        default: 'https://safe-client.gnosis.io'
   push:
   schedule:
     # At 9:00 on every day-of-week from Monday through Friday
@@ -21,6 +38,13 @@ jobs:
           $(npm bin)/cypress cache list
           $(npm bin)/cypress verify
       - name: Run Cypress tests
+        env:
+          CI: 'true'
+          CYPRESS_BASE_URL: ${{ github.event.inputs.baseUrl || 'http://gnosis-safe.io/app' }}
+          CYPRESS_NETWORK_ADDRESS_PREFIX: ${{ github.event.inputs.networkAddressPrefix || 'eth' }}
+          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70' }}
+          CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
+          SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
         run: yarn cy:run
 
       - name: Slack notification to alerts-safe-apps-prod
