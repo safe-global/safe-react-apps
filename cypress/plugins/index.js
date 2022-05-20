@@ -34,6 +34,8 @@ module.exports = async (on, config) => {
   config.env.NETWORK_PREFIX = process.env.CYPRESS_NETWORK_PREFIX
   config.env.TESTING_SAFE_ADDRESS = process.env.CYPRESS_TESTING_SAFE_ADDRESS
 
+  console.log(config.env)
+
   return config
 }
 
