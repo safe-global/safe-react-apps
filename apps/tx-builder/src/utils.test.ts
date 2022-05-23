@@ -1,6 +1,7 @@
-import { isBN, toBN } from 'web3-utils'
+import { toBN } from 'web3-utils'
 
 import {
+  encodeToHexData,
   getInputTypeHelper,
   parseBooleanValue,
   parseInputValue,
@@ -817,5 +818,23 @@ describe('util functions', () => {
     it('another value throws an error', () => {
       expect(() => parseBooleanValue('another value')).toThrow(SyntaxError)
     })
+  })
+
+  describe('encodeToHexData', () => {
+    const contractMethod = {
+      inputs: [{ internalType: 'int128[]', name: 'test128', type: 'int128[]' }],
+      name: 'testMethod',
+      payable: false,
+    }
+
+    const contractFieldsValues = {
+      test128: '[-6426191757410075707]',
+    }
+
+    const encondedValue = encodeToHexData(contractMethod, contractFieldsValues)
+
+    expect(encondedValue).toEqual(
+      '0x7da27bb000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001ffffffffffffffffffffffffffffffffffffffffffffffffa6d194a4e1077bc5',
+    )
   })
 })

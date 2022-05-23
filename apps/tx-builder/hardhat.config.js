@@ -14,8 +14,15 @@ const RINKEBY_CHAIN_ID = 4
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: '0.8.0',
-  defaultNetwork: 'rinkeby',
+  solidity: {
+    version: '0.8.0',
+    settings: {
+      optimizer: {
+        runs: 200,
+        enabled: true,
+      },
+    },
+  },
   networks: {
     hardhat: {},
     localhost: {},

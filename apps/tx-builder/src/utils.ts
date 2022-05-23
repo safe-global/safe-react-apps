@@ -145,12 +145,10 @@ const parseArrayOfIntsValues = (values: string, fieldType: string): any => {
     throw new SyntaxError('Invalid Array value')
   }
 
-  return parseStringOfIntsToArray(values).map(
-    itemValue =>
-      Array.isArray(itemValue)
-        ? parseArrayOfIntsValues(itemValue, fieldType) // recursive to address MultiDimensional Arrays field types
-        : parseIntValue(itemValue, fieldType),
-    // : itemValue.replaceAll('"', '').replaceAll("'", ''), // to remove chars like " and '
+  return parseStringOfIntsToArray(values).map(itemValue =>
+    Array.isArray(itemValue)
+      ? parseArrayOfIntsValues(itemValue, fieldType) // recursive to address MultiDimensional Arrays field types
+      : parseIntValue(itemValue, fieldType),
   )
 }
 
@@ -295,10 +293,3 @@ export const getInputTypeHelper = (input: ContractInput): string => {
     return input.type
   }
 }
-
-// const isDinamicArrayOfLessThan152Bits = (fieldType: string): boolean => {
-//   if (!isArrayFieldType(fieldType)) {
-//     return false
-//   }
-
-// }

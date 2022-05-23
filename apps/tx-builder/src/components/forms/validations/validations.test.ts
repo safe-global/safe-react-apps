@@ -728,6 +728,16 @@ describe('form validations', () => {
             expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
           })
 
+          it('issue with a lot of values for int128[]', () => {
+            const arrayOfIntsValidation = validateField('int128[]')
+
+            const validationResult = arrayOfIntsValidation(
+              '["-6426191757410075707", -6426191757410075707, -2, "6426191757410075707", 6426191757410075707, 2, "0x123", "0xaaafff"]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
           it('issue with int152[] long negative numbers', () => {
             const arrayOfIntsValidation = validateField('int152[]')
 

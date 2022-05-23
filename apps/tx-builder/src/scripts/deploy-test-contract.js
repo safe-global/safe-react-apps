@@ -21,7 +21,7 @@ async function main() {
   console.log('Etherscan URL: ', etherscanUrl)
   console.log('')
 
-  const verifyCommand = `yarn contract:verify ${testContractAddress}`
+  const verifyCommand = `yarn contract:verify:rinkeby ${testContractAddress}`
   console.log('To verify the contract, run: ', verifyCommand)
 }
 
