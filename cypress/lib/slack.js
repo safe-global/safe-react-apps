@@ -24,7 +24,39 @@ const buildSlackMessage = results => {
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: '*Safe Apps e2e results*',
+      text: '*Safe Apps liveness tests*',
+    },
+  }
+
+  const executionEnvironment = {
+    type: 'section',
+    fields: [
+      {
+        type: 'mrkdwn',
+        text: `*Domain:*\n${process.env.CYPRESS_BASE_URL}`,
+      },
+      {
+        type: 'mrkdwn',
+        text: `*Network:*\n${process.env.CYPRESS_NETWORK_PREFIX}`,
+      },
+      {
+        type: 'mrkdwn',
+        text: `*Safe Address:*\n${process.env.CYPRESS_TESTING_SAFE_ADDRESS}`,
+      },
+      {
+        type: 'mrkdwn',
+        text: `*Config Service:*\n${process.env.CYPRESS_CONFIG_SERVICE_BASE_URL}`,
+      },
+    ],
+  }
+
+  const safeUrl = {
+    type: 'section',
+    text: {
+      type: 'mrkdwn',
+      text: `*Safe URL:*\n${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
+        'TESTING_SAFE_ADDRESS',
+      )}/apps`,
     },
   }
 
@@ -32,7 +64,7 @@ const buildSlackMessage = results => {
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: `${results.totalPassed} out of ${results.totalTests}, passed`,
+      text: `*Execution results:*\n${results.totalPassed} out of ${results.totalTests}, passed`,
     },
   }
 
@@ -63,7 +95,7 @@ const buildSlackMessage = results => {
     },
   }
 
-  const blocks = [title, executionResult]
+  const blocks = [title, executionEnvironment, safeUrl, executionResult]
 
   if (failedTests.length > 0) {
     blocks.push(failingApps)
