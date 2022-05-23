@@ -41,3 +41,4 @@ jobs:
           CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70' }}
           CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
           SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
+        continue-on-error: true
