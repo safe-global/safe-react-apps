@@ -54,9 +54,7 @@ const buildSlackMessage = results => {
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: `*Safe URL:*\n${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
-        'TESTING_SAFE_ADDRESS',
-      )}/apps`,
+      text: `*Safe URL:*\n${process.env.CYPRESS_BASE_URL}/${process.env.CYPRESS_NETWORK_PREFIX}:${process.env.CYPRESS_TESTING_SAFE_ADDRESS}/apps`,
     },
   }
 
