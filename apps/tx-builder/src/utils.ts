@@ -139,7 +139,8 @@ export const parseStringOfIntsToArray = (value: string): string[] => {
 }
 
 const parseArrayOfIntsValues = (values: string, fieldType: string): any => {
-  const isArray = Array.isArray(JSON.parse(values))
+  const trimmedValue = values.trim()
+  const isArray = trimmedValue.startsWith('[') && trimmedValue.endsWith(']')
 
   if (!isArray) {
     throw new SyntaxError('Invalid Array value')

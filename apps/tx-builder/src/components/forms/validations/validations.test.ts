@@ -560,7 +560,9 @@ describe('form validations', () => {
       it('validates mix valid string and number values', () => {
         const arrayOfIntsValidation = validateField('int[]')
 
-        const validationResult = arrayOfIntsValidation('["1", "2", 3, 4]')
+        const validationResult = arrayOfIntsValidation(
+          '["1",   "2   ",     3, 4   , "0xD", "A", a, A,    0xB, 0xb, 0x1   , -0x1, -0xF, -F]',
+        )
 
         expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
       })
@@ -585,6 +587,16 @@ describe('form validations', () => {
         const arrayOfIntsValidation = validateField('int[3]')
 
         const validationResult = arrayOfIntsValidation('[1,2, 3]')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('validates valid hexadecimal values', () => {
+        const arrayOfIntsValidation = validateField('int[10]')
+
+        const validationResult = arrayOfIntsValidation(
+          '["0xD", "A", a, A, 0xB, 0xb, 0x1, -0x1, -0xF, -F]',
+        )
 
         expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
       })
@@ -643,6 +655,16 @@ describe('form validations', () => {
             const arrayOfIntsValidation = validateField('int8[]')
 
             const validationResult = arrayOfIntsValidation('["1", "2"]')
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates valid hexadecimal values', () => {
+            const arrayOfIntsValidation = validateField('int8[]')
+
+            const validationResult = arrayOfIntsValidation(
+              '["0xD", "A", a, A, 0xB, 0xb, 0x1, -0x1, -0xF, -F]',
+            )
 
             expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
           })
@@ -781,14 +803,12 @@ describe('form validations', () => {
           )
         })
 
-        it('validates invalid array value', () => {
+        it('validates invalid array ', () => {
           const arrayOfIntsValidation = validateField('int[]')
 
           const validationResult = arrayOfIntsValidation('invalid_array_value')
 
-          expect(validationResult).toBe(
-            'format error. details: SyntaxError: Unexpected token i in JSON at position 0',
-          )
+          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
         })
 
         it('validates invalid item value within the array', () => {
@@ -797,7 +817,7 @@ describe('form validations', () => {
           const validationResult = arrayOfIntsValidation('[invalid_array_value]')
 
           expect(validationResult).toBe(
-            'format error. details: SyntaxError: Unexpected token i in JSON at position 1',
+            'format error. details: Error: Error: [number-to-bn] while converting number "invalid_array_value" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: "invalid_array_value"',
           )
         })
 

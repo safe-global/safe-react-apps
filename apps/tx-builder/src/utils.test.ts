@@ -230,8 +230,6 @@ describe('util functions', () => {
       })
     })
 
-    // TODO: CHECK NEGATIVE NUMBERS!!!!
-
     describe('int[], uint, int[size] & uint[size] values', () => {
       describe(' int[] & int[size]', () => {
         it('parse an array of numbers to array of strings', () => {
@@ -302,19 +300,22 @@ describe('util functions', () => {
           expect(parseInputValue('int120[2]', '[]')).toEqual([])
         })
 
-        it('parse an invalid array value throws a SyntaxError', () => {
-          expect(() => parseInputValue('int[]', 'invalid_array_value')).toThrow(SyntaxError)
+        it('parse an invalid array throws a SyntaxError', () => {
+          expect(() => parseInputValue('int[]', 'invalid_array')).toThrow(SyntaxError)
           expect(() => parseInputValue('int[]', '6426191757410075707')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int[]', '[invalid_array_value]')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int[3]', 'invalid_array_value')).toThrow(SyntaxError)
+          expect(() => parseInputValue('int[3]', 'invalid_array')).toThrow(SyntaxError)
           expect(() => parseInputValue('int[3]', '6426191757410075707')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int[2]', '[invalid_array_value]')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int120[]', 'invalid_array_value')).toThrow(SyntaxError)
+          expect(() => parseInputValue('int120[]', 'invalid_array')).toThrow(SyntaxError)
           expect(() => parseInputValue('int120[]', '6426191757410075707')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int120[]', '[invalid_array_value]')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int120[3]', 'invalid_array_value')).toThrow(SyntaxError)
+          expect(() => parseInputValue('int120[3]', 'invalid_array')).toThrow(SyntaxError)
           expect(() => parseInputValue('int120[3]', '6426191757410075707')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int120[2]', '[invalid_array_value]')).toThrow(SyntaxError)
+        })
+
+        it('parse an array with invalid values throws a Error', () => {
+          expect(() => parseInputValue('int[]', '[invalid_array_value]')).toThrow(Error)
+          expect(() => parseInputValue('int[2]', '[invalid_array_value]')).toThrow(Error)
+          expect(() => parseInputValue('int120[]', '[invalid_array_value]')).toThrow(Error)
+          expect(() => parseInputValue('int120[2]', '[invalid_array_value]')).toThrow(Error)
         })
 
         it('parse valid negative numbers', () => {
@@ -460,26 +461,29 @@ describe('util functions', () => {
           expect(parseInputValue('uint120[2]', '[]')).toEqual([])
         })
 
-        it('parse an invalid array value throws a SyntaxError', () => {
+        it('parse an invalid array throws a SyntaxError', () => {
           expect(() => parseInputValue('uint[]', 'invalid_array_value')).toThrow(SyntaxError)
           expect(() => parseInputValue('uint[]', '6426191757410075707')).toThrow(SyntaxError)
-          expect(() => parseInputValue('uint[]', '[invalid_array_value]')).toThrow(SyntaxError)
           expect(() => parseInputValue('uint[3]', 'invalid_array_value')).toThrow(SyntaxError)
           expect(() => parseInputValue('uint[3]', '6426191757410075707')).toThrow(SyntaxError)
-          expect(() => parseInputValue('uint[2]', '[invalid_array_value]')).toThrow(SyntaxError)
 
           expect(() => parseInputValue('uint120[]', 'invalid_array_value')).toThrow(SyntaxError)
           expect(() => parseInputValue('uint120[]', '6426191757410075707')).toThrow(SyntaxError)
-          expect(() => parseInputValue('uint120[]', '[invalid_array_value]')).toThrow(SyntaxError)
           expect(() => parseInputValue('uint120[3]', 'invalid_array_value')).toThrow(SyntaxError)
           expect(() => parseInputValue('uint120[3]', '6426191757410075707')).toThrow(SyntaxError)
-          expect(() => parseInputValue('uint120[2]', '[invalid_array_value]')).toThrow(SyntaxError)
+        })
+
+        it('parse an array with invalid values throws an Error', () => {
+          expect(() => parseInputValue('uint[]', '[invalid_array_value]')).toThrow(Error)
+          expect(() => parseInputValue('uint[2]', '[invalid_array_value]')).toThrow(Error)
+          expect(() => parseInputValue('uint120[]', '[invalid_array_value]')).toThrow(Error)
+          expect(() => parseInputValue('uint120[2]', '[invalid_array_value]')).toThrow(Error)
         })
       })
     })
 
     describe('address[] & address[size] values', () => {
-      it('parse an array of addresses to array of strings', () => {
+      it('parse an array of addresses(string) to array of strings', () => {
         expect(
           parseInputValue('address[]', '["0x680cde08860141F9D223cE4E620B10Cd6741037E"]'),
         ).toEqual(['0x680cde08860141F9D223cE4E620B10Cd6741037E'])
@@ -488,7 +492,7 @@ describe('util functions', () => {
         ).toEqual(['0x680cde08860141F9D223cE4E620B10Cd6741037E'])
       })
 
-      it.skip('parse an invalid array value throws a SyntaxError', () => {
+      it.skip('parse an array of addresses to array of strings', () => {
         // FIX: try to parse this as a valid value
         expect(
           parseInputValue('address[]', '[0x680cde08860141F9D223cE4E620B10Cd6741037E]'),
@@ -507,7 +511,7 @@ describe('util functions', () => {
     })
 
     describe('bytes[] & bytes[size] values', () => {
-      it('parse an array of bytes to array of strings', () => {
+      it('parse an array of bytes (string) to array of strings', () => {
         expect(parseInputValue('bytes[]', '["0x000111AAFF"]')).toEqual(['0x000111AAFF'])
         expect(parseInputValue('bytes[1]', '["0x000111AAFF"]')).toEqual(['0x000111AAFF'])
       })
@@ -517,9 +521,12 @@ describe('util functions', () => {
         expect(() => parseInputValue('bytes[1]', '[INVALID_BYTES]')).toThrow(SyntaxError)
         expect(() => parseInputValue('bytes[]', 'INVALID_ARRAY')).toThrow(SyntaxError)
         expect(() => parseInputValue('bytes[1]', 'INVALID_ARRAY')).toThrow(SyntaxError)
-        // FIX: try to parse this valid value
-        expect(() => parseInputValue('bytes[]', '[0x000111AAFF]')).toThrow(SyntaxError)
-        expect(() => parseInputValue('bytes[1]', '[0x000111AAFF]')).toThrow(SyntaxError)
+      })
+
+      it.skip('parse an array of bytes to array of strings', () => {
+        // FIX: try to parse this as a valid value
+        expect(parseInputValue('bytes[]', '[0x000111AAFF]')).toEqual(['0x000111AAFF'])
+        expect(parseInputValue('bytes[1]', '[0x000111AAFF]')).toEqual(['0x000111AAFF'])
       })
     })
 
