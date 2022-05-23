@@ -93,7 +93,16 @@ const parseArrayOfBooleansValues = (value: string): any =>
     ? value.map(itemValue => parseArrayOfBooleansValues(itemValue)) // recursive to address MultiDimensional Arrays field types
     : parseBooleanValue(value)
 
-const parseIntValue = (value: string) => toBN(value.replace(/"/g, '').replace(/'/g, ''))
+export const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)(((\[\])|(\[[1-9]+[0-9]*\]))*)?$/)
+
+const parseIntValue = (value: string, fieldType: string) => {
+  const bits = Number(fieldType.match(paramTypeNumber)?.[2] || '256')
+
+  // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
+  // To fix that we pad the numeric values here as the encode function is expecting a string
+  // more info here https://github.com/ChainSafe/web3.js/issues/3772
+  return toBN(value.replace(/"/g, '').replace(/'/g, '')).toString(10, bits)
+}
 
 // parse a string to an Array. Example: from "[1, 2, [3,4]]" to [ "1", "2", "[3, 4]" ]
 export const parseStringOfIntsToArray = (value: string): string[] => {
@@ -129,7 +138,7 @@ export const parseStringOfIntsToArray = (value: string): string[] => {
     }, [])
 }
 
-const parseArrayOfIntsValues = (values: string): any => {
+const parseArrayOfIntsValues = (values: string, fieldType: string): any => {
   const isArray = Array.isArray(JSON.parse(values))
 
   if (!isArray) {
@@ -139,8 +148,9 @@ const parseArrayOfIntsValues = (values: string): any => {
   return parseStringOfIntsToArray(values).map(
     itemValue =>
       Array.isArray(itemValue)
-        ? parseArrayOfIntsValues(itemValue) // recursive to address MultiDimensional Arrays field types
-        : itemValue.replaceAll('"', '').replaceAll("'", ''), // to remove chars like " and '
+        ? parseArrayOfIntsValues(itemValue, fieldType) // recursive to address MultiDimensional Arrays field types
+        : parseIntValue(itemValue, fieldType),
+    // : itemValue.replaceAll('"', '').replaceAll("'", ''), // to remove chars like " and '
   )
 }
 
@@ -153,7 +163,7 @@ export const parseInputValue = (fieldType: string, value: string): any => {
   }
 
   if (isIntFieldType(fieldType)) {
-    return parseIntValue(trimmedValue)
+    return parseIntValue(trimmedValue, fieldType)
   }
 
   if (
@@ -170,7 +180,7 @@ export const parseInputValue = (fieldType: string, value: string): any => {
     isMatrixOfIntsFieldType(fieldType) ||
     isMultiDimensionalArrayOfIntsFieldType(fieldType)
   ) {
-    return parseArrayOfIntsValues(trimmedValue)
+    return parseArrayOfIntsValues(trimmedValue, fieldType)
   }
 
   if (
@@ -285,3 +295,10 @@ export const getInputTypeHelper = (input: ContractInput): string => {
     return input.type
   }
 }
+
+// const isDinamicArrayOfLessThan152Bits = (fieldType: string): boolean => {
+//   if (!isArrayFieldType(fieldType)) {
+//     return false
+//   }
+
+// }

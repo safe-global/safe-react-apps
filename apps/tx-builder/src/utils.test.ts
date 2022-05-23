@@ -11,112 +11,94 @@ describe('util functions', () => {
   describe('parseInputValue', () => {
     describe('integer values', () => {
       describe('int values', () => {
-        it('parse a valid positive int to BN', () => {
+        it('parse a valid positive int to string', () => {
           const parsedValue = parseInputValue('int', '1')
 
-          expect(isBN(parsedValue)).toBe(true)
-          expect(parsedValue).toEqual(toBN('1'))
+          expect(parsedValue).toEqual(toBN('1').toString(10, 256))
         })
 
-        it('parse a valid negative int to BN', () => {
+        it('parse a valid negative int to string', () => {
           const parsedValue = parseInputValue('int', '-1')
 
-          expect(isBN(parsedValue)).toBe(true)
-          expect(parsedValue).toEqual(toBN('-1'))
+          expect(parsedValue).toEqual(toBN('-1').toString(10, 256))
         })
 
-        it('parse a valid long number to BN', () => {
+        it('parse a valid long number to string', () => {
           const parsedValue = parseInputValue('int', '6426191757410075707')
 
-          expect(isBN(parsedValue)).toBe(true)
-          expect(parsedValue).toEqual(toBN('6426191757410075707'))
+          expect(parsedValue).toEqual(toBN('6426191757410075707').toString(10, 256))
         })
 
-        it('parse a valid negative long number to BN', () => {
+        it('parse a valid negative long number to string', () => {
           const parsedValue = parseInputValue('int', '-6426191757410075707')
 
-          expect(isBN(parsedValue)).toBe(true)
-          expect(parsedValue).toEqual(toBN('-6426191757410075707'))
+          expect(parsedValue).toEqual(toBN('-6426191757410075707').toString(10, 256))
         })
 
-        it('parse a valid hexadecimal value to BN', () => {
+        it('parse a valid hexadecimal value to string', () => {
           const parsedValue = parseInputValue('int', 'aaaaffff')
 
-          expect(isBN(parsedValue)).toBe(true)
-          expect(parsedValue).toEqual(toBN('aaaaffff'))
+          expect(parsedValue).toEqual(toBN('aaaaffff').toString(10, 256))
         })
       })
 
       describe('uint values', () => {
-        it('parse a valid positive uint to BN', () => {
+        it('parse a valid positive uint to string', () => {
           const parsedValue = parseInputValue('uint', '1')
 
-          expect(isBN(parsedValue)).toBe(true)
-          expect(parsedValue).toEqual(toBN('1'))
+          expect(parsedValue).toEqual(toBN('1').toString(10, 256))
         })
 
-        it('parse a negative uint to BN', () => {
+        it('parse a negative uint to string', () => {
           const parsedValue = parseInputValue('uint', '-1')
 
-          expect(isBN(parsedValue)).toBe(true)
-          expect(parsedValue).toEqual(toBN('-1'))
+          expect(parsedValue).toEqual(toBN('-1').toString(10, 256))
         })
 
-        it('parse a valid long number to BN', () => {
+        it('parse a valid long number to string', () => {
           const parsedValue = parseInputValue('uint', '6426191757410075707')
 
-          expect(isBN(parsedValue)).toBe(true)
-          expect(parsedValue).toEqual(toBN('6426191757410075707'))
+          expect(parsedValue).toEqual(toBN('6426191757410075707').toString(10, 256))
         })
 
-        it('parse a negative long number to BN', () => {
+        it('parse a negative long number to string', () => {
           const parsedValue = parseInputValue('uint', '-6426191757410075707')
 
-          expect(isBN(parsedValue)).toBe(true)
-          expect(parsedValue).toEqual(toBN('-6426191757410075707'))
+          expect(parsedValue).toEqual(toBN('-6426191757410075707').toString(10, 256))
         })
 
-        it('parse a valid hexadecimal value to BN', () => {
+        it('parse a valid hexadecimal value to string', () => {
           const parsedValue = parseInputValue('uint', '0xaaaaffff')
 
-          expect(isBN(parsedValue)).toBe(true)
-          expect(parsedValue).toEqual(toBN('0xaaaaffff'))
+          expect(parsedValue).toEqual(toBN('0xaaaaffff').toString(10, 256))
         })
       })
 
       describe('uintX and intX values', () => {
         it('parse a valid positive fixed size uint and int values to BN', () => {
           // uint256
-          expect(isBN(parseInputValue('uint256', '1'))).toBe(true)
-          expect(parseInputValue('uint256', '1')).toEqual(toBN('1'))
+          expect(parseInputValue('uint256', '1')).toEqual(toBN('1').toString(10, 256))
 
           // int256
-          expect(isBN(parseInputValue('int256', '1'))).toBe(true)
-          expect(parseInputValue('int256', '1')).toEqual(toBN('1'))
+          expect(parseInputValue('int256', '1')).toEqual(toBN('1').toString(10, 256))
 
           // uint8
-          expect(isBN(parseInputValue('uint8', '1'))).toBe(true)
-          expect(parseInputValue('uint8', '1')).toEqual(toBN('1'))
+          expect(parseInputValue('uint8', '1')).toEqual(toBN('1').toString(10, 8))
 
           // int8
-          expect(isBN(parseInputValue('int8', '1'))).toBe(true)
-          expect(parseInputValue('int8', '1')).toEqual(toBN('1'))
+          expect(parseInputValue('int8', '1')).toEqual(toBN('1').toString(10, 8))
 
           // uint64
-          expect(isBN(parseInputValue('uint64', '1'))).toBe(true)
-          expect(parseInputValue('uint64', '1')).toEqual(toBN('1'))
+          expect(parseInputValue('uint64', '1')).toEqual(toBN('1').toString(10, 64))
 
           // int64
-          expect(isBN(parseInputValue('int64', '1'))).toBe(true)
-          expect(parseInputValue('int64', '1')).toEqual(toBN('1'))
+          expect(parseInputValue('int64', '1')).toEqual(toBN('1').toString(10, 64))
 
           // uint120
-          expect(isBN(parseInputValue('uint120', '1'))).toBe(true)
-          expect(parseInputValue('uint120', '1')).toEqual(toBN('1'))
+          expect(parseInputValue('uint120', '1')).toEqual(toBN('1').toString(10, 120))
 
           // int120
-          expect(isBN(parseInputValue('int120', '1'))).toBe(true)
-          expect(parseInputValue('int120', '1')).toEqual(toBN('1'))
+          expect(parseInputValue('int120', '1')).toEqual(toBN('1').toString(10, 120))
         })
       })
     })
@@ -170,8 +152,7 @@ describe('util functions', () => {
         expect(parsedValue).toBe(false)
       })
 
-      it.skip('parse an invalid boolean "invalid_bool_value" string to boolean', () => {
-        // FIX: pased as false instead of throw SyntaxError
+      it('parse an invalid boolean "invalid_bool_value" string to boolean', () => {
         expect(() => parseInputValue('bool', 'invalid_bool_value')).toThrow(SyntaxError)
       })
     })
@@ -243,43 +224,81 @@ describe('util functions', () => {
         expect(() => parseInputValue('bool[]', '[invalid_bool_value]')).toThrow(SyntaxError)
       })
 
-      it.skip('throws an error for an array of invalid strings', () => {
-        // FIX: pased as [false] instead of throw SyntaxError
+      it('throws an error for an array of invalid strings', () => {
         expect(() => parseInputValue('bool[]', '["invalid_bool_value"]')).toThrow(SyntaxError)
       })
     })
 
+    // TODO: CHECK NEGATIVE NUMBERS!!!!
+
     describe('int[], uint, int[size] & uint[size] values', () => {
       describe(' int[] & int[size]', () => {
         it('parse an array of numbers to array of strings', () => {
-          expect(parseInputValue('int[]', '[1]')).toEqual(['1'])
-          expect(parseInputValue('int[2]', '[1]')).toEqual(['1'])
+          expect(parseInputValue('int[]', '[1]')).toEqual([toBN('1').toString(10, 256)])
+          expect(parseInputValue('int[2]', '[1, 1]')).toEqual([
+            toBN('1').toString(10, 256),
+            toBN('1').toString(10, 256),
+          ])
+
+          expect(parseInputValue('int64[]', '[1]')).toEqual([toBN('1').toString(10, 64)])
+          expect(parseInputValue('int64[2]', '[1, 1]')).toEqual([
+            toBN('1').toString(10, 64),
+            toBN('1').toString(10, 64),
+          ])
         })
 
         it('parse an array of numbers as strings to array of strings', () => {
-          expect(parseInputValue('int[]', '["1"]')).toEqual(['1'])
-          expect(parseInputValue('int[2]', '["1"]')).toEqual(['1'])
+          expect(parseInputValue('int[]', '["1"]')).toEqual([toBN('1').toString(10, 256)])
+          expect(parseInputValue('int[2]', '["1", "1"]')).toEqual([
+            toBN('1').toString(10, 256),
+            toBN('1').toString(10, 256),
+          ])
+
+          expect(parseInputValue('int64[]', '["1"]')).toEqual([toBN('1').toString(10, 64)])
+          expect(parseInputValue('int64[2]', '["1", "1"]')).toEqual([
+            toBN('1').toString(10, 64),
+            toBN('1').toString(10, 64),
+          ])
         })
 
         it('parse an array of long numbers to array of strings', () => {
-          expect(parseInputValue('int[]', '[6426191757410075707]')).toEqual(['6426191757410075707'])
-          expect(parseInputValue('int[4]', '[6426191757410075707]')).toEqual([
-            '6426191757410075707',
+          expect(parseInputValue('int[]', '[6426191757410075707]')).toEqual([
+            toBN('6426191757410075707').toString(10, 256),
+          ])
+          expect(parseInputValue('int[1]', '[6426191757410075707]')).toEqual([
+            toBN('6426191757410075707').toString(10, 256),
+          ])
+
+          expect(parseInputValue('int120[]', '[6426191757410075707]')).toEqual([
+            toBN('6426191757410075707').toString(10, 120),
+          ])
+          expect(parseInputValue('int120[1]', '[6426191757410075707]')).toEqual([
+            toBN('6426191757410075707').toString(10, 120),
           ])
         })
 
         it('parse an array of long numbers as strings to array of strings', () => {
           expect(parseInputValue('int[]', '["6426191757410075707"]')).toEqual([
-            '6426191757410075707',
+            toBN('6426191757410075707').toString(10, 256),
           ])
-          expect(parseInputValue('int[3]', '["6426191757410075707"]')).toEqual([
-            '6426191757410075707',
+          expect(parseInputValue('int[1]', '["6426191757410075707"]')).toEqual([
+            toBN('6426191757410075707').toString(10, 256),
+          ])
+
+          expect(parseInputValue('int120[]', '["6426191757410075707"]')).toEqual([
+            toBN('6426191757410075707').toString(10, 120),
+          ])
+          expect(parseInputValue('int120[1]', '["6426191757410075707"]')).toEqual([
+            toBN('6426191757410075707').toString(10, 120),
           ])
         })
 
         it('parse an empty array as valid value', () => {
           expect(parseInputValue('int[]', '[]')).toEqual([])
           expect(parseInputValue('int[2]', '[]')).toEqual([])
+
+          expect(parseInputValue('int120[]', '[]')).toEqual([])
+          expect(parseInputValue('int120[2]', '[]')).toEqual([])
         })
 
         it('parse an invalid array value throws a SyntaxError', () => {
@@ -289,41 +308,155 @@ describe('util functions', () => {
           expect(() => parseInputValue('int[3]', 'invalid_array_value')).toThrow(SyntaxError)
           expect(() => parseInputValue('int[3]', '6426191757410075707')).toThrow(SyntaxError)
           expect(() => parseInputValue('int[2]', '[invalid_array_value]')).toThrow(SyntaxError)
+          expect(() => parseInputValue('int120[]', 'invalid_array_value')).toThrow(SyntaxError)
+          expect(() => parseInputValue('int120[]', '6426191757410075707')).toThrow(SyntaxError)
+          expect(() => parseInputValue('int120[]', '[invalid_array_value]')).toThrow(SyntaxError)
+          expect(() => parseInputValue('int120[3]', 'invalid_array_value')).toThrow(SyntaxError)
+          expect(() => parseInputValue('int120[3]', '6426191757410075707')).toThrow(SyntaxError)
+          expect(() => parseInputValue('int120[2]', '[invalid_array_value]')).toThrow(SyntaxError)
+        })
+
+        it('parse valid negative numbers', () => {
+          expect(parseInputValue('int[]', '[-1]')).toEqual([toBN('-1').toString(10, 256)])
+          expect(parseInputValue('int[2]', '[-1,  -2]')).toEqual([
+            toBN('-1').toString(10, 256),
+            toBN('-2').toString(10, 256),
+          ])
+          expect(parseInputValue('int120[]', '[-1]')).toEqual([toBN('-1').toString(10, 120)])
+          expect(parseInputValue('int120[2]', '[-1,  -2]')).toEqual([
+            toBN('-1').toString(10, 120),
+            toBN('-2').toString(10, 120),
+          ])
+
+          // negative numbers as strings
+          expect(parseInputValue('int[]', '["-1"]')).toEqual([toBN('-1').toString(10, 256)])
+          expect(parseInputValue('int[2]', '["-1",  "-1"]')).toEqual([
+            toBN('-1').toString(10, 256),
+            toBN('-1').toString(10, 256),
+          ])
+          expect(parseInputValue('int[2]', '["-1", -1]')).toEqual([
+            toBN('-1').toString(10, 256),
+            toBN('-1').toString(10, 256),
+          ])
+          expect(parseInputValue('int120[]', '["-1"]')).toEqual([toBN('-1').toString(10, 120)])
+          expect(parseInputValue('int120[2]', '["-1",  "-1"]')).toEqual([
+            toBN('-1').toString(10, 120),
+            toBN('-1').toString(10, 120),
+          ])
+          expect(parseInputValue('int120[2]', '["-1", -1]')).toEqual([
+            toBN('-1').toString(10, 120),
+            toBN('-1').toString(10, 120),
+          ])
+
+          // long negative numbers
+          expect(parseInputValue('int[]', '[-6426191757410075707]')).toEqual([
+            toBN('-6426191757410075707').toString(10, 256),
+          ])
+          expect(
+            parseInputValue('int[2]', '[-6426191757410075707,  -6426191757410075707]'),
+          ).toEqual([
+            toBN('-6426191757410075707').toString(10, 256),
+            toBN('-6426191757410075707').toString(10, 256),
+          ])
+          expect(parseInputValue('int120[]', '[-6426191757410075707]')).toEqual([
+            toBN('-6426191757410075707').toString(10, 120),
+          ])
+          expect(
+            parseInputValue('int120[2]', '[-6426191757410075707,  -6426191757410075707]'),
+          ).toEqual([
+            toBN('-6426191757410075707').toString(10, 120),
+            toBN('-6426191757410075707').toString(10, 120),
+          ])
+
+          // negative numbers as strings
+          expect(parseInputValue('int[]', '["-6426191757410075707"]')).toEqual([
+            toBN('-6426191757410075707').toString(10, 256),
+          ])
+          expect(
+            parseInputValue('int[2]', '["-6426191757410075707",  "-6426191757410075707"]'),
+          ).toEqual([
+            toBN('-6426191757410075707').toString(10, 256),
+            toBN('-6426191757410075707').toString(10, 256),
+          ])
+          expect(
+            parseInputValue('int[2]', '["-6426191757410075707", -6426191757410075707]'),
+          ).toEqual([
+            toBN('-6426191757410075707').toString(10, 256),
+            toBN('-6426191757410075707').toString(10, 256),
+          ])
+          expect(parseInputValue('int120[]', '["-6426191757410075707"]')).toEqual([
+            toBN('-6426191757410075707').toString(10, 120),
+          ])
+          expect(
+            parseInputValue('int120[2]', '["-6426191757410075707",  "-6426191757410075707"]'),
+          ).toEqual([
+            toBN('-6426191757410075707').toString(10, 120),
+            toBN('-6426191757410075707').toString(10, 120),
+          ])
+          expect(
+            parseInputValue('int120[2]', '["-6426191757410075707", -6426191757410075707]'),
+          ).toEqual([
+            toBN('-6426191757410075707').toString(10, 120),
+            toBN('-6426191757410075707').toString(10, 120),
+          ])
         })
       })
 
       describe('uint[] & uint[size]', () => {
         it('parse an array of numbers to array of strings', () => {
-          expect(parseInputValue('uint[]', '[1]')).toEqual(['1'])
-          expect(parseInputValue('uint[2]', '[1]')).toEqual(['1'])
+          expect(parseInputValue('uint[]', '[1]')).toEqual([toBN('1').toString(10, 256)])
+          expect(parseInputValue('uint[2]', '[1]')).toEqual([toBN('1').toString(10, 256)])
+
+          expect(parseInputValue('uint120[]', '[1]')).toEqual([toBN('1').toString(10, 120)])
+          expect(parseInputValue('uint120[2]', '[1]')).toEqual([toBN('1').toString(10, 120)])
         })
 
         it('parse an array of numbers as strings to array of strings', () => {
-          expect(parseInputValue('uint[]', '["1"]')).toEqual(['1'])
-          expect(parseInputValue('uint[2]', '["1"]')).toEqual(['1'])
+          expect(parseInputValue('uint[]', '["1"]')).toEqual([toBN('1').toString(10, 256)])
+          expect(parseInputValue('uint[2]', '["1"]')).toEqual([toBN('1').toString(10, 256)])
+
+          expect(parseInputValue('uint120[]', '["1"]')).toEqual([toBN('1').toString(10, 120)])
+          expect(parseInputValue('uint120[2]', '["1"]')).toEqual([toBN('1').toString(10, 120)])
         })
 
         it('parse an array of long numbers to array of strings', () => {
           expect(parseInputValue('uint[]', '[6426191757410075707]')).toEqual([
-            '6426191757410075707',
+            toBN('6426191757410075707').toString(10, 256),
           ])
           expect(parseInputValue('uint[4]', '[6426191757410075707]')).toEqual([
-            '6426191757410075707',
+            toBN('6426191757410075707').toString(10, 256),
+          ])
+
+          expect(parseInputValue('uint120[]', '[6426191757410075707]')).toEqual([
+            toBN('6426191757410075707').toString(10, 120),
+          ])
+          expect(parseInputValue('uint120[4]', '[6426191757410075707]')).toEqual([
+            toBN('6426191757410075707').toString(10, 120),
           ])
         })
 
         it('parse an array of long numbers as strings to array of strings', () => {
           expect(parseInputValue('uint[]', '["6426191757410075707"]')).toEqual([
-            '6426191757410075707',
+            toBN('6426191757410075707').toString(10, 256),
           ])
           expect(parseInputValue('uint[3]', '["6426191757410075707"]')).toEqual([
-            '6426191757410075707',
+            toBN('6426191757410075707').toString(10, 256),
+          ])
+
+          expect(parseInputValue('uint120[]', '["6426191757410075707"]')).toEqual([
+            toBN('6426191757410075707').toString(10, 120),
+          ])
+          expect(parseInputValue('uint120[3]', '["6426191757410075707"]')).toEqual([
+            toBN('6426191757410075707').toString(10, 120),
           ])
         })
 
         it('parse an empty array as valid value', () => {
           expect(parseInputValue('uint[]', '[]')).toEqual([])
           expect(parseInputValue('uint[2]', '[]')).toEqual([])
+
+          expect(parseInputValue('uint120[]', '[]')).toEqual([])
+          expect(parseInputValue('uint120[2]', '[]')).toEqual([])
         })
 
         it('parse an invalid array value throws a SyntaxError', () => {
@@ -333,6 +466,13 @@ describe('util functions', () => {
           expect(() => parseInputValue('uint[3]', 'invalid_array_value')).toThrow(SyntaxError)
           expect(() => parseInputValue('uint[3]', '6426191757410075707')).toThrow(SyntaxError)
           expect(() => parseInputValue('uint[2]', '[invalid_array_value]')).toThrow(SyntaxError)
+
+          expect(() => parseInputValue('uint120[]', 'invalid_array_value')).toThrow(SyntaxError)
+          expect(() => parseInputValue('uint120[]', '6426191757410075707')).toThrow(SyntaxError)
+          expect(() => parseInputValue('uint120[]', '[invalid_array_value]')).toThrow(SyntaxError)
+          expect(() => parseInputValue('uint120[3]', 'invalid_array_value')).toThrow(SyntaxError)
+          expect(() => parseInputValue('uint120[3]', '6426191757410075707')).toThrow(SyntaxError)
+          expect(() => parseInputValue('uint120[2]', '[invalid_array_value]')).toThrow(SyntaxError)
         })
       })
     })
@@ -347,14 +487,14 @@ describe('util functions', () => {
         ).toEqual(['0x680cde08860141F9D223cE4E620B10Cd6741037E'])
       })
 
-      it('parse an invalid array value throws a SyntaxError', () => {
-        // FIX: try to parse this valid value
-        expect(() =>
+      it.skip('parse an invalid array value throws a SyntaxError', () => {
+        // FIX: try to parse this as a valid value
+        expect(
           parseInputValue('address[]', '[0x680cde08860141F9D223cE4E620B10Cd6741037E]'),
-        ).toThrow(SyntaxError)
-        expect(() =>
+        ).toEqual(['0x680cde08860141F9D223cE4E620B10Cd6741037E'])
+        expect(
           parseInputValue('address[1]', '[0x680cde08860141F9D223cE4E620B10Cd6741037E]'),
-        ).toThrow(SyntaxError)
+        ).toEqual(['0x680cde08860141F9D223cE4E620B10Cd6741037E'])
       })
 
       it('parse an invalid array value throws a SyntaxError', () => {

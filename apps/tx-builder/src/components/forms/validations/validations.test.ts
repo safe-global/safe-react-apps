@@ -581,7 +581,7 @@ describe('form validations', () => {
         expect(validationResult).toBe('format error. details: missing argument: coder array')
       })
 
-      it('validates valid fixed length array missing arguments', () => {
+      it('validates valid fixed length array', () => {
         const arrayOfIntsValidation = validateField('int[3]')
 
         const validationResult = arrayOfIntsValidation('[1,2, 3]')
@@ -705,6 +705,59 @@ describe('form validations', () => {
 
           expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
         })
+
+        // issue related with long negative numbers for dynamic arrays of elements less than 152 bits
+        describe('issue with dynamic arrays for int152[] with negative long values', () => {
+          it('issue with int64[] long negative numbers', () => {
+            const arrayOfIntsValidation = validateField('int64[]')
+
+            const validationResult = arrayOfIntsValidation(
+              '[-6426191757410075707,"-6426191757410075707"]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('issue with int128[] long negative numbers', () => {
+            const arrayOfIntsValidation = validateField('int128[]')
+
+            const validationResult = arrayOfIntsValidation(
+              '[-6426191757410075707,"-6426191757410075707"]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('issue with int152[] long negative numbers', () => {
+            const arrayOfIntsValidation = validateField('int152[]')
+
+            const validationResult = arrayOfIntsValidation(
+              '[-6426191757410075707,"-6426191757410075707"]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('issue with int160[] long negative numbers', () => {
+            const arrayOfIntsValidation = validateField('int160[]')
+
+            const validationResult = arrayOfIntsValidation(
+              '[-6426191757410075707,"-6426191757410075707"]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('issue with int256[] long negative numbers', () => {
+            const arrayOfIntsValidation = validateField('int256[]')
+
+            const validationResult = arrayOfIntsValidation(
+              '[-6426191757410075707,"-6426191757410075707"]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+        })
       })
 
       describe('invalid array values', () => {
@@ -713,7 +766,9 @@ describe('form validations', () => {
 
           const validationResult = arrayOfIntsValidation('["invalid_array_value"]')
 
-          expect(validationResult).toBe('format error. details: invalid BigNumber string')
+          expect(validationResult).toBe(
+            'format error. details: Error: Error: [number-to-bn] while converting number "invalid_array_value" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: "invalid_array_value"',
+          )
         })
 
         it('validates invalid array value', () => {
