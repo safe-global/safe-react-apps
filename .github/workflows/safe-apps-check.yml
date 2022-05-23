@@ -41,26 +41,3 @@ jobs:
           CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70' }}
           CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
           SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
-
-    # name: Run tests on Chrome 100
-    # runs-on: ubuntu-18.04
-    # container: cypress/browsers:node14.17.6-chrome100-ff98
-    # steps:
-    #   - uses: actions/checkout@v2
-
-    #   - name: Install Cypress
-    #     run: |
-    #       yarn install --frozen-lockfile
-    #       $(npm bin)/cypress cache path
-    #       $(npm bin)/cypress cache list
-    #       $(npm bin)/cypress verify
-
-    #   - name: Run Cypress tests
-    #     env:
-    #       CI: 'true'
-    #       CYPRESS_BASE_URL: ${{ github.event.inputs.baseUrl || 'http://gnosis-safe.io/app' }}
-    #       CYPRESS_NETWORK_PREFIX: ${{ github.event.inputs.networkPrefix || 'eth' }}
-    #       CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70' }}
-    #       CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
-    #       SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
-    #     run: yarn cy:run

@@ -16,8 +16,7 @@
     "start:ramp": "yarn workspace ramp-network start",
     "start:drain-safe": "yarn workspace drain-safe start",
     "prepare": "husky install",
-    "cy:open": "npx cypress open",
-    "cy:run": "npx cypress run -- --spec 'cypress/integration/safe-apps-check.spec.js' --browser chrome"
+    "e2e": "npx cypress open"
   },
   "version": "2.5.1",
   "workspaces": [
@@ -54,7 +53,7 @@
     "buffer": "^6.0.3",
     "commitizen": "^4.2.4",
     "crypto-browserify": "^3.12.0",
-    "cypress": "8.5.0",
+    "cypress": "^9.6.1",
     "cz-conventional-changelog": "^3.3.0",
     "dotenv-cli": "^5.1.0",
     "eslint": "^8.14.0",
