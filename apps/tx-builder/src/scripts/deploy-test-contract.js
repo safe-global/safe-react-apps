@@ -22,7 +22,10 @@ async function main() {
   console.log('')
 
   const verifyCommand = `yarn contract:verify:rinkeby ${testContractAddress}`
-  console.log('To verify the contract, run: ', verifyCommand)
+  console.log('To verify the contract, run: ')
+  console.log('')
+  console.log('       ', verifyCommand)
+  console.log('')
 }
 
 main()
