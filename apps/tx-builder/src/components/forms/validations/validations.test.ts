@@ -1062,7 +1062,7 @@ describe('form validations', () => {
       })
 
       describe('fixed array of bytes', () => {
-        // TODO: REVIEW THIS TESTS CASE
+        // FIX: REVIEW THIS TESTS CASE
         it.skip('validates valid array values for fixed array of bytes', () => {
           const arrayOfBytesValidation = validateField('bytes[5]')
 
@@ -1073,7 +1073,7 @@ describe('form validations', () => {
           expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
         })
 
-        it('validates invalid array lenght for fixed array of bytes', () => {
+        it('validates invalid array length for fixed array of bytes', () => {
           const arrayOfBytesValidation = validateField('bytes[3]')
 
           const validationResult = arrayOfBytesValidation(
@@ -1108,8 +1108,186 @@ describe('form validations', () => {
         })
       })
     })
-    // TODO: ADD ARRAY OF BOOLS
-    // TODO: ADD ARRAY OF STRINGS
+
+    describe('array of booleans', () => {
+      describe('dinamic-length array of bytes', () => {
+        it('validates valid array values for dynamic array of booleans', () => {
+          const arrayOfBooleansValidation = validateField('bool[]')
+
+          const validationResult = arrayOfBooleansValidation(
+            '[true, false, 1, 0 , "1", "0", "True", "False", "TRUE", "FALSE", "false", "true"]',
+          )
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
+
+        it('validates valid empty array value for dynamic array of booleans', () => {
+          const arrayOfBooleansValidation = validateField('bool[]')
+
+          const validationResult = arrayOfBooleansValidation('[]')
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
+
+        it('validates invalid array', () => {
+          const arrayOfBooleansValidation = validateField('bool[]')
+
+          const validationResult = arrayOfBooleansValidation('INVALID_ARRAY')
+
+          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+        })
+
+        it('validates invalid array values', () => {
+          const arrayOfBooleansValidation = validateField('bool[]')
+
+          const validationResult = arrayOfBooleansValidation('[INVALID_VALUE, true, false]')
+
+          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Boolean value')
+        })
+      })
+
+      describe('fixed-length array of bytes', () => {
+        it('validates valid array values for fixed array of booleans', () => {
+          const arrayOfBooleansValidation = validateField('bool[12]')
+
+          const validationResult = arrayOfBooleansValidation(
+            '[true, false, 1, 0 , "1", "0", "True", "False", "TRUE", "FALSE", "false", "true"]',
+          )
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
+
+        it('validates valid empty array value for fixed array of booleans', () => {
+          const arrayOfBooleansValidation = validateField('bool[3]')
+
+          const validationResult = arrayOfBooleansValidation('[]')
+
+          expect(validationResult).toBe('format error. details: missing argument: coder array')
+        })
+
+        it('validates invalid array length items for fixed array of booleans', () => {
+          const arrayOfBooleansValidation = validateField('bool[3]')
+
+          const validationResult = arrayOfBooleansValidation('[true]')
+
+          expect(validationResult).toBe('format error. details: missing argument: coder array')
+        })
+
+        it('validates invalid array length items for fixed array of booleans', () => {
+          const arrayOfBooleansValidation = validateField('bool[3]')
+
+          const validationResult = arrayOfBooleansValidation('[false, true, false, true]')
+
+          expect(validationResult).toBe('format error. details: too many arguments: coder array')
+        })
+
+        it('validates invalid array', () => {
+          const arrayOfBooleansValidation = validateField('bool[3]')
+
+          const validationResult = arrayOfBooleansValidation('INVALID_ARRAY')
+
+          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+        })
+
+        it('validates invalid array values', () => {
+          const arrayOfBooleansValidation = validateField('bool[3]')
+
+          const validationResult = arrayOfBooleansValidation('[INVALID_VALUE, true, false]')
+
+          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Boolean value')
+        })
+      })
+    })
+
+    describe('array of strings', () => {
+      describe('dynamic-length array of strings', () => {
+        it('validates valid array values for dynamic array of strings', () => {
+          const stringValidations = validateField('string[]')
+
+          const validationResult = stringValidations('["Hello World!", "hi!", "other value"]')
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
+
+        it('validates invalid array value', () => {
+          const stringValidations = validateField('string[]')
+
+          const validationResult = stringValidations('INVALID_ARRAY')
+
+          expect(validationResult).toBe(
+            'format error. details: SyntaxError: Unexpected token I in JSON at position 0',
+          )
+        })
+
+        it('validates invalid array values for dynamic array of strings', () => {
+          const stringValidations = validateField('string[]')
+
+          const validationResult = stringValidations('[INVALID_VALUE, "Hello World!"]')
+
+          expect(validationResult).toBe(
+            'format error. details: SyntaxError: Unexpected token I in JSON at position 1',
+          )
+        })
+
+        it('validates valid empty array value for dynamic array of strings', () => {
+          const arrayOfStringsValidation = validateField('string[]')
+
+          const validationResult = arrayOfStringsValidation('[]')
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
+      })
+
+      describe('fixed-length array of strings', () => {
+        it('validates valid array values for fixed array of strings', () => {
+          const arrayOfStringValidations = validateField('string[3]')
+
+          const validationResult = arrayOfStringValidations(
+            '["Hello World!", "hi!", "other value"]',
+          )
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
+
+        it('validates invalid array value', () => {
+          const arrayOfStringValidations = validateField('string[3]')
+
+          const validationResult = arrayOfStringValidations('INVALID_ARRAY')
+
+          expect(validationResult).toBe(
+            'format error. details: SyntaxError: Unexpected token I in JSON at position 0',
+          )
+        })
+
+        it('validates invalid array values for fixed array of strings', () => {
+          const arrayOfStringValidations = validateField('string[3]')
+
+          const validationResult = arrayOfStringValidations('[INVALID_VALUE, "Hello World!", "hi"]')
+
+          expect(validationResult).toBe(
+            'format error. details: SyntaxError: Unexpected token I in JSON at position 1',
+          )
+        })
+
+        it('validates invalid empty array value for fixed array of strings', () => {
+          const arrayOfStringsValidation = validateField('string[3]')
+
+          const validationResult = arrayOfStringsValidation('[]')
+
+          expect(validationResult).toBe('format error. details: missing argument: coder array')
+        })
+
+        it('validates invalid array length for fixed array of strings', () => {
+          const arrayOfStringsValidation = validateField('string[3]')
+
+          const validationResult = arrayOfStringsValidation(
+            '["Hi", "Hello!", "Hello World!", "Bye!"]',
+          )
+
+          expect(validationResult).toBe('format error. details: too many arguments: coder array')
+        })
+      })
+    })
 
     // TODO: ADD MATRIX
     // TODO: ADD MULTIDIMENSIONAL ARRAYS

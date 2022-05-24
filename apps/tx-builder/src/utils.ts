@@ -199,6 +199,7 @@ export const parseInputValue = (fieldType: string, value: string): any => {
     return JSON.parse(trimmedValue)
   }
 
+  // FIX: fix the issue with the fixed-lenght arrays of bytes
   if (
     isArrayFieldType(fieldType) ||
     isMatrixFieldType(fieldType) ||
