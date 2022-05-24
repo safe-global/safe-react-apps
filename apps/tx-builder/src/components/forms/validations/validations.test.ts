@@ -167,6 +167,14 @@ describe('form validations', () => {
         expect(validationResult).toBe('format error. details: invalid arrayify value')
       })
 
+      it('this should fail but it seems to be a valid bytes value', () => {
+        const bytesValidations = validateField('bytes')
+
+        const validationResult = bytesValidations('ññ2')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
       describe('bytes1', () => {
         it('validates valid hexadecimal bytes1 value with 0x prefix', () => {
           const bytesValidations = validateField('bytes1')
@@ -1016,7 +1024,90 @@ describe('form validations', () => {
       })
     })
 
-    // TODO: ADD ARRAY OF BYTES
+    describe('array of bytes', () => {
+      describe('dinamic array of bytes', () => {
+        it('validates valid array values for dynamic array of bytes', () => {
+          const arrayOfBytesValidation = validateField('bytes[]')
+
+          const validationResult = arrayOfBytesValidation(
+            '[0x123F, 0xAAAAFF, 0xFaaaaFFFF, 0x0001, 0x0]',
+          )
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
+
+        it('validates valid empty array value for dynamic array of bytes', () => {
+          const arrayOfBytesValidation = validateField('bytes[]')
+
+          const validationResult = arrayOfBytesValidation('[]')
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
+
+        it('validates invalid array', () => {
+          const arrayOfBytesValidation = validateField('bytes[]')
+
+          const validationResult = arrayOfBytesValidation('INVALID_ARRAY')
+
+          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+        })
+
+        it('validates invalid array values', () => {
+          const arrayOfBytesValidation = validateField('bytes[]')
+
+          const validationResult = arrayOfBytesValidation('[INVALID_VALUE, 0x123]')
+
+          expect(validationResult).toBe('format error. details: invalid arrayify value')
+        })
+      })
+
+      describe('fixed array of bytes', () => {
+        // TODO: REVIEW THIS TESTS CASE
+        it.skip('validates valid array values for fixed array of bytes', () => {
+          const arrayOfBytesValidation = validateField('bytes[5]')
+
+          const validationResult = arrayOfBytesValidation(
+            '[0x123F, 0xAAAAFF, 0xFaaaaFFFF, 0x0001, 0x0]',
+          )
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
+
+        it('validates invalid array lenght for fixed array of bytes', () => {
+          const arrayOfBytesValidation = validateField('bytes[3]')
+
+          const validationResult = arrayOfBytesValidation(
+            '[0x123F, 0xAAAAFF, 0xFaaaaFFFF, 0x0001, 0x0]',
+          )
+
+          expect(validationResult).toBe('format error. details: too many arguments: coder array')
+        })
+
+        it('validates invalid empty array value for fixed array of bytes', () => {
+          const arrayOfBytesValidation = validateField('bytes[3]')
+
+          const validationResult = arrayOfBytesValidation('[]')
+
+          expect(validationResult).toBe('format error. details: missing argument: coder array')
+        })
+
+        it('validates invalid array', () => {
+          const arrayOfBytesValidation = validateField('bytes[3]')
+
+          const validationResult = arrayOfBytesValidation('INVALID_ARRAY')
+
+          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+        })
+
+        it('validates invalid array values', () => {
+          const arrayOfBytesValidation = validateField('bytes[2]')
+
+          const validationResult = arrayOfBytesValidation('[INVALID_VALUE, 0x123]')
+
+          expect(validationResult).toBe('format error. details: invalid arrayify value')
+        })
+      })
+    })
     // TODO: ADD ARRAY OF BOOLS
     // TODO: ADD ARRAY OF STRINGS
 

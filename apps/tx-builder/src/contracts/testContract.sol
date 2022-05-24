@@ -5,7 +5,6 @@ pragma solidity >=0.7.0 <0.9.0;
 /// @title Gnosis Safe Test Contract - A test contract to check all solidity types in the tx-builder Safe App.
 /// @author Daniel Somoza - <daniel.somoza@safe.global>
 contract testContract {
-
     // TODO: ADD int and uint
 
     // integers
@@ -53,6 +52,10 @@ contract testContract {
     // string
     string stringValue;
 
+    // array of strings
+    string[] stringDynamicArrayValue;
+    string[5] stringFixedArrayValue;
+
     // function (callback)
     function(uint256) external functionValue;
 
@@ -64,7 +67,22 @@ contract testContract {
     bytes16 bytes16Value;
     bytes32 bytes32Value;
 
-    // TODO: array of address, bool, string, bytes
+    // array of bytes
+    bytes[] bytesDynamicArrayValue;
+    bytes1[] bytes1DynamicArrayValue;
+    bytes2[] bytes2DynamicArrayValue;
+    bytes8[] bytes8DynamicArrayValue;
+    bytes16[] bytes16DynamicArrayValue;
+    bytes32[] bytes32DynamicArrayValue;
+
+    bytes[3] bytesFixedArrayValue;
+    bytes1[3] bytes1FixedArrayValue;
+    bytes2[3] bytes2FixedArrayValue;
+    bytes8[3] bytes8FixedArrayValue;
+    bytes16[3] bytes16FixedArrayValue;
+    bytes32[3] bytes32FixedArrayValue;
+
+    // TODO: tuples & structs
 
     // TODO: matrix of int, uint, address, bool, string, bytes
 
@@ -77,8 +95,6 @@ contract testContract {
     // TODO: create a mix method of matrix of ints, uints, addresses, bools, strings, bytes
 
     // TODO: create a mix method of multiDimensional array of ints, uints, addresses, bools, strings, bytes
-
-    // TODO: tuples & structs
 
     // bytes write methods
     function testBytesValue(bytes memory newValue) public {
@@ -103,6 +119,55 @@ contract testContract {
 
     function testBytes32Value(bytes32 newValue) public {
         bytes32Value = newValue;
+    }
+
+    // arrays of bytes write methods
+    function testBytesDynamicArrayValue(bytes[] memory newValue) public {
+        bytesDynamicArrayValue = newValue;
+    }
+
+    function testBytes1DynamicArrayValue(bytes1[] memory newValue) public {
+        bytes1DynamicArrayValue = newValue;
+    }
+
+    function testBytes2DynamicArrayValue(bytes2[] memory newValue) public {
+        bytes2DynamicArrayValue = newValue;
+    }
+
+    function testBytes8DynamicArrayValue(bytes8[] memory newValue) public {
+        bytes8DynamicArrayValue = newValue;
+    }
+
+    function testBytes16DynamicArrayValue(bytes16[] memory newValue) public {
+        bytes16DynamicArrayValue = newValue;
+    }
+
+    function testBytes32DynamicArrayValue(bytes32[] memory newValue) public {
+        bytes32DynamicArrayValue = newValue;
+    }
+
+    function testBytesFixedArrayValue(bytes[3] memory newValue) public {
+        bytesFixedArrayValue = newValue;
+    }
+
+    function testBytes1FixedArrayValue(bytes1[3] memory newValue) public {
+        bytes1FixedArrayValue = newValue;
+    }
+
+    function testBytes2FixedArrayValue(bytes2[3] memory newValue) public {
+        bytes2FixedArrayValue = newValue;
+    }
+
+    function testBytes8FixedArrayValue(bytes8[3] memory newValue) public {
+        bytes8FixedArrayValue = newValue;
+    }
+
+    function testBytes16FixedArrayValue(bytes16[3] memory newValue) public {
+        bytes16FixedArrayValue = newValue;
+    }
+
+    function testBytes32FixedArrayValue(bytes32[3] memory newValue) public {
+        bytes32FixedArrayValue = newValue;
     }
 
     // function write methods
@@ -141,6 +206,15 @@ contract testContract {
     // string write methods
     function testStringValue(string memory newValue) public {
         stringValue = newValue;
+    }
+
+    // array of strings write methods
+    function testStringDynamicArrayValue(string[] memory newValue) public {
+        stringDynamicArrayValue = newValue;
+    }
+
+    function testStringFixedArrayValue(string[5] memory newValue) public {
+        stringFixedArrayValue = newValue;
     }
 
     // integer write methods
@@ -391,6 +465,14 @@ contract testContract {
         return stringValue;
     }
 
+    function getStringDynamicArrayValue() public view returns (string[] memory) {
+        return stringDynamicArrayValue;
+    }
+
+    function getStringFixedArrayValue() public view returns (string[5] memory) {
+        return stringFixedArrayValue;
+    }
+
     // function read methods
     function getFunctionValue() public view returns (function(uint256) external) {
         return functionValue;
@@ -419,5 +501,53 @@ contract testContract {
 
     function getBytes32Value() public view returns (bytes32) {
         return bytes32Value;
+    }
+
+    function getBytesDynamicArrayValue() public view returns (bytes[] memory) {
+        return bytesDynamicArrayValue;
+    }
+
+    function getBytes1DynamicArrayValue() public view returns (bytes1[] memory) {
+        return bytes1DynamicArrayValue;
+    }
+
+    function getBytes2DynamicArrayValue() public view returns (bytes2[] memory) {
+        return bytes2DynamicArrayValue;
+    }
+
+    function getBytes8DynamicArrayValue() public view returns (bytes8[] memory) {
+        return bytes8DynamicArrayValue;
+    }
+
+    function getBytes16DynamicArrayValue() public view returns (bytes16[] memory) {
+        return bytes16DynamicArrayValue;
+    }
+
+    function getBytes32DynamicArrayValue() public view returns (bytes32[] memory) {
+        return bytes32DynamicArrayValue;
+    }
+
+    function getBytesFixedArrayValue() public view returns (bytes[3] memory) {
+        return bytesFixedArrayValue;
+    }
+
+    function getBytes1FixedArrayValue() public view returns (bytes1[3] memory) {
+        return bytes1FixedArrayValue;
+    }
+
+    function getBytes2FixedArrayValue() public view returns (bytes2[3] memory) {
+        return bytes2FixedArrayValue;
+    }
+
+    function getBytes8FixedArrayValue() public view returns (bytes8[3] memory) {
+        return bytes8FixedArrayValue;
+    }
+
+    function getBytes16FixedArrayValue() public view returns (bytes16[3] memory) {
+        return bytes16FixedArrayValue;
+    }
+
+    function getBytes32FixedArrayValue() public view returns (bytes32[3] memory) {
+        return bytes32FixedArrayValue;
     }
 }
