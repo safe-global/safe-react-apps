@@ -147,16 +147,23 @@ export const getBaseFieldType = (fieldType: string): string => {
   return baseFieldType
 }
 
-const parseArrayOfValues = (values: string, fieldType: string): any => {
+// TODO: ADD TESTS FOR THIS
+// custom isArray function to return true if a given string is an Array
+const isArray = (values: string): boolean => {
   const trimmedValue = values.trim()
   const isArray = trimmedValue.startsWith('[') && trimmedValue.endsWith(']')
 
-  if (!isArray) {
+  return isArray
+}
+
+// TODO: ADD MORE TESTS (to cover bools, bytes etc)
+const parseArrayOfValues = (values: string, fieldType: string): any => {
+  if (!isArray(values)) {
     throw new SyntaxError('Invalid Array value')
   }
 
   return parseStringToArray(values).map(itemValue =>
-    Array.isArray(itemValue)
+    isArray(itemValue)
       ? parseArrayOfValues(itemValue, fieldType) // recursive call because Matrix and MultiDimensional Arrays field types
       : parseInputValue(
           // recursive call to parseInputValue
