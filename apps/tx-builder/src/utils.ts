@@ -3,16 +3,13 @@ import abiCoder, { AbiCoder } from 'web3-eth-abi'
 import { ContractInput, ContractMethod, ProposedTransaction } from './typings/models'
 import {
   isArrayFieldType,
-  isArrayOfBooleansFieldType,
-  isArrayOfIntsFieldType,
+  isArrayOfStringsFieldType,
   isBooleanFieldType,
   isIntFieldType,
   isMatrixFieldType,
-  isMatrixOfBooleansFieldType,
-  isMatrixOfIntsFieldType,
+  isMatrixOfStringsFieldType,
   isMultiDimensionalArrayFieldType,
-  isMultiDimensionalArrayOfBooleansFieldType,
-  isMultiDimensionalArrayOfIntsFieldType,
+  isMultiDimensionalArrayOfStringsFieldType,
   isTupleFieldType,
 } from './components/forms/fields/fields'
 
@@ -88,14 +85,10 @@ export const parseBooleanValue = (value: any): boolean => {
   return !!value
 }
 
-const parseArrayOfBooleansValues = (value: string): any =>
-  Array.isArray(value)
-    ? value.map(itemValue => parseArrayOfBooleansValues(itemValue)) // recursive to address MultiDimensional Arrays field types
-    : parseBooleanValue(value)
-
 export const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)(((\[\])|(\[[1-9]+[0-9]*\]))*)?$/)
 
 const parseIntValue = (value: string, fieldType: string) => {
+  // TODO: create getNumberOfBits(fieldType)
   const bits = Number(fieldType.match(paramTypeNumber)?.[2] || '256')
 
   // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
@@ -105,7 +98,9 @@ const parseIntValue = (value: string, fieldType: string) => {
 }
 
 // parse a string to an Array. Example: from "[1, 2, [3,4]]" to [ "1", "2", "[3, 4]" ]
-export const parseStringOfIntsToArray = (value: string): string[] => {
+// use this function only for Arrays, Matrix and MultiDimensional Arrays of ints, uints, bytes, addresses and booleans
+// do NOT use this function for Arrays, Matrix and MultiDimensional Arrays of strings (for strings use JSON.parse() instead)
+export const parseStringToArray = (value: string): string[] => {
   let numberOfItems = 0
   let numberOfOtherArrays = 0
   return value
@@ -138,7 +133,21 @@ export const parseStringOfIntsToArray = (value: string): string[] => {
     }, [])
 }
 
-const parseArrayOfIntsValues = (values: string, fieldType: string): any => {
+export const baseFieldtypeRegex = new RegExp(/^([a-zA-Z0-9]*)(((\[\])|(\[[1-9]+[0-9]*\]))*)?$/)
+
+// TODO: ADD unit tests!!!
+// return the base field type. Example: from "uint128[][2][]" to "uint128"
+export const getBaseFieldType = (fieldType: string): string => {
+  const baseFieldType = fieldType.match(baseFieldtypeRegex)?.[1]
+
+  if (!baseFieldType) {
+    throw new SyntaxError(`Unknow base field type ${baseFieldType} from ${fieldType}`)
+  }
+
+  return baseFieldType
+}
+
+const parseArrayOfValues = (values: string, fieldType: string): any => {
   const trimmedValue = values.trim()
   const isArray = trimmedValue.startsWith('[') && trimmedValue.endsWith(']')
 
@@ -146,14 +155,18 @@ const parseArrayOfIntsValues = (values: string, fieldType: string): any => {
     throw new SyntaxError('Invalid Array value')
   }
 
-  return parseStringOfIntsToArray(values).map(itemValue =>
+  return parseStringToArray(values).map(itemValue =>
     Array.isArray(itemValue)
-      ? parseArrayOfIntsValues(itemValue, fieldType) // recursive to address MultiDimensional Arrays field types
-      : parseIntValue(itemValue, fieldType),
+      ? parseArrayOfValues(itemValue, fieldType) // recursive call because Matrix and MultiDimensional Arrays field types
+      : parseInputValue(
+          // recursive call to parseInputValue
+          getBaseFieldType(fieldType), // based on the base field type
+          itemValue.replace(/"/g, '').replace(/'/g, ''), // removing " and ' chars from the value
+        ),
   )
 }
 
-// This function is used to apply some parsing to some value types
+// This function is used to parse the user input values
 export const parseInputValue = (fieldType: string, value: string): any => {
   const trimmedValue = typeof value === 'string' ? value.trim() : value
 
@@ -165,21 +178,18 @@ export const parseInputValue = (fieldType: string, value: string): any => {
     return parseIntValue(trimmedValue, fieldType)
   }
 
-  if (
-    isArrayOfBooleansFieldType(fieldType) ||
-    isMatrixOfBooleansFieldType(fieldType) ||
-    isMultiDimensionalArrayOfBooleansFieldType(fieldType)
-  ) {
-    const parsedValues = JSON.parse(trimmedValue)
-    return parseArrayOfBooleansValues(parsedValues)
+  // FIX: fix the issue with the tuples and long numbers
+  if (isTupleFieldType(fieldType)) {
+    return JSON.parse(trimmedValue)
   }
 
+  // for Arrays, Matrix and MultiDimensional Arrays of strings JSON.parse is required
   if (
-    isArrayOfIntsFieldType(fieldType) ||
-    isMatrixOfIntsFieldType(fieldType) ||
-    isMultiDimensionalArrayOfIntsFieldType(fieldType)
+    isArrayOfStringsFieldType(fieldType) ||
+    isMatrixOfStringsFieldType(fieldType) ||
+    isMultiDimensionalArrayOfStringsFieldType(fieldType)
   ) {
-    return parseArrayOfIntsValues(trimmedValue, fieldType)
+    return JSON.parse(trimmedValue)
   }
 
   if (
@@ -187,11 +197,7 @@ export const parseInputValue = (fieldType: string, value: string): any => {
     isMatrixFieldType(fieldType) ||
     isMultiDimensionalArrayFieldType(fieldType)
   ) {
-    return JSON.parse(trimmedValue)
-  }
-
-  if (isTupleFieldType(fieldType)) {
-    return JSON.parse(trimmedValue)
+    return parseArrayOfValues(trimmedValue, fieldType)
   }
 
   return value

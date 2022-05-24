@@ -143,6 +143,10 @@ describe('form validations', () => {
       })
     })
 
+    // TODO: ADD BYTES
+    // TODO: ADD STRINGS
+    // TODO: ADD FUNCTIONS
+
     describe('uint field type', () => {
       describe('uint256', () => {
         it('validates a decimal value', () => {
@@ -524,7 +528,7 @@ describe('form validations', () => {
       })
     })
 
-    describe('Array of Integers', () => {
+    describe('array of integers', () => {
       it('empty array is a valid value for variable-length arrays', () => {
         const arrayOfIntsValidation = validateField('int[]')
 
@@ -838,5 +842,120 @@ describe('form validations', () => {
         })
       })
     })
+
+    describe('array of addresses', () => {
+      it('validates dinamic array of valid addresses', () => {
+        const arrayOfAddressesValidation = validateField('address[]')
+
+        const validationResult = arrayOfAddressesValidation(
+          '[0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x57CB13cbef735FbDD65f5f2866638c546464E45F]',
+        )
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('validates dinamic array of valid addresses as strings', () => {
+        const arrayOfAddressesValidation = validateField('address[]')
+
+        const validationResult = arrayOfAddressesValidation(
+          '["0x680cde08860141F9D223cE4E620B10Cd6741037E", "0x57CB13cbef735FbDD65f5f2866638c546464E45F"]',
+        )
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('validates empty array as valid value for dinamic array of addresses', () => {
+        const arrayOfAddressesValidation = validateField('address[]')
+
+        const validationResult = arrayOfAddressesValidation('[]')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('validates invalid array for dinamic array of addresses', () => {
+        const arrayOfAddressesValidation = validateField('address[]')
+
+        const validationResult = arrayOfAddressesValidation('INVALID_ARRAY')
+
+        expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+      })
+
+      it('validates invalid array values for dinamic array of addresses', () => {
+        const arrayOfAddressesValidation = validateField('address[]')
+
+        const validationResult = arrayOfAddressesValidation('[INVALID_ADDRESS_VALUE]')
+
+        expect(validationResult).toBe(
+          'format error. details: invalid address (argument="address", value="INVALID_ADDRESS_VALUE", code=INVALID_ARGUMENT, version=address/5.5.0)',
+        )
+      })
+
+      it('validates fixed array of valid addresses', () => {
+        const arrayOfAddressesValidation = validateField('address[2]')
+
+        const validationResult = arrayOfAddressesValidation(
+          '[0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x57CB13cbef735FbDD65f5f2866638c546464E45F]',
+        )
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('validates fixed array of valid addresses as strings', () => {
+        const arrayOfAddressesValidation = validateField('address[2]')
+
+        const validationResult = arrayOfAddressesValidation(
+          '["0x680cde08860141F9D223cE4E620B10Cd6741037E", "0x57CB13cbef735FbDD65f5f2866638c546464E45F"]',
+        )
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('validates fixed array of valid addresses with invalid length of elements', () => {
+        const arrayOfAddressesValidation = validateField('address[5]')
+
+        // only one is provided
+        const validationResult = arrayOfAddressesValidation(
+          '["0x680cde08860141F9D223cE4E620B10Cd6741037E"]',
+        )
+
+        expect(validationResult).toBe('format error. details: missing argument: coder array')
+      })
+
+      it('validates empty array as valid value for fixed array of addresses', () => {
+        const arrayOfAddressesValidation = validateField('address[2]')
+
+        const validationResult = arrayOfAddressesValidation('[]')
+
+        expect(validationResult).toBe('format error. details: missing argument: coder array')
+      })
+
+      it('validates invalid array for fixed array of addresses', () => {
+        const arrayOfAddressesValidation = validateField('address[2]')
+
+        const validationResult = arrayOfAddressesValidation('INVALID_ARRAY')
+
+        expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+      })
+
+      it('validates invalid array values for fixed array of addresses', () => {
+        const arrayOfAddressesValidation = validateField('address[2]')
+
+        // only one is invalid
+        const validationResult = arrayOfAddressesValidation(
+          '[INVALID_ADDRESS_VALUE, 0x680cde08860141F9D223cE4E620B10Cd6741037E]',
+        )
+
+        expect(validationResult).toBe(
+          'format error. details: invalid address (argument="address", value="INVALID_ADDRESS_VALUE", code=INVALID_ARGUMENT, version=address/5.5.0)',
+        )
+      })
+    })
+
+    // TODO: ADD ARRAY OF BYTES
+    // TODO: ADD ARRAY OF BOOLS
+    // TODO: ADD ARRAY OF STRINGS
+
+    // TODO: ADD MATRIX
+    // TODO: ADD MULTIDIMENSIONAL ARRAYS
   })
 })

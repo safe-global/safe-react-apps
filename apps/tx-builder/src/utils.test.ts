@@ -5,7 +5,7 @@ import {
   getInputTypeHelper,
   parseBooleanValue,
   parseInputValue,
-  parseStringOfIntsToArray,
+  parseStringToArray,
 } from './utils'
 
 describe('util functions', () => {
@@ -492,21 +492,13 @@ describe('util functions', () => {
         ).toEqual(['0x680cde08860141F9D223cE4E620B10Cd6741037E'])
       })
 
-      it.skip('parse an array of addresses to array of strings', () => {
-        // FIX: try to parse this as a valid value
+      it('parse an array of addresses to array of strings', () => {
         expect(
           parseInputValue('address[]', '[0x680cde08860141F9D223cE4E620B10Cd6741037E]'),
         ).toEqual(['0x680cde08860141F9D223cE4E620B10Cd6741037E'])
         expect(
           parseInputValue('address[1]', '[0x680cde08860141F9D223cE4E620B10Cd6741037E]'),
         ).toEqual(['0x680cde08860141F9D223cE4E620B10Cd6741037E'])
-      })
-
-      it('parse an invalid array value throws a SyntaxError', () => {
-        expect(() => parseInputValue('address[]', '[INVALID_ADDRESS]')).toThrow(SyntaxError)
-        expect(() => parseInputValue('address[1]', '[INVALID_ADDRESS]')).toThrow(SyntaxError)
-        expect(() => parseInputValue('address[]', 'INVALID_ARRAY')).toThrow(SyntaxError)
-        expect(() => parseInputValue('address[1]', 'INVALID_ARRAY')).toThrow(SyntaxError)
       })
     })
 
@@ -516,15 +508,7 @@ describe('util functions', () => {
         expect(parseInputValue('bytes[1]', '["0x000111AAFF"]')).toEqual(['0x000111AAFF'])
       })
 
-      it('parse an invalid array of bytes throws a SyntaxError', () => {
-        expect(() => parseInputValue('bytes[]', '[INVALID_BYTES]')).toThrow(SyntaxError)
-        expect(() => parseInputValue('bytes[1]', '[INVALID_BYTES]')).toThrow(SyntaxError)
-        expect(() => parseInputValue('bytes[]', 'INVALID_ARRAY')).toThrow(SyntaxError)
-        expect(() => parseInputValue('bytes[1]', 'INVALID_ARRAY')).toThrow(SyntaxError)
-      })
-
-      it.skip('parse an array of bytes to array of strings', () => {
-        // FIX: try to parse this as a valid value
+      it('parse an array of bytes to array of strings', () => {
         expect(parseInputValue('bytes[]', '[0x000111AAFF]')).toEqual(['0x000111AAFF'])
         expect(parseInputValue('bytes[1]', '[0x000111AAFF]')).toEqual(['0x000111AAFF'])
       })
@@ -777,17 +761,17 @@ describe('util functions', () => {
     })
   })
 
-  describe('parseStringOfIntsToArray', () => {
+  describe('parseStringToArray', () => {
     it('parse valid string of ints to an array of strings', () => {
       const arrayAsString = '[0, 1,  2  ,  3,4  , " 5 ", -6 , "-7"]'
-      const arrayPased = parseStringOfIntsToArray(arrayAsString)
+      const arrayPased = parseStringToArray(arrayAsString)
       expect(arrayPased).toEqual(['0', '1', '2', '3', '4', '"5"', '-6', '"-7"'])
     })
 
     it('parse valid string of long ints to an array of strings', () => {
       const arrayAsString =
         '[6426191757410075707, -6426191757410075707, "6426191757410075707", "-6426191757410075707"]'
-      const arrayPased = parseStringOfIntsToArray(arrayAsString)
+      const arrayPased = parseStringToArray(arrayAsString)
       expect(arrayPased).toEqual([
         '6426191757410075707',
         '-6426191757410075707',
@@ -798,7 +782,7 @@ describe('util functions', () => {
 
     it('parse a valid of nested array of ints to an array of strings', () => {
       const nestedArrayAsString = '[1, 2, [3,4], [  [5,6, [], 7]  ],  8, [9]]'
-      const arrayPased = parseStringOfIntsToArray(nestedArrayAsString)
+      const arrayPased = parseStringToArray(nestedArrayAsString)
       expect(arrayPased).toEqual(['1', '2', '[3,4]', '[[5,6,[],7]]', '8', '[9]'])
     })
   })

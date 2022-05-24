@@ -94,6 +94,18 @@ export const isMultiDimensionalArrayOfIntsFieldType = (fieldType: string): boole
   (fieldType.startsWith(BASIC_INT_FIELD_TYPE) || fieldType.startsWith(BASIC_UINT_FIELD_TYPE)) &&
   isMultiDimensionalArrayFieldType(fieldType)
 
+// TODO: ADD unit tests for this
+export const isArrayOfStringsFieldType = (fieldType: string): boolean =>
+  fieldType.startsWith(STRING_FIELD_TYPE) && isArrayFieldType(fieldType)
+
+// TODO: ADD unit tests for this
+export const isMatrixOfStringsFieldType = (fieldType: string): boolean =>
+  fieldType.startsWith(STRING_FIELD_TYPE) && isMatrixFieldType(fieldType)
+
+// TODO: ADD unit tests for this
+export const isMultiDimensionalArrayOfStringsFieldType = (fieldType: string): boolean =>
+  fieldType.startsWith(STRING_FIELD_TYPE) && isMultiDimensionalArrayFieldType(fieldType)
+
 // NON NON_SOLIDITY_TYPES
 
 // native token amount field
