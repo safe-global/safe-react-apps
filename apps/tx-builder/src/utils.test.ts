@@ -811,6 +811,7 @@ describe('util functions', () => {
     })
   })
 
+  // TODO: ADD MORE ENCODE DATA TESTS
   describe('encodeToHexData', () => {
     const contractMethod = {
       inputs: [{ internalType: 'int128[]', name: 'test128', type: 'int128[]' }],

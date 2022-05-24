@@ -5,6 +5,9 @@ pragma solidity >=0.7.0 <0.9.0;
 /// @title Gnosis Safe Test Contract - A test contract to check all solidity types in the tx-builder Safe App.
 /// @author Daniel Somoza - <daniel.somoza@safe.global>
 contract testContract {
+
+    // TODO: ADD int and uint
+
     // integers
     int8 int8Value;
     int32 int32Value;

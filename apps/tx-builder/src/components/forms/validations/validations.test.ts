@@ -11,7 +11,6 @@ const U_INT_8_FIELD_TYPE = 'uint8'
 const INT_256_FIELD_TYPE = 'int256'
 const INT_32_FIELD_TYPE = 'int32'
 const INT_8_FIELD_TYPE = 'int8'
-const BYTES_FIELD_TYPE = 'bytes'
 
 const NO_ERROR_IS_PRESENT = undefined
 
@@ -143,9 +142,95 @@ describe('form validations', () => {
       })
     })
 
-    // TODO: ADD BYTES
-    // TODO: ADD STRINGS
-    // TODO: ADD FUNCTIONS
+    describe('bytes field type', () => {
+      it('validates valid hexadecimal bytes value with 0x prefix', () => {
+        const bytesValidations = validateField('bytes')
+
+        const validationResult = bytesValidations('0x1234567890ABCDEFabcdef')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('validates valid bytes value without 0x prefix', () => {
+        const bytesValidations = validateField('bytes')
+
+        const validationResult = bytesValidations('FFF')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('validates invalid bytes value', () => {
+        const bytesValidations = validateField('bytes')
+
+        const validationResult = bytesValidations('INVALID_VALUE')
+
+        expect(validationResult).toBe('format error. details: invalid arrayify value')
+      })
+
+      describe('bytes1', () => {
+        it('validates valid hexadecimal bytes1 value with 0x prefix', () => {
+          const bytesValidations = validateField('bytes1')
+
+          const validationResult = bytesValidations('0xaF')
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
+
+        it('validates invalid bytes1 value', () => {
+          const bytesValidations = validateField('bytes1')
+
+          const validationResult = bytesValidations('INVALID_VALUE')
+
+          expect(validationResult).toBe('format error. details: invalid arrayify value')
+        })
+
+        it('validates out of range bytes1 value', () => {
+          const bytesValidations = validateField('bytes1')
+
+          const validationResult = bytesValidations('0xFFF')
+
+          expect(validationResult).toBe('format error. details: incorrect data length')
+        })
+      })
+
+      describe('bytes32', () => {
+        it('validates valid hexadecimal bytes32 value with 0x prefix', () => {
+          const bytesValidations = validateField('bytes32')
+
+          const validationResult = bytesValidations('0xFFDFDaadeab213309843FF')
+
+          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        })
+
+        it('validates invalid bytes32 value', () => {
+          const bytesValidations = validateField('bytes32')
+
+          const validationResult = bytesValidations('INVALID_VALUE')
+
+          expect(validationResult).toBe('format error. details: invalid arrayify value')
+        })
+
+        it('validates out of range bytes32 value', () => {
+          const bytesValidations = validateField('bytes32')
+
+          const validationResult = bytesValidations(
+            '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
+          )
+
+          expect(validationResult).toBe('format error. details: incorrect data length')
+        })
+      })
+    })
+
+    describe('string type', () => {
+      it('validates string value', () => {
+        const stringValidations = validateField('string')
+
+        const validationResult = stringValidations('Hello World!')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+    })
 
     describe('uint field type', () => {
       describe('uint256', () => {
@@ -367,26 +452,6 @@ describe('form validations', () => {
           const validationResult = int8Validation('127')
 
           expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
-        })
-      })
-    })
-
-    describe('bytes field type', () => {
-      describe('bytes', () => {
-        it('validates a bytes valid value', () => {
-          const bytesValidation = validateField(BYTES_FIELD_TYPE)
-
-          const validationResult = bytesValidation('0x123')
-
-          expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
-        })
-
-        it('validates an invalid value', () => {
-          const bytesValidation = validateField(BYTES_FIELD_TYPE)
-
-          const validationResult = bytesValidation('INVALID VALUE')
-
-          expect(validationResult).toBe('format error. details: invalid arrayify value')
         })
       })
     })
