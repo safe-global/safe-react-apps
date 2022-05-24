@@ -34,76 +34,110 @@ contract testContract {
     uint256[3] uInt256FixedArrayValue;
 
     // address
-    address testAddress;
+    address addressValue;
+
+    // array of addresses
+    address[] addressDynamicArrayValue;
+    address[2] addressFixedArrayValue;
 
     // bool
-    bool testBoolean;
+    bool booleanValue;
+
+    // array of booleans
+    bool[] booleanDynamicArrayValue;
+    bool[5] booleanFixedArrayValue;
 
     // string
-    string testString;
+    string stringValue;
 
     // function (callback)
-    function(uint256) external testFunction;
+    function(uint256) external functionValue;
 
     // bytes
-    bytes testBytes;
-    bytes1 testBytes1;
-    bytes2 testBytes2;
-    bytes8 testBytes8;
-    bytes16 testBytes16;
-    bytes32 testBytes32;
+    bytes bytesValue;
+    bytes1 bytes1Value;
+    bytes2 bytes2Value;
+    bytes8 bytes8Value;
+    bytes16 bytes16Value;
+    bytes32 bytes32Value;
 
     // TODO: array of address, bool, string, bytes
 
     // TODO: matrix of int, uint, address, bool, string, bytes
 
-    // TODO:  MultiDimensional Arrays of int, uint, address, bool, string, bytes
+    // TODO: multiDimensional arrays of int, uint, address, bool, string, bytes
+
+    // TODO: create a mix method of int, uint, address, bool, string, bytes
+
+    // TODO: create a mix method of array of ints, uints, addresses, bools, strings, bytes
+
+    // TODO: create a mix method of matrix of ints, uints, addresses, bools, strings, bytes
+
+    // TODO: create a mix method of multiDimensional array of ints, uints, addresses, bools, strings, bytes
 
     // TODO: tuples & structs
 
     // bytes write methods
     function testBytesValue(bytes memory newValue) public {
-        testBytes = newValue;
+        bytesValue = newValue;
     }
 
     function testBytes1Value(bytes1 newValue) public {
-        testBytes1 = newValue;
+        bytes1Value = newValue;
     }
 
     function testBytes2Value(bytes2 newValue) public {
-        testBytes2 = newValue;
+        bytes2Value = newValue;
     }
 
     function testBytes8Value(bytes8 newValue) public {
-        testBytes8 = newValue;
+        bytes8Value = newValue;
     }
 
     function testBytes16Value(bytes16 newValue) public {
-        testBytes16 = newValue;
+        bytes16Value = newValue;
     }
 
     function testBytes32Value(bytes32 newValue) public {
-        testBytes32 = newValue;
+        bytes32Value = newValue;
     }
 
     // function write methods
     function testFuntionValue(function(uint256) external callback) public {
-        testFunction = callback;
+        functionValue = callback;
     }
 
     // address write methods
     function testAddressValue(address newValue) public {
-        testAddress = newValue;
+        addressValue = newValue;
+    }
+
+    // arrays of addresses write methods
+    function testAddressDynamicArrayValue(address[] memory newValue) public {
+        addressDynamicArrayValue = newValue;
+    }
+
+    function testAddressFixedArrayValue(address[2] memory newValue) public {
+        addressFixedArrayValue = newValue;
     }
 
     // bool write methods
     function testBooleanValue(bool newValue) public {
-        testBoolean = newValue;
+        booleanValue = newValue;
+    }
+
+    // arrays of booleans write methods
+    function testBooleanDynamicArrayValue(bool[] memory newValue) public {
+        booleanDynamicArrayValue = newValue;
+    }
+
+    function testBooleanFixedArrayValue(bool[5] memory newValue) public {
+        booleanFixedArrayValue = newValue;
     }
 
     // string write methods
     function testStringValue(string memory newValue) public {
-        testString = newValue;
+        stringValue = newValue;
     }
 
     // integer write methods
@@ -325,46 +359,62 @@ contract testContract {
 
     // address read methods
     function getAddressValue() public view returns (address) {
-        return testAddress;
+        return addressValue;
+    }
+
+    function getAddressDynamicArrayValue() public view returns (address[] memory) {
+        return addressDynamicArrayValue;
+    }
+
+    function getAddressFixedArrayValue() public view returns (address[2] memory) {
+        return addressFixedArrayValue;
     }
 
     // boolean read methods
     function getBooleanValue() public view returns (bool) {
-        return testBoolean;
+        return booleanValue;
+    }
+
+    function getBooleanDynamicArrayValue() public view returns (bool[] memory) {
+        return booleanDynamicArrayValue;
+    }
+
+    function getBooleanFixedArrayValue() public view returns (bool[5] memory) {
+        return booleanFixedArrayValue;
     }
 
     // string read methods
     function getStringValue() public view returns (string memory) {
-        return testString;
+        return stringValue;
     }
 
     // function read methods
     function getFunctionValue() public view returns (function(uint256) external) {
-        return testFunction;
+        return functionValue;
     }
 
     // bytes read methods
     function getBytesValue() public view returns (bytes memory) {
-        return testBytes;
+        return bytesValue;
     }
 
     function getBytes1Value() public view returns (bytes1) {
-        return testBytes1;
+        return bytes1Value;
     }
 
     function getBytes2Value() public view returns (bytes2) {
-        return testBytes2;
+        return bytes2Value;
     }
 
     function getBytes8Value() public view returns (bytes8) {
-        return testBytes8;
+        return bytes8Value;
     }
 
     function getBytes16Value() public view returns (bytes16) {
-        return testBytes16;
+        return bytes16Value;
     }
 
     function getBytes32Value() public view returns (bytes32) {
-        return testBytes32;
+        return bytes32Value;
     }
 }
