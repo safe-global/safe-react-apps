@@ -264,6 +264,14 @@ describe('form validations', () => {
 
         expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
       })
+
+      it('validates special chars values as valid', () => {
+        const stringValidation = validateField('string')
+
+        const validationResult = stringValidation("'special chars like % &/()$%,.ñ'")
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
     })
 
     describe('uint field type', () => {
