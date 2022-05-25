@@ -15,7 +15,8 @@
     "start:walletconnect": "yarn workspace wallet-connect start",
     "start:ramp": "yarn workspace ramp-network start",
     "start:drain-safe": "yarn workspace drain-safe start",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "e2e": "npx cypress open"
   },
   "version": "2.5.1",
   "workspaces": [
@@ -34,6 +35,7 @@
     "@nrwl/cli": "13.8.0",
     "@nrwl/tao": "13.8.0",
     "@nrwl/workspace": "13.8.0",
+    "@testing-library/cypress": "^8.0.2",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^14.0.0",
@@ -45,11 +47,14 @@
     "@typescript-eslint/eslint-plugin": "^5.21.0",
     "@typescript-eslint/parser": "^5.21.0",
     "assert": "^2.0.0",
+    "axios": "^0.27.2",
     "babel-eslint": "10.1.0",
     "buffer": "^6.0.3",
     "commitizen": "^4.2.4",
     "crypto-browserify": "^3.12.0",
+    "cypress": "^9.6.1",
     "cz-conventional-changelog": "^3.3.0",
+    "dotenv": "^16.0.1",
     "dotenv-cli": "^5.1.0",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",

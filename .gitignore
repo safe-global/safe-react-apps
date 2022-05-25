@@ -29,3 +29,7 @@ yarn-error.log*
 
 # vscode folders
 .vscode
+
+cypress/reports
+cypress/videos
+cypress/screenshots
