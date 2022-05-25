@@ -4111,7 +4111,394 @@ describe('form validations', () => {
           })
         })
       })
-      // TODO: ADD MATRIX of bytes
+
+      describe('matrix of bytes', () => {
+        describe('bytes[][]', () => {
+          it('validates valid bytes[][] values', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[][]')
+
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '[ [0x680cde08860141F9D223cE4E620B10Cd6741037E],  ["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E],  ["0x680cde08860141F9D223cE4E620B10Cd6741037E"] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid array value', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[][]')
+
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '[ INVALID_ARRAY, ["0x680cde08860141F9D223cE4E620B10Cd6741037E"],  [0x680cde08860141F9D223cE4E620B10Cd6741037E]  ]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          it('validates invalid matrix value', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[][]')
+
+            const validationResult = dynamicMatrixOfBytesValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid bytes value in the bytes[][] matrix  ', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[][]')
+
+            const validationResult = dynamicMatrixOfBytesValidation('[[INVALID_BYTES_VALUE]]')
+
+            expect(validationResult).toBe('format error. details: invalid arrayify value')
+          })
+
+          it('validates invalid number value in the bytes[][] matrix  ', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[][]')
+
+            const validationResult = dynamicMatrixOfBytesValidation('[[12]]')
+
+            expect(validationResult).toBe('format error. details: invalid arrayify value')
+          })
+
+          it('validates invalid array value in the bytes[][] matrix  ', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[][]')
+
+            // should fail because is an array of bytes instead of a matrix of bytes
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix values', () => {
+            // empty arrays for bytes[][]
+            it('validates valid empty matrix value', () => {
+              const dynamicMatrixOfBytesValidation = validateField('bytes[][]')
+
+              const validationResult = dynamicMatrixOfBytesValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates only empty array values in the bytes[][] matrix', () => {
+              const dynamicMatrixOfBytesValidation = validateField('bytes[][]')
+
+              const validationResult = dynamicMatrixOfBytesValidation('[[], [], []]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates some empty array values in the bytes[][] matrix', () => {
+              const dynamicMatrixOfBytesValidation = validateField('bytes[][]')
+
+              const validationResult = dynamicMatrixOfBytesValidation(
+                '[[0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"], [], []]',
+              )
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+          })
+        })
+
+        describe('bytes[size][]', () => {
+          it('validates valid bytes[2][] values', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[2][]')
+
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '[ ["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E],  [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E],  ["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E"] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid length of bytes[2][] values (less items)', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[2][]')
+
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '[ [0x680cde08860141F9D223cE4E620B10Cd6741037E],        ["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: missing argument: coder array')
+          })
+
+          it('validates invalid length of bytes[2][] values (too many items)', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[2][]')
+
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '[ [0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E],  [0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"],  [0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid array value', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[2][]')
+
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '[ INVALID_ARRAY, [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          it('validates invalid matrix value', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[2][]')
+
+            const validationResult = dynamicMatrixOfBytesValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid bytes value in the bytes[2][] matrix  ', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[2][]')
+
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '[[INVALID_BYTES_VALUE, "0x680cde08860141F9D223cE4E620B10Cd6741037E"], [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E]]',
+            )
+
+            expect(validationResult).toBe('format error. details: invalid arrayify value')
+          })
+
+          it('validates invalid array value in the bytes[2][] matrix  ', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[2][]')
+
+            // should fail because is an array of bytes instead of a matrix of bytes
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix values', () => {
+            // empty arrays for bytes[2][]
+            it('validates valid empty matrix value', () => {
+              const dynamicMatrixOfBytesValidation = validateField('bytes[2][]')
+
+              const validationResult = dynamicMatrixOfBytesValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates only empty array values in the bytes[2][] matrix', () => {
+              const dynamicMatrixOfBytesValidation = validateField('bytes[2][]')
+
+              const validationResult = dynamicMatrixOfBytesValidation('[[], []]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates some empty array values in the bytes[2][] matrix', () => {
+              const dynamicMatrixOfBytesValidation = validateField('bytes[2][]')
+
+              const validationResult = dynamicMatrixOfBytesValidation(
+                '[[0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"], [], []]',
+              )
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+          })
+        })
+
+        describe('bytes[][size]', () => {
+          it('validates valid bytes[][3] values', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[][3]')
+
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '[   [0x680cde08860141F9D223cE4E620B10Cd6741037E],   ["0x680cde08860141F9D223cE4E620B10Cd6741037E", "0x680cde08860141F9D223cE4E620B10Cd6741037E"],  [0x680cde08860141F9D223cE4E620B10Cd6741037E,0x680cde08860141F9D223cE4E620B10Cd6741037E,0x680cde08860141F9D223cE4E620B10Cd6741037E,0x680cde08860141F9D223cE4E620B10Cd6741037E] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid length of bytes[][3] values (less items)', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[][3]')
+
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '[ ["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E],  ["0x680cde08860141F9D223cE4E620B10Cd6741037E"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: missing argument: coder array')
+          })
+
+          it('validates invalid length of bytes[][3] values (too many items)', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[][3]')
+
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '[  ["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E],  [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E],  [0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid array value', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[][3]')
+
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '[ INVALID_ARRAY, [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          it('validates invalid matrix value', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[][3]')
+
+            const validationResult = dynamicMatrixOfBytesValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid bytes value in the bytes[][3] matrix  ', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[][3]')
+
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '[[INVALID_bytes_VALUE, 0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"], ["0x680cde08860141F9D223cE4E620B10Cd6741037E"], [0x680cde08860141F9D223cE4E620B10Cd6741037E]',
+            )
+
+            expect(validationResult).toBe('format error. details: invalid arrayify value')
+          })
+
+          it('validates invalid array value in the bytes[][3] matrix  ', () => {
+            const dynamicMatrixOfBytesValidation = validateField('bytes[][3]')
+
+            // should fail because is an array of bytes instead of a matrix of bytes
+            const validationResult = dynamicMatrixOfBytesValidation(
+              '[0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix values', () => {
+            // empty arrays for bytes[][3]
+            it('validates invalid empty matrix value', () => {
+              const dynamicMatrixOfBytesValidation = validateField('bytes[][3]')
+
+              const validationResult = dynamicMatrixOfBytesValidation('[]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates only empty array values in the bytes[][3] matrix', () => {
+              const dynamicMatrixOfBytesValidation = validateField('bytes[][3]')
+
+              const validationResult = dynamicMatrixOfBytesValidation('[[], [], []]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates some empty array values in the bytes[][3] matrix', () => {
+              const dynamicMatrixOfBytesValidation = validateField('bytes[][3]')
+
+              const validationResult = dynamicMatrixOfBytesValidation(
+                '[[0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [], []]',
+              )
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+          })
+        })
+
+        describe('bytes[size][size]', () => {
+          it('validates valid bytes[2][3] values', () => {
+            const fixedMatrixOfBytesValidation = validateField('bytes[2][3]')
+
+            const validationResult = fixedMatrixOfBytesValidation(
+              '[ ["0x680cde08860141F9D223cE4E620B10Cd6741037E", "0x680cde08860141F9D223cE4E620B10Cd6741037E"], ["0x680cde08860141F9D223cE4E620B10Cd6741037E", "0x680cde08860141F9D223cE4E620B10Cd6741037E"], [0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid length of bytes[2][3] values (less items)', () => {
+            const fixedMatrixOfBytesValidation = validateField('bytes[2][3]')
+
+            const validationResult = fixedMatrixOfBytesValidation(
+              '[ [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E],  [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E],    [0x680cde08860141F9D223cE4E620B10Cd6741037E]]',
+            )
+
+            expect(validationResult).toBe('format error. details: missing argument: coder array')
+          })
+
+          it('validates invalid length of bytes[2][3] values (too many items)', () => {
+            const fixedMatrixOfBytesValidation = validateField('bytes[2][3]')
+
+            const validationResult = fixedMatrixOfBytesValidation(
+              '[  [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid array value', () => {
+            const fixedMatrixOfBytesValidation = validateField('bytes[2][3]')
+
+            const validationResult = fixedMatrixOfBytesValidation(
+              '[ INVALID_ARRAY, [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          it('validates invalid matrix value', () => {
+            const fixedMatrixOfBytesValidation = validateField('bytes[2][3]')
+
+            const validationResult = fixedMatrixOfBytesValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid bytes value in the bytes[2][3] matrix  ', () => {
+            const fixedMatrixOfBytesValidation = validateField('bytes[2][3]')
+
+            const validationResult = fixedMatrixOfBytesValidation(
+              '[["INVALID_bytes_VALUE", 0x680cde08860141F9D223cE4E620B10Cd6741037E ],  [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E]]',
+            )
+
+            expect(validationResult).toBe('format error. details: invalid arrayify value')
+          })
+
+          it('validates invalid array value in the bytes[2][3] matrix  ', () => {
+            const fixedMatrixOfBytesValidation = validateField('bytes[2][3]')
+
+            // should fail because is an array of booleans instead of a matrix of booleans
+            const validationResult = fixedMatrixOfBytesValidation(
+              '["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E,  0x680cde08860141F9D223cE4E620B10Cd6741037E]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix valid values', () => {
+            // empty arrays for bytes[2][3]
+            it('validates invalid empty matrix value', () => {
+              const fixedMatrixOfBytesValidation = validateField('bytes[2][3]')
+
+              const validationResult = fixedMatrixOfBytesValidation('[]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates only empty array values in the bytes[2][3] matrix', () => {
+              const fixedMatrixOfBytesValidation = validateField('bytes[2][3]')
+
+              const validationResult = fixedMatrixOfBytesValidation('[[], [], []]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates some empty array values in the bytes[2][3] matrix', () => {
+              const fixedMatrixOfBytesValidation = validateField('bytes[2][3]')
+
+              const validationResult = fixedMatrixOfBytesValidation(
+                '[[0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"], [], []]',
+              )
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+          })
+        })
+      })
     })
     // TODO: ADD MULTIDIMENSIONAL ARRAYS of int, uint, bool, string, bytes, addresses
   })
