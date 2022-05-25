@@ -2,9 +2,9 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-/// @title Gnosis Safe Test Contract - A test contract to check all solidity types in the tx-builder Safe App.
+/// @title Basic Types Test Contract - A test contract to check all basic solidity types in the tx-builder Safe App.
 /// @author Daniel Somoza - <daniel.somoza@safe.global>
-contract testContract {
+contract BasicTypesTestContract {
     // TODO: ADD int and uint
 
     // integers
@@ -84,15 +84,11 @@ contract testContract {
 
     // TODO: tuples & structs
 
-    // TODO: matrix of int, uint, address, bool, string, bytes
-
     // TODO: multiDimensional arrays of int, uint, address, bool, string, bytes
 
     // TODO: create a mix method of int, uint, address, bool, string, bytes
 
     // TODO: create a mix method of array of ints, uints, addresses, bools, strings, bytes
-
-    // TODO: create a mix method of matrix of ints, uints, addresses, bools, strings, bytes
 
     // TODO: create a mix method of multiDimensional array of ints, uints, addresses, bools, strings, bytes
 

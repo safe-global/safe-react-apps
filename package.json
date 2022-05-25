@@ -16,12 +16,13 @@
     "start:ramp": "yarn workspace ramp-network start",
     "start:drain-safe": "yarn workspace drain-safe start",
     "prepare": "husky install",
-    "contract:deploy": "yarn workspace tx-builder contract:deploy",
     "contract:compile": "yarn workspace tx-builder contract:compile",
     "contract:verify": "yarn workspace tx-builder contract:verify",
-    "contract:deploy:rinkeby": "yarn workspace tx-builder contract:deploy:rinkeby",
-    "contract:compile:rinkeby": "yarn workspace tx-builder contract:compile:rinkeby",
-    "contract:verify:rinkeby": "yarn workspace tx-builder contract:verify:rinkeby"
+    "contract:verify:rinkeby": "yarn workspace tx-builder contract:verify:rinkeby",
+    "basic:contract:deploy": "yarn workspace tx-builder basic:contract:deploy",
+    "basic:contract:deploy:rinkeby": "yarn workspace tx-builder basic:contract:deploy:rinkeby",
+    "matrix:contract:deploy": "yarn workspace tx-builder matrix:contract:deploy",
+    "matrix:contract:deploy:rinkeby": "yarn workspace tx-builder matrix:contract:deploy:rinkeby"
   },
   "version": "2.5.1",
   "workspaces": [
