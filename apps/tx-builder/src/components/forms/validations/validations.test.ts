@@ -1353,7 +1353,7 @@ describe('form validations', () => {
 
     describe('matrix', () => {
       describe('matrix of integers', () => {
-        describe('int[][] & uints[][]', () => {
+        describe('int<bits>[][] & uint<bits>[][]', () => {
           it('validates valid int[][] values', () => {
             const dinamicMatrixOfIntsValidation = validateField('int[][]')
 
@@ -1687,7 +1687,7 @@ describe('form validations', () => {
             })
           })
         })
-        describe('int[size][] & uints[size][]', () => {
+        describe('int<bits>[size][] & uint<bits>[size][]', () => {
           it('validates valid int[3][] values', () => {
             const dinamicMatrixOfIntsValidation = validateField('int[3][]')
 
@@ -2027,7 +2027,7 @@ describe('form validations', () => {
             })
           })
         })
-        describe('int[][size] & uints[][size]', () => {
+        describe('int<bits>[][size] & uint<bits>[][size]', () => {
           it('validates valid int[][3] values', () => {
             const dinamicMatrixOfIntsValidation = validateField('int[][3]')
 
@@ -2375,7 +2375,7 @@ describe('form validations', () => {
             })
           })
         })
-        describe('int[size][size] & uints[size][size]', () => {
+        describe('int<bits>[size][size] & uint<bits>[size][size]', () => {
           it('validates valid int[3][3] values', () => {
             const fixedMatrixOfIntsValidation = validateField('int[3][3]')
 
@@ -2730,8 +2730,494 @@ describe('form validations', () => {
           })
         })
       })
-      // TODO: ADD MATRIX of booleans, string, bytes, addresses, tuples
+
+      describe('matrix of booleans', () => {
+        describe('bool[][]', () => {
+          it('validates valid bool[][] values', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[ [true, 1, "1", "True", "TRUE", "true"],  [false, 0, "0", "False", "FALSE", "false"],  [true, false, 1, "1", 0, "0"] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid array value', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[ INVALID_ARRAY, [true, 1, "1", "True", "TRUE", "true"] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid matrix value', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid boolean value in the bool[][] matrix  ', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation('[[INVALID_BOOLEAN_VALUE]]')
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid string value in the bool[][] matrix  ', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[["INVALID_BOOLEAN_VALUE"]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid number value in the bool[][] matrix  ', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation('[[12]]')
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid array value in the bool[][] matrix  ', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][]')
+
+            // should fail because is an array of booleans instead of a matrix of booleans
+            const validationResult = dynamicMatrixOfBooleansValidation('[true]')
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix valid values', () => {
+            // empty arrays for bool[][]
+            it('validates valid empty matrix value', () => {
+              const dynamicMatrixOfBooleansValidation = validateField('bool[][]')
+
+              const validationResult = dynamicMatrixOfBooleansValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates only empty array values in the bool[][] matrix', () => {
+              const dynamicMatrixOfBooleansValidation = validateField('bool[][]')
+
+              const validationResult = dynamicMatrixOfBooleansValidation('[[], [], []]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates some empty array values in the bool[][] matrix', () => {
+              const dynamicMatrixOfBooleansValidation = validateField('bool[][]')
+
+              const validationResult = dynamicMatrixOfBooleansValidation(
+                '[[true, false, 1, 0], [], []]',
+              )
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+          })
+        })
+
+        describe('bool[size][]', () => {
+          it('validates valid bool[6][] values', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[6][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[ [true, 1, "1", "True", "TRUE", "true"],  [false, 0, "0", "False", "FALSE", "false"],  [true, false, 1, "1", 0, "0"] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid length of bool[6][] values (less items)', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[6][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[ [true, 1, "1"],  [false, 0, "0", "False", "FALSE", "false"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: missing argument: coder array')
+          })
+
+          it('validates invalid length of bool[6][] values (too many items)', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[6][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[ [true,true,true,true,true,true, 1, "1", "True", "TRUE", "true"],  [false, 0, "0", "False", "FALSE", "false"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid array value', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[6][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[ INVALID_ARRAY, [true, 1, "1", "True", "TRUE", "true"] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid matrix value', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[6][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid boolean value in the bool[6][] matrix  ', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[6][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[[INVALID_BOOLEAN_VALUE, true, true, true, 1, false]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid string value in the bool[6][] matrix  ', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[6][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[["INVALID_BOOLEAN_VALUE", true, true, true, 1, false]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid number value in the bool[6][] matrix  ', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[6][]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[[12, true, true, true, 1, false]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid array value in the bool[6][] matrix  ', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[6][]')
+
+            // should fail because is an array of booleans instead of a matrix of booleans
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[true, true, true, true, 1, false]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix valid values', () => {
+            // empty arrays for bool[6][]
+            it('validates valid empty matrix value', () => {
+              const dynamicMatrixOfBooleansValidation = validateField('bool[6][]')
+
+              const validationResult = dynamicMatrixOfBooleansValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates only empty array values in the bool[6][] matrix', () => {
+              const dynamicMatrixOfBooleansValidation = validateField('bool[6][]')
+
+              const validationResult = dynamicMatrixOfBooleansValidation('[[], []]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates some empty array values in the bool[6][] matrix', () => {
+              const dynamicMatrixOfBooleansValidation = validateField('bool[6][]')
+
+              const validationResult = dynamicMatrixOfBooleansValidation(
+                '[[true, false, 1, 0, 1, true], [], []]',
+              )
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+          })
+        })
+
+        describe('bool[][size]', () => {
+          it('validates valid bool[][3] values', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][3]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[   [1],   [true, 1, "1", "True", "TRUE", "true"],  [false, 0, "0", "False", "FALSE", "false", true,true,true,true,true,true] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid length of bool[][3] values (less items)', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][3]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[ [true, 1, "1"],  [false, 0, "0", "False", "FALSE", "false", true,true,true,true,true,true] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: missing argument: coder array')
+          })
+
+          it('validates invalid length of bool[][3] values (too many items)', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][3]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[  [true, 1, "1"],  [true, 1, "1"],  [true,true,true,true,true,true, 1, "1", "True", "TRUE", "true"],  [false, 0, "0", "False", "FALSE", "false"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid array value', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][3]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[ INVALID_ARRAY, [true, 1, "1", "True", "TRUE", "true"], [true] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid matrix value', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][3]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid boolean value in the bool[][3] matrix  ', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][3]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[[INVALID_BOOLEAN_VALUE, true, true, true, 1, false], [true], [false, false]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid string value in the bool[][3] matrix  ', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][3]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[["INVALID_BOOLEAN_VALUE", true, true, true, 1, false], [true, true], [false]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid number value in the bool[][3] matrix  ', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][3]')
+
+            const validationResult = dynamicMatrixOfBooleansValidation(
+              '[  [  12, true, true, true, 1, false], [true], [false]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid array value in the bool[][3] matrix  ', () => {
+            const dynamicMatrixOfBooleansValidation = validateField('bool[][3]')
+
+            // should fail because is an array of booleans instead of a matrix of booleans
+            const validationResult = dynamicMatrixOfBooleansValidation('[true, false, true]')
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix valid values', () => {
+            // empty arrays for bool[][3]
+            it('validates invalid empty matrix value', () => {
+              const dynamicMatrixOfBooleansValidation = validateField('bool[][3]')
+
+              const validationResult = dynamicMatrixOfBooleansValidation('[]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates only empty array values in the bool[][3] matrix', () => {
+              const dynamicMatrixOfBooleansValidation = validateField('bool[][3]')
+
+              const validationResult = dynamicMatrixOfBooleansValidation('[[], [], []]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates some empty array values in the bool[][3] matrix', () => {
+              const dynamicMatrixOfBooleansValidation = validateField('bool[][3]')
+
+              const validationResult = dynamicMatrixOfBooleansValidation(
+                '[[true, false, 1, 0, 1, true], [], []]',
+              )
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+          })
+        })
+        describe('bool[size][size]', () => {
+          it('validates valid bool[6][3] values', () => {
+            const fixedMatrixOfBooleansValidation = validateField('bool[6][3]')
+
+            const validationResult = fixedMatrixOfBooleansValidation(
+              '[ [true, 1, "1", "True", "TRUE", "true"],  [false, 0, "0", "False", "FALSE", "false"], [true, 1, "1", "False", "FALSE", "false"] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid length of bool[6][3] values (less items)', () => {
+            const fixedMatrixOfBooleansValidation = validateField('bool[6][3]')
+
+            const validationResult = fixedMatrixOfBooleansValidation(
+              '[ [true, 1, "1"],  [false, 0, "0", "False", "FALSE", "false", true,true,true,true,true,true] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: missing argument: coder array')
+          })
+
+          it('validates invalid length of bool[6][3] values (too many items)', () => {
+            const fixedMatrixOfBooleansValidation = validateField('bool[6][3]')
+
+            const validationResult = fixedMatrixOfBooleansValidation(
+              '[  [true, 1, "1"],  [true, 1, "1"],  [true,true,true,true,true,true, 1, "1", "True", "TRUE", "true"],  [false, 0, "0", "False", "FALSE", "false"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid array value', () => {
+            const fixedMatrixOfBooleansValidation = validateField('bool[6][3]')
+
+            const validationResult = fixedMatrixOfBooleansValidation(
+              '[ INVALID_ARRAY, [true, 1, "1", "True", "TRUE", "true"],  [false, 0, "0", "False", "FALSE", "false"] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid matrix value', () => {
+            const fixedMatrixOfBooleansValidation = validateField('bool[6][3]')
+
+            const validationResult = fixedMatrixOfBooleansValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid boolean value in the bool[6][3] matrix  ', () => {
+            const fixedMatrixOfBooleansValidation = validateField('bool[6][3]')
+
+            const validationResult = fixedMatrixOfBooleansValidation(
+              '[[INVALID_BOOLEAN_VALUE, true, true, true, 1, false],  [false, 0, "0", "False", "FALSE", "false"],  [false, 0, "0", "False", "FALSE", "false"]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid string value in the bool[6][3] matrix  ', () => {
+            const fixedMatrixOfBooleansValidation = validateField('bool[6][3]')
+
+            const validationResult = fixedMatrixOfBooleansValidation(
+              '[["INVALID_BOOLEAN_VALUE", true, true, true, 1, false],  [false, 0, "0", "False", "FALSE", "false"],  [false, 0, "0", "False", "FALSE", "false"]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid number value in the bool[6][3] matrix  ', () => {
+            const fixedMatrixOfBooleansValidation = validateField('bool[6][3]')
+
+            const validationResult = fixedMatrixOfBooleansValidation(
+              '[  [  12, true, true, true, 1, false],  [false, 0, "0", "False", "FALSE", "false"],  [false, 0, "0", "False", "FALSE", "false"]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Invalid Boolean value',
+            )
+          })
+
+          it('validates invalid array value in the bool[6][3] matrix  ', () => {
+            const fixedMatrixOfBooleansValidation = validateField('bool[6][3]')
+
+            // should fail because is an array of booleans instead of a matrix of booleans
+            const validationResult = fixedMatrixOfBooleansValidation(
+              '[true, false, true, false, true, false]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          describe('empty arrays and matrix valid values', () => {
+            // empty arrays for bool[6][3]
+            it('validates invalid empty matrix value', () => {
+              const fixedMatrixOfBooleansValidation = validateField('bool[6][3]')
+
+              const validationResult = fixedMatrixOfBooleansValidation('[]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates only empty array values in the bool[6][3] matrix', () => {
+              const fixedMatrixOfBooleansValidation = validateField('bool[6][3]')
+
+              const validationResult = fixedMatrixOfBooleansValidation('[[], [], []]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates some empty array values in the bool[6][3] matrix', () => {
+              const fixedMatrixOfBooleansValidation = validateField('bool[6][3]')
+
+              const validationResult = fixedMatrixOfBooleansValidation(
+                '[[true, false, 1, 0, 1, true], [], []]',
+              )
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+          })
+        })
+      })
+
+      // TODO: ADD MATRIX of string, bytes, addresses
     })
-    // TODO: ADD MULTIDIMENSIONAL ARRAYS
+    // TODO: ADD MULTIDIMENSIONAL ARRAYS of int, uint, bool, string, bytes, addresses
   })
 })
