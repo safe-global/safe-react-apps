@@ -301,7 +301,7 @@ describe('form validations', () => {
         const validationResult = uintValidation('""')
 
         expect(validationResult).toBe(
-          'format error. details: Error: Error: [number-to-bn] while converting number "\\"\\"" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: """"',
+          'format error. details: SyntaxError: invalid empty strings for integers',
         )
       })
 
@@ -439,7 +439,7 @@ describe('form validations', () => {
         const validationResult = intValidation('""')
 
         expect(validationResult).toBe(
-          'format error. details: Error: Error: [number-to-bn] while converting number "\\"\\"" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: """"',
+          'format error. details: SyntaxError: invalid empty strings for integers',
         )
       })
 

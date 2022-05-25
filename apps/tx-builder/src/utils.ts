@@ -88,7 +88,8 @@ export const parseBooleanValue = (value: any): boolean => {
 export const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)(((\[\])|(\[[1-9]+[0-9]*\]))*)?$/)
 
 const parseIntValue = (value: string, fieldType: string) => {
-  const isEmptyString = typeof value === 'string' && value.trim() === ''
+  const trimmedValue = value.trim().replace(/"/g, '').replace(/'/g, '')
+  const isEmptyString = trimmedValue === ''
 
   if (isEmptyString) {
     throw new SyntaxError('invalid empty strings for integers')
@@ -100,7 +101,7 @@ const parseIntValue = (value: string, fieldType: string) => {
   // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
   // To fix that we pad the numeric values here as the encode function is expecting a string
   // more info here https://github.com/ChainSafe/web3.js/issues/3772
-  return toBN(value).toString(10, bits)
+  return toBN(trimmedValue).toString(10, bits)
 }
 
 // parse a string to an Array. Example: from "[1, 2, [3,4]]" returns [ "1", "2", "[3, 4]" ]
