@@ -317,7 +317,7 @@ contract BasicTypesTestContract {
     }
 
     // many arrays of integers
-    function testManyArrayOfIntValues(
+    function testManyArrayOfIntParams(
         int8[] memory int8DynamicArrayNewValue,
         int128[] memory int128DynamicArrayNewValue,
         int256[] memory int256DynamicArrayNewValue,
