@@ -186,7 +186,25 @@ describe('util functions', () => {
       })
     })
 
-    // TODO: ADD string
+    describe('string values', () => {
+      it('parse valid string', () => {
+        const parsedValue = parseInputValue('string', 'Hello World!')
+
+        expect(parsedValue).toBe('Hello World!')
+      })
+
+      it('parse valid empty string', () => {
+        const parsedValue = parseInputValue('string', '')
+
+        expect(parsedValue).toBe('')
+      })
+
+      it('parse special chars as valid', () => {
+        const parsedValue = parseInputValue('string', "'special chars like % &/()$%,.ñ'")
+
+        expect(parsedValue).toBe("'special chars like % &/()$%,.ñ'")
+      })
+    })
 
     describe('bool[] & bool[size] values', () => {
       it('parse a valid truthy values to variable-length array of booleans', () => {
@@ -484,6 +502,18 @@ describe('util functions', () => {
       })
     })
 
+    describe('string[] values', () => {
+      it('parse an array of strings to array of strings', () => {
+        expect(parseInputValue('string[]', '["Hello World!"]')).toEqual(['Hello World!'])
+        expect(parseInputValue('string[1]', '["Hello World!"]')).toEqual(['Hello World!'])
+      })
+
+      it('thorws an error for a invalid array of strings', () => {
+        expect(() => parseInputValue('string[]', '[Hello World!]')).toThrow(SyntaxError)
+        expect(() => parseInputValue('string[1]', '[Hello World!]')).toThrow(SyntaxError)
+      })
+    })
+
     describe('address[] & address[size] values', () => {
       it('parse an array of addresses(string) to array of strings', () => {
         expect(
@@ -762,7 +792,7 @@ describe('util functions', () => {
       })
     })
 
-    // TODO: ADD string[]
+    // TODO: ADD MATRIX
   })
 
   describe('parseStringToArray', () => {
