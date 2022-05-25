@@ -83,6 +83,14 @@ describe('form validations', () => {
 
   describe('Solidity field types validations', () => {
     describe('address field type', () => {
+      it('validates a valid address', () => {
+        const addressValidations = validateField('address')
+
+        const validationResult = addressValidations('0x57CB13cbef735FbDD65f5f2866638c546464E45F')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
       it('validates an invalid address', () => {
         const addressValidations = validateField('address')
 
@@ -91,12 +99,12 @@ describe('form validations', () => {
         expect(validationResult).toBe('Invalid address')
       })
 
-      it('validates a valid address', () => {
-        const addressValidations = validateField('address')
+      it('validates invalid empty string for address values', () => {
+        const addressValidation = validateField('address')
 
-        const validationResult = addressValidations('0x57CB13cbef735FbDD65f5f2866638c546464E45F')
+        const validationResult = addressValidation('')
 
-        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        expect(validationResult).toBe('Invalid address')
       })
     })
 
@@ -105,6 +113,14 @@ describe('form validations', () => {
         const booleanValidations = validateField('bool')
 
         const validationResult = booleanValidations('INVALID BOOLEAN VALUE')
+
+        expect(validationResult).toBe('Invalid boolean value')
+      })
+
+      it('validates a invalid empty string value', () => {
+        const booleanValidations = validateField('bool')
+
+        const validationResult = booleanValidations('')
 
         expect(validationResult).toBe('Invalid boolean value')
       })
@@ -155,6 +171,14 @@ describe('form validations', () => {
         const bytesValidations = validateField('bytes')
 
         const validationResult = bytesValidations('INVALID_VALUE')
+
+        expect(validationResult).toBe('format error. details: invalid arrayify value')
+      })
+
+      it('validates invalid empty string for bytes values', () => {
+        const bytesValidation = validateField('bytes')
+
+        const validationResult = bytesValidation('')
 
         expect(validationResult).toBe('format error. details: invalid arrayify value')
       })
@@ -229,6 +253,14 @@ describe('form validations', () => {
         const stringValidations = validateField('string')
 
         const validationResult = stringValidations('Hello World!')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('validates valid empty string for string values', () => {
+        const stringValidation = validateField('string')
+
+        const validationResult = stringValidation('')
 
         expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
       })
@@ -333,6 +365,16 @@ describe('form validations', () => {
     })
 
     describe('int field type', () => {
+      // TODO: review this case
+      it('validates invalid empty string for int values', () => {
+        const intValidation = validateField('int')
+
+        // FIX: this should fail ???
+        const validationResult = intValidation('')
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
       describe('int256', () => {
         it('validates a negative value', () => {
           const int256Validation = validateField('int256')
@@ -947,6 +989,18 @@ describe('form validations', () => {
         expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
       })
 
+      it('validates invalid empty string value in an array for dinamic array of addresses', () => {
+        const arrayOfAddressesValidation = validateField('address[]')
+
+        const validationResult = arrayOfAddressesValidation(
+          '["", "0x680cde08860141F9D223cE4E620B10Cd6741037E", "0x57CB13cbef735FbDD65f5f2866638c546464E45F"]',
+        )
+
+        expect(validationResult).toBe(
+          'format error. details: invalid address (argument="address", value="", code=INVALID_ARGUMENT, version=address/5.5.0)',
+        )
+      })
+
       it('validates invalid array values for dinamic array of addresses', () => {
         const arrayOfAddressesValidation = validateField('address[]')
 
@@ -1297,7 +1351,687 @@ describe('form validations', () => {
       })
     })
 
-    // TODO: ADD MATRIX
+    describe('matrix', () => {
+      describe('matrix of integers', () => {
+        describe('int[][] & uints[][]', () => {
+          it('validates valid int[][] values', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              '[ [1, -2 , 3], [  4, "-5"], [  "6"  ] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates valid uint[][] values', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              '[ [1, "2" , 3], [  "4",   5], [  6  ] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid array value for int[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              '[ [1, -2 , 3], INVALID_ARRAY, [  "6"  ] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: Error: Error: [number-to-bn] while converting number "INVALID_ARRAY" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: "INVALID_ARRAY"',
+            )
+          })
+
+          it('validates invalid array value for uint[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              '[ [1, -2 , 3], INVALID_ARRAY, [  "6"  ] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: Error: Error: [number-to-bn] while converting number "INVALID_ARRAY" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: "INVALID_ARRAY"',
+            )
+          })
+
+          it('validates invalid matrix value for int[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid matrix value for uint[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid number values for int[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              '[ [1, -2 , 3], [ INVALID_NUMBER_VALUE ], [  "6"  ] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: Error: Error: [number-to-bn] while converting number "INVALID_NUMBER_VALUE" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: "INVALID_NUMBER_VALUE"',
+            )
+          })
+
+          it('validates invalid number values for uint[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              '[ [1, -2 , 3], [ INVALID_NUMBER_VALUE ], [  "6"  ] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: Error: Error: [number-to-bn] while converting number "INVALID_NUMBER_VALUE" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: "INVALID_NUMBER_VALUE"',
+            )
+          })
+
+          it('validates invalid array of numbers instead of matrix for int[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[][]')
+
+            // should fail because is an array of numbers instead of a matrix
+            const validationResult = dinamicMatrixOfIntsValidation(' [1, -2 , 3]')
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          it('validates invalid array of numbers instead of matrix for uint[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint[][]')
+
+            // should fail because is an array of numbers instead of a matrix
+            const validationResult = dinamicMatrixOfIntsValidation(' [1, 2 , 3]')
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          it('validates long numbers (positive & negatives) for int[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [-6426191757410075707, 6426191757410075707 , "-6426191757410075707"], [ "-6426191757410075707" ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates long numbers for int[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [6426191757410075707 , "6426191757410075707"], [ 6426191757410075707 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates long numbers for uint[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [6426191757410075707 ,"-6426191757410075707 ",  "6426191757410075707"], [ -6426191757410075707 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates valid values for int8[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int8[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [2 ,"-2 ",  "2"], [ -2 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates out-of-bounds values for int8[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int8[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [200 ,"-200 ",  "200"], [ -200 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates valid positive values for uint8[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint8[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [2 ,  "2"], [ 2 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid negative values for uint8[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint8[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [2 ,"-2 ",  "2"], [ -2 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates out-of-bounds values for uint8[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint8[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [200 ,"-200 ",  "200"], [ -200 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates valid values for int128[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int128[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [2 ,"-2 ",  "2"], [ -2 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates out-of-bounds values for int128[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int128[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [875487583475874857888888888880000000000 ,"-875487583475874857888888888880000000000 ",  "875487583475874857888888888880000000000"], [ -875487583475874857888888888880000000000 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates valid positive values for uint128[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint128[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [87548758347587485788888888888000000000 ,  "87548758347587485788888888888000000000"], [ 87548758347587485788888888880000000000 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid negative values for uint128[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint128[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [2 ,"-2 ",  "2"], [ -2 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates out-of-bounds values for uint128[][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint128[][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [200 ,"-200 ",  "200"], [ -200 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          describe('empty arrays and matrix valid values', () => {
+            // empty arrays for int[][] & uint[][]
+            it('validates empty matrix valid values for int[][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('int[][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates empty array valid values for int[][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('int[][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[[], [2, "-3"]]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates empty matrix valid values for uint[][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('uint[][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates empty array valid values for uint[][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('uint[][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[[], [2, "3"]]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            // empty arrays for int8[][] & uint8[][]
+            it('validates empty matrix valid values for int8[][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('int8[][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates empty array valid values for int8[][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('int8[][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[[], [2, "-3"]]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates empty matrix valid values for uint8[][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('uint8[][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates empty array valid values for uint8[][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('uint8[][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[[], [2, "3"]]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            // empty arrays for int128[][] & uint128[][]
+            it('validates empty matrix valid values for int128[][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('int128[][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates empty array valid values for int128[][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('int128[][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[[], [2, "-3"]]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates empty matrix valid values for uint128[][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('uint128[][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates empty array valid values for uint128[][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('uint128[][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[[], [2, "3"]]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+          })
+        })
+        describe('int[3][] & uints[3][]', () => {
+          it('validates valid int[3][] values', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              '[ [1, -2 , 3], [  4, "-5", 6] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid length of int[3][] values', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              '[ [1, -2 , 3], [  4, "-5", 6, 7, 8] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid length of uint[3][] values', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              '[ [1, 2 , 3], [  4, "5", 6, 7, 8] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid array value for int[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              '[ [1, -2 , 3], INVALID_ARRAY, [  "6"  ] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: Error: Error: [number-to-bn] while converting number "INVALID_ARRAY" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: "INVALID_ARRAY"',
+            )
+          })
+
+          it('validates invalid array value for uint[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              '[ [1, -2 , 3], INVALID_ARRAY, [  "6"  ] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: Error: Error: [number-to-bn] while converting number "INVALID_ARRAY" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: "INVALID_ARRAY"',
+            )
+          })
+
+          it('validates invalid matrix value for int[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid matrix value for uint[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid number values for int[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              '[ [1, -2 , 3], [ INVALID_NUMBER_VALUE ], [  "6"  ] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: Error: Error: [number-to-bn] while converting number "INVALID_NUMBER_VALUE" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: "INVALID_NUMBER_VALUE"',
+            )
+          })
+
+          it('validates invalid number values for uint[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              '[ [1, -2 , 3], [ INVALID_NUMBER_VALUE ], [  "6"  ] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: Error: Error: [number-to-bn] while converting number "INVALID_NUMBER_VALUE" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: "INVALID_NUMBER_VALUE"',
+            )
+          })
+
+          it('validates invalid array of numbers instead of matrix for int[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[3][]')
+
+            // should fail because is an array of numbers instead of a matrix
+            const validationResult = dinamicMatrixOfIntsValidation(' [1, -2 , 3]')
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          it('validates invalid array of numbers instead of matrix for uint[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint[3][]')
+
+            // should fail because is an array of numbers instead of a matrix
+            const validationResult = dinamicMatrixOfIntsValidation(' [1, 2 , 3]')
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          it('validates long numbers (positive & negatives) for int[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [-6426191757410075707, 6426191757410075707 , "-6426191757410075707"] ] ',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates long numbers for int[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [6426191757410075707 , "6426191757410075707   "   ,     6426191757410075707] ] ',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates long numbers for uint[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [6426191757410075707 ,"-6426191757410075707 ",  "6426191757410075707"], [ -6426191757410075707 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates valid values for int8[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int8[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [2 ,"-2 ",  "2"], [ -2 , "6    " , 1] ] ',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates out-of-bounds values for int8[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int8[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [200 ,"-200 ",  "200"], [ -200 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates valid positive values for uint8[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint8[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(' [ [2 ,  "2" , 2 ] ] ')
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid negative values for uint8[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint8[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [2 ,"-2 ",  "2"], [ -2 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates out-of-bounds values for uint8[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint8[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [200 ,"-200 ",  "200"], [ -200 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates valid values for int128[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int128[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(' [ [2 ,"-2 ",  "2"]] ')
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates out-of-bounds values for int128[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('int128[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [875487583475874857888888888880000000000 ,"-875487583475874857888888888880000000000 ",  "875487583475874857888888888880000000000"], [ -875487583475874857888888888880000000000 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates valid positive values for uint128[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint128[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [87548758347587485788888888888000000000 ,  "87548758347587485788888888888000000000", 6], [3,4,5]] ',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid negative values for uint128[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint128[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [2 ,"-2 ",  "2"], [ -2 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          it('validates out-of-bounds values for uint128[3][]', () => {
+            const dinamicMatrixOfIntsValidation = validateField('uint128[3][]')
+
+            const validationResult = dinamicMatrixOfIntsValidation(
+              ' [ [200 ,"-200 ",  "200"], [ -200 ], [  "6"  ] ] ',
+            )
+
+            expect(validationResult).toBe('format error. details: value out-of-bounds')
+          })
+
+          describe('empty arrays and matrix valid values', () => {
+            // empty arrays for int[3][] & uint[3][]
+            it('validates empty matrix valid values for int[3][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('int[3][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates invalid empty array value for int[3][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('int[3][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[ [2, "-3", 1], []]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates empty matrix valid values for uint[3][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('uint[3][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates invalid empty array values for uint[3][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('uint[3][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[[], [1, 2, "3"]]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            // empty arrays for int8[3][] & uint8[3][]
+            it('validates empty matrix valid values for int8[3][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('int8[3][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates invalid empty array value for int8[3][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('int8[3][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[[], [2, "-3",1 ]]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates empty matrix valid values for uint8[3][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('uint8[3][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates invalid empty array values for uint8[3][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('uint8[3][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[[], [1, 2, "3"]]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            // empty arrays for int128[3][] & uint128[3][]
+            it('validates empty matrix valid values for int128[3][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('int128[3][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates invalid empty array value for int128[3][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('int128[3][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[[], [1, 2, "-3"]]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates empty matrix valid values for uint128[3][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('uint128[3][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates invalid empty array value for uint128[3][]', () => {
+              const dinamicMatrixOfIntsValidation = validateField('uint128[3][]')
+
+              const validationResult = dinamicMatrixOfIntsValidation('[  [ 1, 2, "3"], []]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+          })
+        })
+        // TODO: int[][size] & uints[][size]
+        // TODO: int[size][size] & uints[size][size] (and change name from dinamicMatrixOfIntsValidation to fixedMatrixOfInsValidation)
+      })
+      // TODO: ADD MATRIX of booleans, string, bytes, addresses, tuples
+    })
     // TODO: ADD MULTIDIMENSIONAL ARRAYS
   })
 })

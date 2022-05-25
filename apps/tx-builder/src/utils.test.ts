@@ -816,6 +816,7 @@ describe('util functions', () => {
   })
 
   // TODO: ADD MORE ENCODE DATA TESTS
+  // TODO: ADD example from https://docs.soliditylang.org/en/v0.8.11/abi-spec.html#examples
   describe('encodeToHexData', () => {
     describe('array of integers', () => {
       it('test int128[] encoding with a negative long number', () => {

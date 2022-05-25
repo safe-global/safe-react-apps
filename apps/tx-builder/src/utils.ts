@@ -88,6 +88,8 @@ export const parseBooleanValue = (value: any): boolean => {
 export const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)(((\[\])|(\[[1-9]+[0-9]*\]))*)?$/)
 
 const parseIntValue = (value: string, fieldType: string) => {
+  // TODO: if value is an empty array thow an error
+
   // TODO: create getNumberOfBits(fieldType)
   const bits = Number(fieldType.match(paramTypeNumber)?.[2] || '256')
 
