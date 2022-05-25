@@ -3087,6 +3087,7 @@ describe('form validations', () => {
             })
           })
         })
+
         describe('bool[size][size]', () => {
           it('validates valid bool[6][3] values', () => {
             const fixedMatrixOfBooleansValidation = validateField('bool[6][3]')
@@ -3216,7 +3217,416 @@ describe('form validations', () => {
         })
       })
 
-      // TODO: ADD MATRIX of string, bytes, addresses
+      describe('matrix of strings', () => {
+        describe('string[][]', () => {
+          it('validates valid string[][] values', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[][]')
+
+            const validationResult = dynamicMatrixOfStringsValidation(
+              '[ ["Hello World!"],  ["Hello World!", "hi!"],  ["Hello World!"] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid array value', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[][]')
+
+            const validationResult = dynamicMatrixOfStringsValidation(
+              '[ INVALID_ARRAY, ["Hello World!", "hi!"],  ["Hello World!"]  ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Unexpected token I in JSON at position 2',
+            )
+          })
+
+          it('validates invalid matrix value', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[][]')
+
+            const validationResult = dynamicMatrixOfStringsValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Unexpected token I in JSON at position 0',
+            )
+          })
+
+          it('validates invalid stringean value in the string[][] matrix  ', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[][]')
+
+            const validationResult = dynamicMatrixOfStringsValidation('[[INVALID_STRING_VALUE]]')
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Unexpected token I in JSON at position 2',
+            )
+          })
+
+          // TODO: REVIEW THIS CASE
+          it('validates valid number value in the string[][] matrix  ', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[][]')
+
+            const validationResult = dynamicMatrixOfStringsValidation('[[12]]')
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid array value in the string[][] matrix  ', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[][]')
+
+            // should fail because is an array of strings instead of a matrix of strings
+            const validationResult = dynamicMatrixOfStringsValidation('["Hi!"]')
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix values', () => {
+            // empty arrays for string[][]
+            it('validates valid empty matrix value', () => {
+              const dynamicMatrixOfStringsValidation = validateField('string[][]')
+
+              const validationResult = dynamicMatrixOfStringsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates only empty array values in the string[][] matrix', () => {
+              const dynamicMatrixOfStringsValidation = validateField('string[][]')
+
+              const validationResult = dynamicMatrixOfStringsValidation('[[], [], []]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates some empty array values in the string[][] matrix', () => {
+              const dynamicMatrixOfStringsValidation = validateField('string[][]')
+
+              const validationResult = dynamicMatrixOfStringsValidation(
+                '[["HI!", "Hello World!"], [], []]',
+              )
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+          })
+        })
+
+        describe('string[size][]', () => {
+          it('validates valid string[2][] values', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[2][]')
+
+            const validationResult = dynamicMatrixOfStringsValidation(
+              '[ ["HI!", "Hello World!"],  ["HI!", "Hello World!"],  ["HI!", "Hello World!"] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid length of string[2][] values (less items)', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[2][]')
+
+            const validationResult = dynamicMatrixOfStringsValidation(
+              '[ ["HI!"],        ["HI!", "Hello World!"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: missing argument: coder array')
+          })
+
+          it('validates invalid length of string[2][] values (too many items)', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[2][]')
+
+            const validationResult = dynamicMatrixOfStringsValidation(
+              '[ ["HI!", "Hello World!", "Extra string"],  ["HI!", "Hello World!"],  ["HI!", "Hello World!"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid array value', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[2][]')
+
+            const validationResult = dynamicMatrixOfStringsValidation(
+              '[ INVALID_ARRAY, ["HI!", "Hello World!"] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Unexpected token I in JSON at position 2',
+            )
+          })
+
+          it('validates invalid matrix value', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[2][]')
+
+            const validationResult = dynamicMatrixOfStringsValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Unexpected token I in JSON at position 0',
+            )
+          })
+
+          it('validates invalid stringean value in the string[2][] matrix  ', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[2][]')
+
+            const validationResult = dynamicMatrixOfStringsValidation(
+              '[[INVALID_STRING_VALUE, "HI!"], ["HI!", "Hello World!"]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Unexpected token I in JSON at position 2',
+            )
+          })
+
+          it('validates invalid array value in the string[2][] matrix  ', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[2][]')
+
+            // should fail because is an array of strings instead of a matrix of strings
+            const validationResult = dynamicMatrixOfStringsValidation('["HI", "Hello World!"]')
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix values', () => {
+            // empty arrays for string[2][]
+            it('validates valid empty matrix value', () => {
+              const dynamicMatrixOfStringsValidation = validateField('string[2][]')
+
+              const validationResult = dynamicMatrixOfStringsValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates only empty array values in the string[2][] matrix', () => {
+              const dynamicMatrixOfStringsValidation = validateField('string[2][]')
+
+              const validationResult = dynamicMatrixOfStringsValidation('[[], []]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates some empty array values in the string[2][] matrix', () => {
+              const dynamicMatrixOfStringsValidation = validateField('string[2][]')
+
+              const validationResult = dynamicMatrixOfStringsValidation(
+                '[["HI!", "Hello World!"], [], []]',
+              )
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+          })
+        })
+
+        describe('string[][size]', () => {
+          it('validates valid string[][3] values', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[][3]')
+
+            const validationResult = dynamicMatrixOfStringsValidation(
+              '[   ["HI!"],   ["HI!", "Hello World!"],  ["HI!", "Hello World!", "HI!","HI!","HI!","HI!","HI!","Hello World!"] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid length of string[][3] values (less items)', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[][3]')
+
+            const validationResult = dynamicMatrixOfStringsValidation(
+              '[ ["HI!", "Hello World!"],  ["HI!"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: missing argument: coder array')
+          })
+
+          it('validates invalid length of string[][3] values (too many items)', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[][3]')
+
+            const validationResult = dynamicMatrixOfStringsValidation(
+              '[  ["HI!", "Hello World!"],  ["HI!", "Hello World!"],  ["HI!", "Hello World!"], ["HI!", "Hello World!"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid array value', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[][3]')
+
+            const validationResult = dynamicMatrixOfStringsValidation(
+              '[ INVALID_ARRAY, ["HI!", "Hello World!"], ["HI!"] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Unexpected token I in JSON at position 2',
+            )
+          })
+
+          it('validates invalid matrix value', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[][3]')
+
+            const validationResult = dynamicMatrixOfStringsValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Unexpected token I in JSON at position 0',
+            )
+          })
+
+          it('validates invalid string value in the string[][3] matrix  ', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[][3]')
+
+            const validationResult = dynamicMatrixOfStringsValidation(
+              '[[INVALID_STRING_VALUE, "HI!", "Hello World!"], ["Hello World!"], ["HI!"]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Unexpected token I in JSON at position 2',
+            )
+          })
+
+          it('validates invalid array value in the string[][3] matrix  ', () => {
+            const dynamicMatrixOfStringsValidation = validateField('string[][3]')
+
+            // should fail because is an array of strings instead of a matrix of strings
+            const validationResult = dynamicMatrixOfStringsValidation(
+              '["HI!", "Hello World!", "Hi!"]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix values', () => {
+            // empty arrays for string[][3]
+            it('validates invalid empty matrix value', () => {
+              const dynamicMatrixOfStringsValidation = validateField('string[][3]')
+
+              const validationResult = dynamicMatrixOfStringsValidation('[]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates only empty array values in the string[][3] matrix', () => {
+              const dynamicMatrixOfStringsValidation = validateField('string[][3]')
+
+              const validationResult = dynamicMatrixOfStringsValidation('[[], [], []]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates some empty array values in the string[][3] matrix', () => {
+              const dynamicMatrixOfStringsValidation = validateField('string[][3]')
+
+              const validationResult = dynamicMatrixOfStringsValidation(
+                '[["HI!", "Hello World!", "Hi!", "HI!"], [], []]',
+              )
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+          })
+        })
+
+        describe('string[size][size]', () => {
+          it('validates valid string[2][3] values', () => {
+            const fixedMatrixOfStringsValidation = validateField('string[2][3]')
+
+            const validationResult = fixedMatrixOfStringsValidation(
+              '[ ["Hi!", "HI!"], ["HI!", "Hello World!"], ["HI!", "Hello World!"] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid length of string[2][3] values (less items)', () => {
+            const fixedMatrixOfStringsValidation = validateField('string[2][3]')
+
+            const validationResult = fixedMatrixOfStringsValidation(
+              '[ ["HI!", "Hello World!"],  ["HI!", "Hello World!"],    ["HI!"]]',
+            )
+
+            expect(validationResult).toBe('format error. details: missing argument: coder array')
+          })
+
+          it('validates invalid length of string[2][3] values (too many items)', () => {
+            const fixedMatrixOfStringsValidation = validateField('string[2][3]')
+
+            const validationResult = fixedMatrixOfStringsValidation(
+              '[  ["HI!", "Hello World!"], ["HI!", "Hello World!"], ["HI!", "Hello World!"], ["HI!", "Hello World!"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid array value', () => {
+            const fixedMatrixOfStringsValidation = validateField('string[2][3]')
+
+            const validationResult = fixedMatrixOfStringsValidation(
+              '[ INVALID_ARRAY, ["HI!", "Hello World!"], ["HI!", "Hello World!"] ]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Unexpected token I in JSON at position 2',
+            )
+          })
+
+          it('validates invalid matrix value', () => {
+            const fixedMatrixOfStringsValidation = validateField('string[2][3]')
+
+            const validationResult = fixedMatrixOfStringsValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Unexpected token I in JSON at position 0',
+            )
+          })
+
+          it('validates invalid stringean value in the string[2][3] matrix  ', () => {
+            const fixedMatrixOfStringsValidation = validateField('string[2][3]')
+
+            const validationResult = fixedMatrixOfStringsValidation(
+              '[[INVALID_STRING_VALUE, "HI!" ],  ["HI!", "Hello World!"], ["HI!", "Hello World!"]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: SyntaxError: Unexpected token I in JSON at position 2',
+            )
+          })
+
+          it('validates invalid array value in the string[2][3] matrix  ', () => {
+            const fixedMatrixOfStringsValidation = validateField('string[2][3]')
+
+            // should fail because is an array of booleans instead of a matrix of booleans
+            const validationResult = fixedMatrixOfStringsValidation(
+              '["HI!", "Hello World!",  "Hello World!"]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix valid values', () => {
+            // empty arrays for string[2][3]
+            it('validates invalid empty matrix value', () => {
+              const fixedMatrixOfStringsValidation = validateField('string[2][3]')
+
+              const validationResult = fixedMatrixOfStringsValidation('[]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates only empty array values in the string[2][3] matrix', () => {
+              const fixedMatrixOfStringsValidation = validateField('string[2][3]')
+
+              const validationResult = fixedMatrixOfStringsValidation('[[], [], []]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates some empty array values in the string[2][3] matrix', () => {
+              const fixedMatrixOfStringsValidation = validateField('string[2][3]')
+
+              const validationResult = fixedMatrixOfStringsValidation(
+                '[["HI!", "Hello World!"], [], []]',
+              )
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+          })
+        })
+      })
+
+      // TODO: ADD MATRIX of bytes, addresses
     })
     // TODO: ADD MULTIDIMENSIONAL ARRAYS of int, uint, bool, string, bytes, addresses
   })
