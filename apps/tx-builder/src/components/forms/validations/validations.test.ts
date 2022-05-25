@@ -275,6 +275,46 @@ describe('form validations', () => {
     })
 
     describe('uint field type', () => {
+      it('validates invalid empty string for uint values', () => {
+        const uintValidation = validateField('uint')
+
+        const validationResult = uintValidation('')
+
+        expect(validationResult).toBe(
+          'format error. details: SyntaxError: invalid empty strings for integers',
+        )
+      })
+
+      it('validates invalid empty string for uint values', () => {
+        const uintValidation = validateField('uint')
+
+        const validationResult = uintValidation(' ')
+
+        expect(validationResult).toBe(
+          'format error. details: SyntaxError: invalid empty strings for integers',
+        )
+      })
+
+      it('validates invalid " char for uint values', () => {
+        const uintValidation = validateField('uint')
+
+        const validationResult = uintValidation('""')
+
+        expect(validationResult).toBe(
+          'format error. details: Error: Error: [number-to-bn] while converting number "\\"\\"" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: """"',
+        )
+      })
+
+      it('validates invalid . char for uint values', () => {
+        const uintValidation = validateField('uint')
+
+        const validationResult = uintValidation('.')
+
+        expect(validationResult).toBe(
+          'format error. details: Error: Error: [number-to-bn] while converting number "." to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: "."',
+        )
+      })
+
       describe('uint256', () => {
         it('validates a decimal value', () => {
           const uint256Validation = validateField('uint256')
@@ -373,14 +413,44 @@ describe('form validations', () => {
     })
 
     describe('int field type', () => {
-      // TODO: review this case
       it('validates invalid empty string for int values', () => {
         const intValidation = validateField('int')
 
-        // FIX: this should fail ???
         const validationResult = intValidation('')
 
-        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+        expect(validationResult).toBe(
+          'format error. details: SyntaxError: invalid empty strings for integers',
+        )
+      })
+
+      it('validates invalid empty string for int values', () => {
+        const intValidation = validateField('int')
+
+        const validationResult = intValidation(' ')
+
+        expect(validationResult).toBe(
+          'format error. details: SyntaxError: invalid empty strings for integers',
+        )
+      })
+
+      it('validates invalid " char for int values', () => {
+        const intValidation = validateField('int')
+
+        const validationResult = intValidation('""')
+
+        expect(validationResult).toBe(
+          'format error. details: Error: Error: [number-to-bn] while converting number "\\"\\"" to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: """"',
+        )
+      })
+
+      it('validates invalid . char for int values', () => {
+        const intValidation = validateField('int')
+
+        const validationResult = intValidation('.')
+
+        expect(validationResult).toBe(
+          'format error. details: Error: Error: [number-to-bn] while converting number "." to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: "."',
+        )
       })
 
       describe('int256', () => {
