@@ -1,6 +1,6 @@
 describe('Testing transactions', () => {
   it('should allow to send transactions', () => {
-    cy.connectWallet()
+    // cy.connectWallet()
 
     cy.visit(
       `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
@@ -33,10 +33,13 @@ describe('Testing transactions', () => {
     })
 
     cy.findByText(/transaction builder/i).should('be.visible')
-    cy.findByText(/submit/i).click()
+    cy.findByText(/contract interaction/i).click()
+    cy.findByText(/paramAddress/i).should('be.visible')
+    cy.findAllByText('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6').should('have.length', 2)
 
-    cy.iframe(iframeSelector)
-      .findByText(/success!/i)
-      .should('be.visible')
+    // cy.findByText(/submit/i).click()
+    // cy.iframe(iframeSelector)
+    //   .findByText(/success!/i)
+    //   .should('be.visible')
   })
 })
