@@ -97,7 +97,7 @@ const parseIntValue = (value: string, fieldType: string) => {
   return toBN(value.replace(/"/g, '').replace(/'/g, '')).toString(10, bits)
 }
 
-// parse a string to an Array. Example: from "[1, 2, [3,4]]" to [ "1", "2", "[3, 4]" ]
+// parse a string to an Array. Example: from "[1, 2, [3,4]]" returns [ "1", "2", "[3, 4]" ]
 // use this function only for Arrays, Matrix and MultiDimensional Arrays of ints, uints, bytes, addresses and booleans
 // do NOT use this function for Arrays, Matrix and MultiDimensional Arrays of strings (for strings use JSON.parse() instead)
 export const parseStringToArray = (value: string): string[] => {
@@ -136,7 +136,7 @@ export const parseStringToArray = (value: string): string[] => {
 export const baseFieldtypeRegex = new RegExp(/^([a-zA-Z0-9]*)(((\[\])|(\[[1-9]+[0-9]*\]))*)?$/)
 
 // TODO: ADD unit tests!!!
-// return the base field type. Example: from "uint128[][2][]" to "uint128"
+// return the base field type. Example: from "uint128[][2][]" returns "uint128"
 export const getBaseFieldType = (fieldType: string): string => {
   const baseFieldType = fieldType.match(baseFieldtypeRegex)?.[1]
 
@@ -199,7 +199,6 @@ export const parseInputValue = (fieldType: string, value: string): any => {
     return JSON.parse(trimmedValue)
   }
 
-  // FIX: fix the issue with the fixed-lenght arrays of bytes
   if (
     isArrayFieldType(fieldType) ||
     isMatrixFieldType(fieldType) ||

@@ -186,6 +186,8 @@ describe('util functions', () => {
       })
     })
 
+    // TODO: ADD string
+
     describe('bool[] & bool[size] values', () => {
       it('parse a valid truthy values to variable-length array of booleans', () => {
         const parsedValue = parseInputValue('bool[]', '[true, "true", "True", "TRUE", 1]')
@@ -629,7 +631,7 @@ describe('util functions', () => {
         expect(
           parseInputValue(tupleFieldType, '["6426191757410075707","6426191757410075707"]'),
         ).toEqual(['6426191757410075707', '6426191757410075707'])
-        // FIX: fix this issue
+        // FIX: fix the issue with the tuples and long numbers
         expect(
           parseInputValue(tupleFieldType, '[6426191757410075707,6426191757410075707]'),
         ).toEqual(['6426191757410075707', '6426191757410075707'])
@@ -689,7 +691,7 @@ describe('util functions', () => {
         })
 
         // tuple(uint256,uint256[],tuple(uint256,uint256,tuple(uint256,uint256))[])
-        // FIX: fix this issue
+        // FIX: fix the issue with the tuples and long numbers
         expect(
           parseInputValue(
             tupleWithNestedTuplesFieldType,
@@ -759,6 +761,8 @@ describe('util functions', () => {
         ])
       })
     })
+
+    // TODO: ADD string[]
   })
 
   describe('parseStringToArray', () => {
@@ -813,20 +817,45 @@ describe('util functions', () => {
 
   // TODO: ADD MORE ENCODE DATA TESTS
   describe('encodeToHexData', () => {
-    const contractMethod = {
-      inputs: [{ internalType: 'int128[]', name: 'test128', type: 'int128[]' }],
-      name: 'testMethod',
-      payable: false,
-    }
+    describe('array of integers', () => {
+      it('test int128[] encoding with a negative long number', () => {
+        const contractMethod = {
+          inputs: [{ internalType: 'int128[]', name: 'test128', type: 'int128[]' }],
+          name: 'testMethod',
+          payable: false,
+        }
 
-    const contractFieldsValues = {
-      test128: '[-6426191757410075707]',
-    }
+        const contractFieldsValues = {
+          test128: '[-6426191757410075707]',
+        }
 
-    const encondedValue = encodeToHexData(contractMethod, contractFieldsValues)
+        const encondedValue = encodeToHexData(contractMethod, contractFieldsValues)
 
-    expect(encondedValue).toEqual(
-      '0x7da27bb000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001ffffffffffffffffffffffffffffffffffffffffffffffffa6d194a4e1077bc5',
-    )
+        expect(encondedValue).toEqual(
+          '0x7da27bb000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001ffffffffffffffffffffffffffffffffffffffffffffffffa6d194a4e1077bc5',
+        )
+      })
+    })
+
+    describe('array of booleans', () => {
+      it('bool[] encoding', () => {
+        const contractMethod = {
+          inputs: [{ internalType: 'bool[]', name: 'arrayOfBooleans', type: 'bool[]' }],
+          name: 'arrayOfBooleansTestMethod',
+          payable: false,
+        }
+
+        const contractFieldsValues = {
+          arrayOfBooleans:
+            '[true, false, 1, 0 , "1", "0", "True", "False", "TRUE", "FALSE", "false", true]',
+        }
+
+        const encondedValue = encodeToHexData(contractMethod, contractFieldsValues)
+
+        expect(encondedValue).toEqual(
+          '0xcff4aff20000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001',
+        )
+      })
+    })
   })
 })
