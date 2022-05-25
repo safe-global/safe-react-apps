@@ -443,6 +443,16 @@ describe('form validations', () => {
         )
       })
 
+      it('validates invalid " and spaces char for int values', () => {
+        const intValidation = validateField('int')
+
+        const validationResult = intValidation('  "    "    ')
+
+        expect(validationResult).toBe(
+          'format error. details: SyntaxError: invalid empty strings for integers',
+        )
+      })
+
       it('validates invalid . char for int values', () => {
         const intValidation = validateField('int')
 

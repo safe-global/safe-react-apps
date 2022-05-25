@@ -88,7 +88,7 @@ export const parseBooleanValue = (value: any): boolean => {
 export const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)(((\[\])|(\[[1-9]+[0-9]*\]))*)?$/)
 
 const parseIntValue = (value: string, fieldType: string) => {
-  const trimmedValue = value.trim().replace(/"/g, '').replace(/'/g, '')
+  const trimmedValue = value.replace(/"/g, '').replace(/'/g, '').trim()
   const isEmptyString = trimmedValue === ''
 
   if (isEmptyString) {
