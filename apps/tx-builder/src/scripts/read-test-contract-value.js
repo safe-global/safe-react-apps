@@ -2,8 +2,9 @@ const RINKEBY_ETHERSCAN_URL = 'https://rinkeby.etherscan.io'
 
 const TEST_CONTRACT_NAME = 'MatrixTypesTestContract' // Contract Name to read (BasicTypesTestContract or MatrixTypesTestContract)
 const TEST_CONTRACT_ADDRESS = '0x6623c1C4B8694C0982a5274037C059c6803bEA52' // The contract address
-const TEST_CONTRACT_METHOD = 'getUInt128DynamicMatrixValue' // method to read
+const TEST_CONTRACT_METHOD = 'getInt128DynamicMatrixValue' // method to read
 
+// in /apps/tx-builder folder
 // command: npx hardhat run --network rinkeby src/scripts/read-test-contract-value.js,
 
 async function main() {

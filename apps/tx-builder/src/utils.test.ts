@@ -661,7 +661,7 @@ describe('util functions', () => {
         expect(
           parseInputValue(tupleFieldType, '["6426191757410075707","6426191757410075707"]'),
         ).toEqual(['6426191757410075707', '6426191757410075707'])
-        // FIX: fix the issue with the tuples and long numbers
+        // FIX: fix the issue with long numbers in tuples
         expect(
           parseInputValue(tupleFieldType, '[6426191757410075707,6426191757410075707]'),
         ).toEqual(['6426191757410075707', '6426191757410075707'])
@@ -721,7 +721,7 @@ describe('util functions', () => {
         })
 
         // tuple(uint256,uint256[],tuple(uint256,uint256,tuple(uint256,uint256))[])
-        // FIX: fix the issue with the tuples and long numbers
+        // FIX: fix the issue with long numbers in tuples
         expect(
           parseInputValue(
             tupleWithNestedTuplesFieldType,

@@ -192,7 +192,7 @@ export const parseInputValue = (fieldType: string, value: string): any => {
     return parseIntValue(trimmedValue, fieldType)
   }
 
-  // FIX: fix the issue with the tuples and long numbers
+  // FIX: fix the issue with long numbers in the tuples
   if (isTupleFieldType(fieldType)) {
     return JSON.parse(trimmedValue)
   }

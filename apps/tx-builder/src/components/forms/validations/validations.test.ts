@@ -3339,7 +3339,7 @@ describe('form validations', () => {
             )
           })
 
-          it('validates invalid stringean value in the string[][] matrix  ', () => {
+          it('validates invalid string value in the string[][] matrix  ', () => {
             const dynamicMatrixOfStringsValidation = validateField('string[][]')
 
             const validationResult = dynamicMatrixOfStringsValidation('[[INVALID_STRING_VALUE]]')
@@ -3450,7 +3450,7 @@ describe('form validations', () => {
             )
           })
 
-          it('validates invalid stringean value in the string[2][] matrix  ', () => {
+          it('validates invalid string value in the string[2][] matrix  ', () => {
             const dynamicMatrixOfStringsValidation = validateField('string[2][]')
 
             const validationResult = dynamicMatrixOfStringsValidation(
@@ -3660,7 +3660,7 @@ describe('form validations', () => {
             )
           })
 
-          it('validates invalid stringean value in the string[2][3] matrix  ', () => {
+          it('validates invalid string value in the string[2][3] matrix  ', () => {
             const fixedMatrixOfStringsValidation = validateField('string[2][3]')
 
             const validationResult = fixedMatrixOfStringsValidation(
@@ -3714,7 +3714,404 @@ describe('form validations', () => {
         })
       })
 
-      // TODO: ADD MATRIX of bytes, addresses
+      describe('matrix of addresses', () => {
+        describe('address[][]', () => {
+          it('validates valid address[][] values', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[][]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '[ [0x680cde08860141F9D223cE4E620B10Cd6741037E],  ["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E],  ["0x680cde08860141F9D223cE4E620B10Cd6741037E"] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid array value', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[][]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '[ INVALID_ARRAY, ["0x680cde08860141F9D223cE4E620B10Cd6741037E"],  [0x680cde08860141F9D223cE4E620B10Cd6741037E]  ]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          it('validates invalid matrix value', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[][]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid address value in the address[][] matrix  ', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[][]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation('[[INVALID_ADDRESS_VALUE]]')
+
+            expect(validationResult).toBe(
+              'format error. details: invalid address (argument="address", value="INVALID_ADDRESS_VALUE", code=INVALID_ARGUMENT, version=address/5.5.0)',
+            )
+          })
+
+          it('validates invalid number value in the address[][] matrix  ', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[][]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation('[[12]]')
+
+            expect(validationResult).toBe(
+              'format error. details: invalid address (argument="address", value="12", code=INVALID_ARGUMENT, version=address/5.5.0)',
+            )
+          })
+
+          it('validates invalid array value in the address[][] matrix  ', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[][]')
+
+            // should fail because is an array of address instead of a matrix of address
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix values', () => {
+            // empty arrays for address[][]
+            it('validates valid empty matrix value', () => {
+              const dynamicMatrixOfAddressesValidation = validateField('address[][]')
+
+              const validationResult = dynamicMatrixOfAddressesValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates only empty array values in the address[][] matrix', () => {
+              const dynamicMatrixOfAddressesValidation = validateField('address[][]')
+
+              const validationResult = dynamicMatrixOfAddressesValidation('[[], [], []]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates some empty array values in the address[][] matrix', () => {
+              const dynamicMatrixOfAddressesValidation = validateField('address[][]')
+
+              const validationResult = dynamicMatrixOfAddressesValidation(
+                '[[0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"], [], []]',
+              )
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+          })
+        })
+
+        describe('address[size][]', () => {
+          it('validates valid address[2][] values', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[2][]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '[ ["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E],  [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E],  ["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E"] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid length of address[2][] values (less items)', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[2][]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '[ [0x680cde08860141F9D223cE4E620B10Cd6741037E],        ["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: missing argument: coder array')
+          })
+
+          it('validates invalid length of address[2][] values (too many items)', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[2][]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '[ [0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E],  [0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"],  [0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid array value', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[2][]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '[ INVALID_ARRAY, [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          it('validates invalid matrix value', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[2][]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid address value in the address[2][] matrix  ', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[2][]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '[[INVALID_ADDRESS_VALUE, "0x680cde08860141F9D223cE4E620B10Cd6741037E"], [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: invalid address (argument="address", value="INVALID_ADDRESS_VALUE", code=INVALID_ARGUMENT, version=address/5.5.0)',
+            )
+          })
+
+          it('validates invalid array value in the address[2][] matrix  ', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[2][]')
+
+            // should fail because is an array of addresss instead of a matrix of addresss
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix values', () => {
+            // empty arrays for address[2][]
+            it('validates valid empty matrix value', () => {
+              const dynamicMatrixOfAddressesValidation = validateField('address[2][]')
+
+              const validationResult = dynamicMatrixOfAddressesValidation('[]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates only empty array values in the address[2][] matrix', () => {
+              const dynamicMatrixOfAddressesValidation = validateField('address[2][]')
+
+              const validationResult = dynamicMatrixOfAddressesValidation('[[], []]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates some empty array values in the address[2][] matrix', () => {
+              const dynamicMatrixOfAddressesValidation = validateField('address[2][]')
+
+              const validationResult = dynamicMatrixOfAddressesValidation(
+                '[[0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"], [], []]',
+              )
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+          })
+        })
+
+        describe('address[][size]', () => {
+          it('validates valid address[][3] values', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[][3]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '[   [0x680cde08860141F9D223cE4E620B10Cd6741037E],   ["0x680cde08860141F9D223cE4E620B10Cd6741037E", "0x680cde08860141F9D223cE4E620B10Cd6741037E"],  [0x680cde08860141F9D223cE4E620B10Cd6741037E,0x680cde08860141F9D223cE4E620B10Cd6741037E,0x680cde08860141F9D223cE4E620B10Cd6741037E,0x680cde08860141F9D223cE4E620B10Cd6741037E] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid length of address[][3] values (less items)', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[][3]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '[ ["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E],  ["0x680cde08860141F9D223cE4E620B10Cd6741037E"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: missing argument: coder array')
+          })
+
+          it('validates invalid length of address[][3] values (too many items)', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[][3]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '[  ["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E],  [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E],  [0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid array value', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[][3]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '[ INVALID_ARRAY, [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          it('validates invalid matrix value', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[][3]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid address value in the address[][3] matrix  ', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[][3]')
+
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '[[INVALID_ADDRESS_VALUE, 0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"], ["0x680cde08860141F9D223cE4E620B10Cd6741037E"], [0x680cde08860141F9D223cE4E620B10Cd6741037E]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: invalid address (argument="address", value="INVALID_ADDRESS_VALUE", code=INVALID_ARGUMENT, version=address/5.5.0)',
+            )
+          })
+
+          it('validates invalid array value in the address[][3] matrix  ', () => {
+            const dynamicMatrixOfAddressesValidation = validateField('address[][3]')
+
+            // should fail because is an array of addresss instead of a matrix of addresss
+            const validationResult = dynamicMatrixOfAddressesValidation(
+              '[0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix values', () => {
+            // empty arrays for address[][3]
+            it('validates invalid empty matrix value', () => {
+              const dynamicMatrixOfAddressesValidation = validateField('address[][3]')
+
+              const validationResult = dynamicMatrixOfAddressesValidation('[]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates only empty array values in the address[][3] matrix', () => {
+              const dynamicMatrixOfAddressesValidation = validateField('address[][3]')
+
+              const validationResult = dynamicMatrixOfAddressesValidation('[[], [], []]')
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+
+            it('validates some empty array values in the address[][3] matrix', () => {
+              const dynamicMatrixOfAddressesValidation = validateField('address[][3]')
+
+              const validationResult = dynamicMatrixOfAddressesValidation(
+                '[[0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [], []]',
+              )
+
+              expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+            })
+          })
+        })
+
+        describe('address[size][size]', () => {
+          it('validates valid address[2][3] values', () => {
+            const fixedMatrixOfAddressesValidation = validateField('address[2][3]')
+
+            const validationResult = fixedMatrixOfAddressesValidation(
+              '[ ["0x680cde08860141F9D223cE4E620B10Cd6741037E", "0x680cde08860141F9D223cE4E620B10Cd6741037E"], ["0x680cde08860141F9D223cE4E620B10Cd6741037E", "0x680cde08860141F9D223cE4E620B10Cd6741037E"], [0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"] ]',
+            )
+
+            expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+          })
+
+          it('validates invalid length of address[2][3] values (less items)', () => {
+            const fixedMatrixOfAddressesValidation = validateField('address[2][3]')
+
+            const validationResult = fixedMatrixOfAddressesValidation(
+              '[ [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E],  [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E],    [0x680cde08860141F9D223cE4E620B10Cd6741037E]]',
+            )
+
+            expect(validationResult).toBe('format error. details: missing argument: coder array')
+          })
+
+          it('validates invalid length of address[2][3] values (too many items)', () => {
+            const fixedMatrixOfAddressesValidation = validateField('address[2][3]')
+
+            const validationResult = fixedMatrixOfAddressesValidation(
+              '[  [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: too many arguments: coder array')
+          })
+
+          it('validates invalid array value', () => {
+            const fixedMatrixOfAddressesValidation = validateField('address[2][3]')
+
+            const validationResult = fixedMatrixOfAddressesValidation(
+              '[ INVALID_ARRAY, [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E] ]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          it('validates invalid matrix value', () => {
+            const fixedMatrixOfAddressesValidation = validateField('address[2][3]')
+
+            const validationResult = fixedMatrixOfAddressesValidation('INVALID_MATRIX')
+
+            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          })
+
+          it('validates invalid address value in the address[2][3] matrix  ', () => {
+            const fixedMatrixOfAddressesValidation = validateField('address[2][3]')
+
+            const validationResult = fixedMatrixOfAddressesValidation(
+              '[["INVALID_ADDRESS_VALUE", 0x680cde08860141F9D223cE4E620B10Cd6741037E ],  [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E]]',
+            )
+
+            expect(validationResult).toBe(
+              'format error. details: invalid address (argument="address", value="INVALID_ADDRESS_VALUE", code=INVALID_ARGUMENT, version=address/5.5.0)',
+            )
+          })
+
+          it('validates invalid array value in the address[2][3] matrix  ', () => {
+            const fixedMatrixOfAddressesValidation = validateField('address[2][3]')
+
+            // should fail because is an array of booleans instead of a matrix of booleans
+            const validationResult = fixedMatrixOfAddressesValidation(
+              '["0x680cde08860141F9D223cE4E620B10Cd6741037E", 0x680cde08860141F9D223cE4E620B10Cd6741037E,  0x680cde08860141F9D223cE4E620B10Cd6741037E]',
+            )
+
+            expect(validationResult).toBe('format error. details: expected array value')
+          })
+
+          describe('empty arrays and matrix valid values', () => {
+            // empty arrays for address[2][3]
+            it('validates invalid empty matrix value', () => {
+              const fixedMatrixOfAddressesValidation = validateField('address[2][3]')
+
+              const validationResult = fixedMatrixOfAddressesValidation('[]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates only empty array values in the address[2][3] matrix', () => {
+              const fixedMatrixOfAddressesValidation = validateField('address[2][3]')
+
+              const validationResult = fixedMatrixOfAddressesValidation('[[], [], []]')
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+
+            it('validates some empty array values in the address[2][3] matrix', () => {
+              const fixedMatrixOfAddressesValidation = validateField('address[2][3]')
+
+              const validationResult = fixedMatrixOfAddressesValidation(
+                '[[0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"], [], []]',
+              )
+
+              expect(validationResult).toBe('format error. details: missing argument: coder array')
+            })
+          })
+        })
+      })
+      // TODO: ADD MATRIX of bytes
     })
     // TODO: ADD MULTIDIMENSIONAL ARRAYS of int, uint, bool, string, bytes, addresses
   })
