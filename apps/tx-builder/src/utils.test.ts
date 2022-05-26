@@ -1224,7 +1224,7 @@ describe('util functions', () => {
         expect(
           parseInputValue(
             'string[2][3][2][]',
-            '[[ [ ["Hi!", "Hi!"], ["Hi!", "Hi!"], ["Hi!", "Hi!"]  ],  [["Hi!", "Hi!"], ["Hi!", "Hi!"], ["Hi!", "Hi!"]], [["Hi!", "Hi!"], ["Hi!", "Hi!"], ["Hi!", "Hi!"]]  ], []]',
+            '[[   [["Hi!", "Hi!"], ["Hi!", "Hi!"], ["Hi!", "Hi!"]], [["Hi!", "Hi!"], ["Hi!", "Hi!"], ["Hi!", "Hi!"]]  ] ]',
           ),
         ).toEqual([
           [
@@ -1238,13 +1238,7 @@ describe('util functions', () => {
               ['Hi!', 'Hi!'],
               ['Hi!', 'Hi!'],
             ],
-            [
-              ['Hi!', 'Hi!'],
-              ['Hi!', 'Hi!'],
-              ['Hi!', 'Hi!'],
-            ],
           ],
-          [],
         ])
       })
     })

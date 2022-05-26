@@ -63,7 +63,7 @@ contract MatrixTypesTestContract {
     bytes[2][3] bytesFixedMatrixValue;
 
     // TODO: matrix of tuples
-    // TODO: matrix of tuples write methods
+    // TODO: matrix of tuples write & read methods
 
     // matrix of addresses write methods
     function testAddressDynamicMatrixValue(address[][] memory newValue) public {

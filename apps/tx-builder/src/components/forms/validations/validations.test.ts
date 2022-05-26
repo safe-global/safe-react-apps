@@ -4499,6 +4499,37 @@ describe('form validations', () => {
         })
       })
     })
-    // TODO: ADD MULTIDIMENSIONAL ARRAYS of int, uint, bool, string, bytes, addresses
+
+    describe('multidimensional arrays', () => {
+      it('integers', () => {
+        const multidimensionalArrayOfIntsValidation = validateField('int[][][]')
+
+        const validationResult = multidimensionalArrayOfIntsValidation(
+          '[ [ [1, -2 , 3], [  4, "-5"], [  "6"  ] ], [] ]',
+        )
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('booleans', () => {
+        const multidimensionalArrayOfBooleansValidation = validateField('bool[2][][][]')
+
+        const validationResult = multidimensionalArrayOfBooleansValidation(
+          '[  [ [[true, false], ["TRUE", "FALSE"]], [[false, true], [false, false]], [[1,0]] ],  [[["1", "0"]]]  ]',
+        )
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+
+      it('strings', () => {
+        const multidimensionalArrayOfStringsValidation = validateField('string[2][3][2][]')
+
+        const validationResult = multidimensionalArrayOfStringsValidation(
+          '[[   [["Hi!", "Hi!"], ["Hi!", "Hi!"], ["Hi!", "Hi!"]], [["Hi!", "Hi!"], ["Hi!", "Hi!"], ["Hi!", "Hi!"]]  ] ]',
+        )
+
+        expect(validationResult).toBe(NO_ERROR_IS_PRESENT)
+      })
+    })
   })
 })
