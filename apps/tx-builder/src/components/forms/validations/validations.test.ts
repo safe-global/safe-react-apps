@@ -3349,7 +3349,6 @@ describe('form validations', () => {
             )
           })
 
-          // TODO: REVIEW THIS CASE
           it('validates valid number value in the string[][] matrix  ', () => {
             const dynamicMatrixOfStringsValidation = validateField('string[][]')
 

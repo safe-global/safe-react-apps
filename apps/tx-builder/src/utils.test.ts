@@ -508,9 +508,14 @@ describe('util functions', () => {
         expect(parseInputValue('string[1]', '["Hello World!"]')).toEqual(['Hello World!'])
       })
 
+      it('parse an array of numbers to array of numbers', () => {
+        expect(parseInputValue('string[]', '[1234]')).toEqual([1234])
+        expect(parseInputValue('string[1]', '[1234]')).toEqual([1234])
+      })
+
       it('thorws an error for a invalid array of strings', () => {
-        expect(() => parseInputValue('string[]', '[Hello World!]')).toThrow(SyntaxError)
-        expect(() => parseInputValue('string[1]', '[Hello World!]')).toThrow(SyntaxError)
+        expect(() => parseInputValue('string[]', '[INVALID_STRING]')).toThrow(SyntaxError)
+        expect(() => parseInputValue('string[1]', '[INVALID_STRING]')).toThrow(SyntaxError)
       })
     })
 
@@ -792,7 +797,453 @@ describe('util functions', () => {
       })
     })
 
-    // TODO: ADD MATRIX
+    describe('int[][], int[size][], int[][size] & int[size][size] values', () => {
+      it('parse a matrix of int[][] to array of strings', () => {
+        expect(parseInputValue('int[][]', '[  ["1", -2], [3],  [ -4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 256), toBN('-2').toString(10, 256)],
+          [toBN('3').toString(10, 256)],
+          [toBN('-4').toString(10, 256), toBN('5').toString(10, 256)],
+        ])
+      })
+
+      it('parse a matrix of int[size][] to array of strings', () => {
+        expect(parseInputValue('int[2][]', '[  ["1", -2], [3, "2"],  [ -4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 256), toBN('-2').toString(10, 256)],
+          [toBN('3').toString(10, 256), toBN('2').toString(10, 256)],
+          [toBN('-4').toString(10, 256), toBN('5').toString(10, 256)],
+        ])
+      })
+
+      it('parse a matrix of int[][size] to array of strings', () => {
+        expect(parseInputValue('int[][3]', '[  ["1", -2], [3],  [ -4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 256), toBN('-2').toString(10, 256)],
+          [toBN('3').toString(10, 256)],
+          [toBN('-4').toString(10, 256), toBN('5').toString(10, 256)],
+        ])
+      })
+
+      it('parse a matrix of int[size][size] to array of strings', () => {
+        expect(parseInputValue('int[2][3]', '[  ["1", -2], [3, "2"],  [ -4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 256), toBN('-2').toString(10, 256)],
+          [toBN('3').toString(10, 256), toBN('2').toString(10, 256)],
+          [toBN('-4').toString(10, 256), toBN('5').toString(10, 256)],
+        ])
+      })
+
+      it('parse a matrix of int[][] with hex values', () => {
+        expect(
+          parseInputValue('int[][]', '[  ["0xFF", -0xFF],[3, "0x123"],  [ -aaa, 5 ]  ]'),
+        ).toEqual([
+          [toBN('0xFF').toString(10, 256), toBN('-0xFF').toString(10, 256)],
+          [toBN('3').toString(10, 256), toBN('0x123').toString(10, 256)],
+          [toBN('-aaa').toString(10, 256), toBN('5').toString(10, 256)],
+        ])
+      })
+
+      it('parse a matrix of int[][] with long negative values', () => {
+        expect(
+          parseInputValue(
+            'int[][]',
+            '[  ["6426191757410075707", -6426191757410075707],[6426191757410075707, "-6426191757410075707"]  ]',
+          ),
+        ).toEqual([
+          [
+            toBN('6426191757410075707').toString(10, 256),
+            toBN('-6426191757410075707').toString(10, 256),
+          ],
+          [
+            toBN('6426191757410075707').toString(10, 256),
+            toBN('-6426191757410075707').toString(10, 256),
+          ],
+        ])
+      })
+    })
+
+    describe('uint[][], uint[size][], uint[][size] & uint[size][size] values', () => {
+      it('parse a matrix of uint[][] to array of strings', () => {
+        expect(parseInputValue('uint[][]', '[  ["1", 2], [3],  [ 4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 256), toBN('2').toString(10, 256)],
+          [toBN('3').toString(10, 256)],
+          [toBN('4').toString(10, 256), toBN('5').toString(10, 256)],
+        ])
+      })
+
+      it('parse a matrix of uint[size][] to array of strings', () => {
+        expect(parseInputValue('uint[2][]', '[  ["1", 2], [3, "2"],  [ 4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 256), toBN('2').toString(10, 256)],
+          [toBN('3').toString(10, 256), toBN('2').toString(10, 256)],
+          [toBN('4').toString(10, 256), toBN('5').toString(10, 256)],
+        ])
+      })
+
+      it('parse a matrix of uint[][size] to array of strings', () => {
+        expect(parseInputValue('uint[][3]', '[  ["1", 2], [3],  [ 4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 256), toBN('2').toString(10, 256)],
+          [toBN('3').toString(10, 256)],
+          [toBN('4').toString(10, 256), toBN('5').toString(10, 256)],
+        ])
+      })
+
+      it('parse a matrix of uint[size][size] to array of strings', () => {
+        expect(parseInputValue('uint[2][3]', '[  ["1", 2], [3, "2"],  [ 4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 256), toBN('2').toString(10, 256)],
+          [toBN('3').toString(10, 256), toBN('2').toString(10, 256)],
+          [toBN('4').toString(10, 256), toBN('5').toString(10, 256)],
+        ])
+      })
+
+      it('parse a matrix of uint[][] with hex values', () => {
+        expect(
+          parseInputValue('uint[][]', '[  ["0xFF", 0xFF],[3, "0x123"],  [ aaa, 5 ]  ]'),
+        ).toEqual([
+          [toBN('0xFF').toString(10, 256), toBN('0xFF').toString(10, 256)],
+          [toBN('3').toString(10, 256), toBN('0x123').toString(10, 256)],
+          [toBN('aaa').toString(10, 256), toBN('5').toString(10, 256)],
+        ])
+      })
+
+      it('parse a matrix of uint[][] with long negative values', () => {
+        expect(
+          parseInputValue(
+            'uint[][]',
+            '[  ["6426191757410075707", 6426191757410075707],[6426191757410075707, "6426191757410075707"]  ]',
+          ),
+        ).toEqual([
+          [
+            toBN('6426191757410075707').toString(10, 256),
+            toBN('6426191757410075707').toString(10, 256),
+          ],
+          [
+            toBN('6426191757410075707').toString(10, 256),
+            toBN('6426191757410075707').toString(10, 256),
+          ],
+        ])
+      })
+    })
+
+    describe('int128[][], int128[size][], int128[][size] & int128[size][size] values', () => {
+      it('parse a matrix of int128[][] to array of strings', () => {
+        expect(parseInputValue('int128[][]', '[  ["1", -2], [3],  [ -4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 128), toBN('-2').toString(10, 128)],
+          [toBN('3').toString(10, 128)],
+          [toBN('-4').toString(10, 128), toBN('5').toString(10, 128)],
+        ])
+      })
+
+      it('parse a matrix of int128[size][] to array of strings', () => {
+        expect(parseInputValue('int128[2][]', '[  ["1", -2], [3, "2"],  [ -4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 128), toBN('-2').toString(10, 128)],
+          [toBN('3').toString(10, 128), toBN('2').toString(10, 128)],
+          [toBN('-4').toString(10, 128), toBN('5').toString(10, 128)],
+        ])
+      })
+
+      it('parse a matrix of int128[][size] to array of strings', () => {
+        expect(parseInputValue('int128[][3]', '[  ["1", -2], [3],  [ -4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 128), toBN('-2').toString(10, 128)],
+          [toBN('3').toString(10, 128)],
+          [toBN('-4').toString(10, 128), toBN('5').toString(10, 128)],
+        ])
+      })
+
+      it('parse a matrix of int128[size][size] to array of strings', () => {
+        expect(parseInputValue('int128[2][3]', '[  ["1", -2], [3, "2"],  [ -4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 128), toBN('-2').toString(10, 128)],
+          [toBN('3').toString(10, 128), toBN('2').toString(10, 128)],
+          [toBN('-4').toString(10, 128), toBN('5').toString(10, 128)],
+        ])
+      })
+
+      it('parse a matrix of int128[][] with hex values', () => {
+        expect(
+          parseInputValue('int128[][]', '[  ["0xFF", -0xFF],[3, "0x123"],  [ -aaa, 5 ]  ]'),
+        ).toEqual([
+          [toBN('0xFF').toString(10, 128), toBN('-0xFF').toString(10, 128)],
+          [toBN('3').toString(10, 128), toBN('0x123').toString(10, 128)],
+          [toBN('-aaa').toString(10, 128), toBN('5').toString(10, 128)],
+        ])
+      })
+
+      it('parse a matrix of int128[][] with long negative values', () => {
+        expect(
+          parseInputValue(
+            'int128[][]',
+            '[  ["6426191757410075707", -6426191757410075707],[6426191757410075707, "-6426191757410075707"]  ]',
+          ),
+        ).toEqual([
+          [
+            toBN('6426191757410075707').toString(10, 128),
+            toBN('-6426191757410075707').toString(10, 128),
+          ],
+          [
+            toBN('6426191757410075707').toString(10, 128),
+            toBN('-6426191757410075707').toString(10, 128),
+          ],
+        ])
+      })
+    })
+
+    describe('uint128[][], uint128[size][], uint128[][size] & uint128[size][size] values', () => {
+      it('parse a matrix of uint128[][] to array of strings', () => {
+        expect(parseInputValue('uint128[][]', '[  ["1", 2], [3],  [ 4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 128), toBN('2').toString(10, 128)],
+          [toBN('3').toString(10, 128)],
+          [toBN('4').toString(10, 128), toBN('5').toString(10, 128)],
+        ])
+      })
+
+      it('parse a matrix of uint128[size][] to array of strings', () => {
+        expect(parseInputValue('uint128[2][]', '[  ["1", 2], [3, "2"],  [ 4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 128), toBN('2').toString(10, 128)],
+          [toBN('3').toString(10, 128), toBN('2').toString(10, 128)],
+          [toBN('4').toString(10, 128), toBN('5').toString(10, 128)],
+        ])
+      })
+
+      it('parse a matrix of uint128[][size] to array of strings', () => {
+        expect(parseInputValue('uint128[][3]', '[  ["1", 2], [3],  [ 4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 128), toBN('2').toString(10, 128)],
+          [toBN('3').toString(10, 128)],
+          [toBN('4').toString(10, 128), toBN('5').toString(10, 128)],
+        ])
+      })
+
+      it('parse a matrix of uint128[size][size] to array of strings', () => {
+        expect(parseInputValue('uint128[2][3]', '[  ["1", 2], [3, "2"],  [ 4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 128), toBN('2').toString(10, 128)],
+          [toBN('3').toString(10, 128), toBN('2').toString(10, 128)],
+          [toBN('4').toString(10, 128), toBN('5').toString(10, 128)],
+        ])
+      })
+
+      it('parse a matrix of uint128[][] with hex values', () => {
+        expect(
+          parseInputValue('uint128[][]', '[  ["0xFF", 0xFF],[3, "0x123"],  [ aaa, 5 ]  ]'),
+        ).toEqual([
+          [toBN('0xFF').toString(10, 128), toBN('0xFF').toString(10, 128)],
+          [toBN('3').toString(10, 128), toBN('0x123').toString(10, 128)],
+          [toBN('aaa').toString(10, 128), toBN('5').toString(10, 128)],
+        ])
+      })
+
+      it('parse a matrix of uint128[][] with long negative values', () => {
+        expect(
+          parseInputValue(
+            'uint128[][]',
+            '[  ["6426191757410075707", 6426191757410075707],[6426191757410075707, "6426191757410075707"]  ]',
+          ),
+        ).toEqual([
+          [
+            toBN('6426191757410075707').toString(10, 128),
+            toBN('6426191757410075707').toString(10, 128),
+          ],
+          [
+            toBN('6426191757410075707').toString(10, 128),
+            toBN('6426191757410075707').toString(10, 128),
+          ],
+        ])
+      })
+    })
+
+    describe('int8[][], int8[size][], int8[][size] & int8[size][size] values', () => {
+      it('parse a matrix of int8[][] to array of strings', () => {
+        expect(parseInputValue('int8[][]', '[  ["1", -2], [3],  [ -4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 8), toBN('-2').toString(10, 8)],
+          [toBN('3').toString(10, 8)],
+          [toBN('-4').toString(10, 8), toBN('5').toString(10, 8)],
+        ])
+      })
+
+      it('parse a matrix of int8[size][] to array of strings', () => {
+        expect(parseInputValue('int8[2][]', '[  ["1", -2], [3, "2"],  [ -4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 8), toBN('-2').toString(10, 8)],
+          [toBN('3').toString(10, 8), toBN('2').toString(10, 8)],
+          [toBN('-4').toString(10, 8), toBN('5').toString(10, 8)],
+        ])
+      })
+
+      it('parse a matrix of int8[][size] to array of strings', () => {
+        expect(parseInputValue('int8[][3]', '[  ["1", -2], [3],  [ -4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 8), toBN('-2').toString(10, 8)],
+          [toBN('3').toString(10, 8)],
+          [toBN('-4').toString(10, 8), toBN('5').toString(10, 8)],
+        ])
+      })
+
+      it('parse a matrix of int8[size][size] to array of strings', () => {
+        expect(parseInputValue('int8[2][3]', '[  ["1", -2], [3, "2"],  [ -4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 8), toBN('-2').toString(10, 8)],
+          [toBN('3').toString(10, 8), toBN('2').toString(10, 8)],
+          [toBN('-4').toString(10, 8), toBN('5').toString(10, 8)],
+        ])
+      })
+
+      it('parse a matrix of int8[][] with hex values', () => {
+        expect(
+          parseInputValue('int8[][]', '[  ["0xF", 0xFF],[3, "0x123"],  [ aaa, 5 ]  ]'),
+        ).toEqual([
+          [toBN('0xF').toString(10, 8), toBN('0xFF').toString(10, 8)],
+          [toBN('3').toString(10, 8), toBN('0x123').toString(10, 8)],
+          [toBN('aaa').toString(10, 8), toBN('5').toString(10, 8)],
+        ])
+      })
+    })
+
+    describe('uint8[][], uint8[size][], uint8[][size] & uint8[size][size] values', () => {
+      it('parse a matrix of uint8[][] to array of strings', () => {
+        expect(parseInputValue('uint8[][]', '[  ["1", 2], [3],  [ 4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 8), toBN('2').toString(10, 8)],
+          [toBN('3').toString(10, 8)],
+          [toBN('4').toString(10, 8), toBN('5').toString(10, 8)],
+        ])
+      })
+
+      it('parse a matrix of uint8[size][] to array of strings', () => {
+        expect(parseInputValue('uint8[2][]', '[  ["1", 2], [3, "2"],  [ 4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 8), toBN('2').toString(10, 8)],
+          [toBN('3').toString(10, 8), toBN('2').toString(10, 8)],
+          [toBN('4').toString(10, 8), toBN('5').toString(10, 8)],
+        ])
+      })
+
+      it('parse a matrix of uint8[][size] to array of strings', () => {
+        expect(parseInputValue('uint8[][3]', '[  ["1", 2], [3],  [ 4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 8), toBN('2').toString(10, 8)],
+          [toBN('3').toString(10, 8)],
+          [toBN('4').toString(10, 8), toBN('5').toString(10, 8)],
+        ])
+      })
+
+      it('parse a matrix of uint8[size][size] to array of strings', () => {
+        expect(parseInputValue('uint8[2][3]', '[  ["1", 2], [3, "2"],  [ 4, 5 ]  ]')).toEqual([
+          [toBN('1').toString(10, 8), toBN('2').toString(10, 8)],
+          [toBN('3').toString(10, 8), toBN('2').toString(10, 8)],
+          [toBN('4').toString(10, 8), toBN('5').toString(10, 8)],
+        ])
+      })
+    })
+
+    describe('bool[][], bool[size][], bool[][size] & bool[size][size] values', () => {
+      it('parse a matrix of bool[][] to array of booleans', () => {
+        expect(
+          parseInputValue(
+            'bool[][]',
+            '[  ["true", true], [false],  [ "FALSE" ], [0, 1, "0", "1"], [TRUE], ["True", "False"], [True, TRUE, FALSE]  ]',
+          ),
+        ).toEqual([
+          [true, true],
+          [false],
+          [false],
+          [false, true, false, true],
+          [true],
+          [true, false],
+          [true, true, false],
+        ])
+      })
+    })
+
+    describe('address[][], address[size][], address[][size] & address[size][size] values', () => {
+      it('parse a matrix of address[][] to array of strings', () => {
+        expect(
+          parseInputValue(
+            'address[][]',
+            '[  [0x680cde08860141F9D223cE4E620B10Cd6741037E], ["0x680cde08860141F9D223cE4E620B10Cd6741037E"]  ]',
+          ),
+        ).toEqual([
+          ['0x680cde08860141F9D223cE4E620B10Cd6741037E'],
+          ['0x680cde08860141F9D223cE4E620B10Cd6741037E'],
+        ])
+      })
+    })
+
+    describe('bytes[][], bytes[size][], bytes[][size] & bytes[size][size] values', () => {
+      it('parse a matrix of bytes[][] to array of strings', () => {
+        expect(parseInputValue('bytes[][]', '[  [0xFFFF], ["0xFFFF"]  ]')).toEqual([
+          ['0xFFFF'],
+          ['0xFFFF'],
+        ])
+      })
+    })
+
+    describe('string[][], string[size][], string[][size] & string[size][size] values', () => {
+      it('parse a matrix of string[][] to array of strings', () => {
+        expect(
+          parseInputValue('string[][]', '[  ["Hi!", "Hello world!" ], ["Hello world!"]  ]'),
+        ).toEqual([['Hi!', 'Hello world!'], ['Hello world!']])
+      })
+    })
+    describe('multidimensional arrays', () => {
+      it('parse a matrix of int8[][][] to array of strings', () => {
+        expect(
+          parseInputValue('int8[][][]', '[ [ [1,2,3,4], [5,6]  ], [[]],  [[7], [8]]  ]'),
+        ).toEqual([
+          [
+            [
+              toBN('1').toString(10, 8),
+              toBN('2').toString(10, 8),
+              toBN('3').toString(10, 8),
+              toBN('4').toString(10, 8),
+            ],
+            [toBN('5').toString(10, 8), toBN('6').toString(10, 8)],
+          ],
+          [[]],
+          [[toBN('7').toString(10, 8)], [toBN('8').toString(10, 8)]],
+        ])
+      })
+
+      it('parse a matrix of bool[2][3][2] to array of strings', () => {
+        expect(
+          parseInputValue(
+            'bool[2][3][2]',
+            '[ [ [TRUE, true], [1,0], [false, true]  ],  [["TRUE", "FALSE"], ["1", "0"], ["True", "false"]], [["TRUE", "FALSE"], [0, 1], ["True", "false"]]  ]',
+          ),
+        ).toEqual([
+          [
+            [true, true],
+            [true, false],
+            [false, true],
+          ],
+          [
+            [true, false],
+            [true, false],
+            [true, false],
+          ],
+          [
+            [true, false],
+            [false, true],
+            [true, false],
+          ],
+        ])
+      })
+
+      it('parse a matrix of string[2][3][2][] to array of strings', () => {
+        expect(
+          parseInputValue(
+            'string[2][3][2][]',
+            '[[ [ ["Hi!", "Hi!"], ["Hi!", "Hi!"], ["Hi!", "Hi!"]  ],  [["Hi!", "Hi!"], ["Hi!", "Hi!"], ["Hi!", "Hi!"]], [["Hi!", "Hi!"], ["Hi!", "Hi!"], ["Hi!", "Hi!"]]  ], []]',
+          ),
+        ).toEqual([
+          [
+            [
+              ['Hi!', 'Hi!'],
+              ['Hi!', 'Hi!'],
+              ['Hi!', 'Hi!'],
+            ],
+            [
+              ['Hi!', 'Hi!'],
+              ['Hi!', 'Hi!'],
+              ['Hi!', 'Hi!'],
+            ],
+            [
+              ['Hi!', 'Hi!'],
+              ['Hi!', 'Hi!'],
+              ['Hi!', 'Hi!'],
+            ],
+          ],
+          [],
+        ])
+      })
+    })
   })
 
   describe('parseStringToArray', () => {

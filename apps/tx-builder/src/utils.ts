@@ -163,7 +163,6 @@ const isArray = (values: string): boolean => {
   return isArray
 }
 
-// TODO: ADD MORE TESTS (to cover bools, bytes etc)
 const parseArrayOfValues = (values: string, fieldType: string): any => {
   if (!isArray(values)) {
     throw new SyntaxError('Invalid Array value')
