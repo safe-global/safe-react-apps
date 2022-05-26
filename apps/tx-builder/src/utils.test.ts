@@ -2,9 +2,13 @@ import { toBN } from 'web3-utils'
 
 import {
   encodeToHexData,
+  getBaseFieldType,
   getInputTypeHelper,
+  getNumberOfBits,
+  isArray,
   parseBooleanValue,
   parseInputValue,
+  parseIntValue,
   parseStringToArray,
 } from './utils'
 
@@ -1293,6 +1297,171 @@ describe('util functions', () => {
 
     it('another value throws an error', () => {
       expect(() => parseBooleanValue('another value')).toThrow(SyntaxError)
+    })
+  })
+
+  describe('getNumberOfBits', () => {
+    it('returns the number of bits', () => {
+      expect(getNumberOfBits('uint')).toBe(256)
+      expect(getNumberOfBits('uint256')).toBe(256)
+      expect(getNumberOfBits('int')).toBe(256)
+      expect(getNumberOfBits('int256')).toBe(256)
+
+      expect(getNumberOfBits('uint128')).toBe(128)
+      expect(getNumberOfBits('int128')).toBe(128)
+
+      expect(getNumberOfBits('int8')).toBe(8)
+      expect(getNumberOfBits('uint8')).toBe(8)
+
+      expect(getNumberOfBits('int256[]')).toBe(256)
+      expect(getNumberOfBits('uint256[]')).toBe(256)
+      expect(getNumberOfBits('int128[]')).toBe(128)
+      expect(getNumberOfBits('uint128[]')).toBe(128)
+      expect(getNumberOfBits('uint8[]')).toBe(8)
+      expect(getNumberOfBits('int8[]')).toBe(8)
+
+      expect(getNumberOfBits('int256[][]')).toBe(256)
+      expect(getNumberOfBits('uint256[][]')).toBe(256)
+      expect(getNumberOfBits('int128[][]')).toBe(128)
+      expect(getNumberOfBits('uint128[][]')).toBe(128)
+      expect(getNumberOfBits('uint8[][]')).toBe(8)
+      expect(getNumberOfBits('int8[][]')).toBe(8)
+
+      expect(getNumberOfBits('int256[2]')).toBe(256)
+      expect(getNumberOfBits('uint256[3]')).toBe(256)
+      expect(getNumberOfBits('int128[4]')).toBe(128)
+      expect(getNumberOfBits('uint128[5]')).toBe(128)
+      expect(getNumberOfBits('uint8[6]')).toBe(8)
+      expect(getNumberOfBits('int8[2]')).toBe(8)
+
+      expect(getNumberOfBits('int256[1][2]')).toBe(256)
+      expect(getNumberOfBits('uint256[1][2]')).toBe(256)
+      expect(getNumberOfBits('int128[3][4]')).toBe(128)
+      expect(getNumberOfBits('uint128[6][5]')).toBe(128)
+      expect(getNumberOfBits('uint8[3][4]')).toBe(8)
+      expect(getNumberOfBits('int8[5][4]')).toBe(8)
+
+      expect(getNumberOfBits('int256[][1][][][2]')).toBe(256)
+      expect(getNumberOfBits('uint256[][1][][][2]')).toBe(256)
+      expect(getNumberOfBits('int128[][1][][][1][][2]')).toBe(128)
+      expect(getNumberOfBits('uint128[][1][][][2]')).toBe(128)
+      expect(getNumberOfBits('uint8[][1][33][][2]')).toBe(8)
+      expect(getNumberOfBits('int8[][1][][][2][][]')).toBe(8)
+    })
+
+    describe('parseIntValue', () => {
+      it('returns the integer parsed to string', () => {
+        expect(parseIntValue('2', 'int')).toEqual(toBN('2').toString(10, 256))
+        expect(parseIntValue('2', 'int128')).toEqual(toBN('2').toString(10, 128))
+        expect(parseIntValue('-2', 'int8')).toEqual(toBN('-2').toString(10, 8))
+
+        expect(parseIntValue('2', 'uint')).toEqual(toBN('2').toString(10, 256))
+        expect(parseIntValue('2', 'uint128')).toEqual(toBN('2').toString(10, 128))
+        expect(parseIntValue('2', 'uint8')).toEqual(toBN('2').toString(10, 8))
+      })
+
+      it('throws an error for empty strings', () => {
+        expect(() => parseIntValue('', 'int8')).toThrow(SyntaxError)
+        expect(() => parseIntValue('""', 'int8')).toThrow(SyntaxError)
+        expect(() => parseIntValue('"', 'int8')).toThrow(SyntaxError)
+        expect(() => parseIntValue('    ', 'int8')).toThrow(SyntaxError)
+      })
+    })
+
+    describe('getBaseFieldType', () => {
+      it('returns the base field type of an Array, Matrix or Multidimensional array', () => {
+        expect(getBaseFieldType('int128')).toBe('int128')
+        expect(getBaseFieldType('int128[]')).toBe('int128')
+        expect(getBaseFieldType('int128[2]')).toBe('int128')
+        expect(getBaseFieldType('int128[][]')).toBe('int128')
+        expect(getBaseFieldType('int128[][1]')).toBe('int128')
+        expect(getBaseFieldType('int128[2][]')).toBe('int128')
+        expect(getBaseFieldType('int128[3][4]')).toBe('int128')
+        expect(getBaseFieldType('int128[3][4][][]')).toBe('int128')
+        expect(getBaseFieldType('int128[][][][]')).toBe('int128')
+        expect(getBaseFieldType('int128[2][1][3][44]')).toBe('int128')
+        expect(getBaseFieldType('int128[2][][1][3][][44][][]')).toBe('int128')
+
+        expect(getBaseFieldType('uint')).toBe('uint')
+        expect(getBaseFieldType('uint[]')).toBe('uint')
+        expect(getBaseFieldType('uint[2]')).toBe('uint')
+        expect(getBaseFieldType('uint[][]')).toBe('uint')
+        expect(getBaseFieldType('uint[][1]')).toBe('uint')
+        expect(getBaseFieldType('uint[2][]')).toBe('uint')
+        expect(getBaseFieldType('uint128[3][4]')).toBe('uint128')
+        expect(getBaseFieldType('uint[3][4][][]')).toBe('uint')
+        expect(getBaseFieldType('uint[][][][]')).toBe('uint')
+        expect(getBaseFieldType('uint[2][1][3][44]')).toBe('uint')
+        expect(getBaseFieldType('uint[2][][1][3][][44][][]')).toBe('uint')
+
+        expect(getBaseFieldType('bool')).toBe('bool')
+        expect(getBaseFieldType('bool[]')).toBe('bool')
+        expect(getBaseFieldType('bool[2]')).toBe('bool')
+        expect(getBaseFieldType('bool[][]')).toBe('bool')
+        expect(getBaseFieldType('bool[][1]')).toBe('bool')
+        expect(getBaseFieldType('bool[2][]')).toBe('bool')
+        expect(getBaseFieldType('bool[3][4]')).toBe('bool')
+        expect(getBaseFieldType('bool[3][4][][]')).toBe('bool')
+        expect(getBaseFieldType('bool[][][][]')).toBe('bool')
+        expect(getBaseFieldType('bool[2][1][3][44]')).toBe('bool')
+        expect(getBaseFieldType('bool[2][][1][3][][44][][]')).toBe('bool')
+
+        expect(getBaseFieldType('address')).toBe('address')
+        expect(getBaseFieldType('address[]')).toBe('address')
+        expect(getBaseFieldType('address[2]')).toBe('address')
+        expect(getBaseFieldType('address[][]')).toBe('address')
+        expect(getBaseFieldType('address[][1]')).toBe('address')
+        expect(getBaseFieldType('address[2][]')).toBe('address')
+        expect(getBaseFieldType('address[3][4]')).toBe('address')
+        expect(getBaseFieldType('address[3][4][][]')).toBe('address')
+        expect(getBaseFieldType('address[][][][]')).toBe('address')
+        expect(getBaseFieldType('address[2][1][3][44]')).toBe('address')
+        expect(getBaseFieldType('address[2][][1][3][][44][][]')).toBe('address')
+
+        expect(getBaseFieldType('bytes')).toBe('bytes')
+        expect(getBaseFieldType('bytes[]')).toBe('bytes')
+        expect(getBaseFieldType('bytes[2]')).toBe('bytes')
+        expect(getBaseFieldType('bytes[][]')).toBe('bytes')
+        expect(getBaseFieldType('bytes[][1]')).toBe('bytes')
+        expect(getBaseFieldType('bytes[2][]')).toBe('bytes')
+        expect(getBaseFieldType('bytes[3][4]')).toBe('bytes')
+        expect(getBaseFieldType('bytes[3][4][][]')).toBe('bytes')
+        expect(getBaseFieldType('bytes[][][][]')).toBe('bytes')
+        expect(getBaseFieldType('bytes[2][1][3][44]')).toBe('bytes')
+        expect(getBaseFieldType('bytes[2][][1][3][][44][][]')).toBe('bytes')
+
+        expect(getBaseFieldType('string')).toBe('string')
+        expect(getBaseFieldType('string[]')).toBe('string')
+        expect(getBaseFieldType('string[2]')).toBe('string')
+        expect(getBaseFieldType('string[][]')).toBe('string')
+        expect(getBaseFieldType('string[][1]')).toBe('string')
+        expect(getBaseFieldType('string[2][]')).toBe('string')
+        expect(getBaseFieldType('string[3][4]')).toBe('string')
+        expect(getBaseFieldType('string[3][4][][]')).toBe('string')
+        expect(getBaseFieldType('string[][][][]')).toBe('string')
+        expect(getBaseFieldType('string[2][1][3][44]')).toBe('string')
+        expect(getBaseFieldType('string[2][][1][3][][44][][]')).toBe('string')
+      })
+
+      it('throws an error for invalid types', () => {
+        expect(() => getBaseFieldType('INVALID_VALUE')).toThrow(SyntaxError)
+      })
+    })
+
+    describe('custom isArray function', () => {
+      it('returns true if a given string is a valid array', () => {
+        expect(isArray('[]')).toBe(true)
+        expect(isArray('   []')).toBe(true)
+        expect(isArray('[]    ')).toBe(true)
+        expect(isArray('    []    ')).toBe(true)
+        expect(isArray('    ["hello"]    ')).toBe(true)
+        expect(isArray('    [  "hello"  ]    ')).toBe(true)
+        expect(isArray('    [ true  ]    ')).toBe(true)
+        expect(isArray('    [ 23  ]    ')).toBe(true)
+
+        expect(isArray('  "hello"   ')).toBe(false)
+        expect(isArray('false')).toBe(false)
+      })
     })
   })
 

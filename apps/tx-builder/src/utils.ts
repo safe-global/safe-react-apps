@@ -85,9 +85,11 @@ export const parseBooleanValue = (value: any): boolean => {
   return !!value
 }
 
-export const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)(((\[\])|(\[[1-9]+[0-9]*\]))*)?$/)
+const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)(((\[\])|(\[[1-9]+[0-9]*\]))*)?$/)
+export const getNumberOfBits = (fieldType: string): number =>
+  Number(fieldType.match(paramTypeNumber)?.[2] || '256')
 
-const parseIntValue = (value: string, fieldType: string) => {
+export const parseIntValue = (value: string, fieldType: string) => {
   const trimmedValue = value.replace(/"/g, '').replace(/'/g, '').trim()
   const isEmptyString = trimmedValue === ''
 
@@ -95,8 +97,7 @@ const parseIntValue = (value: string, fieldType: string) => {
     throw new SyntaxError('invalid empty strings for integers')
   }
 
-  // TODO: create getNumberOfBits(fieldType)
-  const bits = Number(fieldType.match(paramTypeNumber)?.[2] || '256')
+  const bits = getNumberOfBits(fieldType)
 
   // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
   // To fix that we pad the numeric values here as the encode function is expecting a string
@@ -142,7 +143,6 @@ export const parseStringToArray = (value: string): string[] => {
 
 export const baseFieldtypeRegex = new RegExp(/^([a-zA-Z0-9]*)(((\[\])|(\[[1-9]+[0-9]*\]))*)?$/)
 
-// TODO: ADD unit tests!!!
 // return the base field type. Example: from "uint128[][2][]" returns "uint128"
 export const getBaseFieldType = (fieldType: string): string => {
   const baseFieldType = fieldType.match(baseFieldtypeRegex)?.[1]
@@ -154,9 +154,8 @@ export const getBaseFieldType = (fieldType: string): string => {
   return baseFieldType
 }
 
-// TODO: ADD TESTS FOR THIS
 // custom isArray function to return true if a given string is an Array
-const isArray = (values: string): boolean => {
+export const isArray = (values: string): boolean => {
   const trimmedValue = values.trim()
   const isArray = trimmedValue.startsWith('[') && trimmedValue.endsWith(']')
 
