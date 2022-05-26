@@ -5,8 +5,6 @@ pragma solidity >=0.7.0 <0.9.0;
 /// @title Basic Types Test Contract - A test contract to check all basic solidity types in the tx-builder Safe App.
 /// @author Daniel Somoza - <daniel.somoza@safe.global>
 contract BasicTypesTestContract {
-    // TODO: ADD int and uint
-
     // integers
     int8 int8Value;
     int32 int32Value;
@@ -63,7 +61,6 @@ contract BasicTypesTestContract {
     bytes bytesValue;
     bytes1 bytes1Value;
     bytes2 bytes2Value;
-    bytes8 bytes8Value;
     bytes16 bytes16Value;
     bytes32 bytes32Value;
 
@@ -71,26 +68,100 @@ contract BasicTypesTestContract {
     bytes[] bytesDynamicArrayValue;
     bytes1[] bytes1DynamicArrayValue;
     bytes2[] bytes2DynamicArrayValue;
-    bytes8[] bytes8DynamicArrayValue;
     bytes16[] bytes16DynamicArrayValue;
     bytes32[] bytes32DynamicArrayValue;
 
     bytes[3] bytesFixedArrayValue;
     bytes1[3] bytes1FixedArrayValue;
     bytes2[3] bytes2FixedArrayValue;
-    bytes8[3] bytes8FixedArrayValue;
     bytes16[3] bytes16FixedArrayValue;
     bytes32[3] bytes32FixedArrayValue;
 
-    // TODO: tuples & structs
+    // TODO: add more multiDimensional arrays of int, uint, address, bool, string, bytes
+    int128[2][][] multidimensionalArrayOfInts;
+    bool[][][2] multidimensionalArrayOfBooleans;
 
-    // TODO: multiDimensional arrays of int, uint, address, bool, string, bytes
+    // structs and enums
+    struct ContractOwner {
+        string name;
+        uint8 age;
+        address userAddress;
+        bool isNice;
+    }
 
-    // TODO: create a mix method of int, uint, address, bool, string, bytes
+    ContractOwner contractOwner;
 
-    // TODO: create a mix method of array of ints, uints, addresses, bools, strings, bytes
+    struct Writter {
+        uint256 writterId;
+        string name;
+        string lastname;
+        address writterAddress;
+        bool isAlive;
+        uint8 age;
+    }
 
-    // TODO: create a mix method of multiDimensional array of ints, uints, addresses, bools, strings, bytes
+    Writter[2] writters;
+
+    enum genres {
+        FICTION,
+        SCIENCE_FICTION,
+        FANTASY,
+        MYSTERY,
+        THRILLER,
+        HISTORY
+    }
+
+    struct Book {
+        string title;
+        genres[] genre;
+        uint16 pages;
+        Writter writter;
+    }
+
+    Book book;
+    Book[2] books;
+
+    function testSimpleTuple(ContractOwner memory newContractOwner) public {
+        contractOwner = newContractOwner;
+    }
+
+    function testComplexTuple(Book memory newBook) public {
+        book = newBook;
+    }
+
+    function testArrayOfTuples(Writter[2] memory newWritters) public {
+        writters[0] = newWritters[0];
+        writters[1] = newWritters[1];
+    }
+
+    function testArrayOfComplexTuple(Book[2] memory newBooks) public {
+        books[0] = newBooks[0];
+        books[1] = newBooks[1];
+    }
+
+    function testMultidimensionalArrayOfInts(int128[2][][] memory newValue) public {
+        multidimensionalArrayOfInts = newValue;
+    }
+
+    function testMultidimensionalArrayOBooleans(bool[][][2] memory newValue) public {
+        multidimensionalArrayOfBooleans = newValue;
+    }
+
+    function testManyValues(
+        int8 int8NewValue,
+        bool boolNewValue,
+        address addressNewValue,
+        bytes memory bytesNewValue,
+        bool[][][2] memory multidimensionalArrayOfBooleansNewValue,
+        ContractOwner memory contractOwnerNewValue
+    ) public {
+        int8Value = int8NewValue;
+        booleanValue = boolNewValue;
+        addressValue = addressNewValue;
+        bytesValue = bytesNewValue;
+        multidimensionalArrayOfBooleans = multidimensionalArrayOfBooleansNewValue;
+        contractOwner = contractOwnerNewValue;
+    }
 
     // bytes write methods
     function testBytesValue(bytes memory newValue) public {
@@ -103,10 +174,6 @@ contract BasicTypesTestContract {
 
     function testBytes2Value(bytes2 newValue) public {
         bytes2Value = newValue;
-    }
-
-    function testBytes8Value(bytes8 newValue) public {
-        bytes8Value = newValue;
     }
 
     function testBytes16Value(bytes16 newValue) public {
@@ -130,10 +197,6 @@ contract BasicTypesTestContract {
         bytes2DynamicArrayValue = newValue;
     }
 
-    function testBytes8DynamicArrayValue(bytes8[] memory newValue) public {
-        bytes8DynamicArrayValue = newValue;
-    }
-
     function testBytes16DynamicArrayValue(bytes16[] memory newValue) public {
         bytes16DynamicArrayValue = newValue;
     }
@@ -152,10 +215,6 @@ contract BasicTypesTestContract {
 
     function testBytes2FixedArrayValue(bytes2[3] memory newValue) public {
         bytes2FixedArrayValue = newValue;
-    }
-
-    function testBytes8FixedArrayValue(bytes8[3] memory newValue) public {
-        bytes8FixedArrayValue = newValue;
     }
 
     function testBytes16FixedArrayValue(bytes16[3] memory newValue) public {
@@ -487,10 +546,6 @@ contract BasicTypesTestContract {
         return bytes2Value;
     }
 
-    function getBytes8Value() public view returns (bytes8) {
-        return bytes8Value;
-    }
-
     function getBytes16Value() public view returns (bytes16) {
         return bytes16Value;
     }
@@ -509,10 +564,6 @@ contract BasicTypesTestContract {
 
     function getBytes2DynamicArrayValue() public view returns (bytes2[] memory) {
         return bytes2DynamicArrayValue;
-    }
-
-    function getBytes8DynamicArrayValue() public view returns (bytes8[] memory) {
-        return bytes8DynamicArrayValue;
     }
 
     function getBytes16DynamicArrayValue() public view returns (bytes16[] memory) {
@@ -535,15 +586,35 @@ contract BasicTypesTestContract {
         return bytes2FixedArrayValue;
     }
 
-    function getBytes8FixedArrayValue() public view returns (bytes8[3] memory) {
-        return bytes8FixedArrayValue;
-    }
-
     function getBytes16FixedArrayValue() public view returns (bytes16[3] memory) {
         return bytes16FixedArrayValue;
     }
 
     function getBytes32FixedArrayValue() public view returns (bytes32[3] memory) {
         return bytes32FixedArrayValue;
+    }
+
+    function getSimpleTuple() public view returns (ContractOwner memory) {
+        return contractOwner;
+    }
+
+    function getArrayOfTuples() public view returns (Writter[2] memory) {
+        return writters;
+    }
+
+    function getComplexTuple(Book memory newBook) public {
+        book = newBook;
+    }
+
+    function getArrayOfComplexTuples() public view returns (Book[2] memory) {
+        return books;
+    }
+
+    function getMultidimensionalArrayOfInts() public view returns (int128[2][][] memory) {
+        return multidimensionalArrayOfInts;
+    }
+
+    function getMultidimensionalArrayOfBooleans() public view returns (bool[][][2] memory) {
+        return multidimensionalArrayOfBooleans;
     }
 }
