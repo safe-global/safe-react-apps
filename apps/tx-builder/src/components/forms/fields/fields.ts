@@ -33,17 +33,15 @@ const fixedFieldTypeRegex = new RegExp(
 
 // <type>[] or <type>[size]
 // variable-length or fixed-length Array of elements of the given type
-const arrayFieldTypeRegex = new RegExp(/[^\]]((\[([1-9]+[0-9]*)?\]))$/)
+const arrayFieldTypeRegex = new RegExp(/[^\]](\[([1-9]+[0-9]*)?\])$/)
 
 // <type>[][], <type>[size][], <type>[][size] or <type>[size][size]
 // variable-length or fixed-length Matrix of elements of the given type
-const matrixFieldTypeRegex = new RegExp(/[^\]]((\[([1-9]+[0-9]*)?\]))((\[([1-9]+[0-9]*)?\]))$/)
+const matrixFieldTypeRegex = new RegExp(/[^\]]((\[([1-9]+[0-9]*)?\]){2,2})$/)
 
 // <type>[][][][]...,  <type>[][size][][size][][size]..., <type>[size][size][size][size]...
 // MultiDimensional Arrays of elements of the given type
-const multiDimensionalArrayFieldTypeRegex = new RegExp(
-  /[^\]]((\[([1-9]+[0-9]*)?\]))((\[([1-9]+[0-9]*)?\]))(((\[([1-9]+[0-9]*)?\])){1,})$/,
-)
+const multiDimensionalArrayFieldTypeRegex = new RegExp(/[^\]]((\[([1-9]+[0-9]*)?\]){3,})$/)
 
 // Types can be combined to a tuple
 const tupleFieldTypeRegex = new RegExp(/^tuple/)
