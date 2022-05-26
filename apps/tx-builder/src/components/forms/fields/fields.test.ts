@@ -1,13 +1,16 @@
 import {
   isAddressFieldType,
   isArrayFieldType,
+  isArrayOfStringsFieldType,
   isBooleanFieldType,
   isBytesFieldType,
   isFixedFieldType,
   isFunctionFieldType,
   isIntFieldType,
   isMatrixFieldType,
+  isMatrixOfStringsFieldType,
   isMultiDimensionalArrayFieldType,
+  isMultiDimensionalArrayOfStringsFieldType,
   isStringFieldType,
   isTupleFieldType,
 } from './fields'
@@ -316,6 +319,7 @@ describe('solidity field types', () => {
 
         // invalid  multiDimensional array field type values
         expect(isMultiDimensionalArrayFieldType('int[-1][-2]')).toBe(false)
+        expect(isMultiDimensionalArrayFieldType('int[][]')).toBe(false)
         expect(isMultiDimensionalArrayFieldType('int[3][-3][3]')).toBe(false)
         expect(isMultiDimensionalArrayFieldType('int[3-][3][3]')).toBe(false)
         expect(isMultiDimensionalArrayFieldType('int[]')).toBe(false)
@@ -325,6 +329,63 @@ describe('solidity field types', () => {
         expect(isMultiDimensionalArrayFieldType('int[3][][][3][3][][[[[]]][[[]][][][]')).toBe(false)
         expect(isMultiDimensionalArrayFieldType('int]]][[]')).toBe(false)
         expect(isMultiDimensionalArrayFieldType('int][][]]]][][][]')).toBe(false)
+      })
+    })
+
+    describe('isArrayOfStringsFieldType', () => {
+      it('returns true if its an array of strings field type', () => {
+        expect(isArrayOfStringsFieldType('string')).toBe(false)
+        expect(isArrayOfStringsFieldType('string[]')).toBe(true)
+        expect(isArrayOfStringsFieldType('string[2]')).toBe(true)
+        expect(isArrayOfStringsFieldType('bytes[2]')).toBe(false)
+        expect(isArrayOfStringsFieldType('string[][]')).toBe(false)
+        expect(isArrayOfStringsFieldType('string[][3]')).toBe(false)
+        expect(isArrayOfStringsFieldType('string[2][]')).toBe(false)
+        expect(isArrayOfStringsFieldType('string[3][2]')).toBe(false)
+        expect(isArrayOfStringsFieldType('string[][][]')).toBe(false)
+        expect(isArrayOfStringsFieldType('string[][1][]')).toBe(false)
+        expect(isArrayOfStringsFieldType('string[2][1][2]')).toBe(false)
+        expect(isArrayOfStringsFieldType('string[][][][][][][]')).toBe(false)
+        expect(isArrayOfStringsFieldType('string[1][][][2][][][][3][2][2][]')).toBe(false)
+        expect(isArrayOfStringsFieldType('string[1][2][1][2][3][2][2]')).toBe(false)
+      })
+    })
+
+    describe('isMatrixOfStringsFieldType', () => {
+      it('returns true if its a matrix of strings field type', () => {
+        expect(isMatrixOfStringsFieldType('string')).toBe(false)
+        expect(isMatrixOfStringsFieldType('string[]')).toBe(false)
+        expect(isMatrixOfStringsFieldType('string[2]')).toBe(false)
+        expect(isMatrixOfStringsFieldType('string[][]')).toBe(true)
+        expect(isMatrixOfStringsFieldType('string[][3]')).toBe(true)
+        expect(isMatrixOfStringsFieldType('string[2][]')).toBe(true)
+        expect(isMatrixOfStringsFieldType('string[3][2]')).toBe(true)
+        expect(isMatrixOfStringsFieldType('int[3][2]')).toBe(false)
+        expect(isMatrixOfStringsFieldType('string[][][]')).toBe(false)
+        expect(isMatrixOfStringsFieldType('string[][1][]')).toBe(false)
+        expect(isMatrixOfStringsFieldType('string[2][1][2]')).toBe(false)
+        expect(isMatrixOfStringsFieldType('string[][][][][][][]')).toBe(false)
+        expect(isMatrixOfStringsFieldType('string[1][][][2][][][][3][2][2][]')).toBe(false)
+        expect(isMatrixOfStringsFieldType('string[1][2][1][2][3][2][2]')).toBe(false)
+      })
+    })
+
+    describe('isMultiDimensionalArrayOfStringsFieldType', () => {
+      it('returns true if its a multidimensional array of strings field type', () => {
+        expect(isMultiDimensionalArrayOfStringsFieldType('string')).toBe(false)
+        expect(isMultiDimensionalArrayOfStringsFieldType('string[]')).toBe(false)
+        expect(isMultiDimensionalArrayOfStringsFieldType('string[2]')).toBe(false)
+        expect(isMultiDimensionalArrayOfStringsFieldType('string[][]')).toBe(false)
+        expect(isMultiDimensionalArrayOfStringsFieldType('string[][3]')).toBe(false)
+        expect(isMultiDimensionalArrayOfStringsFieldType('string[2][]')).toBe(false)
+        expect(isMultiDimensionalArrayOfStringsFieldType('string[3][2]')).toBe(false)
+        expect(isMultiDimensionalArrayOfStringsFieldType('string[][][]')).toBe(true)
+        expect(isMultiDimensionalArrayOfStringsFieldType('string[][1][]')).toBe(true)
+        expect(isMultiDimensionalArrayOfStringsFieldType('string[2][1][2]')).toBe(true)
+        expect(isMultiDimensionalArrayOfStringsFieldType('string[][][][][][][]')).toBe(true)
+        expect(isMultiDimensionalArrayOfStringsFieldType('string[1][][][2][]')).toBe(true)
+        expect(isMultiDimensionalArrayOfStringsFieldType('string[1][2][1][2][3][2][2]')).toBe(true)
+        expect(isMultiDimensionalArrayOfStringsFieldType('int[1][2][1][2][3][2][2]')).toBe(false)
       })
     })
 
