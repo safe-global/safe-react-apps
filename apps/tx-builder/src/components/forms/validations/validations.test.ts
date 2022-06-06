@@ -1084,9 +1084,7 @@ describe('form validations', () => {
           '["", "0x680cde08860141F9D223cE4E620B10Cd6741037E", "0x57CB13cbef735FbDD65f5f2866638c546464E45F"]',
         )
 
-        expect(validationResult).toBe(
-          'format error. details: invalid address (argument="address", value="", code=INVALID_ARGUMENT, version=address/5.5.0)',
-        )
+        expect(validationResult).toContain('format error. details: invalid address')
       })
 
       it('validates invalid array values for dinamic array of addresses', () => {
@@ -1094,9 +1092,7 @@ describe('form validations', () => {
 
         const validationResult = arrayOfAddressesValidation('[INVALID_ADDRESS_VALUE]')
 
-        expect(validationResult).toBe(
-          'format error. details: invalid address (argument="address", value="INVALID_ADDRESS_VALUE", code=INVALID_ARGUMENT, version=address/5.5.0)',
-        )
+        expect(validationResult).toContain('format error. details: invalid address')
       })
 
       it('validates fixed array of valid addresses', () => {
@@ -1154,9 +1150,7 @@ describe('form validations', () => {
           '[INVALID_ADDRESS_VALUE, 0x680cde08860141F9D223cE4E620B10Cd6741037E]',
         )
 
-        expect(validationResult).toBe(
-          'format error. details: invalid address (argument="address", value="INVALID_ADDRESS_VALUE", code=INVALID_ARGUMENT, version=address/5.5.0)',
-        )
+        expect(validationResult).toContain('format error. details: invalid address')
       })
     })
 
@@ -3748,9 +3742,7 @@ describe('form validations', () => {
 
             const validationResult = dynamicMatrixOfAddressesValidation('[[INVALID_ADDRESS_VALUE]]')
 
-            expect(validationResult).toBe(
-              'format error. details: invalid address (argument="address", value="INVALID_ADDRESS_VALUE", code=INVALID_ARGUMENT, version=address/5.5.0)',
-            )
+            expect(validationResult).toContain('format error. details: invalid address')
           })
 
           it('validates invalid number value in the address[][] matrix  ', () => {
@@ -3758,9 +3750,7 @@ describe('form validations', () => {
 
             const validationResult = dynamicMatrixOfAddressesValidation('[[12]]')
 
-            expect(validationResult).toBe(
-              'format error. details: invalid address (argument="address", value="12", code=INVALID_ARGUMENT, version=address/5.5.0)',
-            )
+            expect(validationResult).toContain('format error. details: invalid address')
           })
 
           it('validates invalid array value in the address[][] matrix  ', () => {
@@ -3860,9 +3850,7 @@ describe('form validations', () => {
               '[[INVALID_ADDRESS_VALUE, "0x680cde08860141F9D223cE4E620B10Cd6741037E"], [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E]]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: invalid address (argument="address", value="INVALID_ADDRESS_VALUE", code=INVALID_ARGUMENT, version=address/5.5.0)',
-            )
+            expect(validationResult).toContain('format error. details: invalid address')
           })
 
           it('validates invalid array value in the address[2][] matrix  ', () => {
@@ -3962,9 +3950,7 @@ describe('form validations', () => {
               '[[INVALID_ADDRESS_VALUE, 0x680cde08860141F9D223cE4E620B10Cd6741037E, "0x680cde08860141F9D223cE4E620B10Cd6741037E"], ["0x680cde08860141F9D223cE4E620B10Cd6741037E"], [0x680cde08860141F9D223cE4E620B10Cd6741037E]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: invalid address (argument="address", value="INVALID_ADDRESS_VALUE", code=INVALID_ARGUMENT, version=address/5.5.0)',
-            )
+            expect(validationResult).toContain('format error. details: invalid address')
           })
 
           it('validates invalid array value in the address[][3] matrix  ', () => {
@@ -4064,9 +4050,7 @@ describe('form validations', () => {
               '[["INVALID_ADDRESS_VALUE", 0x680cde08860141F9D223cE4E620B10Cd6741037E ],  [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E], [0x680cde08860141F9D223cE4E620B10Cd6741037E, 0x680cde08860141F9D223cE4E620B10Cd6741037E]]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: invalid address (argument="address", value="INVALID_ADDRESS_VALUE", code=INVALID_ARGUMENT, version=address/5.5.0)',
-            )
+            expect(validationResult).toContain('format error. details: invalid address')
           })
 
           it('validates invalid array value in the address[2][3] matrix  ', () => {
