@@ -1,0 +1,43 @@
+name: Test Safe Apps
+on:
+  workflow_dispatch:
+    inputs:
+      baseUrl:
+        description: 'Safe Web URL'
+        required: true
+        default: 'http://gnosis-safe.io/app'
+      networkPrefix:
+        description: 'Address prefix (eth,rin...)'
+        required: true
+        default: 'eth'
+      safeAddress:
+        description: 'Safe address'
+        required: true
+        default: '0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70'
+      configServiceBaseUrl:
+        description: 'Config service base URL'
+        required: true
+        default: 'https://safe-client.gnosis.io'
+  schedule:
+    # At 9:00 on every day-of-week from Monday through Friday
+    - cron: '0 9 * * 1-5'
+
+jobs:
+  e2e:
+    runs-on: ubuntu-20.04
+    # let's make sure our tests pass on Chrome browser
+    name: E2E on Chrome
+    steps:
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v2
+        with:
+          browser: chrome
+          spec: cypress/integration/safe-apps-check.spec.js
+        env:
+          CI: 'true'
+          CYPRESS_BASE_URL: ${{ github.event.inputs.baseUrl || 'http://gnosis-safe.io/app' }}
+          CYPRESS_NETWORK_PREFIX: ${{ github.event.inputs.networkPrefix || 'eth' }}
+          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70' }}
+          CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
+          SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
+        continue-on-error: true

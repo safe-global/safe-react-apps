@@ -34,11 +34,15 @@ class InterfaceRepository {
 
     const methods = parsedAbi
       .filter((e: any) => {
+        if (Object.keys(e).length === 0) {
+          return false
+        }
+
         if (['pure', 'view'].includes(e.stateMutability)) {
           return false
         }
 
-        if (e?.type.toLowerCase() === 'event') {
+        if (e?.type?.toLowerCase() === 'event') {
           return false
         }
 

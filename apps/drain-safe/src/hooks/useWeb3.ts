@@ -62,7 +62,7 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.MORDEN]: null,
   [CHAINS.ROPSTEN]: null,
   [CHAINS.RINKEBY]: token => `https://rinkeby.infura.io/v3/${token}`,
-  [CHAINS.GOERLI]: null,
+  [CHAINS.GOERLI]: token => `https://goerli.infura.io/v3/${token}`,
   [CHAINS.OPTIMISM]: () => 'https://mainnet.optimism.io',
   [CHAINS.KOVAN]: null,
   [CHAINS.BSC]: () => 'https://bsc-dataseed.binance.org',

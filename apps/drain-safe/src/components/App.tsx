@@ -15,15 +15,17 @@ import CancelButton from './CancelButton'
 import AddressInput from './AddressInput'
 import useWeb3 from '../hooks/useWeb3'
 import TimedComponent from './TimedComponent'
+import AppLoader from './AppLoader'
 
 const App = (): React.ReactElement => {
   const { sdk, safe } = useSafeAppsSDK()
   const { web3 } = useWeb3()
   const {
     assets,
+    loaded,
+    error: balancesError,
     selectedTokens,
     setSelectedTokens,
-    error: balancesError,
   }: BalancesType = useBalances(safe.safeAddress, safe.chainId)
   const [submitting, setSubmitting] = useState(false)
   const [toAddress, setToAddress] = useState<string>('')
@@ -129,12 +131,23 @@ const App = (): React.ReactElement => {
     getChainInfo()
   }, [sdk])
 
+  if (!loaded) {
+    return <AppLoader />
+  }
+
   return (
     <FormContainer onSubmit={onSubmit} onReset={onCancel}>
       <Flex>
         <Logo />
         <Title size="md">Drain Account</Title>
       </Flex>
+
+      {error && (
+        <Text size="xl" color="error">
+          {error}
+        </Text>
+      )}
+
       {assets.length ? (
         <>
           <Balances
@@ -143,7 +156,6 @@ const App = (): React.ReactElement => {
             assets={assets}
             onSelectionChange={setSelectedTokens}
           />
-          {error && <Text size="lg">{error}</Text>}
           {isFinished && (
             <TimedComponent timeout={5000} onTimeout={() => setFinished(false)}>
               <Text size="lg">
