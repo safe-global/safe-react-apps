@@ -1,5 +1,6 @@
 import '@testing-library/cypress/add-commands'
 import './iframe'
+import './commands';
 
 Cypress.Commands.add('connectWallet', () => {
   cy.on('window:before:load', window => {
