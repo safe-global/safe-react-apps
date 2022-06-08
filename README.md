@@ -41,6 +41,16 @@ yarn start:tx-builder
 yarn start:wallet-connect
 ```
 
+## Contracts
+
+This project contains some test contracts to check all solidity types in the tx-builder Safe App.
+
+You can deploy your own tests contracts using the following command:
+
+```bash
+yarn contract:deploy-all <network>
+```
+
 ## Project structure
 
 In `./apps` you can find one folder per each integration app Gnosis develops.
