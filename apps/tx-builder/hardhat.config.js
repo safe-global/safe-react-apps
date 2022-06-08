@@ -1,19 +1,16 @@
 require('dotenv').config()
-/**
- * @type import('hardhat/config').HardhatUserConfig
- */
-
+require('hardhat-deploy')
 require('@nomiclabs/hardhat-ethers')
 require('@nomiclabs/hardhat-etherscan')
 
-const { API_URL, PRIVATE_KEY, ETHERSCAN_API_KEY } = process.env
+// tasks
+require('./src/hardhat/tasks/deploy_contracts')
 
-const RINKEBY_CHAIN_ID = 4
+const networks = require('./src/hardhat/networks')
 
-/**
- * @type import('hardhat/config').HardhatUserConfig
- */
-module.exports = {
+const { ETHERSCAN_API_KEY } = process.env
+
+const hardhatConfig = {
   solidity: {
     version: '0.8.0',
     settings: {
@@ -23,15 +20,9 @@ module.exports = {
       },
     },
   },
-  networks: {
-    hardhat: {},
-    localhost: {},
-    rinkeby: {
-      url: API_URL,
-      accounts: [`0x${PRIVATE_KEY}`],
-      network_id: RINKEBY_CHAIN_ID,
-    },
-  },
+
+  networks,
+
   etherscan: {
     apiKey: ETHERSCAN_API_KEY,
   },
@@ -40,5 +31,12 @@ module.exports = {
     tests: './src/test',
     cache: './src/cache',
     artifacts: './src/artifacts',
+    deploy: './src/hardhat/deploy',
+  },
+
+  namedAccounts: {
+    deployer: 0,
   },
 }
+
+module.exports = hardhatConfig

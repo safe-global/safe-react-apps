@@ -24,7 +24,8 @@
     "@nomiclabs/hardhat-etherscan": "^3.0.3",
     "@types/react-beautiful-dnd": "^13.1.2",
     "ethers": "^5.5.2",
-    "hardhat": "^2.7.0"
+    "hardhat": "^2.7.0",
+    "hardhat-deploy": "^0.11.10"
   },
   "scripts": {
     "start": "dotenv -e .env -- react-app-rewired start",
@@ -37,6 +38,7 @@
     "basic:contract:deploy:rinkeby": "npx hardhat run --network rinkeby src/scripts/deploy-test-basic-contract.js",
     "matrix:contract:deploy": "npx hardhat run src/scripts/deploy-test-matrix-contract.js",
     "matrix:contract:deploy:rinkeby": "npx hardhat run --network rinkeby src/scripts/deploy-test-matrix-contract.js",
+    "contract:deploy-all": "hardhat deploy-test-contracts --network",
     "deploy:s3": "bash ../../scripts/deploy_to_s3_bucket.sh",
     "deploy:pr": "bash ../../scripts/deploy_pr.sh",
     "deploy:prod-hook": "bash ../../scripts/prepare_production_deployment.sh"

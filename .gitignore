@@ -33,6 +33,7 @@ yarn-error.log*
 # contract artifacts
 **/cache
 **/artifacts
+deployments/
 
 # cypress
 cypress/reports
