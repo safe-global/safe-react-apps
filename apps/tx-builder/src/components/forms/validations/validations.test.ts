@@ -281,7 +281,7 @@ describe('form validations', () => {
         const validationResult = uintValidation('')
 
         expect(validationResult).toBe(
-          'format error. details: SyntaxError: invalid empty strings for integers',
+          'format error. details: Error: invalid empty strings for integers',
         )
       })
 
@@ -291,7 +291,7 @@ describe('form validations', () => {
         const validationResult = uintValidation(' ')
 
         expect(validationResult).toBe(
-          'format error. details: SyntaxError: invalid empty strings for integers',
+          'format error. details: Error: invalid empty strings for integers',
         )
       })
 
@@ -301,7 +301,7 @@ describe('form validations', () => {
         const validationResult = uintValidation('""')
 
         expect(validationResult).toBe(
-          'format error. details: SyntaxError: invalid empty strings for integers',
+          'format error. details: Error: invalid empty strings for integers',
         )
       })
 
@@ -419,7 +419,7 @@ describe('form validations', () => {
         const validationResult = intValidation('')
 
         expect(validationResult).toBe(
-          'format error. details: SyntaxError: invalid empty strings for integers',
+          'format error. details: Error: invalid empty strings for integers',
         )
       })
 
@@ -429,7 +429,7 @@ describe('form validations', () => {
         const validationResult = intValidation(' ')
 
         expect(validationResult).toBe(
-          'format error. details: SyntaxError: invalid empty strings for integers',
+          'format error. details: Error: invalid empty strings for integers',
         )
       })
 
@@ -439,7 +439,7 @@ describe('form validations', () => {
         const validationResult = intValidation('""')
 
         expect(validationResult).toBe(
-          'format error. details: SyntaxError: invalid empty strings for integers',
+          'format error. details: Error: invalid empty strings for integers',
         )
       })
 
@@ -449,7 +449,7 @@ describe('form validations', () => {
         const validationResult = intValidation('  "    "    ')
 
         expect(validationResult).toBe(
-          'format error. details: SyntaxError: invalid empty strings for integers',
+          'format error. details: Error: invalid empty strings for integers',
         )
       })
 
@@ -1009,7 +1009,7 @@ describe('form validations', () => {
 
           const validationResult = arrayOfIntsValidation('invalid_array_value')
 
-          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          expect(validationResult).toBe('format error. details: Error: Invalid Array value')
         })
 
         it('validates invalid item value within the array', () => {
@@ -1027,7 +1027,7 @@ describe('form validations', () => {
 
           const validationResult = arrayOfIntsValidation('1234')
 
-          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          expect(validationResult).toBe('format error. details: Error: Invalid Array value')
         })
 
         it('validates invalid string value', () => {
@@ -1035,7 +1035,7 @@ describe('form validations', () => {
 
           const validationResult = arrayOfIntsValidation('"1234"')
 
-          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          expect(validationResult).toBe('format error. details: Error: Invalid Array value')
         })
       })
     })
@@ -1074,7 +1074,7 @@ describe('form validations', () => {
 
         const validationResult = arrayOfAddressesValidation('INVALID_ARRAY')
 
-        expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+        expect(validationResult).toBe('format error. details: Error: Invalid Array value')
       })
 
       it('validates invalid empty string value in an array for dinamic array of addresses', () => {
@@ -1139,7 +1139,7 @@ describe('form validations', () => {
 
         const validationResult = arrayOfAddressesValidation('INVALID_ARRAY')
 
-        expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+        expect(validationResult).toBe('format error. details: Error: Invalid Array value')
       })
 
       it('validates invalid array values for fixed array of addresses', () => {
@@ -1179,7 +1179,7 @@ describe('form validations', () => {
 
           const validationResult = arrayOfBytesValidation('INVALID_ARRAY')
 
-          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          expect(validationResult).toBe('format error. details: Error: Invalid Array value')
         })
 
         it('validates invalid array values', () => {
@@ -1230,7 +1230,7 @@ describe('form validations', () => {
 
           const validationResult = arrayOfBytesValidation('INVALID_ARRAY')
 
-          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          expect(validationResult).toBe('format error. details: Error: Invalid Array value')
         })
 
         it('validates invalid array values', () => {
@@ -1278,7 +1278,7 @@ describe('form validations', () => {
 
           const validationResult = arrayOfBooleansValidation('INVALID_ARRAY')
 
-          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          expect(validationResult).toBe('format error. details: Error: Invalid Array value')
         })
 
         it('validates invalid array values', () => {
@@ -1286,7 +1286,7 @@ describe('form validations', () => {
 
           const validationResult = arrayOfBooleansValidation('[INVALID_VALUE, true, false]')
 
-          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Boolean value')
+          expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
         })
       })
 
@@ -1330,7 +1330,7 @@ describe('form validations', () => {
 
           const validationResult = arrayOfBooleansValidation('INVALID_ARRAY')
 
-          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+          expect(validationResult).toBe('format error. details: Error: Invalid Array value')
         })
 
         it('validates invalid array values', () => {
@@ -1338,7 +1338,7 @@ describe('form validations', () => {
 
           const validationResult = arrayOfBooleansValidation('[INVALID_VALUE, true, false]')
 
-          expect(validationResult).toBe('format error. details: SyntaxError: Invalid Boolean value')
+          expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
         })
       })
     })
@@ -1485,7 +1485,7 @@ describe('form validations', () => {
 
             const validationResult = dinamicMatrixOfIntsValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid matrix value for uint[][]', () => {
@@ -1493,7 +1493,7 @@ describe('form validations', () => {
 
             const validationResult = dinamicMatrixOfIntsValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid number values for int[][]', () => {
@@ -1829,7 +1829,7 @@ describe('form validations', () => {
 
             const validationResult = dinamicMatrixOfIntsValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid matrix value for uint[3][]', () => {
@@ -1837,7 +1837,7 @@ describe('form validations', () => {
 
             const validationResult = dinamicMatrixOfIntsValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid number values for int[3][]', () => {
@@ -2177,7 +2177,7 @@ describe('form validations', () => {
 
             const validationResult = dinamicMatrixOfIntsValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid matrix value for uint[][3]', () => {
@@ -2185,7 +2185,7 @@ describe('form validations', () => {
 
             const validationResult = dinamicMatrixOfIntsValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid number values for int[][3]', () => {
@@ -2527,7 +2527,7 @@ describe('form validations', () => {
 
             const validationResult = fixedMatrixOfIntsValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid matrix value for uint[3][3]', () => {
@@ -2535,7 +2535,7 @@ describe('form validations', () => {
 
             const validationResult = fixedMatrixOfIntsValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid number values for int[3][3]', () => {
@@ -2832,9 +2832,7 @@ describe('form validations', () => {
               '[ INVALID_ARRAY, [true, 1, "1", "True", "TRUE", "true"] ]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid matrix value', () => {
@@ -2842,7 +2840,7 @@ describe('form validations', () => {
 
             const validationResult = dynamicMatrixOfBooleansValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid boolean value in the bool[][] matrix  ', () => {
@@ -2850,9 +2848,7 @@ describe('form validations', () => {
 
             const validationResult = dynamicMatrixOfBooleansValidation('[[INVALID_BOOLEAN_VALUE]]')
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid string value in the bool[][] matrix  ', () => {
@@ -2862,9 +2858,7 @@ describe('form validations', () => {
               '[["INVALID_BOOLEAN_VALUE"]]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid number value in the bool[][] matrix  ', () => {
@@ -2872,9 +2866,7 @@ describe('form validations', () => {
 
             const validationResult = dynamicMatrixOfBooleansValidation('[[12]]')
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid array value in the bool[][] matrix  ', () => {
@@ -2954,9 +2946,7 @@ describe('form validations', () => {
               '[ INVALID_ARRAY, [true, 1, "1", "True", "TRUE", "true"] ]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid matrix value', () => {
@@ -2964,7 +2954,7 @@ describe('form validations', () => {
 
             const validationResult = dynamicMatrixOfBooleansValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid boolean value in the bool[6][] matrix  ', () => {
@@ -2974,9 +2964,7 @@ describe('form validations', () => {
               '[[INVALID_BOOLEAN_VALUE, true, true, true, 1, false]]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid string value in the bool[6][] matrix  ', () => {
@@ -2986,9 +2974,7 @@ describe('form validations', () => {
               '[["INVALID_BOOLEAN_VALUE", true, true, true, 1, false]]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid number value in the bool[6][] matrix  ', () => {
@@ -2998,9 +2984,7 @@ describe('form validations', () => {
               '[[12, true, true, true, 1, false]]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid array value in the bool[6][] matrix  ', () => {
@@ -3082,9 +3066,7 @@ describe('form validations', () => {
               '[ INVALID_ARRAY, [true, 1, "1", "True", "TRUE", "true"], [true] ]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid matrix value', () => {
@@ -3092,7 +3074,7 @@ describe('form validations', () => {
 
             const validationResult = dynamicMatrixOfBooleansValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid boolean value in the bool[][3] matrix  ', () => {
@@ -3102,9 +3084,7 @@ describe('form validations', () => {
               '[[INVALID_BOOLEAN_VALUE, true, true, true, 1, false], [true], [false, false]]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid string value in the bool[][3] matrix  ', () => {
@@ -3114,9 +3094,7 @@ describe('form validations', () => {
               '[["INVALID_BOOLEAN_VALUE", true, true, true, 1, false], [true, true], [false]]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid number value in the bool[][3] matrix  ', () => {
@@ -3126,9 +3104,7 @@ describe('form validations', () => {
               '[  [  12, true, true, true, 1, false], [true], [false]]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid array value in the bool[][3] matrix  ', () => {
@@ -3208,9 +3184,7 @@ describe('form validations', () => {
               '[ INVALID_ARRAY, [true, 1, "1", "True", "TRUE", "true"],  [false, 0, "0", "False", "FALSE", "false"] ]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid matrix value', () => {
@@ -3218,7 +3192,7 @@ describe('form validations', () => {
 
             const validationResult = fixedMatrixOfBooleansValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid boolean value in the bool[6][3] matrix  ', () => {
@@ -3228,9 +3202,7 @@ describe('form validations', () => {
               '[[INVALID_BOOLEAN_VALUE, true, true, true, 1, false],  [false, 0, "0", "False", "FALSE", "false"],  [false, 0, "0", "False", "FALSE", "false"]]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid string value in the bool[6][3] matrix  ', () => {
@@ -3240,9 +3212,7 @@ describe('form validations', () => {
               '[["INVALID_BOOLEAN_VALUE", true, true, true, 1, false],  [false, 0, "0", "False", "FALSE", "false"],  [false, 0, "0", "False", "FALSE", "false"]]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid number value in the bool[6][3] matrix  ', () => {
@@ -3252,9 +3222,7 @@ describe('form validations', () => {
               '[  [  12, true, true, true, 1, false],  [false, 0, "0", "False", "FALSE", "false"],  [false, 0, "0", "False", "FALSE", "false"]]',
             )
 
-            expect(validationResult).toBe(
-              'format error. details: SyntaxError: Invalid Boolean value',
-            )
+            expect(validationResult).toBe('format error. details: Error: Invalid Boolean value')
           })
 
           it('validates invalid array value in the bool[6][3] matrix  ', () => {
@@ -3734,7 +3702,7 @@ describe('form validations', () => {
 
             const validationResult = dynamicMatrixOfAddressesValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid address value in the address[][] matrix  ', () => {
@@ -3840,7 +3808,7 @@ describe('form validations', () => {
 
             const validationResult = dynamicMatrixOfAddressesValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid address value in the address[2][] matrix  ', () => {
@@ -3940,7 +3908,7 @@ describe('form validations', () => {
 
             const validationResult = dynamicMatrixOfAddressesValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid address value in the address[][3] matrix  ', () => {
@@ -4040,7 +4008,7 @@ describe('form validations', () => {
 
             const validationResult = fixedMatrixOfAddressesValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid address value in the address[2][3] matrix  ', () => {
@@ -4122,7 +4090,7 @@ describe('form validations', () => {
 
             const validationResult = dynamicMatrixOfBytesValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid bytes value in the bytes[][] matrix  ', () => {
@@ -4228,7 +4196,7 @@ describe('form validations', () => {
 
             const validationResult = dynamicMatrixOfBytesValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid bytes value in the bytes[2][] matrix  ', () => {
@@ -4328,7 +4296,7 @@ describe('form validations', () => {
 
             const validationResult = dynamicMatrixOfBytesValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid bytes value in the bytes[][3] matrix  ', () => {
@@ -4428,7 +4396,7 @@ describe('form validations', () => {
 
             const validationResult = fixedMatrixOfBytesValidation('INVALID_MATRIX')
 
-            expect(validationResult).toBe('format error. details: SyntaxError: Invalid Array value')
+            expect(validationResult).toBe('format error. details: Error: Invalid Array value')
           })
 
           it('validates invalid bytes value in the bytes[2][3] matrix  ', () => {

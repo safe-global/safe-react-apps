@@ -58,6 +58,8 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.AURORA]: () => 'https://mainnet.aurora.dev',
 }
 
+export class SoliditySyntaxError extends Error {}
+
 export const parseBooleanValue = (value: any): boolean => {
   const isStringValue = typeof value === 'string'
   if (isStringValue) {
@@ -79,7 +81,7 @@ export const parseBooleanValue = (value: any): boolean => {
       return false
     }
 
-    throw SyntaxError('Invalid Boolean value')
+    throw new SoliditySyntaxError('Invalid Boolean value')
   }
 
   return !!value
@@ -94,7 +96,7 @@ export const parseIntValue = (value: string, fieldType: string) => {
   const isEmptyString = trimmedValue === ''
 
   if (isEmptyString) {
-    throw new SyntaxError('invalid empty strings for integers')
+    throw new SoliditySyntaxError('invalid empty strings for integers')
   }
 
   const bits = getNumberOfBits(fieldType)
@@ -148,7 +150,7 @@ export const getBaseFieldType = (fieldType: string): string => {
   const baseFieldType = fieldType.match(baseFieldtypeRegex)?.[1]
 
   if (!baseFieldType) {
-    throw new SyntaxError(`Unknow base field type ${baseFieldType} from ${fieldType}`)
+    throw new SoliditySyntaxError(`Unknow base field type ${baseFieldType} from ${fieldType}`)
   }
 
   return baseFieldType
@@ -164,7 +166,7 @@ export const isArray = (values: string): boolean => {
 
 const parseArrayOfValues = (values: string, fieldType: string): any => {
   if (!isArray(values)) {
-    throw new SyntaxError('Invalid Array value')
+    throw new SoliditySyntaxError('Invalid Array value')
   }
 
   return parseStringToArray(values).map(itemValue =>

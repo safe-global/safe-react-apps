@@ -10,6 +10,7 @@ import {
   parseInputValue,
   parseIntValue,
   parseStringToArray,
+  SoliditySyntaxError,
 } from './utils'
 
 describe('util functions', () => {
@@ -158,7 +159,7 @@ describe('util functions', () => {
       })
 
       it('parse an invalid boolean "invalid_bool_value" string to boolean', () => {
-        expect(() => parseInputValue('bool', 'invalid_bool_value')).toThrow(SyntaxError)
+        expect(() => parseInputValue('bool', 'invalid_bool_value')).toThrow(SoliditySyntaxError)
       })
     })
 
@@ -242,15 +243,17 @@ describe('util functions', () => {
       })
 
       it('throws an error for invalid array value', () => {
-        expect(() => parseInputValue('bool[]', 'INVALID ARRAY')).toThrow(SyntaxError)
+        expect(() => parseInputValue('bool[]', 'INVALID ARRAY')).toThrow(SoliditySyntaxError)
       })
 
       it('throws an error for an array of invalid values', () => {
-        expect(() => parseInputValue('bool[]', '[invalid_bool_value]')).toThrow(SyntaxError)
+        expect(() => parseInputValue('bool[]', '[invalid_bool_value]')).toThrow(SoliditySyntaxError)
       })
 
       it('throws an error for an array of invalid strings', () => {
-        expect(() => parseInputValue('bool[]', '["invalid_bool_value"]')).toThrow(SyntaxError)
+        expect(() => parseInputValue('bool[]', '["invalid_bool_value"]')).toThrow(
+          SoliditySyntaxError,
+        )
       })
     })
 
@@ -324,15 +327,21 @@ describe('util functions', () => {
           expect(parseInputValue('int120[2]', '[]')).toEqual([])
         })
 
-        it('parse an invalid array throws a SyntaxError', () => {
-          expect(() => parseInputValue('int[]', 'invalid_array')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int[]', '6426191757410075707')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int[3]', 'invalid_array')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int[3]', '6426191757410075707')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int120[]', 'invalid_array')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int120[]', '6426191757410075707')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int120[3]', 'invalid_array')).toThrow(SyntaxError)
-          expect(() => parseInputValue('int120[3]', '6426191757410075707')).toThrow(SyntaxError)
+        it('parse an invalid array throws a SoliditySyntaxError', () => {
+          expect(() => parseInputValue('int[]', 'invalid_array')).toThrow(SoliditySyntaxError)
+          expect(() => parseInputValue('int[]', '6426191757410075707')).toThrow(SoliditySyntaxError)
+          expect(() => parseInputValue('int[3]', 'invalid_array')).toThrow(SoliditySyntaxError)
+          expect(() => parseInputValue('int[3]', '6426191757410075707')).toThrow(
+            SoliditySyntaxError,
+          )
+          expect(() => parseInputValue('int120[]', 'invalid_array')).toThrow(SoliditySyntaxError)
+          expect(() => parseInputValue('int120[]', '6426191757410075707')).toThrow(
+            SoliditySyntaxError,
+          )
+          expect(() => parseInputValue('int120[3]', 'invalid_array')).toThrow(SoliditySyntaxError)
+          expect(() => parseInputValue('int120[3]', '6426191757410075707')).toThrow(
+            SoliditySyntaxError,
+          )
         })
 
         it('parse an array with invalid values throws a Error', () => {
@@ -485,16 +494,32 @@ describe('util functions', () => {
           expect(parseInputValue('uint120[2]', '[]')).toEqual([])
         })
 
-        it('parse an invalid array throws a SyntaxError', () => {
-          expect(() => parseInputValue('uint[]', 'invalid_array_value')).toThrow(SyntaxError)
-          expect(() => parseInputValue('uint[]', '6426191757410075707')).toThrow(SyntaxError)
-          expect(() => parseInputValue('uint[3]', 'invalid_array_value')).toThrow(SyntaxError)
-          expect(() => parseInputValue('uint[3]', '6426191757410075707')).toThrow(SyntaxError)
+        it('parse an invalid array throws a SoliditySyntaxError', () => {
+          expect(() => parseInputValue('uint[]', 'invalid_array_value')).toThrow(
+            SoliditySyntaxError,
+          )
+          expect(() => parseInputValue('uint[]', '6426191757410075707')).toThrow(
+            SoliditySyntaxError,
+          )
+          expect(() => parseInputValue('uint[3]', 'invalid_array_value')).toThrow(
+            SoliditySyntaxError,
+          )
+          expect(() => parseInputValue('uint[3]', '6426191757410075707')).toThrow(
+            SoliditySyntaxError,
+          )
 
-          expect(() => parseInputValue('uint120[]', 'invalid_array_value')).toThrow(SyntaxError)
-          expect(() => parseInputValue('uint120[]', '6426191757410075707')).toThrow(SyntaxError)
-          expect(() => parseInputValue('uint120[3]', 'invalid_array_value')).toThrow(SyntaxError)
-          expect(() => parseInputValue('uint120[3]', '6426191757410075707')).toThrow(SyntaxError)
+          expect(() => parseInputValue('uint120[]', 'invalid_array_value')).toThrow(
+            SoliditySyntaxError,
+          )
+          expect(() => parseInputValue('uint120[]', '6426191757410075707')).toThrow(
+            SoliditySyntaxError,
+          )
+          expect(() => parseInputValue('uint120[3]', 'invalid_array_value')).toThrow(
+            SoliditySyntaxError,
+          )
+          expect(() => parseInputValue('uint120[3]', '6426191757410075707')).toThrow(
+            SoliditySyntaxError,
+          )
         })
 
         it('parse an array with invalid values throws an Error', () => {
@@ -1290,7 +1315,7 @@ describe('util functions', () => {
     })
 
     it('another value throws an error', () => {
-      expect(() => parseBooleanValue('another value')).toThrow(SyntaxError)
+      expect(() => parseBooleanValue('another value')).toThrow(SoliditySyntaxError)
     })
   })
 
@@ -1355,10 +1380,10 @@ describe('util functions', () => {
       })
 
       it('throws an error for empty strings', () => {
-        expect(() => parseIntValue('', 'int8')).toThrow(SyntaxError)
-        expect(() => parseIntValue('""', 'int8')).toThrow(SyntaxError)
-        expect(() => parseIntValue('"', 'int8')).toThrow(SyntaxError)
-        expect(() => parseIntValue('    ', 'int8')).toThrow(SyntaxError)
+        expect(() => parseIntValue('', 'int8')).toThrow(SoliditySyntaxError)
+        expect(() => parseIntValue('""', 'int8')).toThrow(SoliditySyntaxError)
+        expect(() => parseIntValue('"', 'int8')).toThrow(SoliditySyntaxError)
+        expect(() => parseIntValue('    ', 'int8')).toThrow(SoliditySyntaxError)
       })
     })
 
@@ -1438,7 +1463,7 @@ describe('util functions', () => {
       })
 
       it('throws an error for invalid types', () => {
-        expect(() => getBaseFieldType('INVALID_VALUE')).toThrow(SyntaxError)
+        expect(() => getBaseFieldType('INVALID_VALUE')).toThrow(SoliditySyntaxError)
       })
     })
 
