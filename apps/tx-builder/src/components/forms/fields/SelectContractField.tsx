@@ -18,6 +18,10 @@ const SelectContractField = ({
 }: SelectContractFieldTypes) => {
   return (
     <Select
+      id={name}
+      inputProps={{
+        id: `${name}-input`,
+      }}
       name={name}
       disabled={options.length === 1}
       label={label}
