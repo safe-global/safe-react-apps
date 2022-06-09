@@ -16,7 +16,6 @@
     "start:ramp": "yarn workspace ramp-network start",
     "start:drain-safe": "yarn workspace drain-safe start",
     "prepare": "husky install",
-    "contract:deploy-all": "yarn workspace tx-builder contract:deploy-all",
     "e2e": "npx cypress open"
   },
   "version": "2.5.1",

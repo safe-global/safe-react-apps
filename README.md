@@ -48,7 +48,7 @@ This project contains some test contracts to check all solidity types in the tx-
 You can deploy your own tests contracts using the following command:
 
 ```bash
-yarn contract:deploy-all <network>
+yarn workspace tx-builder contract:deploy-all <network>
 ```
 
 ## Project structure
