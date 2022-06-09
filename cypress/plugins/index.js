@@ -22,6 +22,7 @@ module.exports = async (on, config) => {
   config.env.SAFE_APPS_LIST = safeAppsList.data
   config.env.NETWORK_PREFIX = process.env.CYPRESS_NETWORK_PREFIX
   config.env.TESTING_SAFE_ADDRESS = process.env.CYPRESS_TESTING_SAFE_ADDRESS
+  config.env.CYPRESS_MNEMONIC = process.env.CYPRESS_MNEMONIC
 
   return config
 }

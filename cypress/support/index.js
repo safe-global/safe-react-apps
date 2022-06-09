@@ -2,22 +2,23 @@ import '@testing-library/cypress/add-commands'
 import './iframe'
 import './commands';
 
-Cypress.Commands.add('connectWallet', () => {
+Cypress.Commands.add('connectE2EWallet', () => {
   cy.on('window:before:load', window => {
-    window.cypressConfig = {
-      connected: true,
-    }
+    window.localStorage.setItem(
+      'SAFE__lastUsedProvider',
+      JSON.stringify({ value: 'E2E Wallet', expiry: new Date().getTime() + 3600 * 1000 * 24 }),
+    )
   })
 })
 
 Cypress.Commands.add('createSafe', () => {
-  cy.connectWallet()
+  cy.connectE2EWallet()
 
-  cy.visit(`${Cypress.env('BASE_URL')}`)
+  cy.visit(`${Cypress.env('BASE_URL')}/welcome`)
 
   cy.contains('a', 'Accept all').click()
   cy.get('p').contains('Rinkeby').click()
-  cy.get('[data-testid=connected-wallet]').should('contain', 'e2e-wallet')
+  cy.get('[data-testid=connected-wallet]').should('contain', 'E2E Wallet')
   cy.contains('Create new Safe').click()
   cy.contains('Continue').click()
   cy.get('[data-testid=create-safe-name-field]').type('Test Safe')
