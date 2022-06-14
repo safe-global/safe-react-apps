@@ -55,7 +55,6 @@ you can invoke a read method using the command line:
 
 ```bash
 yarn workspace tx-builder contract:read-method --network <network> --address <address> --method <method>
-
 ```
 
 ## Project structure
