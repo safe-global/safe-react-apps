@@ -51,6 +51,13 @@ You can deploy your own tests contracts using the following command:
 yarn workspace tx-builder contract:deploy-all <network>
 ```
 
+you can invoke a read method using the command line:
+
+```bash
+yarn workspace tx-builder contract:read-method --network <network> --address <address> --method <method>
+
+```
+
 ## Project structure
 
 In `./apps` you can find one folder per each integration app Gnosis develops.
