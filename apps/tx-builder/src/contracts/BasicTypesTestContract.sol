@@ -377,7 +377,6 @@ contract BasicTypesTestContract {
 
     // many arrays of integers
     function testManyArrayOfIntParams(
-        int8[] memory int8DynamicArrayNewValue,
         int128[] memory int128DynamicArrayNewValue,
         int256[] memory int256DynamicArrayNewValue,
         uint8[] memory uInt8DynamicArrayNewValue,
@@ -386,11 +385,9 @@ contract BasicTypesTestContract {
         int8[3] memory int8FixedArrayNewValue,
         int128[3] memory int128FixedArrayNewValue,
         int256[3] memory int256FixedArrayNewValue,
-        uint8[3] memory uInt8FixedArrayNewValue,
         uint128[3] memory uInt128FixedArrayNewValue,
         uint256[3] memory uInt256FixedArrayNewValue
     ) public {
-        int8DynamicArrayValue = int8DynamicArrayNewValue;
         int128DynamicArrayValue = int128DynamicArrayNewValue;
         int256DynamicArrayValue = int256DynamicArrayNewValue;
 
@@ -402,7 +399,6 @@ contract BasicTypesTestContract {
         int128FixedArrayValue = int128FixedArrayNewValue;
         int256FixedArrayValue = int256FixedArrayNewValue;
 
-        uInt8FixedArrayValue = uInt8FixedArrayNewValue;
         uInt128FixedArrayValue = uInt128FixedArrayNewValue;
         uInt256FixedArrayValue = uInt256FixedArrayNewValue;
     }
@@ -602,8 +598,8 @@ contract BasicTypesTestContract {
         return writters;
     }
 
-    function getComplexTuple(Book memory newBook) public {
-        book = newBook;
+    function getComplexTuple() public view returns (Book memory) {
+        return book;
     }
 
     function getArrayOfComplexTuples() public view returns (Book[2] memory) {
