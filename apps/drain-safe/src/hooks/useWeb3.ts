@@ -66,7 +66,7 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.OPTIMISM]: () => 'https://mainnet.optimism.io',
   [CHAINS.KOVAN]: null,
   [CHAINS.BSC]: () => 'https://bsc-dataseed.binance.org',
-  [CHAINS.XDAI]: () => 'https://dai.poa.network',
+  [CHAINS.XDAI]: () => 'https://rpc.gnosischain.com',
   [CHAINS.POLYGON]: () => 'https://rpc-mainnet.matic.network',
   [CHAINS.ENERGY_WEB_CHAIN]: () => 'https://rpc.energyweb.org',
   [CHAINS.ARBITRUM]: () => 'https://arb1.arbitrum.io/rpc',
