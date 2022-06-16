@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Button,
   ButtonLink,
@@ -42,10 +42,9 @@ const ReviewAndConfirm = () => {
     reorderTransactions,
   } = useTransactions()
   const { downloadBatch, saveBatch } = useTransactionLibrary()
-  const rawTransactions = useMemo(() => transactions.map(t => t.raw), [transactions])
   const [showSimulation, setShowSimulation] = useState<boolean>(false)
   const { simulation, simulateTransaction, simulationRequestStatus, simulationLink } =
-    useSimulation(rawTransactions)
+    useSimulation()
   const navigate = useNavigate()
 
   const clickSimulate = () => {
