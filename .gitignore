@@ -30,6 +30,12 @@ yarn-error.log*
 # vscode folders
 .vscode
 
+# contract artifacts
+**/cache
+**/artifacts
+deployments/
+
+# cypress
 cypress/reports
 cypress/videos
 cypress/screenshots

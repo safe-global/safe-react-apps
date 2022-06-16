@@ -3,25 +3,17 @@ import { Control, Controller } from 'react-hook-form'
 import { SelectItem } from '@gnosis.pm/safe-react-components/dist/inputs/Select'
 
 import {
-  ADDRESS_FIELD_TYPE,
   BOOLEAN_FIELD_TYPE,
   CONTRACT_METHOD_FIELD_TYPE,
   CUSTOM_TRANSACTION_DATA_FIELD_TYPE,
-  SolidityFieldTypes,
-  CustomFieldTypes,
+  isAddressFieldType,
+  isBooleanFieldType,
 } from './fields'
 import AddressContractField from './AddressContractField'
 import SelectContractField from './SelectContractField'
 import TextareaContractField from './TextareaContractField'
 import TextContractField from './TextContractField'
 import validateField, { ValidationFunction } from '../validations/validateField'
-
-const CUSTOM_SOLIDITY_COMPONENTS: CustomSolidityComponent = {
-  [ADDRESS_FIELD_TYPE]: AddressContractField,
-  [BOOLEAN_FIELD_TYPE]: SelectContractField,
-  [CONTRACT_METHOD_FIELD_TYPE]: SelectContractField,
-  [CUSTOM_TRANSACTION_DATA_FIELD_TYPE]: TextareaContractField,
-}
 
 const CUSTOM_DEFAULT_VALUES: CustomDefaultValueTypes = {
   [BOOLEAN_FIELD_TYPE]: 'true',
@@ -41,16 +33,12 @@ interface CustomDefaultValueTypes {
   [key: string]: string
 }
 
-interface CustomSolidityComponent {
-  [key: string]: (props: any) => ReactElement
-}
-
 interface DefaultOptionTypes {
   [key: string]: SelectItem[]
 }
 
 type FieldProps = {
-  fieldType: SolidityFieldTypes | CustomFieldTypes
+  fieldType: string
   control: Control<any, object>
   id: string
   name: string
@@ -75,8 +63,8 @@ const Field = ({
   validations, // you can define extra validations as a prop
   ...props
 }: FieldProps) => {
-  // Component based on field type
-  const Component = CUSTOM_SOLIDITY_COMPONENTS[fieldType] || TextContractField
+  // Component based on the field type
+  const FieldComponent = getFieldComponent(fieldType)
 
   // see https://react-hook-form.com/advanced-usage#ControlledmixedwithUncontrolledComponents
   return (
@@ -93,7 +81,7 @@ const Field = ({
         validate: validateField(fieldType, validations),
       }}
       render={({ field, fieldState }) => (
-        <Component
+        <FieldComponent
           name={field.name}
           onChange={field.onChange}
           onBlur={field.onBlur}
@@ -109,3 +97,25 @@ const Field = ({
 }
 
 export default Field
+
+// Returns a custom Field Component based on the field type
+const getFieldComponent = (fieldType: string): ((props: any) => ReactElement) => {
+  if (isAddressFieldType(fieldType)) {
+    return AddressContractField
+  }
+
+  if (isBooleanFieldType(fieldType)) {
+    return SelectContractField
+  }
+
+  if (fieldType === CONTRACT_METHOD_FIELD_TYPE) {
+    return SelectContractField
+  }
+
+  if (fieldType === CUSTOM_TRANSACTION_DATA_FIELD_TYPE) {
+    return TextareaContractField
+  }
+
+  // Textfield Component as fallback
+  return TextContractField
+}

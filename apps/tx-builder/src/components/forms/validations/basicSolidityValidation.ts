@@ -8,7 +8,7 @@ const basicSolidityValidation = (value: string, fieldType: string): ValidateResu
   const isSolidityFieldType = !NON_SOLIDITY_TYPES.includes(fieldType)
   if (isSolidityFieldType) {
     try {
-      const cleanValue = parseInputValue({ type: fieldType }, value)
+      const cleanValue = parseInputValue(fieldType, value)
       const abi = abiCoder as unknown // a bug in the web3-eth-abi types
       ;(abi as AbiCoder).encodeParameter(fieldType, cleanValue)
     } catch (error: any) {

@@ -8,7 +8,6 @@ import {
   CONTRACT_METHOD_FIELD_TYPE,
   CUSTOM_TRANSACTION_DATA_FIELD_TYPE,
   NATIVE_AMOUNT_FIELD_TYPE,
-  SolidityFieldTypes,
 } from './fields/fields'
 import Field from './fields/Field'
 import { encodeToHexData, getInputTypeHelper } from '../../utils'
@@ -221,7 +220,7 @@ const SolidityForm = ({
                 id={`contract-field-${contractField.name || index}`}
                 name={name}
                 label={`${contractField.name || `${index + 1}º contract field`} (${fieldType})`}
-                fieldType={fieldType as SolidityFieldTypes}
+                fieldType={fieldType}
                 fullWidth
                 required
                 shouldUnregister={false} // required to keep contract field values in the form state when the user switches between encoding and decoding data
