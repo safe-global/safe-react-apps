@@ -74,7 +74,7 @@ describe('<SolidityForm>', () => {
 
     // selects a different contract method
     await waitFor(() => {
-      const contractMethodSelectorNode = screen.getByTestId('contractMethodIndex')
+      const contractMethodSelectorNode = screen.getByTestId('contract-method-selector')
 
       // opens the contract method selector
       fireEvent.mouseDown(contractMethodSelectorNode)
@@ -138,7 +138,7 @@ describe('<SolidityForm>', () => {
 
     // selects a different contract method
     await waitFor(() => {
-      const contractMethodSelectorNode = screen.getByTestId('contractMethodIndex')
+      const contractMethodSelectorNode = screen.getByTestId('contract-method-selector')
 
       // opens the contract method selector
       fireEvent.mouseDown(contractMethodSelectorNode)
@@ -150,12 +150,12 @@ describe('<SolidityForm>', () => {
 
     // the issue is not present (true value as default for booleans)
     await waitFor(() => {
-      expect(screen.getByTestId('contractFieldsValues.method-1.newValue-input')).toHaveValue('true')
+      expect(screen.getByTestId('contract-field-newValue-input')).toHaveValue('true')
     })
 
     // address value again if we select testAddressMethod again
     await waitFor(() => {
-      const contractMethodSelectorNode = screen.getByTestId('contractMethodIndex')
+      const contractMethodSelectorNode = screen.getByTestId('contract-method-selector')
 
       // opens the contract method selector
       fireEvent.mouseDown(contractMethodSelectorNode)

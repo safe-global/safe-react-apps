@@ -7,6 +7,7 @@ type SelectContractFieldTypes = {
   value: string
   label: string
   name: string
+  id: string
 }
 
 const SelectContractField = ({
@@ -15,12 +16,13 @@ const SelectContractField = ({
   options,
   label,
   name,
+  id,
 }: SelectContractFieldTypes) => {
   return (
     <Select
-      id={name}
+      id={id}
       inputProps={{
-        id: `${name}-input`,
+        id: `${id}-input`,
       }}
       name={name}
       disabled={options.length === 1}
