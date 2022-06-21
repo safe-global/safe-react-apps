@@ -4,9 +4,14 @@ import styled from 'styled-components'
 
 type TextContractFieldTypes = TextFieldInputProps & {
   networkPrefix?: undefined | string
+  getAddressFromDomain?: () => {}
 }
 
-const TextContractField = ({ networkPrefix, ...props }: TextContractFieldTypes) => {
+const TextContractField = ({
+  networkPrefix,
+  getAddressFromDomain,
+  ...props
+}: TextContractFieldTypes) => {
   return <StyledTextField {...props} hiddenLabel={false} />
 }
 

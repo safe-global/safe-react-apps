@@ -4,6 +4,9 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect'
 import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk'
+import { configure } from '@testing-library/react'
+
+configure({ testIdAttribute: 'id' })
 
 const TEST_SAFE_MOCK: SafeInfo = {
   safeAddress: '0x57CB13cbef735FbDD65f5f2866638c546464E45F',
