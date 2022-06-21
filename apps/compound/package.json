@@ -6,12 +6,12 @@
   "dependencies": {
     "@apollo/client": "^3.5.5",
     "@gnosis.pm/safe-react-components": "^0.9.7",
-    "@material-ui/core": "^4.12.3",
+    "@material-ui/core": "^4.12.4",
     "big-number-input": "^1.0.3",
     "big.js": "^6.1.1",
     "graphql": "^16.3.0",
     "lodash": "^4.17.21",
-    "web3": "~1.7.0"
+    "web3": "~1.7.3"
   },
   "devDependencies": {
     "@types/big.js": "^6.1.2",
