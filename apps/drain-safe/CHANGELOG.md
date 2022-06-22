@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.3.0](https://github.com/safe-global/safe-react-apps/compare/drain-safe-1.2.1...drain-safe-1.3.0) (2022-06-22)
+
+
+### Bug Fixes
+
+* **drain-safe:** Avoid showing no assets message before checking if the Safe has or no… ([#443](https://github.com/safe-global/safe-react-apps/issues/443)) ([d61e259](https://github.com/safe-global/safe-react-apps/commit/d61e2599c27cc0d107caf402cd0529b9e9c69a8b))
+* Update GnosisChain RPC endpoints ([#463](https://github.com/safe-global/safe-react-apps/issues/463)) ([3008ec7](https://github.com/safe-global/safe-react-apps/commit/3008ec7e687c2b431624cd15fa96319a555506fb))
+
+
+### Features
+
+* Enable apps in goerli ([#444](https://github.com/safe-global/safe-react-apps/issues/444)) ([9315b20](https://github.com/safe-global/safe-react-apps/commit/9315b206f12e6ca8c0fd35faf3836e5bfd9e9d5a))
+
+
+
 ## [1.2.1](https://github.com/safe-global/safe-react-apps/compare/drain-safe-1.2.0...drain-safe-1.2.1) (2022-05-04)
 
 
