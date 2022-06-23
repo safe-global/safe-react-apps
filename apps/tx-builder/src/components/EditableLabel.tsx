@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-type EditableLabelProps = {
+export type EditableLabelProps = {
   children: React.ReactNode
   onEdit: (value: string) => void
 }
