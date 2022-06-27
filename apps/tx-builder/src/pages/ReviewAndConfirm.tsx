@@ -43,8 +43,13 @@ const ReviewAndConfirm = () => {
   } = useTransactions()
   const { downloadBatch, saveBatch } = useTransactionLibrary()
   const [showSimulation, setShowSimulation] = useState<boolean>(false)
-  const { simulation, simulateTransaction, simulationRequestStatus, simulationLink } =
-    useSimulation()
+  const {
+    simulation,
+    simulateTransaction,
+    simulationRequestStatus,
+    simulationLink,
+    simulationSupported,
+  } = useSimulation()
   const navigate = useNavigate()
 
   const clickSimulate = () => {
@@ -115,15 +120,17 @@ const ReviewAndConfirm = () => {
           </Button>
 
           {/* Simulate batch button */}
-          <Button
-            size="md"
-            type="button"
-            variant="contained"
-            color="secondary"
-            onClick={clickSimulate}
-          >
-            Simulate
-          </Button>
+          {simulationSupported && (
+            <Button
+              size="md"
+              type="button"
+              variant="contained"
+              color="secondary"
+              onClick={clickSimulate}
+            >
+              Simulate
+            </Button>
+          )}
         </ButtonsWrapper>
 
         {/* Simulation statuses */}
@@ -135,6 +142,12 @@ const ReviewAndConfirm = () => {
               color="inputFilled"
               onClick={closeSimulation}
             ></StyledButton>
+            {simulationRequestStatus === FETCH_STATUS.ERROR && (
+              <Text color="error" size="lg">
+                An unexpected error occurred during simulation.
+              </Text>
+            )}
+
             {simulationRequestStatus === FETCH_STATUS.LOADING && (
               <>
                 <Loader size="xs" />
@@ -247,8 +260,7 @@ const SimulationContainer = styled(Card)`
 
 const Wrapper = styled.main`
   && {
-    padding: 48px;
-    padding-top: 120px;
+    padding: 120px 48px 48px;
     max-width: 650px;
     margin: 0 auto;
   }

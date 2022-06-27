@@ -5,6 +5,7 @@ import {
   getSimulationPayload,
   getSimulation,
   getSimulationLink,
+  isSimulationSupported,
 } from '../lib/simulation/simulation'
 import { useNetwork } from '../store/networkContext'
 import { useTransactions } from '../store'
@@ -16,12 +17,14 @@ type UseSimulationReturn =
       simulation: undefined
       simulateTransaction: () => void
       simulationLink: string
+      simulationSupported: boolean
     }
   | {
       simulationRequestStatus: FETCH_STATUS.SUCCESS
       simulation: TenderlySimulation
       simulateTransaction: () => void
       simulationLink: string
+      simulationSupported: boolean
     }
 
 const useSimulation = (): UseSimulationReturn => {
@@ -35,6 +38,7 @@ const useSimulation = (): UseSimulationReturn => {
     [simulation],
   )
   const { safe, web3 } = useNetwork()
+  const simulationSupported = useMemo(() => isSimulationSupported(safe.chainId.toString()), [safe])
 
   const simulateTransaction = useCallback(async () => {
     if (!web3) return
@@ -67,6 +71,7 @@ const useSimulation = (): UseSimulationReturn => {
     simulationRequestStatus,
     simulation,
     simulationLink,
+    simulationSupported,
   } as UseSimulationReturn
 }
 
