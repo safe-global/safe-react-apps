@@ -80,8 +80,8 @@ const CreateTransactions = () => {
           <CreateNewBatchCard
             onFileSelected={async (uploadedFile: File | null) => {
               if (uploadedFile) {
-                setFileName(uploadedFile.name)
                 const batchFile = await importBatch(uploadedFile)
+                setFileName(batchFile.meta.name)
                 // we show a modal if the batch file is from a different chain
                 const isWrongChain = batchFile.chainId !== chainInfo?.chainId
                 if (isWrongChain) {
