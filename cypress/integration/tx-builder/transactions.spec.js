@@ -1,4 +1,4 @@
-describe('Testing transactions', () => {
+describe('Testing Tx-builder safe app', () => {
   it('should allow to send transactions', () => {
     cy.visit(
       `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
