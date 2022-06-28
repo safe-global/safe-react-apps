@@ -1,6 +1,7 @@
 {
   "chromeWebSecurity": false,
   "modifyObstructiveCode": false,
+  "trashAssetsBeforeRun": true,
   "video": true,
   "retries": {
     "runMode": 2,

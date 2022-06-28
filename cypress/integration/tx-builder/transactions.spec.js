@@ -133,7 +133,7 @@ describe('Testing transactions', () => {
     })
   })
 
-  it('should allow to upload a batch, save it to my library & then remove it', () => {
+  it('should allow to upload a batch, save it to my library, download it & then remove it', () => {
     cy.visit(
       `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
         'TESTING_SAFE_ADDRESS',
@@ -159,6 +159,7 @@ describe('Testing transactions', () => {
       getBody()
         .findByText(/Your transaction library/i)
         .click()
+      getBody().find('button[title="Download batch"]').click()
       getBody().find('button[title="Delete Batch"]').click()
       getBody().findAllByText('Yes, delete').should('not.be.disabled').click()
       getBody()
@@ -168,5 +169,6 @@ describe('Testing transactions', () => {
         .findByText(/Back to Transaction Creation/i)
         .should('be.visible')
     })
+    cy.readFile('cypress/downloads/E2E test.json').should('exist')
   })
 })
