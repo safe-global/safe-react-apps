@@ -19,45 +19,6 @@ export const enum FETCH_STATUS {
   SUCCESS = 'SUCCESS',
   ERROR = 'ERROR',
 }
-
-export enum CHAINS {
-  MAINNET = '1',
-  MORDEN = '2',
-  ROPSTEN = '3',
-  RINKEBY = '4',
-  GOERLI = '5',
-  OPTIMISM = '10',
-  KOVAN = '42',
-  BSC = '56',
-  XDAI = '100',
-  POLYGON = '137',
-  ENERGY_WEB_CHAIN = '246',
-  ARBITRUM = '42161',
-  AVALANCHE = '43114',
-  VOLTA = '73799',
-  AURORA = '1313161554',
-}
-
-export const rpcUrlGetterByNetwork: {
-  [key in CHAINS]: null | ((token?: string) => string)
-} = {
-  [CHAINS.MAINNET]: token => `https://mainnet.infura.io/v3/${token}`,
-  [CHAINS.MORDEN]: null,
-  [CHAINS.ROPSTEN]: null,
-  [CHAINS.RINKEBY]: token => `https://rinkeby.infura.io/v3/${token}`,
-  [CHAINS.GOERLI]: token => `https://goerli.infura.io/v3/${token}`,
-  [CHAINS.OPTIMISM]: () => 'https://mainnet.optimism.io',
-  [CHAINS.KOVAN]: null,
-  [CHAINS.BSC]: () => 'https://bsc-dataseed.binance.org',
-  [CHAINS.XDAI]: () => 'https://rpc.gnosischain.com',
-  [CHAINS.POLYGON]: () => 'https://rpc-mainnet.matic.network',
-  [CHAINS.ENERGY_WEB_CHAIN]: () => 'https://rpc.energyweb.org',
-  [CHAINS.ARBITRUM]: () => 'https://arb1.arbitrum.io/rpc',
-  [CHAINS.AVALANCHE]: () => 'https://api.avax.network/ext/bc/C/rpc',
-  [CHAINS.VOLTA]: () => 'https://volta-rpc.energyweb.org',
-  [CHAINS.AURORA]: () => 'https://mainnet.aurora.dev',
-}
-
 export class SoliditySyntaxError extends Error {}
 
 export const parseBooleanValue = (value: any): boolean => {
@@ -313,4 +274,11 @@ export const getInputTypeHelper = (input: ContractInput): string => {
   } else {
     return input.type
   }
+}
+
+// A Template looks like this: "https://rinkeby.etherscan.io/address/{{address}}"
+// To replace ``{{address}}`` with the actual address, pass an object with the `address` key
+export const evalTemplate = (templateUri: string, data: Record<string, string>): string => {
+  const TEMPLATE_REGEX = /\{\{([^}]+)\}\}/g
+  return templateUri.replace(TEMPLATE_REGEX, (_: string, key: string) => data[key])
 }
