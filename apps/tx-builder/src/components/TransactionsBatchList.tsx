@@ -24,12 +24,20 @@ import { useNetwork, useTransactionLibrary } from '../store'
 import Item from './TransactionBatchListItem'
 import VirtualizedList from './VirtualizedList'
 import { getTransactionText } from '../utils'
+import { EditableLabelProps } from './EditableLabel'
 
 type TransactionsBatchListProps = {
   transactions: ProposedTransaction[]
   showTransactionDetails: boolean
   showBatchHeader: boolean
-  batchTitle?: string | React.ReactNode
+  // batch title has multiple types because there are files passing it as a string
+  // or 2 types of components:
+  // 1: apps/tx-builder/src/pages/EditTransactionLibrary.tsx
+  // 2: apps/tx-builder/src/pages/CreateTransactions.tsx
+  batchTitle?:
+    | string
+    | React.ReactElement<EditableLabelProps>
+    | React.ReactElement<{ filename: string }>
   removeTransaction?: (index: number) => void
   saveBatch?: (name: string, transactions: ProposedTransaction[]) => void
   downloadBatch?: (name: string, transactions: ProposedTransaction[]) => void
@@ -115,7 +123,13 @@ const TransactionsBatchList = ({
 
   const fileName = useMemo(() => {
     if (isValidElement(batchTitle)) {
-      return batchTitle.props.children
+      if ('filename' in batchTitle.props) {
+        return batchTitle.props.filename
+      } else if (batchTitle.props.children) {
+        return batchTitle.props.children.toString()
+      }
+
+      return 'Untitled'
     }
 
     return batchTitle || 'Untitled'

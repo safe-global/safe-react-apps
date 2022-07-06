@@ -8,7 +8,6 @@ import {
   CONTRACT_METHOD_FIELD_TYPE,
   CUSTOM_TRANSACTION_DATA_FIELD_TYPE,
   NATIVE_AMOUNT_FIELD_TYPE,
-  SolidityFieldTypes,
 } from './fields/fields'
 import Field from './fields/Field'
 import { encodeToHexData, getInputTypeHelper } from '../../utils'
@@ -42,7 +41,7 @@ export type SolidityFormValuesTypes = {
   [TO_ADDRESS_FIELD_NAME]: string
   [NATIVE_VALUE_FIELD_NAME]: string
   [CONTRACT_METHOD_INDEX_FIELD_NAME]: string
-  [CONTRACT_VALUES_FIELD_NAME]: Record<string, string>
+  [CONTRACT_VALUES_FIELD_NAME]: Record<string, Record<string, string>>
   [CUSTOM_TRANSACTION_DATA_FIELD_NAME]: string
 }
 
@@ -56,12 +55,12 @@ export const parseFormToProposedTransaction = (
   const toAddress = values[TO_ADDRESS_FIELD_NAME]
   const tokenValue = values[NATIVE_VALUE_FIELD_NAME]
   const contractFieldsValues = values[CONTRACT_VALUES_FIELD_NAME]
+  const methodValues = contractFieldsValues?.[`method-${contractMethodIndex}`]
   const customTransactionData = values[CUSTOM_TRANSACTION_DATA_FIELD_NAME]
 
   const contractMethod = contract?.methods[Number(contractMethodIndex)]
 
-  const data =
-    customTransactionData || encodeToHexData(contractMethod, contractFieldsValues) || '0x'
+  const data = customTransactionData || encodeToHexData(contractMethod, methodValues) || '0x'
   const to = toChecksumAddress(toAddress)
   const value = toWei(tokenValue || '0')
 
@@ -73,7 +72,7 @@ export const parseFormToProposedTransaction = (
       value,
       customTransactionData,
       contractMethod,
-      contractFieldsValues,
+      contractFieldsValues: methodValues,
       contractMethodIndex,
       nativeCurrencySymbol,
       networkPrefix,
@@ -122,12 +121,13 @@ const SolidityForm = ({
 
   useEffect(() => {
     const contractFieldsValues = getValues(CONTRACT_VALUES_FIELD_NAME)
+    const methodValues = contractFieldsValues?.[`method-${contractMethodIndex}`]
 
     if (showHexEncodedData && contractMethod) {
-      const encodeData = encodeToHexData(contractMethod, contractFieldsValues)
+      const encodeData = encodeToHexData(contractMethod, methodValues)
       setValue(CUSTOM_TRANSACTION_DATA_FIELD_TYPE, encodeData || '')
     }
-  }, [contractMethod, getValues, setValue, showHexEncodedData])
+  }, [contractMethod, getValues, setValue, showHexEncodedData, contractMethodIndex])
 
   // Resets form to initial values if the user edited contract method and then switched to custom data and edited it
   useEffect(() => {
@@ -211,7 +211,9 @@ const SolidityForm = ({
 
         {/* Contract Fields */}
         {contractFields.map((contractField, index) => {
-          const name = `${CONTRACT_VALUES_FIELD_NAME}.${contractField.name || index}`
+          const name = `${CONTRACT_VALUES_FIELD_NAME}.method-${contractMethodIndex}.${
+            contractField.name || index
+          }`
           const fieldType = getInputTypeHelper(contractField)
 
           return (
@@ -221,7 +223,7 @@ const SolidityForm = ({
                 id={`contract-field-${contractField.name || index}`}
                 name={name}
                 label={`${contractField.name || `${index + 1}º contract field`} (${fieldType})`}
-                fieldType={fieldType as SolidityFieldTypes}
+                fieldType={fieldType}
                 fullWidth
                 required
                 shouldUnregister={false} // required to keep contract field values in the form state when the user switches between encoding and decoding data

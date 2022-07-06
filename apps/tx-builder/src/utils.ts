@@ -1,6 +1,17 @@
 import { AbiItem, toBN, isAddress, fromWei } from 'web3-utils'
 import abiCoder, { AbiCoder } from 'web3-eth-abi'
 import { ContractInput, ContractMethod, ProposedTransaction } from './typings/models'
+import {
+  isArrayFieldType,
+  isArrayOfStringsFieldType,
+  isBooleanFieldType,
+  isIntFieldType,
+  isMatrixFieldType,
+  isMatrixOfStringsFieldType,
+  isMultiDimensionalArrayFieldType,
+  isMultiDimensionalArrayOfStringsFieldType,
+  isTupleFieldType,
+} from './components/forms/fields/fields'
 
 export const enum FETCH_STATUS {
   NOT_ASKED = 'NOT_ASKED',
@@ -38,7 +49,7 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.OPTIMISM]: () => 'https://mainnet.optimism.io',
   [CHAINS.KOVAN]: null,
   [CHAINS.BSC]: () => 'https://bsc-dataseed.binance.org',
-  [CHAINS.XDAI]: () => 'https://dai.poa.network',
+  [CHAINS.XDAI]: () => 'https://rpc.gnosischain.com',
   [CHAINS.POLYGON]: () => 'https://rpc-mainnet.matic.network',
   [CHAINS.ENERGY_WEB_CHAIN]: () => 'https://rpc.energyweb.org',
   [CHAINS.ARBITRUM]: () => 'https://arb1.arbitrum.io/rpc',
@@ -47,42 +58,160 @@ export const rpcUrlGetterByNetwork: {
   [CHAINS.AURORA]: () => 'https://mainnet.aurora.dev',
 }
 
-// Same regex used for web3@1.3.6
-export const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/)
+export class SoliditySyntaxError extends Error {}
 
-// This function is used to apply some parsing to some value types
-export const parseInputValue = (input: any, value: string): any => {
-  // If there is a match with this regular expression we get an array value like the following
-  // ex: ['uint16', 'uint', '16']. If no match, null is returned
-  const isNumberInput = paramTypeNumber.test(input.type)
-  const isBooleanInput = input.type === 'bool'
+export const parseBooleanValue = (value: any): boolean => {
+  const isStringValue = typeof value === 'string'
+  if (isStringValue) {
+    const truthyStrings = ['true', 'True', 'TRUE', '1']
+    const isTruthyValue = truthyStrings.some(
+      truthyString => truthyString === value.trim().toLowerCase(),
+    )
 
-  if (value.charAt(0) === '[') {
-    const parsed = JSON.parse(value.replace(/"/g, '"'))
-
-    if (input.type === 'bool[]') {
-      return parsed.map((value: boolean | string) => {
-        if (typeof value == 'string') {
-          return value.toLowerCase() === 'true'
-        }
-
-        return value
-      })
+    if (isTruthyValue) {
+      return true
     }
 
-    return parsed
+    const falsyStrings = ['false', 'False', 'FALSE', '0']
+    const isFalsyValue = falsyStrings.some(
+      falsyString => falsyString === value.trim().toLowerCase(),
+    )
+
+    if (isFalsyValue) {
+      return false
+    }
+
+    throw new SoliditySyntaxError('Invalid Boolean value')
   }
 
-  if (isBooleanInput) {
-    return value.toLowerCase() === 'true'
+  return !!value
+}
+
+const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)(((\[\])|(\[[1-9]+[0-9]*\]))*)?$/)
+export const getNumberOfBits = (fieldType: string): number =>
+  Number(fieldType.match(paramTypeNumber)?.[2] || '256')
+
+export const parseIntValue = (value: string, fieldType: string) => {
+  const trimmedValue = value.replace(/"/g, '').replace(/'/g, '').trim()
+  const isEmptyString = trimmedValue === ''
+
+  if (isEmptyString) {
+    throw new SoliditySyntaxError('invalid empty strings for integers')
   }
 
-  if (isNumberInput && value) {
-    // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
-    // To fix that we pad the numeric values here as the encode function is expecting a string
-    // more info here https://github.com/ChainSafe/web3.js/issues/3772
-    const bitWidth = input.type.match(paramTypeNumber)[2]
-    return toBN(value).toString(10, bitWidth)
+  const bits = getNumberOfBits(fieldType)
+
+  // From web3 1.2.5 negative string numbers aren't correctly padded with leading 0's.
+  // To fix that we pad the numeric values here as the encode function is expecting a string
+  // more info here https://github.com/ChainSafe/web3.js/issues/3772
+  return toBN(trimmedValue).toString(10, bits)
+}
+
+// parse a string to an Array. Example: from "[1, 2, [3,4]]" returns [ "1", "2", "[3, 4]" ]
+// use this function only for Arrays, Matrix and MultiDimensional Arrays of ints, uints, bytes, addresses and booleans
+// do NOT use this function for Arrays, Matrix and MultiDimensional Arrays of strings (for strings use JSON.parse() instead)
+export const parseStringToArray = (value: string): string[] => {
+  let numberOfItems = 0
+  let numberOfOtherArrays = 0
+  return value
+    .trim()
+    .slice(1, -1) // remove the first "[" and the last "]"
+    .split('')
+    .reduce<string[]>((array, char) => {
+      const isCommaChar = char === ','
+
+      if (isCommaChar && numberOfOtherArrays === 0) {
+        numberOfItems++
+        return array
+      }
+
+      const isOpenArrayChar = char === '['
+
+      if (isOpenArrayChar) {
+        numberOfOtherArrays++
+      }
+
+      const isCloseArrayChar = char === ']'
+
+      if (isCloseArrayChar) {
+        numberOfOtherArrays--
+      }
+
+      array[numberOfItems] = `${array[numberOfItems] || ''}${char}`.trim()
+
+      return array
+    }, [])
+}
+
+export const baseFieldtypeRegex = new RegExp(/^([a-zA-Z0-9]*)(((\[\])|(\[[1-9]+[0-9]*\]))*)?$/)
+
+// return the base field type. Example: from "uint128[][2][]" returns "uint128"
+export const getBaseFieldType = (fieldType: string): string => {
+  const baseFieldType = fieldType.match(baseFieldtypeRegex)?.[1]
+
+  if (!baseFieldType) {
+    throw new SoliditySyntaxError(`Unknow base field type ${baseFieldType} from ${fieldType}`)
+  }
+
+  return baseFieldType
+}
+
+// custom isArray function to return true if a given string is an Array
+export const isArray = (values: string): boolean => {
+  const trimmedValue = values.trim()
+  const isArray = trimmedValue.startsWith('[') && trimmedValue.endsWith(']')
+
+  return isArray
+}
+
+const parseArrayOfValues = (values: string, fieldType: string): any => {
+  if (!isArray(values)) {
+    throw new SoliditySyntaxError('Invalid Array value')
+  }
+
+  return parseStringToArray(values).map(itemValue =>
+    isArray(itemValue)
+      ? parseArrayOfValues(itemValue, fieldType) // recursive call because Matrix and MultiDimensional Arrays field types
+      : parseInputValue(
+          // recursive call to parseInputValue
+          getBaseFieldType(fieldType), // based on the base field type
+          itemValue.replace(/"/g, '').replace(/'/g, ''), // removing " and ' chars from the value
+        ),
+  )
+}
+
+// This function is used to parse the user input values
+export const parseInputValue = (fieldType: string, value: string): any => {
+  const trimmedValue = typeof value === 'string' ? value.trim() : value
+
+  if (isBooleanFieldType(fieldType)) {
+    return parseBooleanValue(trimmedValue)
+  }
+
+  if (isIntFieldType(fieldType)) {
+    return parseIntValue(trimmedValue, fieldType)
+  }
+
+  // FIX: fix the issue with long numbers in the tuples
+  if (isTupleFieldType(fieldType)) {
+    return JSON.parse(trimmedValue)
+  }
+
+  // for Arrays, Matrix and MultiDimensional Arrays of strings JSON.parse is required
+  if (
+    isArrayOfStringsFieldType(fieldType) ||
+    isMatrixOfStringsFieldType(fieldType) ||
+    isMultiDimensionalArrayOfStringsFieldType(fieldType)
+  ) {
+    return JSON.parse(trimmedValue)
+  }
+
+  if (
+    isArrayFieldType(fieldType) ||
+    isMatrixFieldType(fieldType) ||
+    isMultiDimensionalArrayFieldType(fieldType)
+  ) {
+    return parseArrayOfValues(trimmedValue, fieldType)
   }
 
   return value
@@ -131,7 +260,7 @@ export const encodeToHexData = (
         const contractFieldName = contractField.name || index
         const cleanValue = contractFieldsValues[contractFieldName] || ''
 
-        return parseInputValue(contractField, cleanValue)
+        return parseInputValue(contractField.type, cleanValue)
       })
       const abi = abiCoder as unknown // a bug in the web3-eth-abi types
       const hexEncondedData = (abi as AbiCoder).encodeFunctionCall(

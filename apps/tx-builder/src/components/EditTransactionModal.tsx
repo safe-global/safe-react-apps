@@ -44,7 +44,9 @@ const EditTransactionModal = ({
     [NATIVE_VALUE_FIELD_NAME]: weiToEther(transaction.raw.value),
     [CUSTOM_TRANSACTION_DATA_FIELD_NAME]: customTransactionData,
     [CONTRACT_METHOD_INDEX_FIELD_NAME]: contractMethodIndex,
-    [CONTRACT_VALUES_FIELD_NAME]: contractFieldsValues,
+    [CONTRACT_VALUES_FIELD_NAME]: {
+      [`method-${contractMethodIndex}`]: contractFieldsValues || {},
+    },
   }
 
   const handleSubmit = (values: SolidityFormValuesTypes) => {

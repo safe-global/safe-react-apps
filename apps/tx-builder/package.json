@@ -1,31 +1,38 @@
 {
   "name": "tx-builder",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "private": true,
   "homepage": "/tx-builder",
   "dependencies": {
     "@gnosis.pm/safe-deployments": "^1.11.0",
     "@gnosis.pm/safe-react-components": "^1.1.4",
-    "@material-ui/core": "^4.12.3",
-    "@material-ui/icons": "^4.11.0",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.60",
-    "axios": "^0.26.1",
+    "axios": "^0.27.2",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "react-beautiful-dnd": "^13.1.0",
     "react-hook-form": "^7.28.0",
     "react-router-dom": "^6.2.1",
     "react-virtuoso": "^2.8.2",
-    "web3": "~1.7.0"
+    "web3": "~1.7.3"
   },
   "devDependencies": {
     "@hookform/devtools": "^4.0.2",
-    "@types/react-beautiful-dnd": "^13.1.2"
+    "@nomiclabs/hardhat-ethers": "^2.0.3",
+    "@nomiclabs/hardhat-etherscan": "^3.0.3",
+    "@types/react-beautiful-dnd": "^13.1.2",
+    "ethers": "^5.6.9",
+    "hardhat": "^2.9.9",
+    "hardhat-deploy": "^0.11.10"
   },
   "scripts": {
     "start": "dotenv -e .env -- react-app-rewired start",
     "build": "dotenv -e .env -- react-app-rewired build",
     "test": "react-app-rewired test --passWithNoTests",
+    "contract:deploy-all": "hardhat deploy-test-contracts --network",
+    "contract:read-method": "hardhat read-method",
     "deploy:s3": "bash ../../scripts/deploy_to_s3_bucket.sh",
     "deploy:pr": "bash ../../scripts/deploy_pr.sh",
     "deploy:prod-hook": "bash ../../scripts/prepare_production_deployment.sh"

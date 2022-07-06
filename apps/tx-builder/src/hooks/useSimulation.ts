@@ -1,4 +1,3 @@
-import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
 import { useCallback, useState, useMemo } from 'react'
 import { TenderlySimulation } from '../lib/simulation/types'
 import {
@@ -6,8 +5,10 @@ import {
   getSimulationPayload,
   getSimulation,
   getSimulationLink,
+  isSimulationSupported,
 } from '../lib/simulation/simulation'
 import { useNetwork } from '../store/networkContext'
+import { useTransactions } from '../store'
 import { FETCH_STATUS } from '../utils'
 
 type UseSimulationReturn =
@@ -16,15 +17,18 @@ type UseSimulationReturn =
       simulation: undefined
       simulateTransaction: () => void
       simulationLink: string
+      simulationSupported: boolean
     }
   | {
       simulationRequestStatus: FETCH_STATUS.SUCCESS
       simulation: TenderlySimulation
       simulateTransaction: () => void
       simulationLink: string
+      simulationSupported: boolean
     }
 
-const useSimulation = (transactions: BaseTransaction[]): UseSimulationReturn => {
+const useSimulation = (): UseSimulationReturn => {
+  const { transactions } = useTransactions()
   const [simulation, setSimulation] = useState<TenderlySimulation | undefined>()
   const [simulationRequestStatus, setSimulationRequestStatus] = useState<FETCH_STATUS>(
     FETCH_STATUS.NOT_ASKED,
@@ -34,6 +38,7 @@ const useSimulation = (transactions: BaseTransaction[]): UseSimulationReturn => 
     [simulation],
   )
   const { safe, web3 } = useNetwork()
+  const simulationSupported = useMemo(() => isSimulationSupported(safe.chainId.toString()), [safe])
 
   const simulateTransaction = useCallback(async () => {
     if (!web3) return
@@ -48,7 +53,7 @@ const useSimulation = (transactions: BaseTransaction[]): UseSimulationReturn => 
         safeAddress: safe.safeAddress,
         executionOwner: safe.owners[0],
         safeNonce,
-        transactions,
+        transactions: transactions.map(t => t.raw),
         gasLimit: parseInt(blockGasLimit),
       })
 
@@ -66,6 +71,7 @@ const useSimulation = (transactions: BaseTransaction[]): UseSimulationReturn => 
     simulationRequestStatus,
     simulation,
     simulationLink,
+    simulationSupported,
   } as UseSimulationReturn
 }
 

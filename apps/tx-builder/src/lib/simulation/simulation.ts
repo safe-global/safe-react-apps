@@ -14,6 +14,17 @@ const TENDERLY_SIMULATE_ENDPOINT_URL = process.env.REACT_APP_TENDERLY_SIMULATE_E
 const TENDERLY_PROJECT_NAME = process.env.REACT_APP_TENDERLY_PROJECT_NAME || ''
 const TENDERLY_ORG_NAME = process.env.REACT_APP_TENDERLY_ORG_NAME || ''
 
+const NON_SUPPORTED_CHAINS = [
+  // Energy web chain
+  '246',
+  // Volta
+  '73799',
+  // Aurora
+  '1313161554',
+]
+
+const isSimulationSupported = (chainId: string) => !NON_SUPPORTED_CHAINS.includes(chainId)
+
 const getSimulation = async (tx: TenderlySimulatePayload): Promise<TenderlySimulation> => {
   const response = await axios.post<TenderlySimulation>(TENDERLY_SIMULATE_ENDPOINT_URL, tx)
 
@@ -210,4 +221,10 @@ const getSimulationPayload = (tx: SimulationTxParams): TenderlySimulatePayload =
   }
 }
 
-export { getSimulationLink, getSimulation, getSimulationPayload, getBlockMaxGasLimit }
+export {
+  getSimulationLink,
+  getSimulation,
+  getSimulationPayload,
+  getBlockMaxGasLimit,
+  isSimulationSupported,
+}

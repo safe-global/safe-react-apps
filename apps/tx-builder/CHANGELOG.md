@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.9.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.8.0...tx-builder-1.9.0) (2022-06-22)
+
+
+### Bug Fixes
+
+* **tx-builder:** Error when typing abi ([#442](https://github.com/safe-global/safe-react-apps/issues/442)) ([2bb0e05](https://github.com/safe-global/safe-react-apps/commit/2bb0e0587641c9a405a882f42cf71341dd917f86))
+* **tx-builder:** Fixed long javascript numbers overflow in Arrays ([#445](https://github.com/safe-global/safe-react-apps/issues/445)) ([399f283](https://github.com/safe-global/safe-react-apps/commit/399f283c1e707ad0201f62c575fa6eadc27cb095))
+* **tx-builder:** Fixed wrong value inherited when switch the contract method ([#455](https://github.com/safe-global/safe-react-apps/issues/455)) ([92eff21](https://github.com/safe-global/safe-react-apps/commit/92eff21fed0f95fcb80d7dc0f6e792f2c80880dc))
+* **tx-builder:** Simulation not being updated after reordering txs ([b8826a9](https://github.com/safe-global/safe-react-apps/commit/b8826a9da09ce98d67baa73f4addccca3fdcb144))
+* Update GnosisChain RPC endpoints ([#463](https://github.com/safe-global/safe-react-apps/issues/463)) ([3008ec7](https://github.com/safe-global/safe-react-apps/commit/3008ec7e687c2b431624cd15fa96319a555506fb))
+
+
+### Features
+
+* Enable apps in goerli ([#444](https://github.com/safe-global/safe-react-apps/issues/444)) ([9315b20](https://github.com/safe-global/safe-react-apps/commit/9315b206f12e6ca8c0fd35faf3836e5bfd9e9d5a))
+
+
+
 # [1.8.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.7.0...tx-builder-1.8.0) (2022-05-04)
 
 
