@@ -109,6 +109,20 @@ These apps are deployed in the following environments.
   | [Transaction Builder](https://apps.gnosis-safe.io/tx-builder)
   | [WalletConnect](https://apps.gnosis-safe.io/wallet-connect)
 
+## Run e2e tests
+
+This repo provides e2e tests using cypress. Ideally to be used on CI can also be handy to check locally that everything works as expected.
+To run them it will be necessary to provide the following ENV parameters, that can be filled in a `.env` file at the root of the project
+
+Example:
+```
+CYPRESS_BASE_URL=https://gnosis-safe.io/app
+CYPRESS_NETWORK_PREFIX=rin
+CYPRESS_TESTING_SAFE_ADDRESS=0x0000000000000000000000000000000000000000
+CYPRESS_CONFIG_SERVICE_BASE_URL=https://safe-client.gnosis.io
+```
+Make sure to enter the desired values, for example a Safe address that you own
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
