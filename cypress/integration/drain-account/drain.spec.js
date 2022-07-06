@@ -1,17 +1,23 @@
 describe('Testing Drain Account safe app', () => {
-  it('should allow to perform a drain', () => {
+  // TODO use an ENV parameter for appUrl so we can configure different environments or PRs
+  const appUrl = 'https://apps.gnosis-safe.io/drain-safe'
+  const iframeSelector = `iframe[id="iframe-${appUrl}"]`
+
+  beforeEach(() => {
+    // Navigate to Safe App in TESTING SAFE
     cy.visit(
       `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
         'TESTING_SAFE_ADDRESS',
-      )}/apps?appUrl=https%3A%2F%2Fapps.gnosis-safe.io%2Fdrain-safe`,
+      )}/apps?appUrl=${appUrl}`,
     )
 
-    const iframeSelector = `iframe[id="iframe-https://apps.gnosis-safe.io/drain-safe"]`
-
+    // Accept cookies
     cy.findByText('Accept all').click({ force: true })
     cy.findByText('Confirm').click({ force: true })
     cy.frameLoaded(iframeSelector)
+  })
 
+  it('should allow to perform a drain', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/recipient/i)
@@ -23,18 +29,6 @@ describe('Testing Drain Account safe app', () => {
   })
 
   it('should not allow to perform a drain when no assets are selected', () => {
-    cy.visit(
-      `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
-        'TESTING_SAFE_ADDRESS',
-      )}/apps?appUrl=https%3A%2F%2Fapps.gnosis-safe.io%2Fdrain-safe`,
-    )
-
-    const iframeSelector = `iframe[id="iframe-https://apps.gnosis-safe.io/drain-safe"]`
-
-    cy.findByText('Accept all').click({ force: true })
-    cy.findByText('Confirm').click({ force: true })
-    cy.frameLoaded(iframeSelector)
-
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/Select All Rows checkbox/i)
@@ -47,18 +41,6 @@ describe('Testing Drain Account safe app', () => {
   })
 
   it('should allow to perform a partial drain', () => {
-    cy.visit(
-      `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
-        'TESTING_SAFE_ADDRESS',
-      )}/apps?appUrl=https%3A%2F%2Fapps.gnosis-safe.io%2Fdrain-safe`,
-    )
-
-    const iframeSelector = `iframe[id="iframe-https://apps.gnosis-safe.io/drain-safe"]`
-
-    cy.findByText('Accept all').click({ force: true })
-    cy.findByText('Confirm').click({ force: true })
-    cy.frameLoaded(iframeSelector)
-
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/Select All Rows checkbox/i)

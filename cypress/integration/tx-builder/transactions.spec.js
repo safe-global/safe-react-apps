@@ -1,17 +1,23 @@
 describe('Testing Tx-builder safe app', () => {
-  it('should allow to send a batch', () => {
+  // TODO use an ENV parameter for appUrl so we can configure different environments or PRs
+  const appUrl = 'https://apps.gnosis-safe.io/tx-builder'
+  const iframeSelector = `iframe[id="iframe-${appUrl}"]`
+
+  beforeEach(() => {
+    // Navigate to Safe App in TESTING SAFE
     cy.visit(
       `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
         'TESTING_SAFE_ADDRESS',
-      )}/apps?appUrl=https%3A%2F%2Fapps.gnosis-safe.io%2Ftx-builder`,
+      )}/apps?appUrl=${appUrl}`,
     )
 
-    const iframeSelector = `iframe[id="iframe-https://apps.gnosis-safe.io/tx-builder"]`
-
+    // Accept cookies
     cy.findByText('Accept all').click({ force: true })
     cy.findByText('Confirm').click({ force: true })
     cy.frameLoaded(iframeSelector)
+  })
 
+  it('should allow to create and send a batch', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/enter address or ens name/i)
@@ -35,19 +41,7 @@ describe('Testing Tx-builder safe app', () => {
     cy.findAllByText('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6').should('have.length', 2)
   })
 
-  it('should allow to send a batch to a ENS name', () => {
-    cy.visit(
-      `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
-        'TESTING_SAFE_ADDRESS',
-      )}/apps?appUrl=https%3A%2F%2Fapps.gnosis-safe.io%2Ftx-builder`,
-    )
-
-    const iframeSelector = `iframe[id="iframe-https://apps.gnosis-safe.io/tx-builder"]`
-
-    cy.findByText('Accept all').click({ force: true })
-    cy.findByText('Confirm').click({ force: true })
-    cy.frameLoaded(iframeSelector)
-
+  it('should allow to create and send a batch to an ENS name', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/enter address or ens name/i)
@@ -69,19 +63,7 @@ describe('Testing Tx-builder safe app', () => {
     cy.findAllByText('0xc6b82bA149CFA113f8f48d5E3b1F78e933e16DfD').should('be.visible')
   })
 
-  it('should allow to a batch from an ABI', () => {
-    cy.visit(
-      `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
-        'TESTING_SAFE_ADDRESS',
-      )}/apps?appUrl=https%3A%2F%2Fapps.gnosis-safe.io%2Ftx-builder`,
-    )
-
-    const iframeSelector = `iframe[id="iframe-https://apps.gnosis-safe.io/tx-builder"]`
-
-    cy.findByText('Accept all').click({ force: true })
-    cy.findByText('Confirm').click({ force: true })
-    cy.frameLoaded(iframeSelector)
-
+  it('should allow to a create and send a batch from an ABI', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/Enter ABI/i)
@@ -108,19 +90,7 @@ describe('Testing Tx-builder safe app', () => {
     cy.findAllByText('0x3bc83f41490BfD25bBB44eBCAc3761DFF4Ae50DA').should('be.visible')
   })
 
-  it('should allow to send a batch using custom data', () => {
-    cy.visit(
-      `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
-        'TESTING_SAFE_ADDRESS',
-      )}/apps?appUrl=https%3A%2F%2Fapps.gnosis-safe.io%2Ftx-builder`,
-    )
-
-    const iframeSelector = `iframe[id="iframe-https://apps.gnosis-safe.io/tx-builder"]`
-
-    cy.findByText('Accept all').click({ force: true })
-    cy.findByText('Confirm').click({ force: true })
-    cy.frameLoaded(iframeSelector)
-
+  it('should allow to create and send a batch using custom data', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody().find('input[type="checkbox"]').click()
       getBody()
@@ -144,18 +114,6 @@ describe('Testing Tx-builder safe app', () => {
   })
 
   it('should not allow to create a batch given invalid address', () => {
-    cy.visit(
-      `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
-        'TESTING_SAFE_ADDRESS',
-      )}/apps?appUrl=https%3A%2F%2Fapps.gnosis-safe.io%2Ftx-builder`,
-    )
-
-    const iframeSelector = `iframe[id="iframe-https://apps.gnosis-safe.io/tx-builder"]`
-
-    cy.findByText('Accept all').click({ force: true })
-    cy.findByText('Confirm').click({ force: true })
-    cy.frameLoaded(iframeSelector)
-
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/enter address or ens name/i)
@@ -167,18 +125,6 @@ describe('Testing Tx-builder safe app', () => {
   })
 
   it('should allow to upload a batch, save it to the library, download it & remove it', () => {
-    cy.visit(
-      `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
-        'TESTING_SAFE_ADDRESS',
-      )}/apps?appUrl=https%3A%2F%2Fapps.gnosis-safe.io%2Ftx-builder`,
-    )
-
-    const iframeSelector = `iframe[id="iframe-https://apps.gnosis-safe.io/tx-builder"]`
-
-    cy.findByText('Accept all').click({ force: true })
-    cy.findByText('Confirm').click({ force: true })
-    cy.frameLoaded(iframeSelector)
-
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findAllByText('choose a file')
@@ -206,18 +152,6 @@ describe('Testing Tx-builder safe app', () => {
   })
 
   it('should simulate a valid batch as successful', () => {
-    cy.visit(
-      `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
-        'TESTING_SAFE_ADDRESS',
-      )}/apps?appUrl=https%3A%2F%2Fapps.gnosis-safe.io%2Ftx-builder`,
-    )
-
-    const iframeSelector = `iframe[id="iframe-https://apps.gnosis-safe.io/tx-builder"]`
-
-    cy.findByText('Accept all').click({ force: true })
-    cy.findByText('Confirm').click({ force: true })
-    cy.frameLoaded(iframeSelector)
-
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/enter address or ens name/i)
@@ -240,18 +174,6 @@ describe('Testing Tx-builder safe app', () => {
   })
 
   it('should simulate an invalid batch as failed', () => {
-    cy.visit(
-      `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
-        'TESTING_SAFE_ADDRESS',
-      )}/apps?appUrl=https%3A%2F%2Fapps.gnosis-safe.io%2Ftx-builder`,
-    )
-
-    const iframeSelector = `iframe[id="iframe-https://apps.gnosis-safe.io/tx-builder"]`
-
-    cy.findByText('Accept all').click({ force: true })
-    cy.findByText('Confirm').click({ force: true })
-    cy.frameLoaded(iframeSelector)
-
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/enter address or ens name/i)
