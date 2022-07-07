@@ -1,6 +1,6 @@
 import '@testing-library/cypress/add-commands'
 import './iframe'
-import './commands';
+import './commands'
 
 Cypress.Commands.add('connectE2EWallet', () => {
   cy.on('window:before:load', window => {
@@ -14,7 +14,7 @@ Cypress.Commands.add('connectE2EWallet', () => {
 Cypress.Commands.add('createSafe', () => {
   cy.connectE2EWallet()
 
-  cy.visit(`${Cypress.env('BASE_URL')}/welcome`)
+  cy.visit(`/welcome`)
 
   cy.contains('a', 'Accept all').click()
   cy.get('p').contains('Rinkeby').click()
