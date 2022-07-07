@@ -1,0 +1,29 @@
+name: Safe Apps E2E
+on:
+  pull_request:
+  push:
+    branches:
+      - development
+  schedule:
+    # At 9:00 on every day-of-week from Monday through Friday
+    - cron: '0 9 * * 1-5'
+
+jobs:
+  e2e:
+    runs-on: ubuntu-20.04
+    # let's make sure our tests pass on Chrome browser
+    name: E2E on Chrome
+    steps:
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v2
+        with:
+          browser: chrome
+          spec: cypress/integration/drain-account/drain.spec.js,cypress/integration/tx-builder/tx-builder.spec.js
+        env:
+          CI: 'true'
+          CYPRESS_BASE_URL: 'https://gnosis-safe.io/app'
+          CYPRESS_SAFE_APPS_BASE_URL: 'https://pr${{ github.event.number }}--safereactapps.review.gnosisdev.com'
+          CYPRESS_NETWORK_PREFIX: 'rin'
+          CYPRESS_TESTING_SAFE_ADDRESS: '0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70'
+          CYPRESS_CONFIG_SERVICE_BASE_URL: 'https://safe-client.gnosis.io'
+        continue-on-error: true

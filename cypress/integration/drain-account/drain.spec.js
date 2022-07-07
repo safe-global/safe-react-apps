@@ -1,6 +1,6 @@
 describe('Testing Drain Account safe app', () => {
   // TODO use an ENV parameter for appUrl so we can configure different environments or PRs
-  const appUrl = 'https://apps.gnosis-safe.io/drain-safe'
+  const appUrl = `${Cypress.env('SAFE_APPS_BASE_URL')}/drain-safe`
   const iframeSelector = `iframe[id="iframe-${appUrl}"]`
 
   beforeEach(() => {
