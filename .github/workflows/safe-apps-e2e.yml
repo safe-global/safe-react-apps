@@ -33,3 +33,14 @@ jobs:
           CYPRESS_TESTING_SAFE_ADDRESS: '0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70'
           CYPRESS_CONFIG_SERVICE_BASE_URL: 'https://safe-client.gnosis.io'
         continue-on-error: true
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+      # Test run video was always captured, so this action uses "always()" condition
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-videos
+          path: cypress/videos
