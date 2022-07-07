@@ -32,6 +32,7 @@ jobs:
           CYPRESS_NETWORK_PREFIX: 'rin'
           CYPRESS_TESTING_SAFE_ADDRESS: '0x3bc83f41490BfD25bBB44eBCAc3761DFF4Ae50DA'
           CYPRESS_CONFIG_SERVICE_BASE_URL: 'https://safe-client.gnosis.io'
+          SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
         continue-on-error: true
       - uses: actions/upload-artifact@v2
         if: always()
