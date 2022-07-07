@@ -8,7 +8,7 @@ describe('Testing Tx-builder safe app', () => {
     cy.visit(
       `${Cypress.env('BASE_URL')}/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
         'TESTING_SAFE_ADDRESS',
-      )}/apps?appUrl=${appUrl}`,
+      )}/apps?appUrl=${encodeURIComponent(appUrl)}`,
     )
 
     // Accept cookies
