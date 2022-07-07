@@ -26,8 +26,8 @@ const buildSlackMessage = results => {
       type: 'mrkdwn',
       text: `*${
         results.runs[0].spec.name.includes('safe-apps-check.spec.js')
-          ? '*Liveness tests*'
-          : '*E2E Tests*'
+          ? 'Liveness tests'
+          : 'E2E Tests'
       }*`,
     },
   }
