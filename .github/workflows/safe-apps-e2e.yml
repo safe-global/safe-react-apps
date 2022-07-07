@@ -16,10 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set PR Safe Apps base URL
-        run: echo "SAFE_APP_BASE_URL=https://pr${{ github.event.number }}--safereactapps.review.gnosisdev.com" >> $GITHUB_ENV
+        run: echo "SAFE_APPS_BASE_URL=https://pr${{ github.event.number }}--safereactapps.review.gnosisdev.com" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/development'
       - name: Set development Safe Apps base URL
-        run: echo "SAFE_APP_BASE_URL=https://safe-apps.dev.gnosisdev.com" >> $GITHUB_ENV
+        run: echo "SAFE_APPS_BASE_URL=https://safe-apps.dev.gnosisdev.com" >> $GITHUB_ENV
         if: github.ref == 'refs/heads/development'
       - uses: cypress-io/github-action@v2
         with:
@@ -28,19 +28,19 @@ jobs:
         env:
           CI: 'true'
           CYPRESS_BASE_URL: 'https://gnosis-safe.io/app'
-          CYPRESS_SAFE_APPS_BASE_URL: ${{env.SAFE_APP_BASE_URL}}
+          CYPRESS_SAFE_APPS_BASE_URL: ${{env.SAFE_APPS_BASE_URL}}
           CYPRESS_NETWORK_PREFIX: 'rin'
           CYPRESS_TESTING_SAFE_ADDRESS: '0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70'
           CYPRESS_CONFIG_SERVICE_BASE_URL: 'https://safe-client.gnosis.io'
         continue-on-error: true
       - uses: actions/upload-artifact@v2
-        if: failure()
+        if: always()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
       # Test run video was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@v2
-        if: failure()
+        if: always()
         with:
           name: cypress-videos
           path: cypress/videos
