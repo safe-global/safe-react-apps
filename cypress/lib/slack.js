@@ -24,7 +24,11 @@ const buildSlackMessage = results => {
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: '*Safe Apps liveness tests*',
+      text: `*${
+        results.runs[0].spec.name.includes('safe-apps-check.spec.js')
+          ? '*Liveness tests*'
+          : '*E2E Tests*'
+      }*`,
     },
   }
 
@@ -88,7 +92,7 @@ const buildSlackMessage = results => {
         emoji: true,
       },
       value: 'click_me_123',
-      url: 'https://github.com/safe-global/safe-react-apps/actions/workflows/safe-apps-check.yml',
+      url: 'https://github.com/safe-global/safe-react-apps/actions',
       action_id: 'button-action',
     },
   }

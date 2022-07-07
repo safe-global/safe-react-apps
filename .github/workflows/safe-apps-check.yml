@@ -18,7 +18,6 @@ on:
         description: 'Config service base URL'
         required: true
         default: 'https://safe-client.gnosis.io'
-  pull_request:
   schedule:
     # At 9:00 on every day-of-week from Monday through Friday
     - cron: '0 9 * * 1-5'
