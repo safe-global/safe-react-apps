@@ -36,7 +36,6 @@ jobs:
           CYPRESS_CONFIG_SERVICE_BASE_URL: 'https://safe-client.gnosis.io'
           SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
       - uses: actions/upload-artifact@v2
         if: always()
         with:
