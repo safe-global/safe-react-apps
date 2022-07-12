@@ -11,21 +11,26 @@ Cypress.Commands.add('connectE2EWallet', () => {
   })
 })
 
-Cypress.Commands.add('createSafe', () => {
-  cy.connectE2EWallet()
+// const goToLastStep = () => {
+//   cy.findByText(/continue/i).then($btn => {
+//     cy.findByRole('progressbar').then($progress => {
+//       if ($progress.length && $progress[0].ariaValueNow !== '100') {
+//         $btn.click()
+//         cy.wait(800)
+//       } else {
+//         return
+//       }
 
-  cy.visit(`/welcome`)
+//       goToLastStep()
+//     })
+//   })
+// }
 
-  cy.contains('a', 'Accept all').click()
-  cy.get('p').contains('Rinkeby').click()
-  cy.get('[data-testid=connected-wallet]').should('contain', 'E2E Wallet')
-  cy.contains('Create new Safe').click()
-  cy.contains('Continue').click()
-  cy.get('[data-testid=create-safe-name-field]').type('Test Safe')
-  cy.contains('button', 'Continue').click({ force: true })
-  cy.contains('button', 'Continue').click({ force: true })
+Cypress.Commands.add('acceptSecurityFeedbackModal', () => {
+  cy.findByText('Accept all').click({ force: true })
+  cy.findByText('Confirm').click({ force: true })
 
-  cy.wait(500) // Not sure why without this ends with "Transaction underpriced"
-  cy.contains('button', 'Create').click()
-  cy.contains('Your Safe was created successfully', { timeout: 60000 })
+  // TODO: When SecurityFeedback Modal in develop use this
+  // goToLastStep()
+  // cy.findByText(/continue/i).click()
 })
