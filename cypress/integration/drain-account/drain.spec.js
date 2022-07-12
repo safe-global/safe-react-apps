@@ -30,6 +30,13 @@ describe('Testing Drain Account safe app', () => {
     cy.findAllByText('transfer').should('have.length', 2)
   })
 
+  it('should not allow to perform a drain when no recipient is selected', () => {
+    cy.enter(iframeSelector).then(getBody => {
+      getBody().findAllByText('Transfer everything').click()
+      getBody().findByText(/Please enter a valid recipient address/i).should('have.css', 'color', 'rgb(219, 58, 61)')
+    })
+  })
+
   it('should not allow to perform a drain when no assets are selected', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
