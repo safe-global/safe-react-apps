@@ -15,8 +15,7 @@ describe('Testing Drain Account safe app', () => {
     cy.visit(visitUrl)
 
     // Accept cookies
-    cy.findByText('Accept all').click({ force: true })
-    cy.findByText('Confirm').click({ force: true })
+    cy.acceptSecurityFeedbackModal()
     cy.frameLoaded(iframeSelector)
   })
 

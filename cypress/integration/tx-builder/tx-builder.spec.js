@@ -19,7 +19,7 @@ describe('Testing Tx-builder safe app', () => {
     cy.frameLoaded(iframeSelector)
   })
 
-  it('should allow to create and send a batch', () => {
+  it('should allow to create and send a simple batch', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/enter address or ens name/i)
@@ -41,6 +41,40 @@ describe('Testing Tx-builder safe app', () => {
     cy.findByText(/contract interaction/i).click()
     cy.findByText(/paramAddress/i).should('be.visible')
     cy.findAllByText('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6').should('have.length', 2)
+  })
+
+  it('should allow to create and send a complex batch', () => {
+    cy.enter(iframeSelector).then(getBody => {
+      getBody()
+        .findByLabelText(/enter address or ens name/i)
+        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
+      getBody()
+        .findByLabelText(/paramAddress/i)
+        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
+      getBody()
+        .findByText(/add transaction/i)
+        .click()
+      getBody().find('#contract-method-selector').click()
+      getBody().find('li[role="option"]').contains('testBool').click()
+      getBody().find('#contract-field-paramBool').click()
+      getBody().find('ul[role="listbox"]').contains('False').click()
+      getBody()
+        .findByText(/add transaction/i)
+        .click()
+      getBody()
+        .findByText(/create batch/i)
+        .click()
+      getBody()
+        .findByText(/send batch/i)
+        .click()
+    })
+    cy.findByText(/transaction builder/i).should('be.visible')
+    cy.findByText(/testAddress/i).should('be.visible')
+    cy.findByText(/TestBool/i)
+      .should('be.visible')
+      .click()
+    cy.findByText(/False/i).should('be.visible')
+    cy.findAllByText('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6').should('have.length', 3)
   })
 
   it('should allow to create and send a batch to an ENS name', () => {
