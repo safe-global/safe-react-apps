@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - development
+      - main
   schedule:
     # At 9:00 on every day-of-week from Monday through Friday
     - cron: '0 9 * * 1-5'
@@ -21,6 +22,9 @@ jobs:
       - name: Set development Safe Apps base URL
         run: echo "SAFE_APPS_BASE_URL=https://safe-apps.dev.gnosisdev.com" >> $GITHUB_ENV
         if: github.ref == 'refs/heads/development'
+      - name: Set main Safe Apps base URL
+        run: echo "SAFE_APPS_BASE_URL=https://apps.gnosis-safe.io" >> $GITHUB_ENV
+        if: github.ref == 'refs/heads/main'
       - uses: cypress-io/github-action@v2
         with:
           browser: chrome
