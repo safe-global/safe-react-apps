@@ -160,6 +160,30 @@ describe('Testing Tx-builder safe app', () => {
     })
   })
 
+  it('should not allow to create a batch given no asset amount', () => {
+    cy.enter(iframeSelector).then(getBody => {
+      getBody()
+        .findByLabelText(/enter address or ens name/i)
+        .type('0xc6b82bA149CFA113f8f48d5E3b1F78e933e16DfD')
+      getBody()
+        .findByText(/add transaction/i)
+        .click()
+      getBody().findAllByText('Required').should('have.css', 'color', 'rgb(244, 67, 54)')
+    })
+  })
+
+  it('should not allow to create a batch given no method data', () => {
+    cy.enter(iframeSelector).then(getBody => {
+      getBody()
+        .findByLabelText(/enter address or ens name/i)
+        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
+      getBody()
+        .findByText(/add transaction/i)
+        .click()
+      getBody().findAllByText('Required').should('have.css', 'color', 'rgb(244, 67, 54)')
+    })
+  })
+
   it('should allow to upload a batch, save it to the library, download it & remove it', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
