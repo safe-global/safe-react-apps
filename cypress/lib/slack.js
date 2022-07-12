@@ -8,6 +8,10 @@ export const sendSlackMessage = async results => {
         return
       }
 
+      if (!results.runs[0].spec.name.includes('safe-apps-check.spec.js')) {
+        return
+      }
+
       await axios.post(process.env.SLACK_WEBHOOK_URL, buildSlackMessage(results))
     } catch (error) {
       console.error(error)
@@ -24,11 +28,7 @@ const buildSlackMessage = results => {
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: `*${
-        results.runs[0].spec.name.includes('safe-apps-check.spec.js')
-          ? 'Liveness tests'
-          : 'E2E Tests'
-      }*`,
+      text: "*Liveness tests'}*",
     },
   }
 
