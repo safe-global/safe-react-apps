@@ -15,8 +15,7 @@ describe('Testing Drain Account safe app', () => {
     cy.visit(visitUrl)
 
     // Accept cookies
-    cy.findByText('Accept all').click({ force: true })
-    cy.findByText('Confirm').click({ force: true })
+    cy.acceptSecurityFeedbackModal()
     cy.frameLoaded(iframeSelector)
   })
 
@@ -29,6 +28,13 @@ describe('Testing Drain Account safe app', () => {
     })
     cy.findByText(/drain account/i).should('be.visible')
     cy.findAllByText('transfer').should('have.length', 2)
+  })
+
+  it('should not allow to perform a drain when no recipient is selected', () => {
+    cy.enter(iframeSelector).then(getBody => {
+      getBody().findAllByText('Transfer everything').click()
+      getBody().findByText(/Please enter a valid recipient address/i).should('have.css', 'color', 'rgb(219, 58, 61)')
+    })
   })
 
   it('should not allow to perform a drain when no assets are selected', () => {
