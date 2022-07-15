@@ -14,7 +14,7 @@ describe('Testing Tx-builder safe app', () => {
     // Navigate to Safe App in TESTING SAFE
     cy.visit(visitUrl)
 
-    // Accept cookies
+    // Accept cookies & disclaimer
     cy.acceptSecurityFeedbackModal()
     cy.frameLoaded(iframeSelector)
   })

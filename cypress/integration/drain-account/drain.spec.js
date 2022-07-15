@@ -14,7 +14,7 @@ describe('Testing Drain Account safe app', () => {
     // Navigate to Safe App in TESTING SAFE
     cy.visit(visitUrl)
 
-    // Accept cookies
+    // Accept cookies & disclaimer
     cy.acceptSecurityFeedbackModal()
     cy.frameLoaded(iframeSelector)
   })
@@ -33,7 +33,9 @@ describe('Testing Drain Account safe app', () => {
   it('should not allow to perform a drain when no recipient is selected', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody().findAllByText('Transfer everything').click()
-      getBody().findByText(/Please enter a valid recipient address/i).should('have.css', 'color', 'rgb(219, 58, 61)')
+      getBody()
+        .findByText(/Please enter a valid recipient address/i)
+        .should('have.css', 'color', 'rgb(219, 58, 61)')
     })
   })
 

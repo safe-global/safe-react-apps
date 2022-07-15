@@ -11,26 +11,23 @@ Cypress.Commands.add('connectE2EWallet', () => {
   })
 })
 
-// const goToLastStep = () => {
-//   cy.findByText(/continue/i).then($btn => {
-//     cy.findByRole('progressbar').then($progress => {
-//       if ($progress.length && $progress[0].ariaValueNow !== '100') {
-//         $btn.click()
-//         cy.wait(800)
-//       } else {
-//         return
-//       }
+const goToLastStep = () => {
+  cy.findByText(/continue/i).then($btn => {
+    cy.findByRole('progressbar').then($progress => {
+      if ($progress.length && $progress[0].ariaValueNow !== '100') {
+        $btn.click()
+        cy.wait(800)
+      } else {
+        return
+      }
 
-//       goToLastStep()
-//     })
-//   })
-// }
+      goToLastStep()
+    })
+  })
+}
 
 Cypress.Commands.add('acceptSecurityFeedbackModal', () => {
   cy.findByText('Accept all').click({ force: true })
-  cy.findByText('Confirm').click({ force: true })
-
-  // TODO: When SecurityFeedback Modal in develop use this
-  // goToLastStep()
-  // cy.findByText(/continue/i).click()
+  goToLastStep()
+  cy.findByText(/continue/i).click()
 })
