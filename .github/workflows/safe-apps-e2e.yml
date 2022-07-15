@@ -17,16 +17,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set PR Safe Apps base URL
-        run: echo "SAFE_APPS_BASE_URL=https://pr${{ github.event.number }}--safereactapps.review.gnosisdev.com" >> $GITHUB_ENV
-        run: echo "BASE_URL=https://safe-team.dev.gnosisdev.com/app" >> $GITHUB_ENV
+        run: |
+          echo "SAFE_APPS_BASE_URL=https://pr${{ github.event.number }}--safereactapps.review.gnosisdev.com" >> $GITHUB_ENV
+          echo "BASE_URL=https://safe-team.dev.gnosisdev.com/app" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/development'
       - name: Set development Safe Apps base URL
-        run: echo "SAFE_APPS_BASE_URL=https://safe-apps.dev.gnosisdev.com" >> $GITHUB_ENV
-        run: echo "BASE_URL=https://safe-team.dev.gnosisdev.com/app" >> $GITHUB_ENV
+        run: |
+          echo "SAFE_APPS_BASE_URL=https://safe-apps.dev.gnosisdev.com" >> $GITHUB_ENV
+          echo "BASE_URL=https://safe-team.dev.gnosisdev.com/app" >> $GITHUB_ENV
         if: github.ref == 'refs/heads/development'
       - name: Set main Safe Apps base URL
-        run: echo "SAFE_APPS_BASE_URL=https://apps.gnosis-safe.io" >> $GITHUB_ENV
-        run: echo "BASE_URL=https://gnosis-safe.io/app" >> $GITHUB_ENV
+        run: |
+          echo "SAFE_APPS_BASE_URL=https://apps.gnosis-safe.io" >> $GITHUB_ENV
+          echo "BASE_URL=https://gnosis-safe.io/app" >> $GITHUB_ENV
         if: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 9 * * 1-5' }}
       - uses: cypress-io/github-action@v2
         with:
