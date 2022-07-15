@@ -1,0 +1,78 @@
+{
+  "version": "1.0",
+  "chainId": "4",
+  "createdAt": 1654585765226,
+  "meta": {
+    "name": "test-batch",
+    "description": "",
+    "txBuilderVersion": "1.8.0",
+    "createdFromSafeAddress": "0x91dB860c37E83dab0A4A005E209577E64c61EEfA",
+    "createdFromOwnerAddress": "",
+    "checksum": "0x6dbbd70f5e99a0c3959f2f8575373d7ad105f026b09f4c59f15083a3e723c25e"
+  },
+  "transactions": [
+    {
+      "to": "0x49d4450977E2c95362C13D3a31a09311E0Ea26A6",
+      "value": "0",
+      "data": "0x",
+      "contractMethod": null,
+      "contractInputsValues": null
+    },
+    {
+      "to": "0x49d4450977E2c95362C13D3a31a09311E0Ea26A6",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "paramAddress",
+            "type": "address"
+          }
+        ],
+        "name": "testAddress",
+        "payable": false
+      },
+      "contractInputsValues": {
+        "paramAddress": "0x49d4450977E2c95362C13D3a31a09311E0Ea26A6"
+      }
+    },
+    {
+      "to": "0x49d4450977E2c95362C13D3a31a09311E0Ea26A6",
+      "value": "0",
+      "data": null,
+      "contractMethod": { "inputs": [], "name": "fallback", "payable": true },
+      "contractInputsValues": null
+    },
+    {
+      "to": "0x49d4450977E2c95362C13D3a31a09311E0Ea26A6",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          { "internalType": "bool", "name": "paramBool", "type": "bool" }
+        ],
+        "name": "testBool",
+        "payable": false
+      },
+      "contractInputsValues": { "paramAddress": "", "paramBool": "true" }
+    },
+    {
+      "to": "0x49d4450977E2c95362C13D3a31a09311E0Ea26A6",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "paramBytes32",
+            "type": "bytes32"
+          }
+        ],
+        "name": "testBytes32",
+        "payable": false
+      },
+      "contractInputsValues": { "paramAddress": "", "paramBytes32": "0x" }
+    }
+  ]
+}

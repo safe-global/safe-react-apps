@@ -1,6 +1,8 @@
 {
+  "projectId": "okn21k",
   "chromeWebSecurity": false,
-  "video": false,
+  "modifyObstructiveCode": false,
+  "video": true,
   "retries": {
     "runMode": 2,
     "openMode": 0
