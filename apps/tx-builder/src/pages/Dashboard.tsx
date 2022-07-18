@@ -97,6 +97,8 @@ const Dashboard = (): ReactElement => {
           setAbiAddress(input)
           setTransactionRecipientAddress(input)
         }
+      } else {
+        setAbiAddress(input)
       }
     },
     [abiAddress, interfaceRepo, networkPrefix, web3, chainInfo, setAbi],
