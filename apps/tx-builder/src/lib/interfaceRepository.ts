@@ -12,9 +12,6 @@ class InterfaceRepository {
   private _isMethodPayable = (m: any) => m.payable || m.stateMutability === 'payable'
 
   async loadAbi(address: string): Promise<string | null> {
-    // We need to check if the abi response is present because it's possible
-    // That the transaction service just stores the contract and returns 200 without querying for the abi
-    // (or querying for the abi failed)
     const abi = await getAbi(address, this.chainInfo)
 
     return abi ? abi : null

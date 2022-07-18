@@ -13,7 +13,7 @@ const useAbi = (address: string) => {
 
   useEffect(() => {
     const loadContract = async (address: string) => {
-      if (!isValidAddress(address) || !interfaceRepo || abi) {
+      if (!isValidAddress(address) || !interfaceRepo) {
         return
       }
 
@@ -23,11 +23,11 @@ const useAbi = (address: string) => {
 
         if (abiResponse) {
           setAbi(JSON.stringify(abiResponse))
-          setAbiStatus(FETCH_STATUS.SUCCESS)
         }
+        setAbiStatus(FETCH_STATUS.SUCCESS)
       } catch (e) {
         if (isAxiosError(e) && e.request.status === 404) {
-          // Handle the case where the ABI is not found
+          // Handle the case where the request is successful but the ABI is not found
           setAbiStatus(FETCH_STATUS.SUCCESS)
         } else {
           setAbiStatus(FETCH_STATUS.ERROR)
@@ -37,7 +37,7 @@ const useAbi = (address: string) => {
     }
 
     loadContract(address)
-  }, [abi, address, interfaceRepo])
+  }, [address, interfaceRepo])
 
   return { abi, abiStatus, setAbi }
 }
