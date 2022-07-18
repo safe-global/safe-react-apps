@@ -5,7 +5,6 @@ import useModal from './useModal/useModal'
 
 const useProxyDetection = (address: string, abi: string) => {
   const [implementationAddress, setImplementationAddress] = useState('')
-  const [implementationAbi, setImplementationAbi] = useState('')
 
   const {
     open: showProxyModal,
@@ -19,8 +18,6 @@ const useProxyDetection = (address: string, abi: string) => {
       // const implementationAddress = await detectProxyTarget(address)
       const implementationAddress = '0x34cfac646f301356faa8b21e94227e3583fe3f5f'
       setImplementationAddress(implementationAddress)
-
-      console.log('CALLING')
 
       if (!!implementationAddress) {
         openProxyModal()
@@ -41,7 +38,6 @@ const useProxyDetection = (address: string, abi: string) => {
 
   return {
     implementationAddress,
-    implementationAbi,
 
     showProxyModal,
     closeProxyModal,

@@ -64,13 +64,7 @@ const Dashboard = (): ReactElement => {
     setContract(interfaceRepo.getMethods(abi))
   }, [abi, interfaceRepo])
 
-  const {
-    implementationAddress,
-    implementationAbi,
-
-    showProxyModal,
-    closeProxyModal,
-  } = useProxyDetection(address, abi)
+  const { implementationAddress, showProxyModal, closeProxyModal } = useProxyDetection(address, abi)
 
   const isAddressInputFieldValid = isValidAddress(address) || !address
 
@@ -170,7 +164,6 @@ const Dashboard = (): ReactElement => {
           networkPrefix={networkPrefix}
           onSubmit={() => {
             setAddress(implementationAddress)
-            setAbi(implementationAbi)
             closeProxyModal()
           }}
           onClose={closeProxyModal}
