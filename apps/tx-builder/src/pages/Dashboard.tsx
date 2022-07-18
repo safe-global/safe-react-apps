@@ -11,6 +11,8 @@ import AddNewTransactionForm from '../components/forms/AddNewTransactionForm'
 import JsonField from '../components/forms/fields/JsonField'
 import { ContractInterface } from '../typings/models'
 import { useNetwork } from '../store'
+import ProxyDetectedModal from '../components/modals/ProxyDetectedModal'
+import useProxyDetection from '../hooks/useProxyDetection'
 
 const Dashboard = (): ReactElement => {
   const [address, setAddress] = useState('')
@@ -62,6 +64,14 @@ const Dashboard = (): ReactElement => {
     setContract(interfaceRepo.getMethods(abi))
   }, [abi, interfaceRepo])
 
+  const {
+    implementationAddress,
+    implementationAbi,
+
+    showProxyModal,
+    closeProxyModal,
+  } = useProxyDetection(address, abi)
+
   const isAddressInputFieldValid = isValidAddress(address) || !address
 
   const contractHasMethods = contract && contract.methods.length > 0 && !isABILoading
@@ -74,83 +84,99 @@ const Dashboard = (): ReactElement => {
   const showNoPublicMethodsWarning = contract && contract.methods.length === 0
 
   return (
-    <Wrapper>
-      <Grid alignItems="flex-start" container justifyContent="center" spacing={6}>
-        <AddNewTransactionFormWrapper item xs={12} md={6}>
-          <Grid container alignItems="center">
-            <Grid item xs={6}>
-              <StyledTitle size="lg">New Transaction</StyledTitle>
+    <>
+      <Wrapper>
+        <Grid alignItems="flex-start" container justifyContent="center" spacing={6}>
+          <AddNewTransactionFormWrapper item xs={12} md={6}>
+            <Grid container alignItems="center">
+              <Grid item xs={6}>
+                <StyledTitle size="lg">New Transaction</StyledTitle>
+              </Grid>
+              <Grid container item xs={6} alignItems="center" justifyContent="flex-end">
+                <Grid item>
+                  <Switch
+                    checked={showHexEncodedData}
+                    onChange={() => setShowHexEncodedData(!showHexEncodedData)}
+                  />
+                </Grid>
+                <Grid item>
+                  <Text size="lg">Custom data</Text>
+                </Grid>
+              </Grid>
             </Grid>
-            <Grid container item xs={6} alignItems="center" justifyContent="flex-end">
-              <Grid item>
-                <Switch
-                  checked={showHexEncodedData}
-                  onChange={() => setShowHexEncodedData(!showHexEncodedData)}
+
+            <StyledDivider />
+
+            {/* Address Input */}
+            <AddressInput
+              id="address"
+              name="address"
+              label="Enter Address or ENS Name"
+              hiddenLabel={false}
+              address={address}
+              fullWidth
+              showNetworkPrefix={!!networkPrefix}
+              networkPrefix={networkPrefix}
+              error={isAddressInputFieldValid ? '' : 'The address is not valid'}
+              showLoadingSpinner={isABILoading}
+              showErrorsInTheLabel={false}
+              getAddressFromDomain={getAddressFromDomain}
+              onChangeAddress={(address: string) => setAddress(address)}
+              InputProps={{
+                endAdornment: contractHasMethods && isValidAddress(address) && (
+                  <InputAdornment position="end">
+                    <CheckIconAddressAdornment />
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            {/* ABI Warning */}
+            {loadContractError && (
+              <StyledWarningText color="warning" size="lg">
+                No ABI found for this address
+              </StyledWarningText>
+            )}
+
+            <JsonField id={'abi'} name="abi" label="Enter ABI" value={abi} onChange={setAbi} />
+
+            {/* No public methods Warning */}
+            {showNoPublicMethodsWarning && (
+              <StyledMethodWarning color="warning" size="lg">
+                Contract ABI doesn't have any public methods.
+              </StyledMethodWarning>
+            )}
+
+            {showNewTransactionForm && (
+              <>
+                <StyledDivider />
+                <AddNewTransactionForm
+                  contract={contract}
+                  to={address}
+                  showHexEncodedData={showHexEncodedData}
                 />
-              </Grid>
-              <Grid item>
-                <Text size="lg">Custom data</Text>
-              </Grid>
-            </Grid>
-          </Grid>
+              </>
+            )}
+          </AddNewTransactionFormWrapper>
 
-          <StyledDivider />
+          <Outlet />
+        </Grid>
+      </Wrapper>
 
-          {/* Address Input */}
-          <AddressInput
-            id="address"
-            name="address"
-            label="Enter Address or ENS Name"
-            hiddenLabel={false}
-            address={address}
-            fullWidth
-            showNetworkPrefix={!!networkPrefix}
-            networkPrefix={networkPrefix}
-            error={isAddressInputFieldValid ? '' : 'The address is not valid'}
-            showLoadingSpinner={isABILoading}
-            showErrorsInTheLabel={false}
-            getAddressFromDomain={getAddressFromDomain}
-            onChangeAddress={(address: string) => setAddress(address)}
-            InputProps={{
-              endAdornment: contractHasMethods && isValidAddress(address) && (
-                <InputAdornment position="end">
-                  <CheckIconAddressAdornment />
-                </InputAdornment>
-              ),
-            }}
-          />
-
-          {/* ABI Warning */}
-          {loadContractError && (
-            <StyledWarningText color="warning" size="lg">
-              No ABI found for this address
-            </StyledWarningText>
-          )}
-
-          <JsonField id={'abi'} name="abi" label="Enter ABI" value={abi} onChange={setAbi} />
-
-          {/* No public methods Warning */}
-          {showNoPublicMethodsWarning && (
-            <StyledMethodWarning color="warning" size="lg">
-              Contract ABI doesn't have any public methods.
-            </StyledMethodWarning>
-          )}
-
-          {showNewTransactionForm && (
-            <>
-              <StyledDivider />
-              <AddNewTransactionForm
-                contract={contract}
-                to={address}
-                showHexEncodedData={showHexEncodedData}
-              />
-            </>
-          )}
-        </AddNewTransactionFormWrapper>
-
-        <Outlet />
-      </Grid>
-    </Wrapper>
+      {/* Proxy modal */}
+      {showProxyModal && (
+        <ProxyDetectedModal
+          implementationAddress={implementationAddress}
+          networkPrefix={networkPrefix}
+          onSubmit={() => {
+            setAddress(implementationAddress)
+            setAbi(implementationAbi)
+            closeProxyModal()
+          }}
+          onClose={closeProxyModal}
+        />
+      )}
+    </>
   )
 }
 
