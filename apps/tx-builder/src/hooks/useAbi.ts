@@ -17,6 +17,7 @@ const useAbi = (address: string) => {
         return
       }
 
+      setAbi('')
       setAbiStatus(FETCH_STATUS.LOADING)
       try {
         const abiResponse = await interfaceRepo.loadAbi(address)

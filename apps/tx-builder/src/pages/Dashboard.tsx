@@ -50,11 +50,10 @@ const Dashboard = (): ReactElement => {
   const showNoPublicMethodsWarning = contract && contract.methods.length === 0
 
   // The flow is the following:
-  // 1. We receive the address input, we check if it's a valid address
-  // 2. If it's a valid address, we check if it's a proxy
-  // 3. If it's a proxy, we get the implementation address and check if there's an ABI for it
-  // 4. If there's an ABI for the implementation address, we show the ABI dialog
-  // 5. If the user chooses to use the implementation address, we set the ABI address to the
+  // 1. We receive the address input and check if it's a valid address
+  // 2. If it's a valid address, we get the implementation address and check if there's an ABI for it
+  // 3. If there's an ABI for the implementation address, we show the ABI dialog
+  // 4. If the user chooses to use the implementation address, we set the ABI address to the
   //    implementation address, otherwise we keep the original address.
   const handleAddressInput = useCallback(
     async (input: string) => {
