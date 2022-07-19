@@ -22,7 +22,7 @@ const useAbi = (address: string) => {
         const abiResponse = await interfaceRepo.loadAbi(address)
 
         if (abiResponse) {
-          setAbi(JSON.stringify(abiResponse))
+          setAbi(abiResponse)
         }
         setAbiStatus(FETCH_STATUS.SUCCESS)
       } catch (e) {

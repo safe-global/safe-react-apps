@@ -14,7 +14,7 @@ class InterfaceRepository {
   async loadAbi(address: string): Promise<string | null> {
     const abi = await getAbi(address, this.chainInfo)
 
-    return abi ? abi : null
+    return abi ? JSON.stringify(abi) : null
   }
 
   getMethods(abi: string): ContractInterface {
