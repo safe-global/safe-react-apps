@@ -54,6 +54,8 @@ const Dashboard = (): ReactElement => {
   // 2. If it's a valid address, we check if it's a proxy
   // 3. If it's a proxy, we get the implementation address and check if there's an ABI for it
   // 4. If there's an ABI for the implementation address, we show the ABI dialog
+  // 5. If the user chooses to use the implementation address, we set the ABI address to the
+  //    implementation address, otherwise we keep the original address.
   const handleAddressInput = useCallback(
     async (input: string) => {
       // For some reason the onchange handler is fired many times
@@ -71,10 +73,8 @@ const Dashboard = (): ReactElement => {
         )
 
         if (implementationAddress) {
-          const implementationAbi =
-            implementationAddress && (await interfaceRepo?.loadAbi(implementationAddress))
-          const showImplementationAbiDialog =
-            implementationAbi && implementationAddress && !!chainInfo
+          const implementationAbi = await interfaceRepo?.loadAbi(implementationAddress)
+          const showImplementationAbiDialog = implementationAbi && !!chainInfo
 
           if (
             showImplementationAbiDialog &&
