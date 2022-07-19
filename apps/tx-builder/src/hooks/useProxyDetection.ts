@@ -5,7 +5,7 @@ import { isValidAddress } from '../utils'
 import useModal from './useModal/useModal'
 import { useNetwork } from '../store'
 
-const useProxyDetection = (address: string, abi: string) => {
+const useProxyDetection = (address: string) => {
   const [implementationAddress, setImplementationAddress] = useState('')
   const [implementationAbi, setImplementationAbi] = useState('')
 
@@ -45,10 +45,10 @@ const useProxyDetection = (address: string, abi: string) => {
   }, [address])
 
   useEffect(() => {
-    if (isValidAddress(address) && !!abi && !implementationAddress) {
+    if (isValidAddress(address) && !implementationAddress) {
       detectProxyAbi(address)
     }
-  }, [address, abi, implementationAddress, detectProxyAbi])
+  }, [address, implementationAddress, detectProxyAbi])
 
   return {
     implementationAddress,

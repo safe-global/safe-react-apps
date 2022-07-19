@@ -65,7 +65,7 @@ const Dashboard = (): ReactElement => {
   }, [abi, interfaceRepo])
 
   const { implementationAddress, implementationAbi, showProxyModal, closeProxyModal } =
-    useProxyDetection(address, abi)
+    useProxyDetection(address)
 
   const isAddressInputFieldValid = isValidAddress(address) || !address
 
