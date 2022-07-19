@@ -1,9 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import SafeAppsSDK, { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk'
 import Web3 from 'web3'
-import InterfaceRepository, { InterfaceRepo } from '../lib/interfaceRepository'
-import { CHAINS, rpcUrlGetterByNetwork } from '../utils'
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
+import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
+
+import InterfaceRepository, { InterfaceRepo } from '../lib/interfaceRepository'
 
 type NetworkContextProps = {
   sdk: SafeAppsSDK
@@ -11,7 +12,7 @@ type NetworkContextProps = {
   chainInfo: ChainInfo | undefined
   web3: Web3 | undefined
   interfaceRepo: InterfaceRepo | undefined
-  networkPrefix: string | undefined
+  networkPrefix: string
   nativeCurrencySymbol: string | undefined
   getAddressFromDomain: (name: string) => Promise<string>
 }
@@ -29,18 +30,14 @@ const NetworkProvider: React.FC = ({ children }) => {
       return
     }
 
-    const rpcUrlGetter = rpcUrlGetterByNetwork[chainInfo.chainId as CHAINS]
-    if (!rpcUrlGetter) {
-      throw Error(`RPC URL not defined for chain id ${chainInfo.chainId}`)
-    }
-    const rpcUrl = rpcUrlGetter(process.env.REACT_APP_RPC_TOKEN)
-
-    const web3Instance = new Web3(rpcUrl)
+    const safeProvider = new SafeAppProvider(safe, sdk)
+    // @ts-expect-error Web3 is complaining about some missing properties from websocket provider
+    const web3Instance = new Web3(safeProvider)
     const interfaceRepo = new InterfaceRepository(chainInfo)
 
     setWeb3(web3Instance)
     setInterfaceRepo(interfaceRepo)
-  }, [chainInfo])
+  }, [chainInfo, safe, sdk])
 
   useEffect(() => {
     const getChainInfo = async () => {
@@ -55,7 +52,7 @@ const NetworkProvider: React.FC = ({ children }) => {
     getChainInfo()
   }, [sdk.safe])
 
-  const networkPrefix = chainInfo?.shortName
+  const networkPrefix = chainInfo?.shortName || ''
 
   const nativeCurrencySymbol = chainInfo?.nativeCurrency.symbol
 
