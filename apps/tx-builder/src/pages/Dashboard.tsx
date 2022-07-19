@@ -63,8 +63,6 @@ const Dashboard = (): ReactElement => {
       const alreadyExecuted = input.toLowerCase() === abiAddress.toLowerCase()
 
       if (isValidAddress(input) && web3?.currentProvider && !alreadyExecuted) {
-        setAbi('')
-
         const implementationAddress = await detectProxyTarget(
           input,
           // @ts-expect-error currentProvider type is many providers and not all of them are compatible
@@ -73,8 +71,8 @@ const Dashboard = (): ReactElement => {
         )
 
         if (implementationAddress) {
-          const implementationAbi = await interfaceRepo?.loadAbi(implementationAddress)
-          const showImplementationAbiDialog = implementationAbi && !!chainInfo
+          const implementationAbiExists = await interfaceRepo?.abiExists(implementationAddress)
+          const showImplementationAbiDialog = implementationAbiExists && !!chainInfo
 
           if (
             showImplementationAbiDialog &&
@@ -88,20 +86,15 @@ const Dashboard = (): ReactElement => {
           ) {
             setTransactionRecipientAddress(input)
             setAbiAddress(implementationAddress)
-            setAbi(implementationAbi)
-          } else {
-            setTransactionRecipientAddress(input)
-            setAbiAddress(input)
+            return
           }
-        } else {
-          setAbiAddress(input)
-          setTransactionRecipientAddress(input)
         }
-      } else {
-        setAbiAddress(input)
       }
+
+      setAbiAddress(input)
+      setTransactionRecipientAddress(input)
     },
-    [abiAddress, interfaceRepo, networkPrefix, web3, chainInfo, setAbi],
+    [abiAddress, interfaceRepo, networkPrefix, web3, chainInfo],
   )
 
   if (!chainInfo) {

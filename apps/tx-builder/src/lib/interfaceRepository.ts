@@ -17,6 +17,12 @@ class InterfaceRepository {
     return abi ? JSON.stringify(abi) : null
   }
 
+  async abiExists(address: string): Promise<boolean> {
+    const abi = await this.loadAbi(address)
+
+    return !!abi
+  }
+
   getMethods(abi: string): ContractInterface {
     let parsedAbi
 
