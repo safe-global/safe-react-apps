@@ -26,7 +26,7 @@ const goToLastStep = () => {
   })
 }
 
-Cypress.Commands.add('acceptSecurityFeedbackModal', () => {
+Cypress.Commands.add('acceptCookiesAndSecurityFeedbackModal', () => {
   cy.findByText('Accept all').click({ force: true })
   goToLastStep()
   cy.findByText(/continue/i).click()

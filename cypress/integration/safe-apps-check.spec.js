@@ -14,7 +14,7 @@ describe('Safe Apps List', () => {
       )
       const iframeSelector = `iframe[id="iframe-${safeApp.url}"]`
 
-      cy.acceptSecurityFeedbackModal()
+      cy.acceptCookiesAndSecurityFeedbackModal()
       cy.frameLoaded(iframeSelector)
       cy.iframe(iframeSelector).get('#root,#app,.app,main,#__next,app-root,#___gatsby')
     })
