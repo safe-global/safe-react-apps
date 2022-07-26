@@ -26,7 +26,7 @@ const ImplementationABIDialog: React.FC<Props> = ({
             The contract looks like a proxy. Do you want to use the Implementation ABI?
           </Text>
 
-          <SEthHashInfo
+          <StyledEthHashInfo
             shortName={networkPrefix || ''}
             hash={implementationAddress}
             explorerUrl={() => ({ url: blockExplorerLink, alt: blockExplorerLink })}
@@ -71,7 +71,7 @@ const StyledModalButtonsWrapper = styled(Box)`
   margin-top: 24px;
 `
 
-const SEthHashInfo = styled(EthHashInfo)`
+const StyledEthHashInfo = styled(EthHashInfo)`
   margin-top: 24px;
 
   p {
