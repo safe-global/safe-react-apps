@@ -41,14 +41,10 @@ const useProxyDetection = (address: string) => {
   )
 
   useEffect(() => {
-    setImplementationAddress('')
-  }, [address])
-
-  useEffect(() => {
-    if (isValidAddress(address) && !implementationAddress) {
+    if (isValidAddress(address)) {
       detectProxyAbi(address)
     }
-  }, [address, implementationAddress, detectProxyAbi])
+  }, [address, detectProxyAbi])
 
   return {
     implementationAddress,
