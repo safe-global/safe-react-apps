@@ -2,19 +2,21 @@ import React from 'react'
 import { Text, Button, GenericModal, EthHashInfo } from '@gnosis.pm/safe-react-components'
 import Box from '@material-ui/core/Box'
 import styled from 'styled-components'
-import { confirmable, ConfirmationProps } from '../utils/Confirmable'
 
 type Props = {
   networkPrefix: string
   implementationAddress: string
   blockExplorerLink: string
-} & ConfirmationProps
+  onCancel: () => void
+  onConfirm: () => void
+}
 
 const ImplementationABIDialog: React.FC<Props> = ({
   networkPrefix,
   implementationAddress,
   blockExplorerLink,
-  proceed,
+  onConfirm,
+  onCancel,
 }) => {
   return (
     <GenericModal
@@ -40,26 +42,21 @@ const ImplementationABIDialog: React.FC<Props> = ({
             justifyContent="center"
             maxWidth="450px"
           >
-            <Button size="md" variant="bordered" onClick={() => proceed(false)}>
+            <Button size="md" variant="bordered" onClick={onCancel}>
               Keep Proxy ABI
             </Button>
-            <Button
-              size="md"
-              style={{ marginLeft: 16 }}
-              color="primary"
-              onClick={() => proceed(true)}
-            >
+            <Button size="md" style={{ marginLeft: 16 }} color="primary" onClick={onConfirm}>
               Use Implementation ABI
             </Button>
           </StyledModalButtonsWrapper>
         </StyledModalBodyWrapper>
       }
-      onClose={() => proceed(false)}
+      onClose={onCancel}
     />
   )
 }
 
-export default confirmable(ImplementationABIDialog)
+export { ImplementationABIDialog }
 
 const StyledModalBodyWrapper = styled.div`
   position: relative;

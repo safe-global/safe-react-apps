@@ -13,10 +13,7 @@ import JsonField from '../components/forms/fields/JsonField'
 import { ContractInterface } from '../typings/models'
 import { useNetwork } from '../store'
 import { useAbi } from '../hooks/useAbi'
-import UseImplementationContractModal from '../components/modals/ImplementationABIDialog'
-import { createConfirmation } from '../components/utils/Confirmable'
-
-const confirmImplementationAbi = createConfirmation(UseImplementationContractModal)
+import { ImplementationABIDialog } from '../components/modals/ImplementationABIDialog'
 
 const Dashboard = (): ReactElement => {
   const [abiAddress, setAbiAddress] = useState('')
@@ -24,6 +21,11 @@ const Dashboard = (): ReactElement => {
   const [contract, setContract] = useState<ContractInterface | null>(null)
   const [showHexEncodedData, setShowHexEncodedData] = useState<boolean>(false)
   const { abi, abiStatus, setAbi } = useAbi(abiAddress)
+  const [implementationABIDialog, setImplementationABIDialog] = useState({
+    open: false,
+    implementationAddress: '',
+    proxyAddress: '',
+  })
 
   const { interfaceRepo, networkPrefix, getAddressFromDomain, web3, chainInfo } = useNetwork()
 
@@ -55,13 +57,16 @@ const Dashboard = (): ReactElement => {
   // 3. If there's an ABI for the implementation address, we show the ABI dialog
   // 4. If the user chooses to use the implementation address, we set the ABI address to the
   //    implementation address, otherwise we keep the original address.
-  const handleAddressInput = useCallback(
+  const handleAbiAddressInput = useCallback(
     async (input: string) => {
       // For some reason the onchange handler is fired many times
       // Even if the value hasn't changed, we have to check if we already tried to fetch the ABI
       const alreadyExecuted = input.toLowerCase() === abiAddress.toLowerCase()
+      if (alreadyExecuted) {
+        return
+      }
 
-      if (isValidAddress(input) && web3?.currentProvider && !alreadyExecuted) {
+      if (isValidAddress(input) && web3?.currentProvider) {
         const implementationAddress = await detectProxyTarget(
           input,
           // @ts-expect-error currentProvider type is many providers and not all of them are compatible
@@ -70,21 +75,14 @@ const Dashboard = (): ReactElement => {
         )
 
         if (implementationAddress) {
-          const implementationAbiExists = await interfaceRepo?.abiExists(implementationAddress)
-          const showImplementationAbiDialog = implementationAbiExists && !!chainInfo
+          const showImplementationAbiDialog = await interfaceRepo?.abiExists(implementationAddress)
 
-          if (
-            showImplementationAbiDialog &&
-            (await confirmImplementationAbi({
+          if (showImplementationAbiDialog) {
+            setImplementationABIDialog({
+              open: true,
               implementationAddress,
-              blockExplorerLink: evalTemplate(chainInfo.blockExplorerUriTemplate.address, {
-                address: implementationAddress,
-              }),
-              networkPrefix,
-            }))
-          ) {
-            setTransactionRecipientAddress(input)
-            setAbiAddress(implementationAddress)
+              proxyAddress: input,
+            })
             return
           }
         }
@@ -93,7 +91,7 @@ const Dashboard = (): ReactElement => {
       setAbiAddress(input)
       setTransactionRecipientAddress(input)
     },
-    [abiAddress, interfaceRepo, networkPrefix, web3, chainInfo],
+    [abiAddress, interfaceRepo, web3],
   )
 
   if (!chainInfo) {
@@ -137,7 +135,7 @@ const Dashboard = (): ReactElement => {
             showLoadingSpinner={abiStatus === FETCH_STATUS.LOADING}
             showErrorsInTheLabel={false}
             getAddressFromDomain={getAddressFromDomain}
-            onChangeAddress={handleAddressInput}
+            onChangeAddress={handleAbiAddressInput}
             InputProps={{
               endAdornment: contractHasMethods && isValidAddress(abiAddress) && (
                 <InputAdornment position="end">
@@ -177,6 +175,26 @@ const Dashboard = (): ReactElement => {
 
         <Outlet />
       </Grid>
+
+      {implementationABIDialog.open && (
+        <ImplementationABIDialog
+          networkPrefix={networkPrefix}
+          blockExplorerLink={evalTemplate(chainInfo.blockExplorerUriTemplate.address, {
+            address: implementationABIDialog.implementationAddress,
+          })}
+          implementationAddress={implementationABIDialog.implementationAddress}
+          onCancel={() => {
+            setAbiAddress(implementationABIDialog.proxyAddress)
+            setTransactionRecipientAddress(implementationABIDialog.proxyAddress)
+            setImplementationABIDialog({ open: false, implementationAddress: '', proxyAddress: '' })
+          }}
+          onConfirm={() => {
+            setAbiAddress(implementationABIDialog.implementationAddress)
+            setTransactionRecipientAddress(implementationABIDialog.proxyAddress)
+            setImplementationABIDialog({ open: false, implementationAddress: '', proxyAddress: '' })
+          }}
+        />
+      )}
     </Wrapper>
   )
 }
