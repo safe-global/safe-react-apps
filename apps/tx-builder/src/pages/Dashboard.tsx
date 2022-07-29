@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState, useCallback } from 'react'
+import { ReactElement, useCallback, useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { AddressInput, Divider, Switch, Text, Title } from '@gnosis.pm/safe-react-components'
 import styled from 'styled-components'
@@ -45,7 +45,8 @@ const Dashboard = (): ReactElement => {
 
   const isTransferTransaction =
     abiStatus === FETCH_STATUS.SUCCESS && isAbiAddressInputFieldValid && !abi
-  const isContractInteractionTransaction = abiStatus === FETCH_STATUS.SUCCESS && abi && contract
+  const isContractInteractionTransaction =
+    (abiStatus === FETCH_STATUS.SUCCESS || abiStatus === FETCH_STATUS.NOT_ASKED) && abi && contract
 
   const showNewTransactionForm = isTransferTransaction || isContractInteractionTransaction
 
