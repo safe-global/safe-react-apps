@@ -40,7 +40,7 @@ const ImplementationABIDialog: React.FC<Props> = ({
             display="flex"
             alignItems="center"
             justifyContent="center"
-            maxWidth="450px"
+            maxWidth="470px"
           >
             <Button size="md" variant="bordered" onClick={onCancel}>
               Keep Proxy ABI
@@ -61,7 +61,7 @@ export { ImplementationABIDialog }
 const StyledModalBodyWrapper = styled.div`
   position: relative;
   padding: 24px;
-  max-width: 450px;
+  max-width: 470px;
 `
 
 const StyledModalButtonsWrapper = styled(Box)`

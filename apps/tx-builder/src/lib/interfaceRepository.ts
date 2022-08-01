@@ -46,6 +46,10 @@ class InterfaceRepository {
           return false
         }
 
+        if (e.type === 'fallback' && e.stateMutability === 'nonpayable') {
+          return false
+        }
+
         if (e?.type?.toLowerCase() === 'event') {
           return false
         }
