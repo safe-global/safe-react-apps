@@ -9,14 +9,18 @@ class InterfaceRepository {
     this.chainInfo = chainInfo
   }
 
-  private async _loadAbiFromBlockExplorer(address: string): Promise<string> {
-    return await getAbi(address, this.chainInfo)
-  }
-
   private _isMethodPayable = (m: any) => m.payable || m.stateMutability === 'payable'
 
-  async loadAbi(address: string): Promise<string> {
-    return await this._loadAbiFromBlockExplorer(address)
+  async loadAbi(address: string): Promise<string | null> {
+    const abi = await getAbi(address, this.chainInfo)
+
+    return abi ? JSON.stringify(abi) : null
+  }
+
+  async abiExists(address: string): Promise<boolean> {
+    const abi = await this.loadAbi(address)
+
+    return !!abi
   }
 
   getMethods(abi: string): ContractInterface {
@@ -39,6 +43,10 @@ class InterfaceRepository {
         }
 
         if (['pure', 'view'].includes(e.stateMutability)) {
+          return false
+        }
+
+        if (e.type === 'fallback' && e.stateMutability === 'nonpayable') {
           return false
         }
 

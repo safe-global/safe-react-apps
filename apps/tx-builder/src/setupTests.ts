@@ -25,7 +25,23 @@ const CHAIN_INFO_MOCK: ChainInfo = {
     name: 'Ether',
     symbol: 'ETH',
   },
+  blockExplorerUriTemplate: {
+    address: 'https://rinkeby.etherscan.io/address/{address}',
+    txHash: 'https://rinkeby.etherscan.io/tx/{transactionHash}',
+    api: 'https://api.etherscan.io/api',
+  },
   shortName: 'rin',
+}
+
+const SDK_MOCK = {
+  txs: {
+    send: () => {},
+    signMessage: () => {},
+  },
+  safe: {
+    getChainInfo: () => Promise.resolve(CHAIN_INFO_MOCK),
+  },
+  eth: {},
 }
 
 jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
@@ -33,16 +49,7 @@ jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
   return {
     ...originalModule,
     useSafeAppsSDK: () => ({
-      sdk: {
-        txs: {
-          send: () => {},
-          signMessage: () => {},
-        },
-        safe: {
-          getChainInfo: () => Promise.resolve(CHAIN_INFO_MOCK),
-        },
-        eth: {},
-      },
+      sdk: SDK_MOCK,
       safe: TEST_SAFE_MOCK,
     }),
   }

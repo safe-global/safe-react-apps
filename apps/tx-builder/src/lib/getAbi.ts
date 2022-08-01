@@ -47,7 +47,10 @@ const getAbiFromGateway = async (address: string, chainName: string): Promise<an
     timeout: DEFAULT_TIMEOUT,
   })
 
-  if (data) {
+  // We need to check if the abi is present in the response because it's possible
+  // That the transaction service just stores the contract and returns 200 without querying for the abi
+  // (or querying for the abi failed)
+  if (data && data.contractAbi?.abi) {
     return data?.contractAbi?.abi
   }
 
@@ -58,7 +61,11 @@ const getAbi = async (address: string, chainInfo: ChainInfo): Promise<any> => {
   try {
     return await getAbiFromSourcify(address, chainInfo.chainId)
   } catch {
-    return await getAbiFromGateway(address, chainInfo.chainId)
+    try {
+      return await getAbiFromGateway(address, chainInfo.chainId)
+    } catch {
+      return null
+    }
   }
 }
 
