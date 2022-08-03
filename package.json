@@ -1,5 +1,5 @@
 {
-  "name": "safe-apps",
+  "name": "celo-safe-apps",
   "private": true,
   "scripts": {
     "build": "yarn workspaces run build",
@@ -10,6 +10,7 @@
     "format": "prettier --ignore-path .gitignore --write './apps/**/*.{js,jsx,ts,tsx}'",
     "lint:check": "eslint './apps/**/*.{js,jsx,ts,tsx}'",
     "lint:fix": "yarn lint:check --fix",
+    "dev": "yarn start:walletconnect",
     "start:compound": "yarn workspace compound start",
     "start:tx-builder": "yarn workspace tx-builder start",
     "start:walletconnect": "yarn workspace wallet-connect start",
