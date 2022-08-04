@@ -56,7 +56,7 @@ const useWalletConnect = () => {
 
         try {
           let result = '0x'
-
+          console.info('call_request', payload.method, payload.params)
           switch (payload.method) {
             case 'eth_sendTransaction': {
               const txInfo = payload.params[0]
@@ -94,7 +94,6 @@ const useWalletConnect = () => {
 
             case 'personal_sign': {
               const [message, address] = payload.params
-
               if (!areStringsEqual(address, safe.safeAddress)) {
                 throw new Error('The address or message hash is invalid')
               }
