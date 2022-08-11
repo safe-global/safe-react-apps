@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.10.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.9.0...tx-builder-1.10.0) (2022-08-11)
+
+
+### Features
+
+* **tx-builder:** detect if the provided contract is a proxy ([#476](https://github.com/safe-global/safe-react-apps/issues/476)) ([fe8ac4f](https://github.com/safe-global/safe-react-apps/commit/fe8ac4fc8bec113d54969dc2eb1a8892ca4fcdda))
+
+
+
 # [1.9.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.8.0...tx-builder-1.9.0) (2022-06-22)
 
 
