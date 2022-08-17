@@ -28,7 +28,7 @@ const buildSlackMessage = results => {
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: "*Liveness tests'}*",
+      text: '*Liveness tests*',
     },
   }
 
