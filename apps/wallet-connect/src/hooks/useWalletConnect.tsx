@@ -118,11 +118,12 @@ const useWalletConnect = () => {
               break
             }
 
+            case 'eth_signTypedData':
             case 'eth_signTypedData_v4': {
               const [message, address] = payload.params
 
               if (!areStringsEqual(address, safe.safeAddress)) {
-                throw new Error('The address or message hash is invalid')
+                throw new Error('The address hash is invalid')
               }
 
               await sdk.txs.signTypedMessage(message)
