@@ -76,7 +76,8 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
   const [isEventsLoading, setIsEventsLoading] = useState<boolean>(true)
 
   // TODO: track pending transactions
-  const [safeTxHash, setSafeTxHash] = useState<string>()
+  // const [safeTxHash, setSafeTxHash] = useState<string>()
+  const [, setSafeTxHash] = useState<string>()
 
   const { safe, provider } = useSafeWallet()
 
