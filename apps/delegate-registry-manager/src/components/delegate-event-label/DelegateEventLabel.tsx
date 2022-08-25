@@ -16,9 +16,9 @@ const DelegateEventLabel = ({ eventType }: DelegateEventLabelProps) => {
       component={'span'}
     >
       {eventType === 'SetDelegate' ? (
-        <SetDelegateLabel>SetDelegate</SetDelegateLabel>
+        <SetDelegateLabel>Set Delegate</SetDelegateLabel>
       ) : (
-        <ClearDelegateLabel>ClearDelegate</ClearDelegateLabel>
+        <ClearDelegateLabel>Clear Delegate</ClearDelegateLabel>
       )}
     </Box>
   )
@@ -32,6 +32,7 @@ const SetDelegateLabel = styled.span`
 
   background-color: ${orange[800]};
   color: white;
+  white-space: nowrap;
 `
 
 const ClearDelegateLabel = styled.span`
@@ -40,4 +41,5 @@ const ClearDelegateLabel = styled.span`
 
   background-color: ${red[800]};
   color: white;
+  white-space: nowrap;
 `

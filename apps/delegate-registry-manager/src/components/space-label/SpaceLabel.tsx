@@ -31,4 +31,5 @@ const StyledLabel = styled.span`
 
   background-color: ${green[600]};
   color: white;
+  white-space: nowrap;
 `
