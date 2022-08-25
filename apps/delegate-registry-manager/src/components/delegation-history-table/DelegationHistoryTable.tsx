@@ -5,21 +5,19 @@ import styled from 'styled-components'
 import DataTable from 'src/components/data-table/DataTable'
 import { useDelegateRegistry } from 'src/store/delegateRegistryContext'
 import AddressLabel from 'src/components/address-label/AddressLabel'
-import TimestampLabel from 'src/components/timestamp-label/TimestampLabel'
 import TransactionLabel from '../transaction-label/TransactionLabel'
 
 // TODO: CREATE A CONSTANT
 const ALL_SPACES = ''
 
 const DelegationHistoryTable = () => {
-  const { delegateEvents } = useDelegateRegistry()
+  const { delegateEvents, isEventsLoading } = useDelegateRegistry()
 
-  const columns: string[] = ['date', 'space', 'delegate', 'eventType', 'transaction']
+  const columns: string[] = ['space', 'delegate', 'eventType', 'transaction']
   const rows = useMemo(
     () =>
-      delegateEvents.map(({ EventId, space, delegate, transactionHash, eventType, getBlock }) => ({
+      delegateEvents.map(({ EventId, space, delegate, transactionHash, eventType }) => ({
         id: EventId,
-        date: <TimestampLabel getBlock={getBlock} />,
         space: space === ALL_SPACES ? 'All Spaces' : space,
         // TODO: Add Edit Delegate and clearDelegate Label component
         delegate: (
@@ -46,7 +44,13 @@ const DelegationHistoryTable = () => {
   return (
     <Container>
       {/* TODO: Add loader component */}
-      <DataTable columns={columns} rows={rows} ariaLabel="delegation history events table" />
+      <DataTable
+        columns={columns}
+        rows={rows}
+        ariaLabel="delegation history events table"
+        isTableLoading={isEventsLoading}
+        loadingText="Loading Delegation history..."
+      />
     </Container>
   )
 }

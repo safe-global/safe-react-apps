@@ -29,11 +29,13 @@ type delegateEvent = {
   delegator: string
   space: string
   delegate: string
-  getBlock: () => Promise<ethers.providers.Block>
 }
 
 type delegateType = {
-  space: string
+  space: {
+    name: string
+    isLoading: boolean
+  }
   delegate: string
 }
 
@@ -44,8 +46,8 @@ const initialState = {
   spaces: [],
   delegateEvents: [],
   isEventsLoading: true,
-  setDelegate: () => Promise.resolve(),
-  clearDelegate: () => Promise.resolve(),
+  setDelegate: () => Promise.resolve(undefined),
+  clearDelegate: () => Promise.resolve(undefined),
 }
 
 const delegateRegistryContext = createContext<delegateRegistryContextValue>(initialState)
@@ -75,10 +77,6 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
   const [delegateEvents, setDelegateEvents] = useState<delegateEvent[]>([])
   const [isEventsLoading, setIsEventsLoading] = useState<boolean>(true)
 
-  // TODO: track pending transactions
-  // const [safeTxHash, setSafeTxHash] = useState<string>()
-  const [, setSafeTxHash] = useState<string>()
-
   const { safe, provider } = useSafeWallet()
 
   // load Delegate Registry contract
@@ -93,15 +91,12 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
       )
 
       setDelegateRegistryContract(delegateRegistryContract)
-      setIsContractLoading(false)
     }
   }, [delegateRegistryContract, provider])
 
   // load delegations for each defined space
   const getDelegations = useCallback(async () => {
     if (delegateRegistryContract && spaces && spaces.length > 0) {
-      setIsContractLoading(true)
-
       const delegations = await Promise.all(
         spaces.map(async space => {
           const delegate = await delegateRegistryContract.delegation(
@@ -110,7 +105,10 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
           )
 
           return {
-            space,
+            space: {
+              name: space,
+              isLoading: false,
+            },
             delegate,
           }
         }),
@@ -129,32 +127,35 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
   const getEvents = useCallback(async () => {
     // see docs: https://docs.ethers.io/v5/api/contract/example/#erc20-meta-events
 
-    if (delegateRegistryContract && safe.safeAddress) {
-      setIsEventsLoading(true)
-
+    if (delegateRegistryContract && safe && safe.safeAddress) {
       // SetDelegate Events
       const filteredSetDelegateEvents = delegateRegistryContract.filters.SetDelegate(
         safe.safeAddress, // delegator address
         null, // id bytes32
         null, // delegate address
       )
-      const delegateEvents = await delegateRegistryContract.queryFilter(
-        filteredSetDelegateEvents, // events filterd by the current safe
-        0, // fromBlock
-        'latest', // toBlock
-      )
-
       // ClearDelegate Events
       const filteredClearDelegateEvents = delegateRegistryContract.filters.ClearDelegate(
         safe.safeAddress, // delegator address
         null, // id bytes32
         null, // delegate address
       )
-      const clearDelegateEvents = await delegateRegistryContract.queryFilter(
-        filteredClearDelegateEvents, // events filterd by the current safe
-        0, // fromBlock
-        'latest', // toBlock
-      )
+
+      // fetch SetDelegate & ClearDelegate Events
+      const [delegateEvents, clearDelegateEvents] = await Promise.all([
+        // fetch SetDelegate Events
+        delegateRegistryContract.queryFilter(
+          filteredSetDelegateEvents, // events filterd by the current safe
+          0, // fromBlock
+          'latest', // toBlock
+        ),
+        // fetch ClearDelegate Events
+        delegateRegistryContract.queryFilter(
+          filteredClearDelegateEvents, // events filterd by the current safe
+          0, // fromBlock
+          'latest', // toBlock
+        ),
+      ])
 
       // spaces defined (needed for the Delegation Table)
       setSpaces(
@@ -177,60 +178,106 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
       )
 
       setDelegateEvents(
-        allEvents.map(({ transactionHash, blockHash, logIndex, event, args, getBlock }) => ({
+        allEvents.map(({ transactionHash, blockHash, logIndex, event, args }) => ({
           EventId: `${transactionHash}-${blockHash}-${logIndex}`, // to uniquely identify an event tx-hash, block-hash & logindex
           transactionHash,
           eventType: event as delegateEventType,
           delegator: args?.delegator,
           space: parseBytes32String(args?.id),
           delegate: args?.delegate,
-          getBlock,
         })),
       )
 
       setIsEventsLoading(false)
     }
-  }, [safe.safeAddress, delegateRegistryContract])
+  }, [safe, delegateRegistryContract])
 
   useEffect(() => {
     getEvents()
   }, [getEvents])
 
+  // Subscribe to new events
+  useEffect(() => {
+    if (delegateRegistryContract && safe && safe.safeAddress) {
+      // see docs: https://docs.ethers.io/v5/api/contract/example/#erc20-meta-events
+      // SetDelegate Events
+      const filteredSetDelegateEvents = delegateRegistryContract.filters.SetDelegate(
+        safe.safeAddress, // delegator address
+        null, // id bytes32
+        null, // delegate address
+      )
+      // ClearDelegate Events
+      const filteredClearDelegateEvents = delegateRegistryContract.filters.ClearDelegate(
+        safe.safeAddress, // delegator address
+        null, // id bytes32
+        null, // delegate address
+      )
+
+      delegateRegistryContract.on(filteredSetDelegateEvents, () => {
+        getEvents()
+      })
+
+      delegateRegistryContract.on(filteredClearDelegateEvents, () => {
+        getEvents()
+      })
+    }
+  }, [delegateRegistryContract, safe, getEvents])
+
+  // remove all listeners if the contract changes
+  useEffect(() => {
+    return () => {
+      delegateRegistryContract?.removeAllListeners()
+    }
+  }, [delegateRegistryContract])
+
   const setDelegate = useCallback(
     async (space: string, delegate: string) => {
-      const transaction = await delegateRegistryContract?.setDelegate(
+      await delegateRegistryContract?.setDelegate(
         formatBytes32String(space), // id bytes32
         delegate, // delegate address
       )
 
-      setSafeTxHash(transaction.hash)
+      // set this space as Loading
+      setDelegations(delegations => {
+        const delegation = delegations.find(delegation => delegation.space.name === space)
 
-      // TODO: Create loading state and add a event ?
+        if (delegation) {
+          delegation.space.isLoading = true
+          return [...delegations]
+        }
 
-      // TODO: Track transaction Status
-      console.log('transaction: ', transaction)
-
-      return transaction
+        // new space
+        return [
+          ...delegations,
+          {
+            space: {
+              name: space,
+              isLoading: true,
+            },
+            delegate,
+          },
+        ]
+      })
     },
     [delegateRegistryContract],
   )
 
   const clearDelegate = useCallback(
     async (space: string) => {
-      try {
-        const transaction = await delegateRegistryContract?.clearDelegate(
-          formatBytes32String(space), // id bytes32
-        )
+      await delegateRegistryContract?.clearDelegate(
+        formatBytes32String(space), // id bytes32
+      )
 
-        // TODO: Create loading state and add a event ?
+      // set this space as Loading
+      setDelegations(delegations => {
+        const delegation = delegations.find(delegation => delegation.space.name === space)
 
-        // TODO: Track transaction Status
-        console.log('transaction: ', transaction)
-      } catch (error: any) {
-        // TODO: error
-        console.log('ERROR: ', error.message)
-        console.log('Error clearDelegate : ', space)
-      }
+        if (delegation) {
+          delegation.space.isLoading = true
+          return [...delegations]
+        }
+        return delegations
+      })
     },
     [delegateRegistryContract],
   )

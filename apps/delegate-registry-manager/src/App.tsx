@@ -8,9 +8,10 @@ import AddressLabel from 'src/components/address-label/AddressLabel'
 import DelegateForm from 'src/components/delegate-form/DelegateForm'
 import DelegationTable from 'src/components/delegation-table/DelegationTable'
 import DelegationHistoryTable from 'src/components/delegation-history-table/DelegationHistoryTable'
+import Loader from 'src/components/loader/Loader'
 
 function App() {
-  const { delegateRegistryContract, setDelegate } = useDelegateRegistry()
+  const { delegateRegistryContract, isContractLoading, setDelegate } = useDelegateRegistry()
 
   const handleAddNewDelegate = async (space: string, delegateAddress: string) => {
     await setDelegate(space, delegateAddress)
@@ -28,33 +29,41 @@ function App() {
             <Typography component="h2" variant="h5" gutterBottom>
               Delegate Registry Contract
             </Typography>
-            <Typography component="h3" variant="h6" gutterBottom>
-              <AddressLabel
-                address={delegateRegistryContract.address}
-                showCopyIntoClipboardButton
-                showBlockExplorerLink
-                ariaLabel="Delegate Registry contract"
-              />
-            </Typography>
 
-            {/* TODO: add description */}
-            <Typography>description</Typography>
+            <Loader isLoading={isContractLoading} minHeight={45}>
+              <Typography component="h3" variant="h6" gutterBottom>
+                <AddressLabel
+                  address={delegateRegistryContract.address}
+                  showCopyIntoClipboardButton
+                  showBlockExplorerLink
+                  ariaLabel="Delegate Registry contract"
+                />
+              </Typography>
+
+              {/* TODO: add description */}
+              <Typography>
+                description Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eligendi vero
+                atque ullam nisi nesciunt porro deserunt ex impedit, amet nostrum sunt aspernatur
+                neque ducimus dicta tempora fuga velit
+              </Typography>
+            </Loader>
           </TitleContainer>
         )}
 
         {/* Add New Delegate Form */}
         <AddDelegateContainer>
-          <Typography component="h4" variant="h6" gutterBottom>
-            Add new Delegate
-          </Typography>
-          {/* TODO: Add form description */}
-          <Typography gutterBottom>Form description</Typography>
+          <Loader
+            isLoading={isContractLoading}
+            minHeight={282}
+            loadingText="Loading Delegate Registry contract..."
+          >
+            <Typography component="h4" variant="h6" gutterBottom>
+              Add new Delegate
+            </Typography>
 
-          <DelegateForm onSubmit={handleAddNewDelegate} />
+            <DelegateForm onSubmit={handleAddNewDelegate} />
+          </Loader>
         </AddDelegateContainer>
-
-        {/* TODO: Add Pending Delate Transactions Table */}
-        {/* <PendingDelegateTransactionsTable /> */}
 
         {/* Active Delegation Table */}
         <DelegationTable />
