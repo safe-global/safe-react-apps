@@ -96,7 +96,7 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
 
   // load delegations for each defined space
   const getDelegations = useCallback(async () => {
-    if (delegateRegistryContract && spaces && spaces.length > 0) {
+    if (delegateRegistryContract && spaces) {
       const delegations = await Promise.all(
         spaces.map(async space => {
           const delegate = await delegateRegistryContract.delegation(
