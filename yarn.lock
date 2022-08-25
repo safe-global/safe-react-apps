@@ -1796,12 +1796,12 @@
     "@ethersproject/properties" "^5.6.0"
     "@ethersproject/strings" "^5.6.1"
 
-"@gnosis.pm/safe-apps-provider@^0.11.3":
-  version "0.11.3"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-provider/-/safe-apps-provider-0.11.3.tgz#9e1ec2fb69a7fae8127631330f630662bd07a580"
-  integrity sha512-vER+vuf44f40KfwqTRjU8rdVMDnGZMmgQcGetlMxq+MTI7VD2Cr3CrCuABFGE/DZK80SxZ+IvQ9yjkemo/ywmQ==
+"@gnosis.pm/safe-apps-provider@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-provider/-/safe-apps-provider-0.13.0.tgz#3059630a2bef38c3568df6aab59a418733d5b859"
+  integrity sha512-ZJJRu4EDJYQN4If7V9Llxag8JDW1VBFevCA6vLze6yF70u2P5rsBy5beInVxZDFpm8A3HuXZnBXhSjwFKAZsBQ==
   dependencies:
-    "@gnosis.pm/safe-apps-sdk" "7.5.0"
+    "@gnosis.pm/safe-apps-sdk" "7.7.0"
     events "^3.3.0"
 
 "@gnosis.pm/safe-apps-react-sdk@4.5.1":
