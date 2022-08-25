@@ -43,12 +43,19 @@ function App() {
               />
             </Typography>
 
-            {/* TODO: add description */}
-            <Typography>
-              description Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eligendi vero
-              atque ullam nisi nesciunt porro deserunt ex impedit, amet nostrum sunt aspernatur
-              neque ducimus dicta tempora fuga velit
-            </Typography>
+            <DescriptionContainer>
+              <Typography gutterBottom>
+                The Delegate Registry Contract allows owners of a Safe to delegate certain off-chain
+                rights to another wallet e.g. gasless signing into a social application or gasless
+                voting on behalf of a Safe.
+              </Typography>
+
+              <Typography>
+                Safe has no influence on what off-chain actions other projects allow set delegates
+                in the Delegation Registry Contract. Delegates do not have any control over on-chain
+                assets in the Safe.
+              </Typography>
+            </DescriptionContainer>
 
             <AddDelegateFormContainer>
               <DelegateForm onSubmit={handleAddNewDelegate} />
@@ -82,6 +89,10 @@ const TitleContainer = styled(Paper)`
   margin: 0 auto;
   margin-top: 24px;
   padding: 24px 0 12px 0;
+`
+
+const DescriptionContainer = styled.div`
+  padding: 12px 24px;
 `
 
 const AddDelegateFormContainer = styled.div`
