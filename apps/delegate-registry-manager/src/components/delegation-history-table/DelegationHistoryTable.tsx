@@ -6,9 +6,8 @@ import DataTable from 'src/components/data-table/DataTable'
 import { useDelegateRegistry } from 'src/store/delegateRegistryContext'
 import AddressLabel from 'src/components/address-label/AddressLabel'
 import TransactionLabel from '../transaction-label/TransactionLabel'
-
-// TODO: CREATE A CONSTANT
-const ALL_SPACES = ''
+import SpaceLabel from '../space-label/SpaceLabel'
+import DelegateEventLabel from '../delegate-event-label/DelegateEventLabel'
 
 const DelegationHistoryTable = () => {
   const { delegateEvents, isEventsLoading } = useDelegateRegistry()
@@ -18,8 +17,7 @@ const DelegationHistoryTable = () => {
     () =>
       delegateEvents.map(({ EventId, space, delegate, transactionHash, eventType }) => ({
         id: EventId,
-        space: space === ALL_SPACES ? 'All Spaces' : space,
-        // TODO: Add Edit Delegate and clearDelegate Label component
+        space: <SpaceLabel space={space} />,
         delegate: (
           <AddressLabel
             address={delegate}
@@ -28,7 +26,7 @@ const DelegationHistoryTable = () => {
             ariaLabel="delegate address"
           />
         ),
-        eventType,
+        eventType: <DelegateEventLabel eventType={eventType} />,
         transaction: (
           <TransactionLabel
             address={transactionHash}

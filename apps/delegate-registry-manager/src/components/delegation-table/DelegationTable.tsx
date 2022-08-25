@@ -15,9 +15,8 @@ import { useDelegateRegistry } from 'src/store/delegateRegistryContext'
 import AddressLabel from 'src/components/address-label/AddressLabel'
 import EditDelegatorModal from 'src/components/modals/EditDelegatorModal'
 import RemoveDelegatorModal from 'src/components/modals/RemoveDelegatorModal'
+import SpaceLabel, { ALL_SPACES } from '../space-label/SpaceLabel'
 
-// TODO: CREATE A CONSTANT
-const ALL_SPACES = ''
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 const DelegationTable = () => {
@@ -53,8 +52,7 @@ const DelegationTable = () => {
     return {
       id: space.name,
       status: <StatusCell isSpaceLoading={isSpaceLoading} />,
-      // TODO: create SpaceLabel
-      space: space.name === ALL_SPACES ? 'All Spaces' : space.name,
+      space: <SpaceLabel space={space.name} />,
       delegate: (
         <DelegateCell
           isSpaceLoading={isSpaceLoading}
