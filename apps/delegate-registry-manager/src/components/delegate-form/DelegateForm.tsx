@@ -105,12 +105,12 @@ const Form = styled.form`
 `
 
 const FormFieldWrapper = styled.div`
-  min-height: 80px;
+  min-height: 64px;
 `
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
 
-  margin-top: 16px;
+  margin-top: 12px;
 `

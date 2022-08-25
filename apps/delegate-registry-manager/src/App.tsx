@@ -22,7 +22,7 @@ function App() {
       {/* App Header */}
       <Header />
 
-      {/* Delegate Registry Title */}
+      {/* Delegate Registry Title & Form */}
       <AppWrapper>
         {delegateRegistryContract && (
           <TitleContainer>
@@ -46,24 +46,22 @@ function App() {
                 atque ullam nisi nesciunt porro deserunt ex impedit, amet nostrum sunt aspernatur
                 neque ducimus dicta tempora fuga velit
               </Typography>
+
+              <AddDelegateFormContainer>
+                <DelegateForm onSubmit={handleAddNewDelegate} />
+              </AddDelegateFormContainer>
             </Loader>
           </TitleContainer>
         )}
 
-        {/* Add New Delegate Form */}
+        {/* Add New Delegate Form
         <AddDelegateContainer>
           <Loader
             isLoading={isContractLoading}
             minHeight={282}
             loadingText="Loading Delegate Registry contract..."
-          >
-            <Typography component="h4" variant="h6" gutterBottom>
-              Add new Delegate
-            </Typography>
-
-            <DelegateForm onSubmit={handleAddNewDelegate} />
-          </Loader>
-        </AddDelegateContainer>
+          ></Loader>
+        </AddDelegateContainer> */}
 
         {/* Active Delegation Table */}
         <DelegationTable />
@@ -90,12 +88,10 @@ const TitleContainer = styled(Paper)`
   max-width: 800px;
   margin: 0 auto;
   margin-top: 24px;
-  padding: 24px 0;
+  padding: 24px 0 12px 0;
 `
 
-const AddDelegateContainer = styled(Paper)`
-  max-width: 500px;
+const AddDelegateFormContainer = styled.div`
+  max-width: 400px;
   margin: 0 auto;
-  margin-top: 24px;
-  padding: 16px 0 0 0;
 `
