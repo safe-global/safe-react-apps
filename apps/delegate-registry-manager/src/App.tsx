@@ -24,44 +24,37 @@ function App() {
 
       {/* Delegate Registry Title & Form */}
       <AppWrapper>
-        {delegateRegistryContract && (
-          <TitleContainer>
+        <TitleContainer>
+          <Loader
+            isLoading={isContractLoading}
+            minHeight={350}
+            loadingText="Loading Delegate Registry contract..."
+          >
             <Typography component="h2" variant="h5" gutterBottom>
               Delegate Registry Contract
             </Typography>
 
-            <Loader isLoading={isContractLoading} minHeight={45}>
-              <Typography component="h3" variant="h6" gutterBottom>
-                <AddressLabel
-                  address={delegateRegistryContract.address}
-                  showCopyIntoClipboardButton
-                  showBlockExplorerLink
-                  ariaLabel="Delegate Registry contract"
-                />
-              </Typography>
+            <Typography component="h3" variant="h6" gutterBottom>
+              <AddressLabel
+                address={delegateRegistryContract?.address || ''}
+                showCopyIntoClipboardButton
+                showBlockExplorerLink
+                ariaLabel="Delegate Registry contract"
+              />
+            </Typography>
 
-              {/* TODO: add description */}
-              <Typography>
-                description Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eligendi vero
-                atque ullam nisi nesciunt porro deserunt ex impedit, amet nostrum sunt aspernatur
-                neque ducimus dicta tempora fuga velit
-              </Typography>
+            {/* TODO: add description */}
+            <Typography>
+              description Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eligendi vero
+              atque ullam nisi nesciunt porro deserunt ex impedit, amet nostrum sunt aspernatur
+              neque ducimus dicta tempora fuga velit
+            </Typography>
 
-              <AddDelegateFormContainer>
-                <DelegateForm onSubmit={handleAddNewDelegate} />
-              </AddDelegateFormContainer>
-            </Loader>
-          </TitleContainer>
-        )}
-
-        {/* Add New Delegate Form
-        <AddDelegateContainer>
-          <Loader
-            isLoading={isContractLoading}
-            minHeight={282}
-            loadingText="Loading Delegate Registry contract..."
-          ></Loader>
-        </AddDelegateContainer> */}
+            <AddDelegateFormContainer>
+              <DelegateForm onSubmit={handleAddNewDelegate} />
+            </AddDelegateFormContainer>
+          </Loader>
+        </TitleContainer>
 
         {/* Active Delegation Table */}
         <DelegationTable />

@@ -13,6 +13,7 @@ type delegateRegistryContextValue = {
   delegateRegistryContract?: Contract
   isContractLoading: boolean
   delegations: delegateType[]
+  isDelegationsLoading: boolean
   spaces: string[]
   setDelegate: (space: string, delegate: string) => Promise<void>
   clearDelegate: (space: string) => Promise<void>
@@ -43,6 +44,7 @@ const initialState = {
   delegateRegistryContractAddress: DELEGATE_REGISTRY_CONTRACT_ADDRESS,
   isContractLoading: true,
   delegations: [],
+  isDelegationsLoading: true,
   spaces: [],
   delegateEvents: [],
   isEventsLoading: true,
@@ -71,6 +73,7 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
   const [isContractLoading, setIsContractLoading] = useState<boolean>(true)
 
   const [delegations, setDelegations] = useState<delegateType[]>([])
+  const [isDelegationsLoading, setIsDelegationsLoading] = useState<boolean>(true)
   const [spaces, setSpaces] = useState<string[]>([])
 
   // delegate events
@@ -91,12 +94,13 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
       )
 
       setDelegateRegistryContract(delegateRegistryContract)
+      setIsContractLoading(false)
     }
   }, [delegateRegistryContract, provider])
 
   // load delegations for each defined space
   const getDelegations = useCallback(async () => {
-    if (delegateRegistryContract && spaces) {
+    if (delegateRegistryContract && !isEventsLoading) {
       const delegations = await Promise.all(
         spaces.map(async space => {
           const delegate = await delegateRegistryContract.delegation(
@@ -115,9 +119,9 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
       )
 
       setDelegations(delegations)
-      setIsContractLoading(false)
+      setIsDelegationsLoading(false)
     }
-  }, [delegateRegistryContract, spaces, safe])
+  }, [delegateRegistryContract, isEventsLoading, spaces, safe])
 
   useEffect(() => {
     getDelegations()
@@ -289,6 +293,7 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
     isContractLoading,
 
     delegations,
+    isDelegationsLoading,
     spaces,
 
     setDelegate,

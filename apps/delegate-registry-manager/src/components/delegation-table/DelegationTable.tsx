@@ -20,7 +20,7 @@ import SpaceLabel, { ALL_SPACES } from '../space-label/SpaceLabel'
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 const DelegationTable = () => {
-  const { delegations, isContractLoading } = useDelegateRegistry()
+  const { delegations, isDelegationsLoading } = useDelegateRegistry()
 
   const [spaceToUpdate, setSpaceToUpdate] = useState<string>('')
   const [delegatorToUpdate, setDelegatorToUpdate] = useState<string>('')
@@ -73,7 +73,7 @@ const DelegationTable = () => {
           columns={columns}
           rows={rows}
           ariaLabel="delegations table"
-          isTableLoading={isContractLoading}
+          isTableLoading={isDelegationsLoading}
           loadingText="Loading Delegations..."
         />
       </Container>
