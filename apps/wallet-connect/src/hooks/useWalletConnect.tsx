@@ -117,6 +117,20 @@ const useWalletConnect = () => {
               result = '0x'
               break
             }
+
+            case 'eth_signTypedData':
+            case 'eth_signTypedData_v4': {
+              const [message, address] = payload.params
+
+              if (!areStringsEqual(address, safe.safeAddress)) {
+                throw new Error('The address hash is invalid')
+              }
+
+              await sdk.txs.signTypedMessage(message)
+
+              result = '0x'
+              break
+            }
             default: {
               rejectWithMessage(wcConnector, payload.id, 'METHOD_NOT_SUPPORTED')
               break
