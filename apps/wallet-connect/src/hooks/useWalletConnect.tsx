@@ -4,6 +4,7 @@ import { IClientMeta, IWalletConnectSession } from '@walletconnect/types'
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 import { isMetaTxArray } from '../utils/transactions'
 import { areStringsEqual } from '../utils/strings'
+import { isObjectEIP712TypedData } from '@gnosis.pm/safe-apps-sdk'
 
 const rejectWithMessage = (connector: WalletConnect, id: number | undefined, message: string) => {
   connector.rejectRequest({ id, error: { message } })
@@ -116,6 +117,24 @@ const useWalletConnect = () => {
 
               result = '0x'
               break
+            }
+
+            case 'eth_signTypedData':
+            case 'eth_signTypedData_v4': {
+              const [typedData, address] = payload.params
+
+              if (!areStringsEqual(address, safe.safeAddress)) {
+                throw new Error('The address is invalid')
+              }
+
+              if (isObjectEIP712TypedData(typedData)) {
+                await sdk.txs.signTypedMessage(typedData)
+
+                result = '0x'
+                break
+              } else {
+                throw new Error('Invalid typed data')
+              }
             }
             default: {
               rejectWithMessage(wcConnector, payload.id, 'METHOD_NOT_SUPPORTED')

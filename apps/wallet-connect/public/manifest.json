@@ -8,5 +8,6 @@
       "sizes": "any",
       "type": "image/svg+xml"
     }
-  ]
+  ],
+  "safe_apps_permissions": ["camera"]
 }
