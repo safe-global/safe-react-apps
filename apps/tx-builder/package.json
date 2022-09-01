@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "/tx-builder",
   "dependencies": {
-    "@gnosis.pm/safe-apps-provider": "^0.13.0",
+    "@gnosis.pm/safe-apps-provider": "^0.13.1",
     "@gnosis.pm/safe-deployments": "^1.15.0",
     "@gnosis.pm/safe-react-components": "^1.1.5",
     "@material-ui/core": "^4.12.4",
