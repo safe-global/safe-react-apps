@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.11.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.10.0...tx-builder-1.11.0) (2022-09-02)
+
+
+### Bug Fixes
+
+* **wallet-connect:** fix eth_signTypedData param ([#501](https://github.com/safe-global/safe-react-apps/issues/501)) ([647dac4](https://github.com/safe-global/safe-react-apps/commit/647dac4b6ce2994ce4bd73000ffd7c9833ff3627))
+
+
+### Features
+
+* Add eip712 to the wallet connect ([#495](https://github.com/safe-global/safe-react-apps/issues/495)) ([fd6a726](https://github.com/safe-global/safe-react-apps/commit/fd6a726dc00c835cd80aca599dcdb6bd9f3f8ab5))
+
+
+
 # [1.10.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.9.0...tx-builder-1.10.0) (2022-08-11)
 
 
