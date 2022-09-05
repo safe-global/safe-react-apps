@@ -14128,9 +14128,9 @@ safe-buffer@5.2.1, safe-buffer@>=5.1.0, safe-buffer@^5.0.1, safe-buffer@^5.1.0, 
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.2.1.tgz#1eaf9fa9bdb1fdd4ec75f58f9cdb4e6b7827eec6"
   integrity sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==
 
-"safe-token@git+https://github.com/safe-global/safe-token.git#9c42f80a4bbb2ec01b324427fe7cc1b49f55ac24":
+"safe-token@git+https://github.com/safe-global/safe-token.git#main":
   version "1.0.0"
-  resolved "git+https://github.com/safe-global/safe-token.git#9c42f80a4bbb2ec01b324427fe7cc1b49f55ac24"
+  resolved "git+https://github.com/safe-global/safe-token.git#cc9fcb23d315cf4bce5a7b4ce203ae4b2f8a56e7"
 
 "safer-buffer@>= 2.1.2 < 3", "safer-buffer@>= 2.1.2 < 3.0.0", safer-buffer@^2.0.2, safer-buffer@^2.1.0, safer-buffer@~2.1.0:
   version "2.1.2"

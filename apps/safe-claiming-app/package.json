@@ -34,7 +34,7 @@
     "hardhat-deploy-ethers": "^0.3.0-beta.13",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "prettier": "^2.6.2",
-    "safe-token": "git+https://github.com/safe-global/safe-token.git#9c42f80a4bbb2ec01b324427fe7cc1b49f55ac24",
+    "safe-token": "git+https://github.com/safe-global/safe-token.git#main",
     "typechain": "^8.0.0",
     "typescript": "^4.6.4"
   },
