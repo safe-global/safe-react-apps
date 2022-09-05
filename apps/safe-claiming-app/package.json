@@ -49,7 +49,10 @@
     "compile": "npx hardhat compile && yarn run generate-types",
     "start-node": "npx hardhat node --network hardhat --no-deploy",
     "deploy": "hardhat deploy",
-    "postinstall": "yarn compile"
+    "postinstall": "yarn compile",
+    "deploy:s3": "bash ../../scripts/deploy_to_s3_bucket.sh",
+    "deploy:pr": "bash ../../scripts/deploy_pr.sh",
+    "deploy:prod-hook": "bash ../../scripts/prepare_production_deployment.sh"
   },
   "eslintConfig": {
     "extends": [
