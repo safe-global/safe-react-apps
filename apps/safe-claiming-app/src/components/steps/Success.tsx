@@ -49,6 +49,7 @@ const Success = ({
   useEffect(() => {
     // trigger reload and update of claimed amount from on-chain
     handleUpdateState({ ...state, lastClaimTimestamp: new Date().getTime() })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handleUpdateState])
 
   const formattedTokenAmount = formatAmount(
