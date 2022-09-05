@@ -7078,9 +7078,9 @@ delayed-stream@~1.0.0:
   resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
   integrity sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==
 
-"delegate-registry@https://github.com/gnosis/delegate-registry.git#main":
+"delegate-registry@git+https://github.com/gnosis/delegate-registry.git#main":
   version "1.0.0"
-  resolved "https://github.com/gnosis/delegate-registry.git#3eebe5bc21a06573282a98c81198b0e1ef006616"
+  resolved "git+https://github.com/gnosis/delegate-registry.git#3eebe5bc21a06573282a98c81198b0e1ef006616"
   dependencies:
     openzeppelin-solidity "^2.0.0"
     shelljs "^0.8.3"
@@ -14128,9 +14128,9 @@ safe-buffer@5.2.1, safe-buffer@>=5.1.0, safe-buffer@^5.0.1, safe-buffer@^5.1.0, 
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.2.1.tgz#1eaf9fa9bdb1fdd4ec75f58f9cdb4e6b7827eec6"
   integrity sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==
 
-"safe-token@https://github.com/safe-global/safe-token.git#9c42f80a4bbb2ec01b324427fe7cc1b49f55ac24":
+"safe-token@git+https://github.com/safe-global/safe-token.git#9c42f80a4bbb2ec01b324427fe7cc1b49f55ac24":
   version "1.0.0"
-  resolved "https://github.com/safe-global/safe-token.git#9c42f80a4bbb2ec01b324427fe7cc1b49f55ac24"
+  resolved "git+https://github.com/safe-global/safe-token.git#9c42f80a4bbb2ec01b324427fe7cc1b49f55ac24"
 
 "safer-buffer@>= 2.1.2 < 3", "safer-buffer@>= 2.1.2 < 3.0.0", safer-buffer@^2.0.2, safer-buffer@^2.1.0, safer-buffer@~2.1.0:
   version "2.1.2"
@@ -14432,11 +14432,6 @@ simple-get@^2.7.0:
     decompress-response "^3.3.0"
     once "^1.3.1"
     simple-concat "^1.0.0"
-
-simplex-noise@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/simplex-noise/-/simplex-noise-3.0.1.tgz#ad94e7bb6e53a973139e8999348cb6123b3347ba"
-  integrity sha512-eww0SFiWLyOaUKQMJ7gbdvQJvULeJdM/Y4BiC3rrOQnYHo+MSPh465/qeXSZkpTdB9/HthumpnYD3DobZweBBQ==
 
 sisteransi@^1.0.5:
   version "1.0.5"
