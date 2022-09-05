@@ -15,6 +15,7 @@
     "start:walletconnect": "yarn workspace wallet-connect start",
     "start:ramp": "yarn workspace ramp-network start",
     "start:drain-safe": "yarn workspace drain-safe start",
+    "start:claiming-app": "yarn workspace safe-claiming-app start",
     "prepare": "husky install",
     "e2e": "npx cypress open"
   },

@@ -1,0 +1,83 @@
+{
+  "name": "safe-claiming-app",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "/safe-claiming-app",
+  "dependencies": {
+    "@craco/craco": "^6.4.3",
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@gnosis.pm/safe-apps-provider": "^0.13.1",
+    "@mui/icons-material": "^5.6.2",
+    "@mui/material": "^5.6.4",
+    "bezier-easing": "^2.1.0",
+    "ethers": "^5.6.9",
+    "react-twitter-embed": "^4.0.4",
+    "simplex-noise": "^3.0.1"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.0",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@typechain/ethers-v5": "^8.0.0",
+    "@types/jest": "^27.5.0",
+    "@types/node": "^17.0.31",
+    "@typescript-eslint/eslint-plugin": "^5.22.0",
+    "@typescript-eslint/parser": "^5.22.0",
+    "delegate-registry": "https://github.com/gnosis/delegate-registry.git#main",
+    "eslint": "^8.2.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jsx-a11y": "6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "4.3.0",
+    "hardhat": "^2.9.3",
+    "hardhat-deploy": "^0.11.4",
+    "hardhat-deploy-ethers": "^0.3.0-beta.13",
+    "node-polyfill-webpack-plugin": "^1.1.4",
+    "prettier": "^2.6.2",
+    "safe-token": "https://github.com/safe-global/safe-token.git#9c42f80a4bbb2ec01b324427fe7cc1b49f55ac24",
+    "typechain": "^8.0.0",
+    "typescript": "^4.6.4"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "generate-types": "yarn generate-types:safeToken && yarn generate-types:delegateRegistry",
+    "generate-types:safeToken": "typechain --target ethers-v5 --out-dir ./src/types/contracts './artifacts/safe-token/contracts/**/*[!.dbg].json'",
+    "generate-types:delegateRegistry": "typechain --target ethers-v5 --out-dir ./src/types/contracts '../../node_modules/delegate-registry/build/contracts/DelegateRegistry.json'",
+    "compile": "npx hardhat compile && yarn run generate-types",
+    "start-node": "npx hardhat node --network hardhat --no-deploy",
+    "deploy": "hardhat deploy",
+    "postinstall": "yarn compile"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "**/*.{ts,tsx}",
+      "!**/node_modules/**",
+      "!**/types/**",
+      "!**/*.d.ts"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
