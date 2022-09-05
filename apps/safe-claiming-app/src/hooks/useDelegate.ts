@@ -1,13 +1,13 @@
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
-import { ethers } from "ethers"
+import { Contract, ethers } from "ethers"
 import {
   DelegateID,
   DelegateRegistryAddress,
   ZERO_ADDRESS,
 } from "src/config/constants"
 import { useEffect, useMemo, useState } from "react"
-import { DelegateRegistry__factory } from "src/types/contracts"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
+import { Interface } from "ethers/lib/utils"
 
 export const useDelegate = () => {
   const [delegateAddress, setDelegateAddress] = useState<string>()
@@ -21,15 +21,15 @@ export const useDelegate = () => {
     const delegateIDInBytes = ethers.utils.formatBytes32String(DelegateID)
 
     const checkDelegate = async () => {
-      const contractInterface = DelegateRegistry__factory.connect(
+      const abiInterface = new Interface([
+        "function delegation(address, bytes32) public view returns (address)",
+        "function setDelegate(bytes32 id, address delegate) public",
+      ])
+      const address = await new Contract(
         DelegateRegistryAddress,
+        abiInterface,
         ethersProvider
-      )
-
-      const address = await contractInterface.delegation(
-        safe.safeAddress,
-        delegateIDInBytes
-      )
+      ).delegation(safe.safeAddress, delegateIDInBytes)
 
       if (address !== ZERO_ADDRESS) {
         isCurrent && setDelegateAddress(address)
