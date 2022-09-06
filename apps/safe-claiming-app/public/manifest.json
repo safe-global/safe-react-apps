@@ -5,9 +5,9 @@
   "iconPath": "",
   "icons": [
     {
-      "src": "",
-      "type": "",
-      "sizes": ""
+      "src": "logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ],
   "start_url": ".",

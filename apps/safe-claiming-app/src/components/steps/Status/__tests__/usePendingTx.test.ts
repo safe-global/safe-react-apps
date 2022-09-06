@@ -49,7 +49,7 @@ describe("usePendingTx", () => {
     expect(result.current).toBeUndefined()
 
     act(() => {
-      jest.advanceTimersByTime(2999)
+      jest.advanceTimersByTime(9999)
     })
     // Polling timer is not yet triggered
     expect(result.current).toBeUndefined()
@@ -65,7 +65,7 @@ describe("usePendingTx", () => {
 
     // Trigger second polling
     act(() => {
-      jest.advanceTimersByTime(3000)
+      jest.advanceTimersByTime(10_000)
     })
 
     await waitFor(() => {
@@ -80,7 +80,7 @@ describe("usePendingTx", () => {
     )
     // First polling should cause error
     act(() => {
-      jest.advanceTimersByTime(3000)
+      jest.advanceTimersByTime(10_000)
     })
 
     expect(result.current).toBeUndefined()
@@ -93,7 +93,7 @@ describe("usePendingTx", () => {
     )
     // First polling should return undefined
     act(() => {
-      jest.advanceTimersByTime(3000)
+      jest.advanceTimersByTime(10_000)
     })
 
     expect(result.current).toBeUndefined()

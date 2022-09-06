@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { TransactionStatus } from "@gnosis.pm/safe-react-gateway-sdk"
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 
-const POLL_INTERVAL = 3000
+const POLL_INTERVAL = 10_000
 
 export const usePendingTx = (safeTxHash?: string) => {
   const { sdk } = useSafeAppsSDK()
