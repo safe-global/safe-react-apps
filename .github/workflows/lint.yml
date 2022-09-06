@@ -1,7 +1,5 @@
 name: 'ESLint check'
 on: [pull_request]
-env:
-  HUSKY: 0
 
 jobs:
   eslint:
