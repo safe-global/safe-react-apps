@@ -15,7 +15,6 @@
     "react-twitter-embed": "^4.0.4"
   },
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.0",
     "@testing-library/react-hooks": "^8.0.1",
     "@typechain/ethers-v5": "^8.0.0",
     "@types/jest": "^27.5.0",
@@ -28,12 +27,8 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "4.3.0",
-    "hardhat": "^2.9.3",
-    "hardhat-deploy": "^0.11.4",
-    "hardhat-deploy-ethers": "^0.3.0-beta.13",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "prettier": "^2.6.2",
-    "safe-token": "git+https://github.com/safe-global/safe-token.git#main",
     "typechain": "^8.0.0",
     "typescript": "^4.6.4"
   },
@@ -45,10 +40,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "generate-types": "yarn generate-types:safeToken",
-    "generate-types:safeToken": "typechain --target ethers-v5 --out-dir ./src/types/contracts './artifacts/safe-token/contracts/**/*[!.dbg].json'",
-    "compile": "npx hardhat compile && yarn run generate-types",
-    "start-node": "npx hardhat node --network hardhat --no-deploy",
-    "deploy": "hardhat deploy",
+    "generate-types:safeToken": "typechain --target ethers-v5 --out-dir ./src/types/contracts './abis/*.json'",
+    "compile": "yarn run generate-types",
     "postinstall": "yarn compile",
     "deploy:s3": "bash ../../scripts/deploy_to_s3_bucket.sh",
     "deploy:pr": "bash ../../scripts/deploy_pr.sh",
