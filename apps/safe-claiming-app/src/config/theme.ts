@@ -59,7 +59,7 @@ const theme = createTheme({
     },
     safeGreen: {
       main: "#12ff80",
-      light: "#B0FFC9",
+      light: "#EFFFF4",
     },
     safeGrey: {
       main: "rgb(161, 163, 167)",
@@ -146,7 +146,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           "&.Mui-expanded": {
-            backgroundColor: "#B0FFC9",
+            backgroundColor: "#EFFFF4",
           },
         },
       },
