@@ -1,4 +1,4 @@
-import { Link, Paper, Typography } from "@mui/material"
+import { Link, Paper, Typography, Card } from "@mui/material"
 import Box from "@mui/system/Box"
 import { ReactComponent as ExternalLink } from "src/assets/images/external_link.svg"
 
@@ -91,16 +91,21 @@ const SafeNavigation = ({ handleNext, handleBack }: Props) => {
             .
           </Typography>
         </Box>
-        <Typography
-          variant="h5"
-          fontWeight={700}
-          textAlign="left"
-          maxWidth="410px"
-          alignSelf="flex-end"
+        <Card
+          elevation={0}
+          sx={{
+            backgroundColor: ({ palette }) => palette.safeGreen.light,
+            borderRadius: "8px",
+            padding: 3,
+            minWidth: "220px",
+          }}
         >
-          now&hellip;
-          <br /> &hellip;help decide on the future of ownership with $SAFE.
-        </Typography>
+          <Typography variant="h6" fontWeight={700} textAlign="left">
+            Now&hellip;
+            <br />
+            Help decide on the future of ownership with $SAFE.
+          </Typography>
+        </Card>
       </Box>
 
       <NavButtons handleBack={handleBack} handleNext={handleNext} />

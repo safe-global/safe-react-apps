@@ -59,7 +59,7 @@ const theme = createTheme({
     },
     safeGreen: {
       main: "#12ff80",
-      light: "#B0FFC9",
+      light: "#EFFFF4",
     },
     safeGrey: {
       main: "rgb(161, 163, 167)",

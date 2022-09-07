@@ -1,4 +1,5 @@
 import { Box, Button } from "@mui/material"
+import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 
 export const NavButtons = ({
   handleBack,
@@ -23,6 +24,7 @@ export const NavButtons = ({
         <Button
           variant="outlined"
           size="large"
+          startIcon={<ArrowBackIcon />}
           sx={
             finalScreen
               ? {
@@ -37,7 +39,7 @@ export const NavButtons = ({
           disableElevation
           onClick={handleBack}
         >
-          &larr; Back
+          Back
         </Button>
       )}
       {showNext && (
