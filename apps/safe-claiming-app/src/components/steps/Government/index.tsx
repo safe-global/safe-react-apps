@@ -100,8 +100,7 @@ const Government = ({ handleNext, handleBack }: Props) => {
         details={
           <ul style={{ listStyleType: "none" }}>
             <Typography component="li" mb={1}>
-              Decentralized hosting of the Safe frontend using the safe.eth
-              domain
+              Decentralized hosting of a Safe frontend using the safe.eth domain
             </Typography>
             <Typography component="li">
               Decentralized hosting of governance frontends
@@ -121,8 +120,7 @@ const Government = ({ handleNext, handleBack }: Props) => {
               Outstanding Safe token supply
             </Typography>
             <Typography component="li">
-              Outstanding Safe token supply Other Safe Treasury assets (NFTs,
-              tokens, etc.)
+              Other Safe Treasury assets (NFTs, tokens, etc.)
             </Typography>
           </ul>
         }

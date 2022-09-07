@@ -33,7 +33,7 @@ const Intro = ({ handleNext }: Props) => {
             textAlign={"left"}
           >
             SafeDAO is on a mission to unlock digital ownership for everyone in
-            web3.
+            Web3.
           </Typography>
           <Typography
             component="li"
@@ -53,7 +53,7 @@ const Intro = ({ handleNext }: Props) => {
             textAlign={"left"}
           >
             You have been chosen to help govern the SafeDAO, and decide on the
-            future of web3 ownership. Use this power wisely!
+            future of Web3 ownership. Use this power wisely!
           </Typography>
         </ul>
         <Box>

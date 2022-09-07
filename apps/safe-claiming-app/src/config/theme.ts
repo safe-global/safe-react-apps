@@ -146,7 +146,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           "&.Mui-expanded": {
-            backgroundColor: "#B0FFC9",
+            backgroundColor: "#EFFFF4",
           },
         },
       },

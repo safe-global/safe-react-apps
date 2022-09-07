@@ -87,8 +87,8 @@ const SafeNavigation = ({ handleNext, handleBack }: Props) => {
             >
               Discord
               <ExternalLink style={{ marginLeft: "4px" }} />
-            </Link>{" "}
-            and post an SIP.
+            </Link>
+            .
           </Typography>
         </Box>
         <Typography
