@@ -2,6 +2,8 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  List,
+  ListItem,
   Paper,
   Typography,
 } from "@mui/material"
@@ -20,7 +22,7 @@ const InfoAccordion = ({
   details,
 }: {
   summaryText: string
-  details: JSX.Element | string
+  details: string[]
 }) => {
   return (
     <Accordion
@@ -32,10 +34,12 @@ const InfoAccordion = ({
         "&::before": { display: "none" },
       }}
     >
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        sx={{ "&.Mui-expanded": { minHeight: "48px" } }}
+      >
         <Typography
           fontWeight={700}
-          component="li"
           sx={{
             position: "relative",
             marginLeft: "24px",
@@ -55,7 +59,13 @@ const InfoAccordion = ({
           {summaryText}
         </Typography>
       </AccordionSummary>
-      <AccordionDetails>{details}</AccordionDetails>
+      <AccordionDetails sx={{ pt: 0 }}>
+        <List sx={{ pt: 0, "& .MuiListItem-root": { p: "4px 0 4px 24px" } }}>
+          {details.map((detail: string) => (
+            <ListItem key={detail}>{detail}</ListItem>
+          ))}
+        </List>
+      </AccordionDetails>
     </Accordion>
   )
 }
@@ -81,67 +91,37 @@ const Government = ({ handleNext, handleBack }: Props) => {
 
       <InfoAccordion
         summaryText="Safe Protocol"
-        details={
-          <ul style={{ listStyleType: "none" }}>
-            <Typography component="li" mb={1}>
-              Safe Deployments (core smart contract deployments across multiple
-              networks)
-            </Typography>
-            <Typography component="li">
-              Curation of “trusted lists” (token lists, dApp lists, module
-              lists)
-            </Typography>
-          </ul>
-        }
+        details={[
+          "Safe Deployments (core smart contract deployments across multiple networks)",
+          "Curation of “trusted lists” (token lists, dApp lists, module lists)",
+        ]}
       />
 
       <InfoAccordion
         summaryText="Interfaces"
-        details={
-          <ul style={{ listStyleType: "none" }}>
-            <Typography component="li" mb={1}>
-              Decentralized hosting of a Safe frontend using the safe.eth domain
-            </Typography>
-            <Typography component="li">
-              Decentralized hosting of governance frontends
-            </Typography>
-          </ul>
-        }
+        details={[
+          "Decentralized hosting of a Safe frontend using the safe.eth domain",
+          "Decentralized hosting of governance frontends",
+        ]}
       />
 
       <InfoAccordion
         summaryText="On-chain assets"
-        details={
-          <ul style={{ listStyleType: "none" }}>
-            <Typography component="li" mb={1}>
-              ENS names
-            </Typography>
-            <Typography component="li" mb={1}>
-              Outstanding Safe token supply
-            </Typography>
-            <Typography component="li">
-              Other Safe Treasury assets (NFTs, tokens, etc.)
-            </Typography>
-          </ul>
-        }
+        details={[
+          "ENS names",
+          "Outstanding Safe token supply",
+          "Other Safe Treasury assets (NFTs, tokens, etc.)",
+        ]}
       />
 
       <InfoAccordion
         summaryText="Tokenomics"
-        details={
-          <ul style={{ listStyleType: "none" }}>
-            <Typography component="li" mb={1}>
-              Ecosystem reward programs
-            </Typography>
-            <Typography component="li" mb={1}>
-              User rewards
-            </Typography>
-            <Typography component="li" mb={1}>
-              Value capture
-            </Typography>
-            <Typography component="li">Future token utility</Typography>
-          </ul>
-        }
+        details={[
+          "Ecosystem reward programs",
+          "User rewards",
+          "Value capture",
+          "Future token utility",
+        ]}
       />
 
       <NavButtons handleBack={handleBack} handleNext={handleNext} />
