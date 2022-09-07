@@ -34,3 +34,6 @@ export const DISCORD_URL = "https://discord.gg/gXK3gt8w3D"
 
 // TODO: Link to an upcoming forum post
 export const GOVERNANCE_URL = "https://forum.gnosis-safe.io"
+
+export const FULL_PROPOSAL_URL =
+  "https://forum.gnosis-safe.io/t/safe-voting-power-and-circulating-supply/558"

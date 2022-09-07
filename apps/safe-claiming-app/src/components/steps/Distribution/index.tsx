@@ -1,11 +1,12 @@
-import { Grid, Paper, styled, Typography } from "@mui/material"
+import { Grid, Link, Paper, styled, Typography } from "@mui/material"
 import Box from "@mui/system/Box"
 
 import { ReactComponent as PieChart } from "src/assets/images/pie-chart-educational.svg"
 import { NavButtons } from "src/components/helpers/NavButtons"
+import { FULL_PROPOSAL_URL } from "src/config/constants"
+import { ReactComponent as ExternalLink } from "src/assets/images/external_link.svg"
 
 const PercentageWrapper = styled(Typography)`
-  background-color: ${({ theme }) => theme.palette.safeGreen.main};
   border-radius: 6px;
   padding: 0px 8px;
 `
@@ -32,13 +33,28 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
         Safe Tokens will be distributed to stakeholders of the ecosystem
         interested in shaping the future of Safe and smart-contract accounts.
       </Typography>
+      <Link
+        target="_blank"
+        href={FULL_PROPOSAL_URL}
+        sx={{ display: "flex", alignItems: "center" }}
+      >
+        Read full proposal <ExternalLink style={{ marginLeft: "4px" }} />
+      </Link>
 
-      <PieChart />
+      <Box display="flex" justifyContent="center" mb={3} mt={2}>
+        <PieChart />
+      </Box>
 
       <Grid container direction="row" justifyItems="space-between">
         <Grid item direction={"column"} xs={12} mb={4}>
           <Box display="flex" alignItems="center" gap={1} mb={1}>
-            <PercentageWrapper>60%</PercentageWrapper>
+            <PercentageWrapper
+              sx={{
+                backgroundColor: ({ palette }) => palette.safeGreen.main,
+              }}
+            >
+              60%
+            </PercentageWrapper>
             <Typography variant="h6" fontWeight={700}>
               Community Treasuries
             </Typography>
@@ -51,7 +67,13 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
         </Grid>
         <Grid item direction={"column"} xs={6} mb={4}>
           <Box display="flex" alignItems="center" gap={1} mb={1}>
-            <PercentageWrapper>15%</PercentageWrapper>
+            <PercentageWrapper
+              sx={{
+                backgroundColor: ({ palette }) => palette.secondary.light,
+              }}
+            >
+              15%
+            </PercentageWrapper>
             <Typography variant="h6" fontWeight={700}>
               Core Contributors
             </Typography>
@@ -60,7 +82,13 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
         </Grid>
         <Grid item direction={"column"} xs={6} mb={4}>
           <Box display="flex" alignItems="center" gap={1} mb={1}>
-            <PercentageWrapper>15%</PercentageWrapper>
+            <PercentageWrapper
+              sx={{
+                backgroundColor: ({ palette }) => palette.info.main,
+              }}
+            >
+              15%
+            </PercentageWrapper>
             <Typography variant="h6" fontWeight={700}>
               Safe Foundation
             </Typography>
@@ -73,7 +101,14 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
         </Grid>
         <Grid item direction={"column"} xs={6}>
           <Box display="flex" alignItems="center" gap={1} mb={1}>
-            <PercentageWrapper>5%</PercentageWrapper>
+            <PercentageWrapper
+              sx={{
+                backgroundColor: ({ palette }) => palette.success.main,
+                color: ({ palette }) => palette.background.paper,
+              }}
+            >
+              5%
+            </PercentageWrapper>
             <Typography variant="h6" fontWeight={700}>
               Guardians
             </Typography>
@@ -87,7 +122,14 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
         </Grid>
         <Grid item direction={"column"} xs={6}>
           <Box display="flex" alignItems="center" gap={1} mb={1}>
-            <PercentageWrapper>5%</PercentageWrapper>
+            <PercentageWrapper
+              sx={{
+                backgroundColor: ({ palette }) => palette.warning.main,
+                color: ({ palette }) => palette.background.paper,
+              }}
+            >
+              5%
+            </PercentageWrapper>
             <Typography variant="h6" fontWeight={700}>
               User
             </Typography>
