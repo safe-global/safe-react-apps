@@ -27,7 +27,6 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
         <Typography fontWeight={700} variant="h4">
           Distribution
         </Typography>
-        <Typography variant="subtitle1">Step 1 of 3</Typography>
       </Box>
       <Typography mb={3}>
         Safe Tokens will be distributed to stakeholders of the ecosystem
@@ -40,7 +39,7 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
         <Grid item direction={"column"} xs={12} mb={4}>
           <Box display="flex" alignItems="center" gap={1} mb={1}>
             <PercentageWrapper>60%</PercentageWrapper>
-            <Typography variant="h5" fontWeight={700}>
+            <Typography variant="h6" fontWeight={700}>
               Community Treasuries
             </Typography>
           </Box>
@@ -53,7 +52,7 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
         <Grid item direction={"column"} xs={6} mb={4}>
           <Box display="flex" alignItems="center" gap={1} mb={1}>
             <PercentageWrapper>15%</PercentageWrapper>
-            <Typography variant="h5" fontWeight={700}>
+            <Typography variant="h6" fontWeight={700}>
               Core Contributors
             </Typography>
           </Box>
@@ -62,7 +61,7 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
         <Grid item direction={"column"} xs={6} mb={4}>
           <Box display="flex" alignItems="center" gap={1} mb={1}>
             <PercentageWrapper>15%</PercentageWrapper>
-            <Typography variant="h5" fontWeight={700}>
+            <Typography variant="h6" fontWeight={700}>
               Safe Foundation
             </Typography>
           </Box>
@@ -75,7 +74,7 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
         <Grid item direction={"column"} xs={6}>
           <Box display="flex" alignItems="center" gap={1} mb={1}>
             <PercentageWrapper>5%</PercentageWrapper>
-            <Typography variant="h5" fontWeight={700}>
+            <Typography variant="h6" fontWeight={700}>
               Guardians
             </Typography>
           </Box>
@@ -89,7 +88,7 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
         <Grid item direction={"column"} xs={6}>
           <Box display="flex" alignItems="center" gap={1} mb={1}>
             <PercentageWrapper>5%</PercentageWrapper>
-            <Typography variant="h5" fontWeight={700}>
+            <Typography variant="h6" fontWeight={700}>
               User
             </Typography>
           </Box>

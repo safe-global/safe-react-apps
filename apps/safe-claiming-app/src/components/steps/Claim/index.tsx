@@ -144,11 +144,10 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
     }
 
     try {
-      const tx = await sdk.txs.send({ txs })
+      await sdk.txs.send({ txs })
 
       handleUpdateState({
         ...state,
-        safeTxHash: tx.safeTxHash ?? undefined,
         claimedAmount: amount,
       })
       handleNext()
@@ -172,9 +171,6 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
       <Grid container flexWrap="nowrap" gap={3}>
         <Grid item xs={8}>
           <Typography variant="h2">Your SAFE allocation:</Typography>
-        </Grid>
-        <Grid item xs={4} textAlign="right">
-          <Typography variant="subtitle1">Step 3 of 3</Typography>
         </Grid>
       </Grid>
       <Grid container flexWrap="nowrap" gap={3}>

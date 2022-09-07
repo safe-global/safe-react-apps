@@ -64,9 +64,8 @@ const LS_APP_STATE = "claimingApp"
 
 const EDUCATION_END = 5
 const CLAIM_STEP = EDUCATION_END + 2
-const STATUS_STEP = EDUCATION_END + 3
-const SUCCESS_STEP = EDUCATION_END + 4
-const NO_AIRDROP_STEP = EDUCATION_END + 5
+const SUCCESS_STEP = EDUCATION_END + 3
+const NO_AIRDROP_STEP = EDUCATION_END + 4
 
 const steps = [
   lazy(() => import("src/components/steps/Intro")),
@@ -80,14 +79,12 @@ const steps = [
 
   lazy(() => import("src/components/steps/Delegate")),
   lazy(() => import("src/components/steps/Claim")),
-  lazy(() => import("src/components/steps/Status")),
   lazy(() => import("src/components/steps/Success")),
   lazy(() => import("src/components/steps/NoAirdrop")),
 ]
 
 type PersistedAppState = {
   delegate?: DelegateEntry
-  safeTxHash?: string
   claimedAmount?: string
 }
 
@@ -185,7 +182,7 @@ const App = (): ReactElement => {
   }, [userClaim, ecosystemClaim, isTokenPaused, delegates])
 
   const [activeStep, setActiveStep] = useState<number>(
-    appState?.safeTxHash ? STATUS_STEP : appState?.delegate ? CLAIM_STEP : 0
+    appState?.delegate ? CLAIM_STEP : 0
   )
 
   useEffect(() => {
@@ -216,7 +213,6 @@ const App = (): ReactElement => {
       setAppState(newState)
       localStorage.setItem<PersistedAppState>(LS_APP_STATE, {
         delegate: newState.delegate,
-        safeTxHash: newState.safeTxHash,
         claimedAmount: newState.claimedAmount,
       })
     },

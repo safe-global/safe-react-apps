@@ -6,6 +6,8 @@ import { formatAmount } from "src/utils/format"
 import { Odometer } from "./Odometer/Odometer"
 import { ReactComponent as SingleGreenTile } from "src/assets/images/single-green-tile.svg"
 import { ReactComponent as DoubleGreenTile } from "src/assets/images/double-green-tile.svg"
+import InfoOutlined from "@mui/icons-material/InfoOutlined"
+import React from "react"
 
 const StyledSingleTile = styled(SingleGreenTile)`
   position: absolute;
@@ -89,6 +91,27 @@ export const ClaimCard = ({
 
         <Typography marginBottom={2} fontWeight={700}>
           {isClaimable ? "Claim now" : "Claimable in the future"}
+          {!isClaimable && (
+            <Tooltip
+              title={
+                <Typography>
+                  Linear vesting over 4 years from a starting date of 27.09.2022
+                </Typography>
+              }
+              arrow
+              placement="top"
+            >
+              <InfoOutlined
+                sx={{
+                  height: "16px",
+                  width: "16px",
+                  marginBottom: "-2px",
+                  marginLeft: 1,
+                  color: ({ palette }) => palette.secondary.main,
+                }}
+              />
+            </Tooltip>
+          )}
         </Typography>
         <Grid container direction="column">
           <Grid item display="flex" gap={1} alignItems="center">

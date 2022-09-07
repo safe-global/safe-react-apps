@@ -43,7 +43,7 @@ const theme = createTheme({
       fontWeight: 400,
       fontSize: "16px",
       lineHeight: "24px",
-      color: "#B2BBC0",
+      color: "#636669",
     },
     subtitle2: {
       fontStyle: "normal",
@@ -56,6 +56,7 @@ const theme = createTheme({
   palette: {
     primary: {
       main: "#121312",
+      light: "#636669",
     },
     safeGreen: {
       main: "#12ff80",
@@ -91,7 +92,7 @@ const theme = createTheme({
           boxShadow: "rgba(33, 48, 77, 0.1) 0px 0px 10px 0px",
         },
         arrow: {
-          color: "white",
+          color: "#121312",
         },
       },
     },

@@ -4,11 +4,12 @@ import {
   Box,
   CircularProgress,
   Grid,
+  InputAdornment,
   Paper,
   TextField,
   Typography,
 } from "@mui/material"
-import { useState } from "react"
+import React, { useState } from "react"
 import { useEnsResolution } from "src/hooks/useEnsResolution"
 
 import { AppState } from "src/App"
@@ -18,6 +19,7 @@ import { ExpandedDelegateCard } from "./ExpandedDelegateCard"
 import { DelegateEntry } from "src/hooks/useDelegatesFile"
 import { NavButtons } from "src/components/helpers/NavButtons"
 import { useScrollContext } from "src/components/helpers/ScrollContext"
+import SearchIcon from "@mui/icons-material/Search"
 
 const Delegate = ({
   handleNext,
@@ -112,7 +114,7 @@ const Delegate = ({
         display: "flex",
         flexDirection: "column",
         height: 1,
-        gap: 2,
+        gap: 3,
       }}
     >
       <>
@@ -122,9 +124,8 @@ const Delegate = ({
           alignItems="flex-end"
         >
           <Typography variant="h2">Choose a delegate</Typography>
-          <Typography variant="subtitle1">Step 2 of 3</Typography>
         </Box>
-        <Typography marginBottom={2}>
+        <Typography>
           A delegate is someone you select to make governance decisions on your
           behalf for all of your vested and unvested tokens. You still retain
           full ownership over your tokens and you can always change the delegate
@@ -152,7 +153,11 @@ const Delegate = ({
                 justifyContent="space-between"
                 gap={2}
               >
-                <Grid item xs={8}>
+                <Grid item xs={12}>
+                  <Typography mb={1}>
+                    You can select yourself or any other person to be a
+                    delegate.
+                  </Typography>
                   <TextField
                     fullWidth
                     color={isValidCustomAddressSet ? "primary" : undefined}
@@ -163,6 +168,11 @@ const Delegate = ({
                     variant="outlined"
                     value={customAddress}
                     error={Boolean(customAddressError)}
+                    sx={{
+                      "& .MuiFormHelperText-root": {
+                        margin: 0,
+                      },
+                    }}
                     helperText={
                       customAddressError || (
                         <Box display="flex" gap={1} mt={2}>
@@ -175,19 +185,29 @@ const Delegate = ({
                             }}
                           />
                           <Typography variant="subtitle1">
-                            An EOA address is recommended to enable gasless
-                            voting.
+                            For gasless voting, we suggest selecting an EOA
+                            wallet e.g. your connected wallet.
                           </Typography>
                         </Box>
                       )
                     }
-                    placeholder="Address or ENS"
+                    placeholder="Search name, address or ENS"
                     InputProps={{
                       endAdornment: customEnsLoading ? (
                         <CircularProgress />
                       ) : isValidCustomAddressSet ? (
                         <CheckCircleRoundedIcon color="primary" />
                       ) : null,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon
+                            fontSize="small"
+                            sx={{
+                              fill: (theme) => theme.palette.primary.light,
+                            }}
+                          />
+                        </InputAdornment>
+                      ),
                     }}
                   />
                 </Grid>

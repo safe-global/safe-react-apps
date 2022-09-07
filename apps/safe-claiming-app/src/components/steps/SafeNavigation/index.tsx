@@ -23,7 +23,6 @@ const SafeNavigation = ({ handleNext, handleBack }: Props) => {
         <Typography fontWeight={700} variant="h4">
           Navigating SafeDAO
         </Typography>
-        <Typography variant="subtitle1">Step 1 of 3</Typography>
       </Box>
       <Typography mb={3}>
         SafeDAO aims to foster a vibrant ecosystem of applications and wallets

@@ -22,7 +22,6 @@ const SafeInfo = ({ handleNext, handleBack }: Props) => {
         <Typography fontWeight={700} variant="h4">
           What is Safe?
         </Typography>
-        <Typography variant="subtitle1">Step 1 of 3</Typography>
       </Box>
       <Typography mb={3}>
         Safe is critical infrastructure for Web3. It is a programmable account
@@ -84,9 +83,10 @@ const SafeInfo = ({ handleNext, handleBack }: Props) => {
         Why are we launching a token?
       </Typography>
       <Typography>
-        As critical Web3 infrastructure, Safe needs to be a community-owned,
-        censorship resistant project, with a committed ecosystem stewarding its
-        decisions. A governance token is needed to help coordinate this effort.
+        As critical Web3 infrastructure, Safe needs to be a{" "}
+        <strong>community-owned, censorship resistant project</strong>, with a
+        committed ecosystem stewarding its decisions. A governance token is
+        needed to help coordinate this effort.
       </Typography>
       <NavButtons handleBack={handleBack} handleNext={handleNext} />
     </Paper>
