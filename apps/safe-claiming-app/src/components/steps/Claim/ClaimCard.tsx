@@ -7,7 +7,6 @@ import { Odometer } from "./Odometer/Odometer"
 import { ReactComponent as SingleGreenTile } from "src/assets/images/single-green-tile.svg"
 import { ReactComponent as DoubleGreenTile } from "src/assets/images/double-green-tile.svg"
 import InfoOutlined from "@mui/icons-material/InfoOutlined"
-import React from "react"
 
 const StyledSingleTile = styled(SingleGreenTile)`
   position: absolute;
