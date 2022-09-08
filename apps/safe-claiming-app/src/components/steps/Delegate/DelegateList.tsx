@@ -1,4 +1,10 @@
-import { Button, Grid, TextField, Typography } from "@mui/material"
+import {
+  Button,
+  Grid,
+  TextField,
+  Typography,
+  InputAdornment,
+} from "@mui/material"
 import SearchIcon from "@mui/icons-material/Search"
 import React, { useMemo, useState } from "react"
 import { DelegateCard } from "./DelegateCard"
@@ -70,8 +76,17 @@ export const DelegateList = ({
             }
             variant="outlined"
             value={delegateSearchTerm}
-            placeholder="Name, address, ENS"
-            InputProps={{ startAdornment: <SearchIcon /> }}
+            placeholder="Search name, address or ENS"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon
+                    fontSize="small"
+                    sx={{ fill: (theme) => theme.palette.primary.light }}
+                  />
+                </InputAdornment>
+              ),
+            }}
           />
         </Grid>
         <Grid item>

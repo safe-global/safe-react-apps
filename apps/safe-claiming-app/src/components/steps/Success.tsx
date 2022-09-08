@@ -24,18 +24,12 @@ const StyledTwitterButton = styled.a`
   color: white;
   border-radius: 40px;
   text-decoration: none;
+  margin-top: 8px;
 
   &:hover {
     background-color: #05a2dc;
   }
 `
-
-const tweetText =
-  "@gnosisSafe I just got my Safe token Airdrop. Did you get yours? ;)"
-const tweetHashtags = "staysafe,safedao,safeairdrop"
-const tweetURL = encodeURI(
-  `https://twitter.com/intent/tweet?text=${tweetText}&hashtags=${tweetHashtags}`
-)
 
 const Success = ({
   handleUpdateState,
@@ -57,6 +51,20 @@ const Success = ({
     2
   )
 
+  const isCustomDelegate = !state.delegateData.some(
+    (delegate) => delegate.address === state.delegate?.address
+  )
+
+  const tweetText = isCustomDelegate
+    ? "I've just received my Safe governance tokens to help steward the public good that is @Safe 🔰🫡 🔰🫡"
+    : state.delegate?.ens
+    ? `I've just received my Safe governance tokens and delegated my voting power to ${state.delegate.ens} to help steward the public good that is @Safe 🔰🫡`
+    : "I've just received my Safe governance tokens and delegated my voting power to help steward the public good that is @Safe 🔰🫡"
+
+  const tweetURL = encodeURI(
+    `https://twitter.com/intent/tweet?text=${tweetText}`
+  )
+
   return (
     <Paper
       elevation={0}
@@ -72,19 +80,21 @@ const Success = ({
       }}
     >
       <SafeHeaderGradient />
-      <Typography variant="h1">Congrats!</Typography>
-      <Typography textAlign="center">
-        You successfully claimed <strong>{formattedTokenAmount}</strong> Tokens!{" "}
-        <br />
-        Share your claim on Twitter ;)
+      <Typography variant="h1" my={1}>
+        Congrats!
       </Typography>
+      <Typography textAlign="center" mb={1}>
+        You successfully started claiming{" "}
+        <strong>{formattedTokenAmount}</strong> Tokens! <br />
+        Once the transaction is signed and executed, the tokens
+        <br />
+        will be available in your Safe.
+      </Typography>
+      <Typography fontWeight="bold">Share your claim on Twitter:</Typography>
       <Box display="flex" flexDirection="column" alignItems="flex-end">
-        <TweetBox color="black" padding={3} marginTop={3}>
+        <TweetBox color="black" padding={3}>
           <StyledTwitterIcon />
-          <Typography marginTop={1}>
-            I&apos;ve just received my Safe governance tokens to help steward
-            the public good that is Safe! #staysafe.
-          </Typography>
+          <Typography marginTop={1}>{tweetText}</Typography>
         </TweetBox>
         <StyledTwitterButton
           href={tweetURL}

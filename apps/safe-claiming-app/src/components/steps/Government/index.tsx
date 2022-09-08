@@ -11,6 +11,7 @@ import Box from "@mui/system/Box"
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import { NavButtons } from "src/components/helpers/NavButtons"
+import InfoOutlined from "@mui/icons-material/InfoOutlined"
 
 type Props = {
   handleBack: () => void
@@ -73,16 +74,21 @@ const InfoAccordion = ({
 const Government = ({ handleNext, handleBack }: Props) => {
   return (
     <Paper elevation={0} sx={{ padding: 6 }}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="flex-end"
-        marginBottom={3}
-      >
-        <Typography fontWeight={700} variant="h4" maxWidth={"400px"}>
-          What exactly is the Safe token and what does it govern?
+      <Typography fontWeight={700} variant="h4" maxWidth={"400px"} mb={3}>
+        What exactly is the Safe token and what does it govern?
+      </Typography>
+      <Box display="flex" gap={1} mb={3}>
+        <InfoOutlined
+          sx={{
+            height: "16px",
+            width: "16px",
+            marginTop: "4px",
+            color: ({ palette }) => palette.secondary.main,
+          }}
+        />
+        <Typography variant="subtitle1">
+          Safe Token is initially non-transferable.
         </Typography>
-        <Typography variant="subtitle1">Step 1 of 3</Typography>
       </Box>
       <Typography mb={3}>
         $SAFE is an ERC-20 governance token that stewards infrastructure

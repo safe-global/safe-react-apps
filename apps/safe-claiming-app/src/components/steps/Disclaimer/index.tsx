@@ -19,7 +19,6 @@ const Disclaimer = ({ handleNext, handleBack }: Props) => {
         <Typography fontWeight={700} variant="h4">
           Legal Disclaimer
         </Typography>
-        <Typography variant="subtitle1">Step 1 of 3</Typography>
       </Box>
       <Typography>
         This App is for our community to encourage Safe ecosystem contributors
