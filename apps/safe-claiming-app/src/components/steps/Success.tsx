@@ -56,7 +56,7 @@ const Success = ({
   )
 
   const tweetText = isCustomDelegate
-    ? "I've just claimed my Safe governance tokens to help steward the public good that is @Safe 🔰🫡 🔰🫡"
+    ? "I've just received my Safe governance tokens to help steward the public good that is @Safe 🔰🫡 🔰🫡"
     : state.delegate?.ens
     ? `I've just received my Safe governance tokens and delegated my voting power to ${state.delegate.ens} to help steward the public good that is @Safe 🔰🫡`
     : "I've just received my Safe governance tokens and delegated my voting power to help steward the public good that is @Safe 🔰🫡"
