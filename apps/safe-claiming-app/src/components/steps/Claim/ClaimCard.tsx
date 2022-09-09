@@ -89,7 +89,7 @@ export const ClaimCard = ({
         {isClaimable && <StyledDoubleTile />}
 
         <Typography marginBottom={2} fontWeight={700}>
-          {isClaimable ? "Claim now" : "Claimable in the future"}
+          {isClaimable ? "Claim now" : "Claim in future (vesting)"}
           {!isClaimable && (
             <Tooltip
               title={
