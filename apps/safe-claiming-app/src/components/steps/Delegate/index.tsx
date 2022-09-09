@@ -127,9 +127,9 @@ const Delegate = ({
         </Box>
         <Typography>
           A delegate is someone you select to make governance decisions on your
-          behalf for all of your vested and unvested tokens. You still retain
-          full ownership over your tokens and you can always change the delegate
-          at a later point.
+          behalf. You still retain full ownership of your tokens, but your
+          delegate will wield the voting power associated with those tokens,
+          including your unvested allocation.
         </Typography>
         {expandedDelegate ? (
           <div style={{ position: "relative" }}>
