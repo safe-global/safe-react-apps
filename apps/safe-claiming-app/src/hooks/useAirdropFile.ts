@@ -22,18 +22,18 @@ export const useAirdropFile = (): [
         setLoading(true)
 
         const vestingsForSafe = (
-          await fetch(`${VESTING_URL}${safe.safeAddress}.json`).then(
-            (response) => {
-              if (response.ok) {
-                return response.json() as Promise<VestingData[]>
-              }
-              if (response.status === 404) {
-                // No file exists => the safe is not part of any vesting
-                return Promise.resolve([])
-              }
-              throw Error(`Error fetching vestings: ${response.statusText}`)
+          await fetch(
+            `${VESTING_URL}${safe.chainId}/${safe.safeAddress}.json`
+          ).then((response) => {
+            if (response.ok) {
+              return response.json() as Promise<VestingData[]>
             }
-          )
+            if (response.status === 404) {
+              // No file exists => the safe is not part of any vesting
+              return Promise.resolve([])
+            }
+            throw Error(`Error fetching vestings: ${response.statusText}`)
+          })
         ).filter((vesting) => vesting.chainId === safe.chainId)
 
         isMounted &&
