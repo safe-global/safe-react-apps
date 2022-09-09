@@ -10,15 +10,25 @@ export const DelegateRegistryAddress =
   "0x469788fe6e9e9681c6ebf3bf78e7fd26fc015446"
 export const DelegateID = "safe.eth"
 
-// FIXME testing SAFE token
-export const SAFE_TOKEN_ADDRESS = "0xCFf1b0FdE85C102552D1D96084AF148f478F964A"
+export const DelegateIDs: Record<number, string> = {
+  1: "safe.eth",
+  4: "tutis.eth",
+}
 
-// FIXME testing airdrop address
-export const USER_AIRDROP_ADDRESS = "0x6C6ea0B60873255bb670F838b03db9d9a8f045c4"
+export const SAFE_TOKEN_ADDRESSES: Record<number, string> = {
+  1: "0x5afe3855358e112b5647b952709e6165e1c1eeee",
+  4: "0xCFf1b0FdE85C102552D1D96084AF148f478F964A",
+}
 
-//FIXME testing airdrop address
-export const ECOSYSTEM_AIRDROP_ADDRESS =
-  "0x82F1267759e9Bea202a46f8FC04704b6A5E2Af77"
+export const USER_AIRDROP_ADDRESSES: Record<number, string> = {
+  1: "0x590d38Af0b484e7FB9a54a9669dcfFFB25D2DF35",
+  4: "0x6C6ea0B60873255bb670F838b03db9d9a8f045c4",
+}
+
+export const ECOSYSTEM_AIRDROP_ADDRESSES: Record<number, string> = {
+  1: "0x3eCD46C973d815e30F604619B7F3EB9B30c0e963",
+  4: "0x82F1267759e9Bea202a46f8FC04704b6A5E2Af77",
+}
 
 export const GUARDIANS_URL =
   "https://safe-claiming-app-data.gnosis-safe.io/guardians/guardians.json"

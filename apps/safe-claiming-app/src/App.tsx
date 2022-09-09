@@ -15,8 +15,8 @@ import { useLocalStorage } from "src/hooks/useLocalStorage"
 import { FloatingTiles } from "./components/helpers/FloatingTiles"
 import { ScrollContextProvider } from "./components/helpers/ScrollContext"
 import {
-  ECOSYSTEM_AIRDROP_ADDRESS,
-  USER_AIRDROP_ADDRESS,
+  ECOSYSTEM_AIRDROP_ADDRESSES,
+  USER_AIRDROP_ADDRESSES,
 } from "./config/constants"
 import theme from "./config/theme"
 import { useAirdropFile } from "./hooks/useAirdropFile"
@@ -125,13 +125,13 @@ const App = (): ReactElement => {
 
   const userVestingStatus = useFetchVestingStatus(
     userVesting?.vestingId,
-    USER_AIRDROP_ADDRESS,
+    USER_AIRDROP_ADDRESSES[safe.chainId],
     appState.lastClaimTimestamp
   )
 
   const ecosystemVestingStatus = useFetchVestingStatus(
     ecosystemVesting?.vestingId,
-    ECOSYSTEM_AIRDROP_ADDRESS,
+    ECOSYSTEM_AIRDROP_ADDRESSES[safe.chainId],
     appState.lastClaimTimestamp
   )
 

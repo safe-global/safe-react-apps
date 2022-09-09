@@ -1,6 +1,6 @@
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { useEffect, useState } from "react"
-import { SAFE_TOKEN_ADDRESS } from "src/config/constants"
+import { SAFE_TOKEN_ADDRESSES } from "src/config/constants"
 import { SafeToken__factory } from "src/types/contracts/factories/SafeToken__factory"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
 
@@ -19,7 +19,7 @@ export const useIsTokenPaused = () => {
     const fetchIsTokenPaused = async () => {
       try {
         const paused = await SafeToken__factory.connect(
-          SAFE_TOKEN_ADDRESS,
+          SAFE_TOKEN_ADDRESSES[safe.chainId],
           web3Provider
         ).paused()
 

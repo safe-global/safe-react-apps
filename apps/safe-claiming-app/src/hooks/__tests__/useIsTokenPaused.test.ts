@@ -17,7 +17,7 @@ jest.mock("@gnosis.pm/safe-apps-react-sdk", () => {
     useSafeAppsSDK: () => ({
       safe: {
         safeAddress: "0x6a13E0280740CC5bd35eeee33B470b5bBb93dF37",
-        chainId: "4",
+        chainId: 4,
       },
       sdk: undefined,
     }),

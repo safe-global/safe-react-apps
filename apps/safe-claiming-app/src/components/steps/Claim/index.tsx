@@ -19,8 +19,8 @@ import { maxDecimals, minMaxValue, mustBeFloat } from "src/utils/validation"
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { BigNumber, ethers } from "ethers"
 import {
-  ECOSYSTEM_AIRDROP_ADDRESS,
-  USER_AIRDROP_ADDRESS,
+  ECOSYSTEM_AIRDROP_ADDRESSES,
+  USER_AIRDROP_ADDRESSES,
 } from "src/config/constants"
 import { useAmounts } from "src/hooks/useAmounts"
 import { createAirdropTxs } from "src/utils/contracts/airdrop"
@@ -108,7 +108,7 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
       state.delegateAddressFromContract !== state.delegate.address
 
     if (hasDelegateChanged) {
-      const delegateTx = createDelegateTx(state.delegate.address)
+      const delegateTx = createDelegateTx(state.delegate.address, safe.chainId)
       txs.push(delegateTx)
     }
 
@@ -125,7 +125,7 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
           userClaim,
           userAmount,
           safe.safeAddress,
-          USER_AIRDROP_ADDRESS,
+          USER_AIRDROP_ADDRESSES[safe.chainId],
           isTokenPaused
         )
       )
@@ -137,7 +137,7 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
           ecosystemClaim,
           ecosystemAmount,
           safe.safeAddress,
-          ECOSYSTEM_AIRDROP_ADDRESS,
+          ECOSYSTEM_AIRDROP_ADDRESSES[safe.chainId],
           isTokenPaused
         )
       )
