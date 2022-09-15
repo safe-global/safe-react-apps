@@ -154,8 +154,6 @@ const App = (): ReactElement => {
 
   const delegateAddressFromContract = useDelegate()
 
-  console.log(delegateAddressFromContract)
-
   const currentDelegate = useMemo(() => {
     if (appState.delegate) {
       return appState.delegate
