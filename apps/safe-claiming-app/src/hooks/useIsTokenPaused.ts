@@ -20,7 +20,7 @@ export const useIsTokenPaused = () => {
     const fetchIsTokenPaused = async () => {
       try {
         const paused = await SafeToken__factory.connect(
-          chainConstants.safeTokenAddress,
+          chainConstants.SAFE_TOKEN_ADDRESS,
           web3Provider
         ).paused()
 

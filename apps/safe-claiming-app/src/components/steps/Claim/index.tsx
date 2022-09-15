@@ -124,7 +124,7 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
           userClaim,
           userAmount,
           safe.safeAddress,
-          chainConstants.userAirdropAddress,
+          chainConstants.USER_AIRDROP_ADDRESS,
           isTokenPaused
         )
       )
@@ -136,7 +136,7 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
           ecosystemClaim,
           ecosystemAmount,
           safe.safeAddress,
-          chainConstants.ecosystemAirdropAddress,
+          chainConstants.ECOSYSTEM_AIRDROP_ADDRESS,
           isTokenPaused
         )
       )

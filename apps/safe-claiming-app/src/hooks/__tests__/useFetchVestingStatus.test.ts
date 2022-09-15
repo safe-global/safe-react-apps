@@ -42,7 +42,11 @@ describe("useFetchVestingStatus", () => {
 
   it("returns undefined for undefined vestingId", () => {
     const { result } = renderHook(() =>
-      useFetchVestingStatus(undefined, CHAIN_CONSTANTS[4].userAirdropAddress, 1)
+      useFetchVestingStatus(
+        undefined,
+        CHAIN_CONSTANTS[4].USER_AIRDROP_ADDRESS,
+        1
+      )
     )
 
     expect(result.current).toBeUndefined()
@@ -55,7 +59,7 @@ describe("useFetchVestingStatus", () => {
     const { result } = renderHook(() =>
       useFetchVestingStatus(
         hexZeroPad("0x1234", 32),
-        CHAIN_CONSTANTS[4].userAirdropAddress,
+        CHAIN_CONSTANTS[4].USER_AIRDROP_ADDRESS,
         1
       )
     )
@@ -111,7 +115,7 @@ describe("useFetchVestingStatus", () => {
       ({ lastClaimTimestamp }) =>
         useFetchVestingStatus(
           testVestingId,
-          CHAIN_CONSTANTS[4].userAirdropAddress,
+          CHAIN_CONSTANTS[4].USER_AIRDROP_ADDRESS,
           lastClaimTimestamp
         ),
       { initialProps: { lastClaimTimestamp: 1 } }

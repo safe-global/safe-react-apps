@@ -24,7 +24,7 @@ export const useDelegate = () => {
     let isCurrent = true
 
     const delegateIDInBytes = ethers.utils.formatBytes32String(
-      chainConstants.delegateID
+      chainConstants.DELEGATE_ID
     )
 
     const checkDelegate = async () => {

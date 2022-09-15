@@ -16,7 +16,7 @@ import { FloatingTiles } from "./components/helpers/FloatingTiles"
 import { Loading } from "./components/helpers/Loading"
 import { ScrollContextProvider } from "./components/helpers/ScrollContext"
 import { UnsupportedNetwork } from "./components/helpers/UnsupportedNetwork"
-import { CHAIN_CONSTANTS } from "./config/constants"
+import { Chains, CHAIN_CONSTANTS } from "./config/constants"
 import theme from "./config/theme"
 import { useAirdropFile } from "./hooks/useAirdropFile"
 import { useDelegate } from "./hooks/useDelegate"
@@ -126,13 +126,13 @@ const App = (): ReactElement => {
 
   const userVestingStatus = useFetchVestingStatus(
     userVesting?.vestingId,
-    chainConstants?.userAirdropAddress,
+    chainConstants?.USER_AIRDROP_ADDRESS,
     appState.lastClaimTimestamp
   )
 
   const ecosystemVestingStatus = useFetchVestingStatus(
     ecosystemVesting?.vestingId,
-    chainConstants?.ecosystemAirdropAddress,
+    chainConstants?.ECOSYSTEM_AIRDROP_ADDRESS,
     appState.lastClaimTimestamp
   )
 
@@ -153,6 +153,8 @@ const App = (): ReactElement => {
   const isTokenPaused = useIsTokenPaused()
 
   const delegateAddressFromContract = useDelegate()
+
+  console.log(delegateAddressFromContract)
 
   const currentDelegate = useMemo(() => {
     if (appState.delegate) {
@@ -226,7 +228,8 @@ const App = (): ReactElement => {
 
   const progress = hasNoAirdrop ? 0 : activeStep / (steps.length - 2)
 
-  const unsupportedChain = safe.chainId !== 1 && safe.chainId !== 4
+  const unsupportedChain =
+    safe.chainId !== Chains.MAINNET && safe.chainId !== Chains.RINKEBY
 
   return (
     <>

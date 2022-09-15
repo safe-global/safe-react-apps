@@ -45,7 +45,7 @@ describe("useDelegate()", () => {
 
   it("ignore the ZERO_ADDRESS as delegate", async () => {
     const delegateIDInBytes = ethers.utils.formatBytes32String(
-      CHAIN_CONSTANTS[4].delegateID
+      CHAIN_CONSTANTS[4].DELEGATE_ID
     )
 
     web3Provider.call = jest.fn((transaction) => {
@@ -74,7 +74,7 @@ describe("useDelegate()", () => {
 
   it("should encode the correct data and fetch the delegate on-chain once", async () => {
     const delegateIDInBytes = ethers.utils.formatBytes32String(
-      CHAIN_CONSTANTS[4].delegateID
+      CHAIN_CONSTANTS[4].DELEGATE_ID
     )
     const delegateAddress = ethers.utils.hexZeroPad("0x1", 20)
 

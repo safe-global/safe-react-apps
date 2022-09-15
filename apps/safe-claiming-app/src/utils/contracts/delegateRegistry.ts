@@ -10,7 +10,9 @@ export const createDelegateTx = (delegateAddress: string, chainId: number) => {
     "function setDelegate(bytes32 id, address delegate) public",
   ])
   // Add delegate tx if necessary
-  const delegateId = ethers.utils.formatBytes32String(chainConstants.delegateID)
+  const delegateId = ethers.utils.formatBytes32String(
+    chainConstants.DELEGATE_ID
+  )
   const delegateData = delegateContractInterface.encodeFunctionData(
     "setDelegate",
     [delegateId, delegateAddress]
