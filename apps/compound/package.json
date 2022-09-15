@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@types/big.js": "^6.1.2",
-    "@types/lodash": "^4.14.178"
+    "@types/lodash": "^4.14.185"
   },
   "scripts": {
     "start": "dotenv -e .env -- react-app-rewired start",
