@@ -35,7 +35,7 @@ const Connecting = ({ client, onOpenSafeApp, onKeepUsingWalletConnect }: Connect
 
       <Grid item>
         <StyledCenteredText size="md">
-          For better experience use Safe optimised app. It allows you to operate with an app without
+          For a better experience use a Safe optimised app. It allows you to operate an app without
           interruption.
         </StyledCenteredText>
       </Grid>
