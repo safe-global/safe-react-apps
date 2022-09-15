@@ -13,7 +13,6 @@
     "axios": "^0.27.2",
     "evm-proxy-detection": "1.0.0",
     "localforage": "^1.10.0",
-    "lodash": "^4.17.21",
     "react-beautiful-dnd": "^13.1.1",
     "react-hook-form": "^7.28.0",
     "react-router-dom": "^6.2.1",
