@@ -15,7 +15,7 @@ export const Loading = () => {
       }}
     >
       <Typography variant="h3">
-        <CircularProgress /> Loading airdrop data for connected safe
+        <CircularProgress /> Loading airdrop data for connected Safe
       </Typography>
     </Paper>
   )
