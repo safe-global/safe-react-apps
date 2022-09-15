@@ -1,5 +1,5 @@
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
-import { Typography, CircularProgress, styled } from "@mui/material"
+import { styled } from "@mui/material"
 import {
   lazy,
   ReactElement,
@@ -13,11 +13,10 @@ import {
 import { ProgressBar } from "src/components/helpers/ProgressBar"
 import { useLocalStorage } from "src/hooks/useLocalStorage"
 import { FloatingTiles } from "./components/helpers/FloatingTiles"
+import { Loading } from "./components/helpers/Loading"
 import { ScrollContextProvider } from "./components/helpers/ScrollContext"
-import {
-  ECOSYSTEM_AIRDROP_ADDRESS,
-  USER_AIRDROP_ADDRESS,
-} from "./config/constants"
+import { UnsupportedNetwork } from "./components/helpers/UnsupportedNetwork"
+import { Chains, CHAIN_CONSTANTS } from "./config/constants"
 import theme from "./config/theme"
 import { useAirdropFile } from "./hooks/useAirdropFile"
 import { useDelegate } from "./hooks/useDelegate"
@@ -118,6 +117,8 @@ const App = (): ReactElement => {
 
   const { safe } = useSafeAppsSDK()
 
+  const chainConstants = CHAIN_CONSTANTS[safe.chainId]
+
   const [delegates] = useDelegatesFile()
 
   const [vestings, isVestingLoading] = useAirdropFile()
@@ -125,13 +126,13 @@ const App = (): ReactElement => {
 
   const userVestingStatus = useFetchVestingStatus(
     userVesting?.vestingId,
-    USER_AIRDROP_ADDRESS,
+    chainConstants?.USER_AIRDROP_ADDRESS,
     appState.lastClaimTimestamp
   )
 
   const ecosystemVestingStatus = useFetchVestingStatus(
     ecosystemVesting?.vestingId,
-    ECOSYSTEM_AIRDROP_ADDRESS,
+    chainConstants?.ECOSYSTEM_AIRDROP_ADDRESS,
     appState.lastClaimTimestamp
   )
 
@@ -225,10 +226,13 @@ const App = (): ReactElement => {
 
   const progress = hasNoAirdrop ? 0 : activeStep / (steps.length - 2)
 
+  const unsupportedChain =
+    safe.chainId !== Chains.MAINNET && safe.chainId !== Chains.RINKEBY
+
   return (
     <>
       <FloatingTiles
-        maxTiles={72}
+        maxTiles={unsupportedChain ? 12 : 72}
         progress={progress}
         color={
           hasNoAirdrop
@@ -239,19 +243,13 @@ const App = (): ReactElement => {
 
       <ScrollContextProvider>
         <Container>
-          {safe.chainId !== 1 && safe.chainId !== 4 ? (
-            <Typography variant="h1">
-              Only Mainnet and Rinkeby are supported by this app.
-            </Typography>
+          {unsupportedChain ? (
+            <UnsupportedNetwork />
           ) : (
             <div>
               {typeof userVesting === "undefined" ||
               typeof ecosystemVesting === "undefined" ? (
-                <div>
-                  <Typography variant="h3">
-                    <CircularProgress /> Loading airdrop data for connected safe
-                  </Typography>
-                </div>
+                <Loading />
               ) : (
                 <>
                   {!hasNoAirdrop && <ProgressBar progress={progress} />}

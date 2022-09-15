@@ -1,8 +1,7 @@
 import { act, waitFor } from "@testing-library/react"
 import { renderHook } from "@testing-library/react-hooks"
-import { ethers } from "ethers"
 import { hexZeroPad } from "ethers/lib/utils"
-import { USER_AIRDROP_ADDRESS, ZERO_ADDRESS } from "src/config/constants"
+import { CHAIN_CONSTANTS, ZERO_ADDRESS } from "src/config/constants"
 import { Airdrop__factory } from "src/types/contracts/factories/Airdrop__factory"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
 import { useFetchVestingStatus } from "../useFetchVestingStatus"
@@ -43,7 +42,11 @@ describe("useFetchVestingStatus", () => {
 
   it("returns undefined for undefined vestingId", () => {
     const { result } = renderHook(() =>
-      useFetchVestingStatus(undefined, USER_AIRDROP_ADDRESS, 1)
+      useFetchVestingStatus(
+        undefined,
+        CHAIN_CONSTANTS[4].USER_AIRDROP_ADDRESS,
+        1
+      )
     )
 
     expect(result.current).toBeUndefined()
@@ -54,7 +57,11 @@ describe("useFetchVestingStatus", () => {
     const mockCall = jest.fn()
     web3Provider.call = mockCall
     const { result } = renderHook(() =>
-      useFetchVestingStatus(hexZeroPad("0x1234", 32), USER_AIRDROP_ADDRESS, 1)
+      useFetchVestingStatus(
+        hexZeroPad("0x1234", 32),
+        CHAIN_CONSTANTS[4].USER_AIRDROP_ADDRESS,
+        1
+      )
     )
     await waitFor(() => {
       expect(result.current).toBeUndefined()
@@ -108,7 +115,7 @@ describe("useFetchVestingStatus", () => {
       ({ lastClaimTimestamp }) =>
         useFetchVestingStatus(
           testVestingId,
-          USER_AIRDROP_ADDRESS,
+          CHAIN_CONSTANTS[4].USER_AIRDROP_ADDRESS,
           lastClaimTimestamp
         ),
       { initialProps: { lastClaimTimestamp: 1 } }

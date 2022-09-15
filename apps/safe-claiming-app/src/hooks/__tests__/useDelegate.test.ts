@@ -2,7 +2,7 @@ import { waitFor } from "@testing-library/react"
 import { renderHook } from "@testing-library/react-hooks"
 import { ethers } from "ethers"
 import {
-  DelegateID,
+  CHAIN_CONSTANTS,
   DelegateRegistryAddress,
   ZERO_ADDRESS,
 } from "src/config/constants"
@@ -22,7 +22,10 @@ jest.mock("@gnosis.pm/safe-apps-react-sdk", () => {
     // We require some of the enums/types from the original module
     ...originalModule,
     useSafeAppsSDK: () => ({
-      safe: { safeAddress: "0x6a13E0280740CC5bd35eeee33B470b5bBb93dF37" },
+      safe: {
+        safeAddress: "0x6a13E0280740CC5bd35eeee33B470b5bBb93dF37",
+        chainId: 4,
+      },
       sdk: undefined,
     }),
   }
@@ -41,7 +44,9 @@ describe("useDelegate()", () => {
   })
 
   it("ignore the ZERO_ADDRESS as delegate", async () => {
-    const delegateIDInBytes = ethers.utils.formatBytes32String(DelegateID)
+    const delegateIDInBytes = ethers.utils.formatBytes32String(
+      CHAIN_CONSTANTS[4].DELEGATE_ID
+    )
 
     web3Provider.call = jest.fn((transaction) => {
       expect(transaction.to?.toString().toLowerCase()).toEqual(
@@ -68,7 +73,9 @@ describe("useDelegate()", () => {
   })
 
   it("should encode the correct data and fetch the delegate on-chain once", async () => {
-    const delegateIDInBytes = ethers.utils.formatBytes32String(DelegateID)
+    const delegateIDInBytes = ethers.utils.formatBytes32String(
+      CHAIN_CONSTANTS[4].DELEGATE_ID
+    )
     const delegateAddress = ethers.utils.hexZeroPad("0x1", 20)
 
     web3Provider.call = jest.fn((transaction) => {

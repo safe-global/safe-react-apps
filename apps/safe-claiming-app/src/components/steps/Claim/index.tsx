@@ -18,10 +18,6 @@ import { maxDecimals, minMaxValue, mustBeFloat } from "src/utils/validation"
 
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { BigNumber, ethers } from "ethers"
-import {
-  ECOSYSTEM_AIRDROP_ADDRESS,
-  USER_AIRDROP_ADDRESS,
-} from "src/config/constants"
 import { useAmounts } from "src/hooks/useAmounts"
 import { createAirdropTxs } from "src/utils/contracts/airdrop"
 import { createDelegateTx } from "src/utils/contracts/delegateRegistry"
@@ -30,6 +26,7 @@ import { InfoOutlined } from "@mui/icons-material"
 import { ClaimCard } from "./ClaimCard"
 import { formatAmount } from "src/utils/format"
 import { NavButtons } from "src/components/helpers/NavButtons"
+import { CHAIN_CONSTANTS } from "src/config/constants"
 
 const ButtonLink = styled("button")`
   border: 0;
@@ -58,6 +55,8 @@ const validateAmount = (amount: string, maxAmount: string) => {
 
 const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
   const { sdk, safe } = useSafeAppsSDK()
+
+  const chainConstants = CHAIN_CONSTANTS[safe.chainId]
 
   const { delegate, userClaim, ecosystemClaim, isTokenPaused } = state
   const [amount, setAmount] = useState<string>()
@@ -108,7 +107,7 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
       state.delegateAddressFromContract !== state.delegate.address
 
     if (hasDelegateChanged) {
-      const delegateTx = createDelegateTx(state.delegate.address)
+      const delegateTx = createDelegateTx(state.delegate.address, safe.chainId)
       txs.push(delegateTx)
     }
 
@@ -125,7 +124,7 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
           userClaim,
           userAmount,
           safe.safeAddress,
-          USER_AIRDROP_ADDRESS,
+          chainConstants.USER_AIRDROP_ADDRESS,
           isTokenPaused
         )
       )
@@ -137,7 +136,7 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
           ecosystemClaim,
           ecosystemAmount,
           safe.safeAddress,
-          ECOSYSTEM_AIRDROP_ADDRESS,
+          chainConstants.ECOSYSTEM_AIRDROP_ADDRESS,
           isTokenPaused
         )
       )
