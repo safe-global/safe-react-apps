@@ -14,11 +14,11 @@
     "evm-proxy-detection": "1.0.0",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
-    "react-beautiful-dnd": "^13.1.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-hook-form": "^7.28.0",
     "react-router-dom": "^6.2.1",
     "react-virtuoso": "^2.8.2",
-    "web3": "~1.7.3"
+    "web3": "~1.8.0"
   },
   "devDependencies": {
     "@hookform/devtools": "^4.0.2",
