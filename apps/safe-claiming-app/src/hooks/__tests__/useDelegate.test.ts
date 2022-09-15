@@ -2,7 +2,7 @@ import { waitFor } from "@testing-library/react"
 import { renderHook } from "@testing-library/react-hooks"
 import { ethers } from "ethers"
 import {
-  DelegateIDs,
+  CHAIN_CONSTANTS,
   DelegateRegistryAddress,
   ZERO_ADDRESS,
 } from "src/config/constants"
@@ -44,7 +44,9 @@ describe("useDelegate()", () => {
   })
 
   it("ignore the ZERO_ADDRESS as delegate", async () => {
-    const delegateIDInBytes = ethers.utils.formatBytes32String(DelegateIDs[4])
+    const delegateIDInBytes = ethers.utils.formatBytes32String(
+      CHAIN_CONSTANTS[4].delegateID
+    )
 
     web3Provider.call = jest.fn((transaction) => {
       expect(transaction.to?.toString().toLowerCase()).toEqual(
@@ -71,7 +73,9 @@ describe("useDelegate()", () => {
   })
 
   it("should encode the correct data and fetch the delegate on-chain once", async () => {
-    const delegateIDInBytes = ethers.utils.formatBytes32String(DelegateIDs[4])
+    const delegateIDInBytes = ethers.utils.formatBytes32String(
+      CHAIN_CONSTANTS[4].delegateID
+    )
     const delegateAddress = ethers.utils.hexZeroPad("0x1", 20)
 
     web3Provider.call = jest.fn((transaction) => {

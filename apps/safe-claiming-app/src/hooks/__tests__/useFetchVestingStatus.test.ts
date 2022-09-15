@@ -1,7 +1,7 @@
 import { act, waitFor } from "@testing-library/react"
 import { renderHook } from "@testing-library/react-hooks"
 import { hexZeroPad } from "ethers/lib/utils"
-import { USER_AIRDROP_ADDRESSES, ZERO_ADDRESS } from "src/config/constants"
+import { CHAIN_CONSTANTS, ZERO_ADDRESS } from "src/config/constants"
 import { Airdrop__factory } from "src/types/contracts/factories/Airdrop__factory"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
 import { useFetchVestingStatus } from "../useFetchVestingStatus"
@@ -42,7 +42,7 @@ describe("useFetchVestingStatus", () => {
 
   it("returns undefined for undefined vestingId", () => {
     const { result } = renderHook(() =>
-      useFetchVestingStatus(undefined, USER_AIRDROP_ADDRESSES[4], 1)
+      useFetchVestingStatus(undefined, CHAIN_CONSTANTS[4].userAirdropAddress, 1)
     )
 
     expect(result.current).toBeUndefined()
@@ -55,7 +55,7 @@ describe("useFetchVestingStatus", () => {
     const { result } = renderHook(() =>
       useFetchVestingStatus(
         hexZeroPad("0x1234", 32),
-        USER_AIRDROP_ADDRESSES[4],
+        CHAIN_CONSTANTS[4].userAirdropAddress,
         1
       )
     )
@@ -111,7 +111,7 @@ describe("useFetchVestingStatus", () => {
       ({ lastClaimTimestamp }) =>
         useFetchVestingStatus(
           testVestingId,
-          USER_AIRDROP_ADDRESSES[4],
+          CHAIN_CONSTANTS[4].userAirdropAddress,
           lastClaimTimestamp
         ),
       { initialProps: { lastClaimTimestamp: 1 } }

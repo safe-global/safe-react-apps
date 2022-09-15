@@ -1,7 +1,7 @@
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { Contract, ethers } from "ethers"
 import {
-  DelegateIDs,
+  CHAIN_CONSTANTS,
   DelegateRegistryAddress,
   ZERO_ADDRESS,
 } from "src/config/constants"
@@ -15,11 +15,16 @@ export const useDelegate = () => {
 
   const ethersProvider = useMemo(() => getWeb3Provider(safe, sdk), [safe, sdk])
 
+  const chainConstants = CHAIN_CONSTANTS[safe.chainId]
+
   useEffect(() => {
+    if (!chainConstants) {
+      return
+    }
     let isCurrent = true
 
     const delegateIDInBytes = ethers.utils.formatBytes32String(
-      DelegateIDs[safe.chainId]
+      chainConstants.delegateID
     )
 
     const checkDelegate = async () => {
@@ -43,7 +48,7 @@ export const useDelegate = () => {
     return () => {
       isCurrent = false
     }
-  }, [ethersProvider, safe.safeAddress])
+  }, [chainConstants, ethersProvider, safe.safeAddress])
 
   return delegateAddress
 }

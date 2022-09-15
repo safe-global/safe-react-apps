@@ -1,14 +1,16 @@
 import { ethers } from "ethers"
 import { Interface } from "ethers/lib/utils"
-import { DelegateIDs, DelegateRegistryAddress } from "src/config/constants"
+import { CHAIN_CONSTANTS, DelegateRegistryAddress } from "src/config/constants"
 
 export const createDelegateTx = (delegateAddress: string, chainId: number) => {
+  const chainConstants = CHAIN_CONSTANTS[chainId]
+
   const delegateContractInterface = new Interface([
     "function delegation(bytes32, bytes32) public view returns (address)",
     "function setDelegate(bytes32 id, address delegate) public",
   ])
   // Add delegate tx if necessary
-  const delegateId = ethers.utils.formatBytes32String(DelegateIDs[chainId])
+  const delegateId = ethers.utils.formatBytes32String(chainConstants.delegateID)
   const delegateData = delegateContractInterface.encodeFunctionData(
     "setDelegate",
     [delegateId, delegateAddress]
