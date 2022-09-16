@@ -23,6 +23,8 @@ const NON_SUPPORTED_CHAINS = [
   '1313161554',
   // Astar
   '529',
+  // Velas
+  '106',
 ]
 
 const isSimulationSupported = (chainId: string) => !NON_SUPPORTED_CHAINS.includes(chainId)
