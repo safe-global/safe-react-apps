@@ -195,10 +195,12 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
             color: ({ palette }) => palette.secondary.main,
           }}
         />
-        <Typography variant="subtitle1">
+        <Typography variant="subtitle2">
           Awarded total allocation is{" "}
-          {formatAmount(Number(ethers.utils.formatEther(totalAllocation)), 2)}{" "}
-          SAFE
+          <span style={{ color: "#121312" }}>
+            {formatAmount(Number(ethers.utils.formatEther(totalAllocation)), 2)}{" "}
+            SAFE
+          </span>
         </Typography>
       </Box>
 
@@ -259,11 +261,26 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
                 </Button>
               </Grid>
             </Grid>
+            <Box display="flex" gap={1} mt={0} mb={4}>
+              <InfoOutlined
+                sx={{
+                  height: "16px",
+                  width: "16px",
+                  marginTop: "4px",
+                  color: ({ palette }) => palette.secondary.main,
+                }}
+              />
+              <Typography variant="subtitle2">
+                Execute at least one claim of any amount of tokens until
+                27.12.22 10:00 CET or your allocation will be transferred back
+                to the SafeDAO treasury
+              </Typography>
+            </Box>
           </>
         </Grid>
         {delegate && (
           <Grid item xs={12}>
-            <Typography variant="subtitle1" marginBottom={1}>
+            <Typography variant="body1" marginBottom={1}>
               Delegating to
             </Typography>
             <SelectedDelegate delegate={delegate} onClick={handleBack} />
@@ -276,7 +293,7 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
                   color: ({ palette }) => palette.secondary.main,
                 }}
               />
-              <Typography variant="subtitle1">
+              <Typography variant="subtitle2">
                 You only delegate your voting power and not the ownership over
                 your tokens.
               </Typography>
