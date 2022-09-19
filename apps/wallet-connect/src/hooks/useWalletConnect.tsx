@@ -121,7 +121,8 @@ const useWalletConnect = () => {
 
             case 'eth_signTypedData':
             case 'eth_signTypedData_v4': {
-              const [address, typedData] = payload.params
+              const [address, typedDataString] = payload.params
+              const typedData = JSON.parse(typedDataString)
 
               if (!areStringsEqual(address, safe.safeAddress)) {
                 throw new Error('The address is invalid')
