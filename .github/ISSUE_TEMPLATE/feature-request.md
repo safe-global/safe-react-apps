@@ -1,17 +1,13 @@
 ---
 name: Feature request
-about: Create a feature request for the Gnosis Safe Apps
+about: Create a feature request for Safe Apps
 
 ---
 
 ## Overview
 
-## Goals
-
 ## Requirements
 
-## Screens
- - Figma:
- - Zeplin:
+## Designs
 
 ## Links
