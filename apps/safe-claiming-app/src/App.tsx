@@ -92,7 +92,6 @@ export type AppState = PersistedAppState & {
   userClaim: VestingClaim | null
   isTokenPaused: boolean
   delegateAddressFromContract?: string
-  lastClaimTimestamp: number
   delegateData: DelegateEntry[]
   claimedAmount?: string
 }
@@ -101,7 +100,6 @@ const initialState: AppState = {
   ecosystemClaim: null,
   userClaim: null,
   isTokenPaused: true,
-  lastClaimTimestamp: new Date().getTime(),
   delegateData: [],
 }
 
