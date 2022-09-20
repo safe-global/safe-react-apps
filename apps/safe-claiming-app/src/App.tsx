@@ -85,7 +85,6 @@ const steps = [
 
 type PersistedAppState = {
   delegate?: DelegateEntry
-  claimedAmount?: string
 }
 
 export type AppState = PersistedAppState & {
@@ -95,6 +94,7 @@ export type AppState = PersistedAppState & {
   delegateAddressFromContract?: string
   lastClaimTimestamp: number
   delegateData: DelegateEntry[]
+  claimedAmount?: string
 }
 
 const initialState: AppState = {
@@ -127,15 +127,13 @@ const App = (): ReactElement => {
 
   const [userVestingStatus, userVestingStatusError] = useFetchVestingStatus(
     userVesting?.vestingId,
-    chainConstants?.USER_AIRDROP_ADDRESS,
-    appState.lastClaimTimestamp
+    chainConstants?.USER_AIRDROP_ADDRESS
   )
 
   const [ecosystemVestingStatus, ecosystemVestingStatusError] =
     useFetchVestingStatus(
       ecosystemVesting?.vestingId,
-      chainConstants?.ECOSYSTEM_AIRDROP_ADDRESS,
-      appState.lastClaimTimestamp
+      chainConstants?.ECOSYSTEM_AIRDROP_ADDRESS
     )
 
   const userClaim: VestingClaim | null = useMemo(
@@ -172,17 +170,27 @@ const App = (): ReactElement => {
   }, [appState.delegate, delegateAddressFromContract, delegates])
 
   useEffect(() => {
-    handleUpdateState({
-      ...appState,
+    setAppState((prev) => ({
+      ...prev,
       userClaim,
       ecosystemClaim,
       delegate: currentDelegate,
       isTokenPaused,
       delegateAddressFromContract,
       delegateData: delegates,
+    }))
+    localStorage.setItem<PersistedAppState>(LS_APP_STATE, {
+      delegate: currentDelegate,
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userClaim, ecosystemClaim, isTokenPaused, delegates])
+  }, [
+    userClaim,
+    ecosystemClaim,
+    isTokenPaused,
+    delegates,
+    currentDelegate,
+    delegateAddressFromContract,
+    localStorage,
+  ])
 
   const [activeStep, setActiveStep] = useState<number>(
     appState?.delegate ? CLAIM_STEP : 0
@@ -216,7 +224,6 @@ const App = (): ReactElement => {
       setAppState(newState)
       localStorage.setItem<PersistedAppState>(LS_APP_STATE, {
         delegate: newState.delegate,
-        claimedAmount: newState.claimedAmount,
       })
     },
     [localStorage]

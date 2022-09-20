@@ -10,13 +10,13 @@ export const useAmounts = (
 ): [string, string] => {
   const [claimableAmount, setClaimableAmount] = useState("0")
   const [amountInVesting, setAmountInVesting] = useState("0")
-  const [currentIntervalId, setCurrentIntervalId] = useState<number>()
   const { safe, sdk } = useSafeAppsSDK()
-  const web3Provider = getWeb3Provider(safe, sdk)
 
   useEffect(() => {
     const refreshAmount = async () => {
       try {
+        const web3Provider = getWeb3Provider(safe, sdk)
+
         // get timestamp from latest block
         const latestBlock = await web3Provider.getBlock("latest")
         const blockTimestamp = latestBlock.timestamp
@@ -44,18 +44,11 @@ export const useAmounts = (
       return
     }
 
-    if (currentIntervalId) {
-      window.clearInterval(currentIntervalId)
-      setCurrentIntervalId(undefined)
-    }
-
     refreshAmount()
     const refreshAmountInterval = window.setInterval(refreshAmount, 10000)
-    setCurrentIntervalId(refreshAmountInterval)
 
     return () => window.clearInterval(refreshAmountInterval)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vestingClaim])
+  }, [safe, sdk, vestingClaim])
 
   return [claimableAmount, amountInVesting]
 }

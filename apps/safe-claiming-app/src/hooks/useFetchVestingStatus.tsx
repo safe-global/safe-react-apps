@@ -7,8 +7,7 @@ import { getWeb3Provider } from "src/utils/getWeb3Provider"
 
 export const useFetchVestingStatus = (
   vestingId: string | undefined,
-  airdropAddress: string,
-  lastClaimTimestamp: number
+  airdropAddress: string
 ): [VestingStatus | undefined, string | undefined] => {
   const { safe, sdk } = useSafeAppsSDK()
   const web3Provider = useMemo(() => getWeb3Provider(safe, sdk), [safe, sdk])
@@ -53,7 +52,7 @@ export const useFetchVestingStatus = (
     return () => {
       isMounted = false
     }
-  }, [airdropAddress, vestingId, web3Provider, lastClaimTimestamp])
+  }, [airdropAddress, vestingId, web3Provider])
 
   return [vestingStatus, error]
 }

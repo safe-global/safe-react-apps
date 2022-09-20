@@ -3,7 +3,6 @@ import { ReactComponent as SafeHeaderGradient } from "src/assets/images/safe-hea
 import TwitterIcon from "@mui/icons-material/Twitter"
 import styled from "@emotion/styled"
 import { AppState } from "src/App"
-import { useEffect } from "react"
 import { NavButtons } from "../helpers/NavButtons"
 import { formatAmount } from "src/utils/format"
 const TweetBox = styled(Box)`
@@ -32,20 +31,12 @@ const StyledTwitterButton = styled.a`
 `
 
 const Success = ({
-  handleUpdateState,
   handleBack,
   state,
 }: {
   state: AppState
   handleBack: () => void
-  handleUpdateState: (newState: AppState) => void
 }) => {
-  useEffect(() => {
-    // trigger reload and update of claimed amount from on-chain
-    handleUpdateState({ ...state, lastClaimTimestamp: new Date().getTime() })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [handleUpdateState])
-
   const formattedTokenAmount = formatAmount(
     Number(state.claimedAmount ?? "0"),
     2
