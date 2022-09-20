@@ -167,13 +167,13 @@ const theme = createTheme({
           font-family: 'DM Sans';
           font-display: swap;
           font-weight: 400;
-          src: url('/fonts/dm-sans-v11-latin-ext-regular.woff2') format('woff2');
+          src: url('/safe-claiming-app/fonts/dm-sans-v11-latin-ext-regular.woff2') format('woff2');
         }
         @font-face {
           font-family: 'DM Sans';
           font-display: swap;
           font-weight: bold;
-          src: url('/fonts/dm-sans-v11-latin-ext-700.woff2') format('woff2');
+          src: url('/safe-claiming-app/fonts/dm-sans-v11-latin-ext-700.woff2') format('woff2');
         }`,
     },
   },

@@ -28,18 +28,22 @@ export const useDelegate = () => {
     )
 
     const checkDelegate = async () => {
-      const abiInterface = new Interface([
-        "function delegation(address, bytes32) public view returns (address)",
-        "function setDelegate(bytes32 id, address delegate) public",
-      ])
-      const address = await new Contract(
-        DelegateRegistryAddress,
-        abiInterface,
-        ethersProvider
-      ).delegation(safe.safeAddress, delegateIDInBytes)
+      try {
+        const abiInterface = new Interface([
+          "function delegation(address, bytes32) public view returns (address)",
+          "function setDelegate(bytes32 id, address delegate) public",
+        ])
+        const address = await new Contract(
+          DelegateRegistryAddress,
+          abiInterface,
+          ethersProvider
+        ).delegation(safe.safeAddress, delegateIDInBytes)
 
-      if (address !== ZERO_ADDRESS) {
-        isCurrent && setDelegateAddress(address)
+        if (address !== ZERO_ADDRESS) {
+          isCurrent && setDelegateAddress(address)
+        }
+      } catch (error) {
+        console.error(error)
       }
     }
 
