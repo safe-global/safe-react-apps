@@ -1,6 +1,8 @@
+import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { BigNumber } from "ethers"
 import { useEffect, useState } from "react"
 import { VestingClaim } from "src/types/vestings"
+import { getWeb3Provider } from "src/utils/getWeb3Provider"
 import { calculateVestedAmount } from "src/utils/vesting"
 
 export const useAmounts = (
@@ -9,12 +11,17 @@ export const useAmounts = (
   const [claimableAmount, setClaimableAmount] = useState("0")
   const [amountInVesting, setAmountInVesting] = useState("0")
   const [currentIntervalId, setCurrentIntervalId] = useState<number>()
+  const { safe, sdk } = useSafeAppsSDK()
+  const web3Provider = getWeb3Provider(safe, sdk)
 
   useEffect(() => {
-    const refreshAmount = () => {
+    const refreshAmount = async () => {
+      // get timestamp from latest block
+      const latestBlock = await web3Provider.getBlock("latest")
+      const blockTimestamp = latestBlock.timestamp
       const totalAmount = vestingClaim ? vestingClaim.amount : "0"
       const vestedAmount = vestingClaim
-        ? calculateVestedAmount(vestingClaim)
+        ? calculateVestedAmount(vestingClaim, blockTimestamp)
         : "0"
       const newClaimableAmount = BigNumber.from(vestedAmount)
         .sub(BigNumber.from(vestingClaim?.amountClaimed || "0"))
