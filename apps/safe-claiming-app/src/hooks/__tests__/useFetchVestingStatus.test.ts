@@ -1,8 +1,7 @@
-import { act, waitFor } from "@testing-library/react"
+import { waitFor } from "@testing-library/react"
 import { renderHook } from "@testing-library/react-hooks"
 import { hexZeroPad } from "ethers/lib/utils"
-import { CHAIN_CONSTANTS, ZERO_ADDRESS } from "src/config/constants"
-import { Airdrop__factory } from "src/types/contracts/factories/Airdrop__factory"
+import { CHAIN_CONSTANTS } from "src/config/constants"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
 import { useFetchVestingStatus } from "../useFetchVestingStatus"
 
@@ -42,14 +41,10 @@ describe("useFetchVestingStatus", () => {
 
   it("returns undefined for undefined vestingId", () => {
     const { result } = renderHook(() =>
-      useFetchVestingStatus(
-        undefined,
-        CHAIN_CONSTANTS[4].USER_AIRDROP_ADDRESS,
-        1
-      )
+      useFetchVestingStatus(undefined, CHAIN_CONSTANTS[4].USER_AIRDROP_ADDRESS)
     )
 
-    expect(result.current).toBeUndefined()
+    expect(result.current[0]).toBeUndefined()
   })
 
   it("returns undefined for unexpected errors", async () => {
@@ -59,90 +54,13 @@ describe("useFetchVestingStatus", () => {
     const { result } = renderHook(() =>
       useFetchVestingStatus(
         hexZeroPad("0x1234", 32),
-        CHAIN_CONSTANTS[4].USER_AIRDROP_ADDRESS,
-        1
+        CHAIN_CONSTANTS[4].USER_AIRDROP_ADDRESS
       )
     )
     await waitFor(() => {
-      expect(result.current).toBeUndefined()
+      expect(result.current[0]).toBeUndefined()
+      expect(result.current[1]).toBeDefined()
       expect(mockCall).toBeCalledTimes(1)
-    })
-  })
-
-  it("vesting gets redeemed between two fetch updates triggered by the timestamp", async () => {
-    const testVestingId =
-      "0xd2b4c773ce0596c5bb3d5f5e65fa7c0c1a2421a6c0d41034caf4f0a7640b9b8b"
-    const mockCall = jest.fn()
-    mockCall.mockImplementationOnce((tx) => {
-      expect(tx.data?.toString().toLowerCase()).toContain(
-        testVestingId.slice(2).toLowerCase()
-      )
-      const airdropInterface = Airdrop__factory.createInterface()
-      const returnValue = airdropInterface.encodeFunctionResult("vestings", [
-        ZERO_ADDRESS,
-        0,
-        false,
-        0,
-        0,
-        "0",
-        "0",
-        "0",
-        false,
-      ])
-      return Promise.resolve(returnValue)
-    })
-    mockCall.mockImplementationOnce((tx) => {
-      expect(tx.data?.toString().toLowerCase()).toContain(
-        testVestingId.slice(2).toLowerCase()
-      )
-      const airdropInterface = Airdrop__factory.createInterface()
-      const returnValue = airdropInterface.encodeFunctionResult("vestings", [
-        SAFE_ADDRESS,
-        0,
-        false,
-        2,
-        100,
-        "1000",
-        "0",
-        "0",
-        false,
-      ])
-      return Promise.resolve(returnValue)
-    })
-    web3Provider.call = mockCall
-
-    const { result, rerender } = renderHook(
-      ({ lastClaimTimestamp }) =>
-        useFetchVestingStatus(
-          testVestingId,
-          CHAIN_CONSTANTS[4].USER_AIRDROP_ADDRESS,
-          lastClaimTimestamp
-        ),
-      { initialProps: { lastClaimTimestamp: 1 } }
-    )
-
-    await waitFor(() => {
-      expect(result.current).not.toBeNull()
-      const resultingClaim = result.current
-      expect(resultingClaim?.amountClaimed).toEqual("0")
-      expect(resultingClaim?.isRedeemed).toBeFalsy()
-      expect(mockCall).toBeCalledTimes(1)
-    })
-
-    // Same timestamp should not trigger a new on-chain fetch
-    act(() => rerender({ lastClaimTimestamp: 1 }))
-
-    expect(mockCall).toBeCalledTimes(1)
-
-    // New timestamp should trigger update and new fetch
-    act(() => rerender({ lastClaimTimestamp: 2 }))
-
-    await waitFor(() => {
-      expect(result.current).not.toBeNull()
-      const resultingClaim = result.current
-      expect(resultingClaim?.amountClaimed).toEqual("0")
-      expect(resultingClaim?.isRedeemed).toBeTruthy()
-      expect(mockCall).toBeCalledTimes(2)
     })
   })
 })

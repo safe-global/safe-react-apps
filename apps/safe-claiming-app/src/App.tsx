@@ -15,6 +15,7 @@ import { useLocalStorage } from "src/hooks/useLocalStorage"
 import { FloatingTiles } from "./components/helpers/FloatingTiles"
 import { Loading } from "./components/helpers/Loading"
 import { ScrollContextProvider } from "./components/helpers/ScrollContext"
+import { UnexpectedError } from "./components/helpers/UnexpectedError"
 import { UnsupportedNetwork } from "./components/helpers/UnsupportedNetwork"
 import { Chains, CHAIN_CONSTANTS } from "./config/constants"
 import theme from "./config/theme"
@@ -84,7 +85,6 @@ const steps = [
 
 type PersistedAppState = {
   delegate?: DelegateEntry
-  claimedAmount?: string
 }
 
 export type AppState = PersistedAppState & {
@@ -92,15 +92,14 @@ export type AppState = PersistedAppState & {
   userClaim: VestingClaim | null
   isTokenPaused: boolean
   delegateAddressFromContract?: string
-  lastClaimTimestamp: number
   delegateData: DelegateEntry[]
+  claimedAmount?: string
 }
 
 const initialState: AppState = {
   ecosystemClaim: null,
   userClaim: null,
   isTokenPaused: true,
-  lastClaimTimestamp: new Date().getTime(),
   delegateData: [],
 }
 
@@ -119,22 +118,21 @@ const App = (): ReactElement => {
 
   const chainConstants = CHAIN_CONSTANTS[safe.chainId]
 
-  const [delegates] = useDelegatesFile()
+  const [delegates, , delegatesFileError] = useDelegatesFile()
 
-  const [vestings, isVestingLoading] = useAirdropFile()
+  const [vestings, isVestingLoading, vestingFileError] = useAirdropFile()
   const [userVesting, ecosystemVesting] = vestings
 
-  const userVestingStatus = useFetchVestingStatus(
+  const [userVestingStatus, userVestingStatusError] = useFetchVestingStatus(
     userVesting?.vestingId,
-    chainConstants?.USER_AIRDROP_ADDRESS,
-    appState.lastClaimTimestamp
+    chainConstants?.USER_AIRDROP_ADDRESS
   )
 
-  const ecosystemVestingStatus = useFetchVestingStatus(
-    ecosystemVesting?.vestingId,
-    chainConstants?.ECOSYSTEM_AIRDROP_ADDRESS,
-    appState.lastClaimTimestamp
-  )
+  const [ecosystemVestingStatus, ecosystemVestingStatusError] =
+    useFetchVestingStatus(
+      ecosystemVesting?.vestingId,
+      chainConstants?.ECOSYSTEM_AIRDROP_ADDRESS
+    )
 
   const userClaim: VestingClaim | null = useMemo(
     () =>
@@ -170,17 +168,27 @@ const App = (): ReactElement => {
   }, [appState.delegate, delegateAddressFromContract, delegates])
 
   useEffect(() => {
-    handleUpdateState({
-      ...appState,
+    setAppState((prev) => ({
+      ...prev,
       userClaim,
       ecosystemClaim,
       delegate: currentDelegate,
       isTokenPaused,
       delegateAddressFromContract,
       delegateData: delegates,
+    }))
+    localStorage.setItem<PersistedAppState>(LS_APP_STATE, {
+      delegate: currentDelegate,
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userClaim, ecosystemClaim, isTokenPaused, delegates])
+  }, [
+    userClaim,
+    ecosystemClaim,
+    isTokenPaused,
+    delegates,
+    currentDelegate,
+    delegateAddressFromContract,
+    localStorage,
+  ])
 
   const [activeStep, setActiveStep] = useState<number>(
     appState?.delegate ? CLAIM_STEP : 0
@@ -214,7 +222,6 @@ const App = (): ReactElement => {
       setAppState(newState)
       localStorage.setItem<PersistedAppState>(LS_APP_STATE, {
         delegate: newState.delegate,
-        claimedAmount: newState.claimedAmount,
       })
     },
     [localStorage]
@@ -224,7 +231,14 @@ const App = (): ReactElement => {
 
   const hasNoAirdrop = activeStep === NO_AIRDROP_STEP
 
-  const progress = hasNoAirdrop ? 0 : activeStep / (steps.length - 2)
+  const fatalError =
+    vestingFileError ||
+    delegatesFileError ||
+    userVestingStatusError ||
+    ecosystemVestingStatusError
+
+  const progress =
+    hasNoAirdrop || fatalError ? 0 : activeStep / (steps.length - 2)
 
   const unsupportedChain =
     safe.chainId !== Chains.MAINNET && safe.chainId !== Chains.RINKEBY
@@ -235,7 +249,7 @@ const App = (): ReactElement => {
         maxTiles={unsupportedChain ? 12 : 72}
         progress={progress}
         color={
-          hasNoAirdrop
+          hasNoAirdrop || fatalError
             ? theme.palette.primary.main
             : theme.palette.safeGreen.main
         }
@@ -243,7 +257,9 @@ const App = (): ReactElement => {
 
       <ScrollContextProvider>
         <Container>
-          {unsupportedChain ? (
+          {fatalError ? (
+            <UnexpectedError error={fatalError} />
+          ) : unsupportedChain ? (
             <UnsupportedNetwork />
           ) : (
             <div>

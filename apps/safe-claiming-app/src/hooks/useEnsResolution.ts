@@ -14,7 +14,6 @@ export const useEnsResolution = (
   debounce = true
 ): [ENSResult | undefined, string | undefined, boolean] => {
   const [ensLoading, setEnsLoading] = useState<boolean>(false)
-  const [ensTimeout, setEnsTimeout] = useState<number>()
   const [ensResult, setEnsResult] = useState<ENSResult>()
   const [error, setError] = useState<string>()
 
@@ -25,9 +24,6 @@ export const useEnsResolution = (
 
   useEffect(() => {
     let isMounted = true
-    // we use a timeout to debounce the expensive ENS lookup
-    window.clearTimeout(ensTimeout)
-    setEnsTimeout(undefined)
 
     if (manualAddress.length === 0) {
       setEnsResult(undefined)
@@ -77,26 +73,24 @@ export const useEnsResolution = (
       }
 
       isMounted && setEnsLoading(false)
-      isMounted && setEnsTimeout(undefined)
     }
 
     // reset error state
     setError(undefined)
     setEnsLoading(false)
+    let ensTimeout: number | undefined
     if (debounce) {
-      setEnsTimeout(window.setTimeout(resolveAddress, 300))
+      ensTimeout = window.setTimeout(resolveAddress, 300)
     } else {
       resolveAddress()
     }
 
     return () => {
       window.clearTimeout(ensTimeout)
-      setEnsTimeout(undefined)
       isMounted = false
     }
     // If we add the ensTimeout it will always trigger
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [manualAddress, web3Provider])
+  }, [chainPrefix, debounce, manualAddress, web3Provider])
 
   return [ensResult, error, ensLoading]
 }
