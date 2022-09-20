@@ -2,6 +2,7 @@ import { renderHook } from "@testing-library/react-hooks"
 import { ethers } from "ethers"
 import { act } from "react-dom/test-utils"
 import { VestingClaim } from "src/types/vestings"
+import { DESYNC_BUFFER } from "src/utils/vesting"
 import { useAmounts } from "../useAmounts"
 
 const fakeNow = new Date()
@@ -29,7 +30,9 @@ const createMockVesting = (
     contract: ethers.utils.hexZeroPad("0x2", 20),
     tag: "user",
     startDate:
-      Math.floor(fakeNow.getTime() / 1000) + ONE_WEEK * vestingStartDiffInWeeks,
+      Math.floor(fakeNow.getTime() / 1000) +
+      ONE_WEEK * vestingStartDiffInWeeks -
+      DESYNC_BUFFER,
   }
 }
 

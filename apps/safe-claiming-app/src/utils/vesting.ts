@@ -4,9 +4,13 @@ import { VestingClaim } from "src/types/vestings"
 const LINEAR_CURVE = 0
 const EXPONENTIAL_CURVE = 1
 
+// Small buffer because the block time lags behind a little bit and this can cause failing transactions
+export const DESYNC_BUFFER = 20
+
 export const calculateVestedAmount = (vestingClaim: VestingClaim): string => {
   const durationInSeconds = vestingClaim.durationWeeks * 7 * 24 * 60 * 60
-  const timeStampInSeconds = Math.floor(new Date().getTime() / 1000)
+  const timeStampInSeconds =
+    Math.floor(new Date().getTime() / 1000) - DESYNC_BUFFER
 
   // Vesting did not start yet!
   if (timeStampInSeconds < vestingClaim.startDate) {
