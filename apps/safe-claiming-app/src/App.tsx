@@ -15,6 +15,7 @@ import { useLocalStorage } from "src/hooks/useLocalStorage"
 import { FloatingTiles } from "./components/helpers/FloatingTiles"
 import { Loading } from "./components/helpers/Loading"
 import { ScrollContextProvider } from "./components/helpers/ScrollContext"
+import { UnexpectedError } from "./components/helpers/UnexpectedError"
 import { UnsupportedNetwork } from "./components/helpers/UnsupportedNetwork"
 import { Chains, CHAIN_CONSTANTS } from "./config/constants"
 import theme from "./config/theme"
@@ -119,22 +120,24 @@ const App = (): ReactElement => {
 
   const chainConstants = CHAIN_CONSTANTS[safe.chainId]
 
-  const [delegates] = useDelegatesFile()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [delegates, _, delegatesFileError] = useDelegatesFile()
 
-  const [vestings, isVestingLoading] = useAirdropFile()
+  const [vestings, isVestingLoading, vestingFileError] = useAirdropFile()
   const [userVesting, ecosystemVesting] = vestings
 
-  const userVestingStatus = useFetchVestingStatus(
+  const [userVestingStatus, userVestingStatusError] = useFetchVestingStatus(
     userVesting?.vestingId,
     chainConstants?.USER_AIRDROP_ADDRESS,
     appState.lastClaimTimestamp
   )
 
-  const ecosystemVestingStatus = useFetchVestingStatus(
-    ecosystemVesting?.vestingId,
-    chainConstants?.ECOSYSTEM_AIRDROP_ADDRESS,
-    appState.lastClaimTimestamp
-  )
+  const [ecosystemVestingStatus, ecosystemVestingStatusError] =
+    useFetchVestingStatus(
+      ecosystemVesting?.vestingId,
+      chainConstants?.ECOSYSTEM_AIRDROP_ADDRESS,
+      appState.lastClaimTimestamp
+    )
 
   const userClaim: VestingClaim | null = useMemo(
     () =>
@@ -224,7 +227,14 @@ const App = (): ReactElement => {
 
   const hasNoAirdrop = activeStep === NO_AIRDROP_STEP
 
-  const progress = hasNoAirdrop ? 0 : activeStep / (steps.length - 2)
+  const fatalError =
+    vestingFileError ||
+    delegatesFileError ||
+    userVestingStatusError ||
+    ecosystemVestingStatusError
+
+  const progress =
+    hasNoAirdrop || fatalError ? 0 : activeStep / (steps.length - 2)
 
   const unsupportedChain =
     safe.chainId !== Chains.MAINNET && safe.chainId !== Chains.RINKEBY
@@ -235,7 +245,7 @@ const App = (): ReactElement => {
         maxTiles={unsupportedChain ? 12 : 72}
         progress={progress}
         color={
-          hasNoAirdrop
+          hasNoAirdrop || fatalError
             ? theme.palette.primary.main
             : theme.palette.safeGreen.main
         }
@@ -243,7 +253,9 @@ const App = (): ReactElement => {
 
       <ScrollContextProvider>
         <Container>
-          {unsupportedChain ? (
+          {fatalError ? (
+            <UnexpectedError error={fatalError} />
+          ) : unsupportedChain ? (
             <UnsupportedNetwork />
           ) : (
             <div>

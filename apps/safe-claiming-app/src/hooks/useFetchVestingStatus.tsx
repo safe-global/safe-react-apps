@@ -9,10 +9,11 @@ export const useFetchVestingStatus = (
   vestingId: string | undefined,
   airdropAddress: string,
   lastClaimTimestamp: number
-) => {
+): [VestingStatus | undefined, string | undefined] => {
   const { safe, sdk } = useSafeAppsSDK()
   const web3Provider = useMemo(() => getWeb3Provider(safe, sdk), [safe, sdk])
   const [vestingStatus, setVestingStatus] = useState<VestingStatus>()
+  const [error, setError] = useState<string>()
 
   useEffect(() => {
     let isMounted = true
@@ -40,8 +41,10 @@ export const useFetchVestingStatus = (
               isRedeemed: true,
             })
         }
+        setError(undefined)
       } catch (error) {
         console.error(error)
+        setError("Fetching vesting status failed.")
       }
     }
 
@@ -52,5 +55,5 @@ export const useFetchVestingStatus = (
     }
   }, [airdropAddress, vestingId, web3Provider, lastClaimTimestamp])
 
-  return vestingStatus
+  return [vestingStatus, error]
 }
