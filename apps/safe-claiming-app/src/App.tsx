@@ -120,8 +120,7 @@ const App = (): ReactElement => {
 
   const chainConstants = CHAIN_CONSTANTS[safe.chainId]
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [delegates, _, delegatesFileError] = useDelegatesFile()
+  const [delegates, , delegatesFileError] = useDelegatesFile()
 
   const [vestings, isVestingLoading, vestingFileError] = useAirdropFile()
   const [userVesting, ecosystemVesting] = vestings
