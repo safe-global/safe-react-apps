@@ -4,18 +4,23 @@ import { VestingClaim } from "src/types/vestings"
 const LINEAR_CURVE = 0
 const EXPONENTIAL_CURVE = 1
 
-export const calculateVestedAmount = (
-  vestingClaim: VestingClaim,
-  // blockTimestamp is in seconds
-  blockTimestamp: number
-): string => {
+/*
+ * This buffer is needed as the block timestamp is slightly behind the real timestamp.
+ * Event when using the latest block timestamp the gas estimation of created txs sometimes fails.
+ * Experiments showed that 30 seconds is a solid value.
+ */
+export const DESYNC_BUFFER = 30
+
+export const calculateVestedAmount = (vestingClaim: VestingClaim): string => {
   const durationInSeconds = vestingClaim.durationWeeks * 7 * 24 * 60 * 60
+  const timeStampInSeconds =
+    Math.floor(new Date().getTime() / 1000) - DESYNC_BUFFER
 
   // Vesting did not start yet!
-  if (blockTimestamp < vestingClaim.startDate) {
+  if (timeStampInSeconds < vestingClaim.startDate) {
     return "0"
   }
-  const vestedSeconds = blockTimestamp - vestingClaim.startDate
+  const vestedSeconds = timeStampInSeconds - vestingClaim.startDate
 
   if (vestedSeconds >= durationInSeconds) {
     return vestingClaim.amount.toString()
