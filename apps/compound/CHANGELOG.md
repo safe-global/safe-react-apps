@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.1.3](https://github.com/safe-global/safe-react-apps/compare/compound-1.1.2...compound-1.1.3) (2022-09-22)
+
+
+
 ## [1.1.2](https://github.com/safe-global/safe-react-apps/compare/compound-1.1.1...compound-1.1.2) (2022-06-22)
 
 
