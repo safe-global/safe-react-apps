@@ -62,6 +62,17 @@ describe("useAmounts()", () => {
     ])
   })
 
+  it("vested amount is smaller than amount claimed", () => {
+    // vesting is just half vested but already more than half is claimed (10 more than half)
+    const vestingClaim: VestingClaim = createMockVesting(2, 1000, -1, 510)
+    const result = renderHook(() => useAmounts(vestingClaim))
+    // nothing is claimable and 490 are in vesting
+    expect(result.result.current).toEqual([
+      ethers.utils.parseEther("0").toString(),
+      ethers.utils.parseEther("490").toString(),
+    ])
+  })
+
   it("vesting did not start yet", () => {
     const vestingClaim: VestingClaim = createMockVesting(1, 1000, 1)
     const result = renderHook(() => useAmounts(vestingClaim))

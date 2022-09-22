@@ -16,11 +16,18 @@ export const useAmounts = (
           return
         }
         const totalAmount = vestingClaim ? vestingClaim.amount : "0"
-        const vestedAmount = vestingClaim
+        let vestedAmount = vestingClaim
           ? calculateVestedAmount(vestingClaim)
           : "0"
+        const amountClaimed = vestingClaim?.amountClaimed || "0"
+
+        // If a user just claimed it can happen, that the amountClaimed is > vestedAmount for ~30s
+        if (BigNumber.from(vestedAmount).lt(amountClaimed)) {
+          vestedAmount = amountClaimed
+        }
+
         const newClaimableAmount = BigNumber.from(vestedAmount)
-          .sub(BigNumber.from(vestingClaim?.amountClaimed || "0"))
+          .sub(BigNumber.from(amountClaimed))
           .toString()
 
         const newAmountInVesting = BigNumber.from(totalAmount)
