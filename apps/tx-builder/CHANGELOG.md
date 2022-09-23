@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.11.1](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.11.0...tx-builder-1.11.1) (2022-09-22)
+
+
+
 # [1.11.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.10.0...tx-builder-1.11.0) (2022-09-02)
 
 
