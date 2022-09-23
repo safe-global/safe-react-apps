@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.6.1](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.6.0...wallet-connect-1.6.1) (2022-09-22)
+
+
+### Bug Fixes
+
+* **tx-builder:** parse typed data into json before passing for signing ([8c1f478](https://github.com/safe-global/safe-react-apps/commit/8c1f47804a0633735d6c811c653299a86c0278b0))
+* **wallet-connect:** fix params order for eth_signTypedData ([03736d3](https://github.com/safe-global/safe-react-apps/commit/03736d3cce099045b834d8560b700c0cd634c3c8))
+
+
+
 # [1.6.0](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.5.2...wallet-connect-1.6.0) (2022-09-02)
 
 
