@@ -1,10 +1,10 @@
-# Gnosis Safe Apps
+# Safe Apps
 
-[![Logo](https://raw.githubusercontent.com/gnosis/safe-react-apps/main/assets/logo.png)](https://gnosis-safe.io/)
+[![Logo](https://raw.githubusercontent.com/safe-global/safe-react-apps/main/assets/logo.png)](https://gnosis-safe.io/)
 
-![license](https://img.shields.io/github/license/gnosis/safe-react-apps)
-![build](https://img.shields.io/github/workflow/status/gnosis/safe-react-apps/Deploy%20safe%20apps/main)
-![tests](https://img.shields.io/github/workflow/status/gnosis/safe-react-apps/Test/main?label=tests)
+![license](https://img.shields.io/github/license/safe-global/safe-react-apps)
+![build](https://img.shields.io/github/workflow/status/safe-global/safe-react-apps/Deploy%20safe%20apps/main)
+![tests](https://img.shields.io/github/workflow/status/safe-global/safe-react-apps/Test/main?label=tests)
 
 This project contains apps developed by Gnosis to be consumed by Gnosis Safe.
 
@@ -61,9 +61,9 @@ yarn workspace tx-builder contract:read-method --network <network> --address <ad
 
 In `./apps` you can find one folder per each integration app Gnosis develops.
 
-Also, each app must expose a `manifest.json` in order to be accepted by Gnosis Safe, you can find it in their `./public` folder. Besides the `manifest.json` file we also include the app Icon.
+Also, each app must expose a `manifest.json` in order to be accepted by Safe, you can find it in their `./public` folder. Besides the `manifest.json` file we also include the app Icon.
 
-This will allow the Gnosis Safe to consume these resources like so: `https://apps.gnosis-safe.io/tx-builder/manifest.json`
+This will allow the Safe to consume these resources like so: `https://apps.gnosis-safe.io/tx-builder/manifest.json`
 
 ## How to Develop a third-party App
 
@@ -111,7 +111,7 @@ These apps are deployed in the following environments.
 
 ## Run e2e tests
 
-This repo provides e2e tests using cypress. Ideally to be used on CI can also be handy to check locally that everything works as expected.
+This repo provides e2e tests using Cypress. Ideally to be used on CI can also be handy to check locally that everything works as expected.
 To run them it will be necessary to provide the following ENV parameters, that can be filled in a `.env` file at the root of the project
 
 Example:

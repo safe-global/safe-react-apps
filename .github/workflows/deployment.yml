@@ -58,6 +58,7 @@ jobs:
             * [Drain Account App](${{ env.REVIEW_FEATURE_URL }}/drain-safe/)
             * [RAMP Network App](${{ env.REVIEW_FEATURE_URL }}/ramp-network/)
             * [Delegate Registry Manager App](${{ env.REVIEW_FEATURE_URL }}/delegate-registry-manager/)
+            * [Safe Claiming App](${{ env.REVIEW_FEATURE_URL }}/safe-claiming-app/)
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
         env:
