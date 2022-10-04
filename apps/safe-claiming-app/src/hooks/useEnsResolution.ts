@@ -43,10 +43,14 @@ export const useEnsResolution = (
     }
 
     if (ethers.utils.isAddress(customAddress)) {
+      const error =
+        customAddress === safe.safeAddress
+          ? "You can't delegate to your own Safe"
+          : undefined
       // No need to resolve via ENS
       setEnsResult({ address: ethers.utils.getAddress(customAddress) })
       setEnsLoading(false)
-      setError(undefined)
+      setError(error)
       return
     }
 
@@ -57,6 +61,11 @@ export const useEnsResolution = (
         const resolvedName = await web3Provider.resolveName(customAddress)
 
         if (resolvedName !== null && ethers.utils.isAddress(resolvedName)) {
+          if (resolvedName === safe.safeAddress) {
+            isMounted && setEnsResult(undefined)
+            isMounted && setError("You can't delegate to your own Safe")
+            return
+          }
           isMounted &&
             setEnsResult({
               address: resolvedName,
@@ -90,7 +99,7 @@ export const useEnsResolution = (
       isMounted = false
     }
     // If we add the ensTimeout it will always trigger
-  }, [chainPrefix, debounce, manualAddress, web3Provider])
+  }, [chainPrefix, debounce, manualAddress, safe.safeAddress, web3Provider])
 
   return [ensResult, error, ensLoading]
 }
