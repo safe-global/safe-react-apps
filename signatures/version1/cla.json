@@ -71,6 +71,14 @@
       "created_at": "2022-09-16T15:45:40Z",
       "repoId": 238713240,
       "pullRequestNo": 517
+    },
+    {
+      "name": "DiogoSoaress",
+      "id": 32431609,
+      "comment_id": 1266608461,
+      "created_at": "2022-10-04T08:44:21Z",
+      "repoId": 238713240,
+      "pullRequestNo": 539
     }
   ]
 }
