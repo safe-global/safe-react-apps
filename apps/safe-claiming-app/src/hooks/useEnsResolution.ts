@@ -63,13 +63,13 @@ export const useEnsResolution = (
           if (sameAddress(resolvedName, safe.safeAddress)) {
             isMounted && setEnsResult(undefined)
             isMounted && setError("You can't delegate to your own Safe")
-            return
+          } else {
+            isMounted &&
+              setEnsResult({
+                address: resolvedName,
+                ens: customAddress,
+              })
           }
-          isMounted &&
-            setEnsResult({
-              address: resolvedName,
-              ens: customAddress,
-            })
         } else {
           isMounted && setEnsResult(undefined)
           isMounted && setError("Invalid address / ENS name")
