@@ -85,26 +85,23 @@ headers: {
 
 These apps are deployed in the following environments.
 
-- When the code is merged into `development`: https://safe-apps.dev.gnosisdev.com
+- When the code is merged into `development`: https://safe-apps.dev.5afe.dev
 
-  [Compound](https://safe-apps.dev.gnosisdev.com/compound)
-  | [Drain Account](https://safe-apps.dev.gnosisdev.com/drain-safe)
-  | [Ramp Network](https://safe-apps.dev.gnosisdev.com/ramp-network)
-  | [Transaction Builder](https://safe-apps.dev.gnosisdev.com/tx-builder)
-  | [WalletConnect](https://safe-apps.dev.gnosisdev.com/wallet-connect)
+  [Drain Account](https://safe-apps.dev.5afe.dev/drain-safe)
+  | [Ramp Network](https://safe-apps.dev.5afe.dev/ramp-network)
+  | [Transaction Builder](https://safe-apps.dev.5afe.dev/tx-builder)
+  | [WalletConnect](https://safe-apps.dev.5afe.dev/wallet-connect)
 
-- When the code is merged into `main`: https://safe-apps.staging.gnosisdev.com
+- When the code is merged into `main`: https://safe-apps.staging.5afe.dev
 
-  [Compound](https://safe-apps.staging.gnosisdev.com/compound)
-  | [Drain Account](https://safe-apps.staging.gnosisdev.com/drain-safe)
-  | [Ramp Network](https://safe-apps.staging.gnosisdev.com/ramp-network)
-  | [Transaction Builder](https://safe-apps.staging.gnosisdev.com/tx-builder)
-  | [WalletConnect](https://safe-apps.staging.gnosisdev.com/wallet-connect)
+  [Drain Account](https://safe-apps.staging.5afe.dev/drain-safe)
+  | [Ramp Network](https://safe-apps.staging.5afe.dev/ramp-network)
+  | [Transaction Builder](https://safe-apps.staging.5afe.dev/tx-builder)
+  | [WalletConnect](https://safe-apps.staging.5afe.dev/wallet-connect)
 
 - When the code is released: https://apps.gnosis-safe.io
 
-  [Compound](https://apps.gnosis-safe.io/compound)
-  | [Drain Account](https://apps.gnosis-safe.io/drain-safe)
+  [Drain Account](https://apps.gnosis-safe.io/drain-safe)
   | [Ramp Network](https://apps.gnosis-safe.io/ramp-network)
   | [Transaction Builder](https://apps.gnosis-safe.io/tx-builder)
   | [WalletConnect](https://apps.gnosis-safe.io/wallet-connect)
