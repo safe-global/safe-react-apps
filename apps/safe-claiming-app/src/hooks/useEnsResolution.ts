@@ -1,7 +1,7 @@
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { ethers } from "ethers"
 import { useEffect, useMemo, useState } from "react"
-import { parsePrefixedAddress } from "src/utils/addresses"
+import { parsePrefixedAddress, sameAddress } from "src/utils/addresses"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
 
 type ENSResult = {
@@ -43,10 +43,9 @@ export const useEnsResolution = (
     }
 
     if (ethers.utils.isAddress(customAddress)) {
-      const error =
-        customAddress === safe.safeAddress
-          ? "You can't delegate to your own Safe"
-          : undefined
+      const error = sameAddress(customAddress, safe.safeAddress)
+        ? "You can't delegate to your own Safe"
+        : undefined
       // No need to resolve via ENS
       setEnsResult({ address: ethers.utils.getAddress(customAddress) })
       setEnsLoading(false)
@@ -61,7 +60,7 @@ export const useEnsResolution = (
         const resolvedName = await web3Provider.resolveName(customAddress)
 
         if (resolvedName !== null && ethers.utils.isAddress(resolvedName)) {
-          if (resolvedName === safe.safeAddress) {
+          if (sameAddress(resolvedName, safe.safeAddress)) {
             isMounted && setEnsResult(undefined)
             isMounted && setError("You can't delegate to your own Safe")
             return
