@@ -135,9 +135,9 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
             </Typography>
           </Box>
           <Typography>
-            2.25% allocation
+            2.5% allocation
             <br />
-            2.25% vested allocation <br />
+            2.5% vested allocation <br />
           </Typography>
         </Grid>
       </Grid>
