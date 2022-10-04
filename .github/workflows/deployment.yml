@@ -61,7 +61,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
         env:
-          REVIEW_FEATURE_URL: https://pr${{ github.event.number }}--${{ env.REPO_NAME_ALPHANUMERIC }}.review.gnosisdev.com
+          REVIEW_FEATURE_URL: https://pr${{ github.event.number }}--${{ env.REPO_NAME_ALPHANUMERIC }}.review-react-hr.5afe.dev
 
   deploy:
     name: Deploy Dev/Staging
