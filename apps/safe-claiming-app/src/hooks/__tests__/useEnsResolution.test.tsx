@@ -2,6 +2,7 @@ import { renderHook, act } from "@testing-library/react-hooks"
 import { waitFor } from "@testing-library/react"
 import { useEnsResolution } from "src/hooks/useEnsResolution"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
+import * as utils from "src/utils/addresses"
 
 const mockWeb3Provider = {
   resolveName: jest.fn(() => Promise.reject("resolveName")),
@@ -26,6 +27,7 @@ jest.mock("src/utils/getWeb3Provider", () => ({
 
 describe("useEnsResolution()", () => {
   const web3Provider = getWeb3Provider(undefined as never, undefined as never)
+  jest.spyOn(utils, "sameAddress").mockImplementation(() => false)
 
   afterAll(() => {
     jest.unmock("src/utils/getWeb3Provider")
@@ -310,6 +312,42 @@ describe("useEnsResolution()", () => {
       ens: "test.eth",
     })
     expect(result.current[1]).toBeUndefined()
+    expect(result.current[2]).toBeFalsy()
+  })
+
+  it("should set error if resolved address is the same as the current safe address", async () => {
+    const resolvedAddress = "0x1000000000000000000000000000000000000000"
+    web3Provider.resolveName = jest.fn(() => Promise.resolve(resolvedAddress))
+    jest.spyOn(utils, "sameAddress").mockImplementation(() => true)
+    jest.useFakeTimers()
+    const { result } = renderHook(() => useEnsResolution("test.eth"))
+
+    expect(result.current[0]).toBeUndefined()
+    expect(result.current[1]).toBeUndefined()
+    expect(result.current[2]).toBeFalsy()
+    expect(web3Provider.resolveName).not.toHaveBeenCalled()
+
+    act(() => {
+      jest.advanceTimersByTime(301)
+    })
+
+    await waitFor(() => {
+      expect(result.current[2]).toBeFalsy()
+    })
+
+    expect(web3Provider.resolveName).toHaveBeenCalled()
+    expect(result.current[0]).toBeUndefined()
+    expect(result.current[1]).toEqual("You can't delegate to your own Safe")
+    expect(result.current[2]).toBeFalsy()
+  })
+
+  it("should set error if typed address is the same as the current safe address", async () => {
+    const resolvedAddress = "0x1000000000000000000000000000000000000000"
+    jest.spyOn(utils, "sameAddress").mockImplementation(() => true)
+    jest.useFakeTimers()
+    const { result } = renderHook(() => useEnsResolution(resolvedAddress))
+
+    expect(result.current[1]).toEqual("You can't delegate to your own Safe")
     expect(result.current[2]).toBeFalsy()
   })
 })
