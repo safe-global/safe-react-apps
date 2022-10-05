@@ -2,7 +2,6 @@ import { renderHook, act } from "@testing-library/react-hooks"
 import { waitFor } from "@testing-library/react"
 import { useEnsResolution } from "src/hooks/useEnsResolution"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
-import * as utils from "src/utils/addresses"
 
 const mockWeb3Provider = {
   resolveName: jest.fn(() => Promise.reject("resolveName")),
@@ -15,7 +14,10 @@ jest.mock("@gnosis.pm/safe-apps-react-sdk", () => {
     // We require some of the enums/types from the original module
     ...originalModule,
     useSafeAppsSDK: () => ({
-      safe: { chainId: 1 },
+      safe: {
+        chainId: 1,
+        safeAddress: "0x2000000000000000000000000000000000000000",
+      },
       sdk: undefined,
     }),
   }
@@ -27,7 +29,6 @@ jest.mock("src/utils/getWeb3Provider", () => ({
 
 describe("useEnsResolution()", () => {
   const web3Provider = getWeb3Provider(undefined as never, undefined as never)
-  jest.spyOn(utils, "sameAddress").mockImplementation(() => false)
 
   afterAll(() => {
     jest.unmock("src/utils/getWeb3Provider")
@@ -99,7 +100,7 @@ describe("useEnsResolution()", () => {
     expect(web3Provider.resolveName).not.toHaveBeenCalled()
   })
 
-  it("should return immediately for empty strings and not trigger ens resolution ", async () => {
+  it("should return immediately for empty strings and not trigger ens resolution", async () => {
     web3Provider.resolveName = jest.fn()
     jest.useFakeTimers()
     const { result } = renderHook(() => useEnsResolution(""))
@@ -316,9 +317,8 @@ describe("useEnsResolution()", () => {
   })
 
   it("should set error if resolved address is the same as the current safe address", async () => {
-    const resolvedAddress = "0x1000000000000000000000000000000000000000"
+    const resolvedAddress = "0x2000000000000000000000000000000000000000"
     web3Provider.resolveName = jest.fn(() => Promise.resolve(resolvedAddress))
-    jest.spyOn(utils, "sameAddress").mockImplementation(() => true)
     jest.useFakeTimers()
     const { result } = renderHook(() => useEnsResolution("test.eth"))
 
@@ -342,8 +342,7 @@ describe("useEnsResolution()", () => {
   })
 
   it("should set error if typed address is the same as the current safe address", async () => {
-    const resolvedAddress = "0x1000000000000000000000000000000000000000"
-    jest.spyOn(utils, "sameAddress").mockImplementation(() => true)
+    const resolvedAddress = "0x2000000000000000000000000000000000000000"
     jest.useFakeTimers()
     const { result } = renderHook(() => useEnsResolution(resolvedAddress))
 
