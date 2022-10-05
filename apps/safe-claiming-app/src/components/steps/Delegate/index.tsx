@@ -103,7 +103,9 @@ const Delegate = ({
   }
 
   const enableNextButton =
-    (isCustomDelegation && Boolean(customEnsResult)) ||
+    (isCustomDelegation &&
+      Boolean(customEnsResult) &&
+      !Boolean(customAddressError)) ||
     (!isCustomDelegation && Boolean(chosenDelegate))
 
   return (
@@ -155,8 +157,8 @@ const Delegate = ({
               >
                 <Grid item xs={12}>
                   <Typography mb={1}>
-                    You can select yourself or any other person to be a
-                    delegate.
+                    The wallet address can belong to any person but you cannot
+                    delegate to your own Safe.
                   </Typography>
                   <TextField
                     fullWidth

@@ -14,7 +14,10 @@ jest.mock("@gnosis.pm/safe-apps-react-sdk", () => {
     // We require some of the enums/types from the original module
     ...originalModule,
     useSafeAppsSDK: () => ({
-      safe: { chainId: 1 },
+      safe: {
+        chainId: 1,
+        safeAddress: "0x2000000000000000000000000000000000000000",
+      },
       sdk: undefined,
     }),
   }
@@ -97,7 +100,7 @@ describe("useEnsResolution()", () => {
     expect(web3Provider.resolveName).not.toHaveBeenCalled()
   })
 
-  it("should return immediately for empty strings and not trigger ens resolution ", async () => {
+  it("should return immediately for empty strings and not trigger ens resolution", async () => {
     web3Provider.resolveName = jest.fn()
     jest.useFakeTimers()
     const { result } = renderHook(() => useEnsResolution(""))
@@ -310,6 +313,40 @@ describe("useEnsResolution()", () => {
       ens: "test.eth",
     })
     expect(result.current[1]).toBeUndefined()
+    expect(result.current[2]).toBeFalsy()
+  })
+
+  it("should set error if resolved address is the same as the current safe address", async () => {
+    const resolvedAddress = "0x2000000000000000000000000000000000000000"
+    web3Provider.resolveName = jest.fn(() => Promise.resolve(resolvedAddress))
+    jest.useFakeTimers()
+    const { result } = renderHook(() => useEnsResolution("test.eth"))
+
+    expect(result.current[0]).toBeUndefined()
+    expect(result.current[1]).toBeUndefined()
+    expect(result.current[2]).toBeFalsy()
+    expect(web3Provider.resolveName).not.toHaveBeenCalled()
+
+    act(() => {
+      jest.advanceTimersByTime(301)
+    })
+
+    await waitFor(() => {
+      expect(result.current[2]).toBeFalsy()
+    })
+
+    expect(web3Provider.resolveName).toHaveBeenCalled()
+    expect(result.current[0]).toBeUndefined()
+    expect(result.current[1]).toEqual("You can't delegate to your own Safe")
+    expect(result.current[2]).toBeFalsy()
+  })
+
+  it("should set error if typed address is the same as the current safe address", async () => {
+    const resolvedAddress = "0x2000000000000000000000000000000000000000"
+    jest.useFakeTimers()
+    const { result } = renderHook(() => useEnsResolution(resolvedAddress))
+
+    expect(result.current[1]).toEqual("You can't delegate to your own Safe")
     expect(result.current[2]).toBeFalsy()
   })
 })
