@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.3.2](https://github.com/safe-global/safe-react-apps/compare/drain-safe-1.3.1...drain-safe-1.3.2) (2022-10-05)
+
+
+### Bug Fixes
+
+* **drain-safe:** update dependencies, add background color, remove unused code ([e23b341](https://github.com/safe-global/safe-react-apps/commit/e23b341d2372500849be4d54dd9f63a60431c738))
+
+
+
 ## [1.3.1](https://github.com/safe-global/safe-react-apps/compare/drain-safe-1.3.0...drain-safe-1.3.1) (2022-09-22)
 
 
