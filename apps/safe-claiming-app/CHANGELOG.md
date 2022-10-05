@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.1](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.1.0...safe-claiming-app-0.1.1) (2022-10-05)
+
+
+### Bug Fixes
+
+* ammend allocation percentage ([52ae4f2](https://github.com/safe-global/safe-react-apps/commit/52ae4f27e574a34c827fe61eaa59ab683bc7014f))
+* **safe-claiming-app:** amount calculation uses 30 sec buffer ([#523](https://github.com/safe-global/safe-react-apps/issues/523)) ([a15b40b](https://github.com/safe-global/safe-react-apps/commit/a15b40b67ae411df75a3800925764eb4c7fa2b9b))
+* **safe-claiming-app:** validate custom delegation address ([#541](https://github.com/safe-global/safe-react-apps/issues/541)) ([77c36d5](https://github.com/safe-global/safe-react-apps/commit/77c36d51dfbdef0e54c1cdec452c92a7931f9a18))
+
+
+
 # 0.1.0 (2022-09-22)
 
 
