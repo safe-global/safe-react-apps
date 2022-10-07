@@ -2156,18 +2156,18 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
 
-"@gnosis.pm/safe-apps-provider@^0.13.1":
-  version "0.13.1"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-provider/-/safe-apps-provider-0.13.1.tgz#69b12f800fa67b132535753f674518b7aa8ba20b"
-  integrity sha512-v84Apwb5SeDuRexcvzL2fyfYS3SR9MqPSKiSyFFOWo/Tpm4zgF/Z4ZKhsBKkgktqGoc0zFUZeQPVvqyQpixM9g==
+"@gnosis.pm/safe-apps-provider@0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-provider/-/safe-apps-provider-0.14.0.tgz#52783800f1da5f1b633a42dcf8c8797e7fe31d99"
+  integrity sha512-qOkPUfIu9dLoy4Muo40xzswqix7ZoJDmtEl35D+oYYa6JDw8cr4tVkPPjl6eDPNtMLiqGjs1POzHdZrfC8aHVw==
   dependencies:
     "@gnosis.pm/safe-apps-sdk" "7.8.0"
     events "^3.3.0"
 
-"@gnosis.pm/safe-apps-provider@^0.13.2":
-  version "0.13.2"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-provider/-/safe-apps-provider-0.13.2.tgz#b4963c51e2ae5e86198c7ca42248ab4d97355919"
-  integrity sha512-n/sd6Nq7Kg1ZRSB4zMy7lFV+5R5ZXFKd2ZtvIq0cBvkTM9K2sDNhqTE1Em2uy0hM5wKdWlTfJtwh6YkWVhoXDg==
+"@gnosis.pm/safe-apps-provider@^0.13.1":
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-provider/-/safe-apps-provider-0.13.1.tgz#69b12f800fa67b132535753f674518b7aa8ba20b"
+  integrity sha512-v84Apwb5SeDuRexcvzL2fyfYS3SR9MqPSKiSyFFOWo/Tpm4zgF/Z4ZKhsBKkgktqGoc0zFUZeQPVvqyQpixM9g==
   dependencies:
     "@gnosis.pm/safe-apps-sdk" "7.8.0"
     events "^3.3.0"
