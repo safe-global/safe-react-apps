@@ -35,7 +35,7 @@ You can also run each app locally using the following commands:
 
 ```bash
 yarn start:drain-safe
-yarn start:ramp
+yarn start:ramp-network
 yarn start:tx-builder
 yarn start:wallet-connect
 ```
