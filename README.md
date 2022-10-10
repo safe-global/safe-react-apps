@@ -34,7 +34,6 @@ yarn build
 You can also run each app locally using the following commands:
 
 ```bash
-yarn start:compound
 yarn start:drain-safe
 yarn start:ramp
 yarn start:tx-builder
@@ -61,7 +60,7 @@ yarn workspace tx-builder contract:read-method --network <network> --address <ad
 
 In `./apps` you can find one folder per each integration app Gnosis develops.
 
-Also, each app must expose a `manifest.json` in order to be accepted by Safe, you can find it in their `./public` folder. Besides the `manifest.json` file we also include the app Icon.
+Also, each app must expose a `manifest.json` in order to be accepted by the Safe, you can find it in their `./public` folder. Besides the `manifest.json` file we also include the app Icon.
 
 This will allow the Safe to consume these resources like so: `https://apps.gnosis-safe.io/tx-builder/manifest.json`
 
@@ -119,6 +118,12 @@ CYPRESS_TESTING_SAFE_ADDRESS=0x0000000000000000000000000000000000000000
 CYPRESS_CONFIG_SERVICE_BASE_URL=https://safe-client.gnosis.io
 ```
 Make sure to enter the desired values, for example a Safe address that you own
+
+## Deprecated Apps
+
+Latest code version from deprecated apps can be found in the following links:
+
+ - [Compound](https://github.com/safe-global/safe-react-apps/releases/tag/compound-1.1.3)
 
 ## License
 
