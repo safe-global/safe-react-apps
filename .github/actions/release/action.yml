@@ -51,7 +51,6 @@ runs:
         PROD_DEPLOYMENT_HOOK_URL: ${{ inputs.prod-deployment-hook-url }}
         BUCKET_NAME: ${{ inputs.bucket-name }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
-        REACT_APP_RPC_TOKEN: ${{ inputs.react-app-rpc-token }}
         REACT_APP_TENDERLY_ORG_NAME: ${{ inputs.react-app-tenderly-org-name }}
         REACT_APP_TENDERLY_PROJECT_NAME: ${{ inputs.react-app-tenderly-project-name }}
         REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ inputs.react-app-tenderly-simulate-endpoint-url }}
