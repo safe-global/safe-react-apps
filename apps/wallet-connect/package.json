@@ -4,9 +4,9 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
+    "@gnosis.pm/safe-apps-provider": "0.14.0",
     "@gnosis.pm/safe-react-components": "^0.9.7",
     "@gnosis.pm/safe-react-gateway-sdk": "^2.10.1",
-    "@gnosis.pm/safe-apps-provider": "^0.13.2",
     "@walletconnect/client": "^1.8.0",
     "date-fns": "^2.29.3",
     "ethers": "^5.7.1",
