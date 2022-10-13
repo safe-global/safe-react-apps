@@ -55,7 +55,7 @@
     "cypress": "^9.6.1",
     "cypress-file-upload": "^5.0.8",
     "cz-conventional-changelog": "^3.3.0",
-    "dotenv": "^16.0.1",
+    "dotenv": "^16.0.3",
     "dotenv-cli": "^5.1.0",
     "eslint": "^8.23.1",
     "eslint-config-prettier": "^8.5.0",
