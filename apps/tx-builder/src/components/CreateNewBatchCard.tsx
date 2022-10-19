@@ -26,6 +26,7 @@ const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
     event.preventDefault()
     if (event.target.files.length) {
       onFileSelected(event.target.files[0])
+      event.target.value = ''
     }
   }
 

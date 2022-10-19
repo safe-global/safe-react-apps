@@ -81,6 +81,8 @@ const CreateTransactions = () => {
             onFileSelected={async (uploadedFile: File | null) => {
               if (uploadedFile) {
                 const batchFile = await importBatch(uploadedFile)
+                if (!batchFile) return
+
                 setFileName(batchFile.meta.name)
                 // we show a modal if the batch file is from a different chain
                 const isWrongChain = batchFile.chainId !== chainInfo?.chainId

@@ -19,9 +19,27 @@ type TransactionLibraryContextProps = {
   updateBatch: (batchId: string | number, name: string, transactions: ProposedTransaction[]) => void
   downloadBatch: (name: string, transactions: ProposedTransaction[]) => void
   executeBatch: (batch: Batch) => void
-  importBatch: (file: File | null) => Promise<BatchFile>
+  importBatch: (file: File) => Promise<BatchFile | undefined>
   hasChecksumWarning: boolean
   setHasChecksumWarning: (hasChecksumWarning: boolean) => void
+  errorMessage?: string
+  setErrorMessage: (errorMessage: string) => void
+}
+
+// Currently it only checks that none the transaction values are encoded as a number
+// We don't want numbers because the maximum number in JS is 2^53 - 1 but the maximum number
+// in Solidity is 2^256 - 1
+const validateTransactionsInBatch = (batch: BatchFile) => {
+  const { transactions } = batch
+
+  return transactions.every(tx => {
+    const valueEncodedAsString = typeof tx.value === 'string'
+    const contractInputsEncodingValid =
+      tx.contractInputsValues === null ||
+      Object.values(tx.contractInputsValues || {}).every(input => typeof input !== 'number')
+
+    return valueEncodedAsString && contractInputsEncodingValid
+  })
 }
 
 export const TransactionLibraryContext = createContext<TransactionLibraryContextProps | null>(null)
@@ -30,6 +48,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
   const [batches, setBatches] = useState<Batch[]>([])
   const [batch, setBatch] = useState<Batch>()
   const [hasChecksumWarning, setHasChecksumWarning] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<string>()
   const { resetTransactions } = useTransactions()
   const { chainInfo, safe } = useNetwork()
 
@@ -156,7 +175,15 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 
   const initializeBatch = useCallback(
     (batchFile: BatchFile) => {
+      setErrorMessage(undefined)
       if (chainInfo) {
+        if (!validateTransactionsInBatch(batchFile)) {
+          setErrorMessage(
+            'Invalid transaction in the batch file. Make sure all numbers are encoded as strings.',
+          )
+          return
+        }
+
         if (validateChecksum(batchFile)) {
           console.info('[Checksum check] - Checksum validation success', batchFile)
         } else {
@@ -185,9 +212,10 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
     [initializeBatch],
   )
 
-  const importBatch = useCallback(
+  const importBatch: TransactionLibraryContextProps['importBatch'] = useCallback(
     async file => {
       const batchFile = await initializeBatch(await StorageManager.importBatch(file))
+
       return batchFile
     },
     [initializeBatch],
@@ -207,6 +235,8 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
         importBatch,
         hasChecksumWarning,
         setHasChecksumWarning,
+        errorMessage,
+        setErrorMessage,
       }}
     >
       {children}
