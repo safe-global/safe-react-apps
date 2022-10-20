@@ -1,5 +1,6 @@
 name: Test Safe Apps
 on:
+  push:
   workflow_dispatch:
     inputs:
       baseUrl:
