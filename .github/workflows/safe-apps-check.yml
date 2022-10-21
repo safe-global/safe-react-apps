@@ -14,7 +14,7 @@ on:
       safeAddress:
         description: 'Safe address'
         required: true
-        default: '0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70'
+        default: '0xfF501B324DC6d78dC9F983f140B9211c3EdB4dc7'
       configServiceBaseUrl:
         description: 'Config service base URL'
         required: true
@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - uses: cypress-io/github-action@v2
-        name: Mainnet Apps
+        name: Mainnet
         with:
           browser: chrome
           record: true
@@ -42,41 +42,151 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_BASE_URL: ${{ github.event.inputs.baseUrl || 'http://gnosis-safe.io/app' }}
           CYPRESS_NETWORK_PREFIX: ${{ github.event.inputs.networkPrefix || 'eth' }}
-          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0xc322cde085A4C6EFc865E77eDDdF39c31262Fc70' }}
+          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0xfF501B324DC6d78dC9F983f140B9211c3EdB4dc7' }}
           CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
           SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
       - uses: cypress-io/github-action@v2
-        name: Gnosis Chain Apps
+        name: Gnosis Chain
         with:
           browser: chrome
           record: true
+          parallel: true
           spec: cypress/integration/safe-apps-check.spec.js
         env:
           CI: 'true'
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_BASE_URL: ${{ github.event.inputs.baseUrl || 'http://gnosis-safe.io/app' }}
           CYPRESS_NETWORK_PREFIX: ${{ github.event.inputs.networkPrefix || 'gno' }}
-          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0x794Baf217790c9FD50648D5A328ec67FA82767F9' }}
+          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0xfca7Da0a0290D7BcBEcD93bE124756fC9B6F8E6A' }}
           CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
           SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
       - uses: cypress-io/github-action@v2
-        name: Polygon Apps
+        name: Polygon
         with:
           browser: chrome
           record: true
+          parallel: true
           spec: cypress/integration/safe-apps-check.spec.js
         env:
           CI: 'true'
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_BASE_URL: ${{ github.event.inputs.baseUrl || 'http://gnosis-safe.io/app' }}
           CYPRESS_NETWORK_PREFIX: ${{ github.event.inputs.networkPrefix || 'matic' }}
-          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0x37fEbBc4E2408ad6df989405A6747c023C01dD36' }}
+          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0x6D04edC44F7C88faa670683036edC2F6FC10b86e' }}
+          CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
+          SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - uses: cypress-io/github-action@v2
+        name: BNB Smart Chain
+        with:
+          browser: chrome
+          record: true
+          parallel: true
+          spec: cypress/integration/safe-apps-check.spec.js
+        env:
+          CI: 'true'
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_BASE_URL: ${{ github.event.inputs.baseUrl || 'http://gnosis-safe.io/app' }}
+          CYPRESS_NETWORK_PREFIX: ${{ github.event.inputs.networkPrefix || 'bnb' }}
+          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0x1D28a316431bAFf410Fe53398c6C5BD566032Eec' }}
+          CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
+          SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - uses: cypress-io/github-action@v2
+        name: Arbitrum
+        with:
+          browser: chrome
+          record: true
+          parallel: true
+          spec: cypress/integration/safe-apps-check.spec.js
+        env:
+          CI: 'true'
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_BASE_URL: ${{ github.event.inputs.baseUrl || 'http://gnosis-safe.io/app' }}
+          CYPRESS_NETWORK_PREFIX: ${{ github.event.inputs.networkPrefix || 'arb1' }}
+          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0x82A604a3a4260ce16fA0257fBA96336Af3b63Dbc' }}
+          CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
+          SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - uses: cypress-io/github-action@v2
+        name: Aurora
+        with:
+          browser: chrome
+          record: true
+          parallel: true
+          spec: cypress/integration/safe-apps-check.spec.js
+        env:
+          CI: 'true'
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_BASE_URL: ${{ github.event.inputs.baseUrl || 'http://gnosis-safe.io/app' }}
+          CYPRESS_NETWORK_PREFIX: ${{ github.event.inputs.networkPrefix || 'aurora' }}
+          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0xCEA454dD3d76Da856E72C3CBaDa8ee6A789aD167' }}
+          CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
+          SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - uses: cypress-io/github-action@v2
+        name: Avalanche
+        with:
+          browser: chrome
+          record: true
+          parallel: true
+          spec: cypress/integration/safe-apps-check.spec.js
+        env:
+          CI: 'true'
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_BASE_URL: ${{ github.event.inputs.baseUrl || 'http://gnosis-safe.io/app' }}
+          CYPRESS_NETWORK_PREFIX: ${{ github.event.inputs.networkPrefix || 'avax' }}
+          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0x480e5A3E90a3fF4a16AECCB5d638fAba96a15c28' }}
+          CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
+          SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - uses: cypress-io/github-action@v2
+        name: Optimism
+        with:
+          browser: chrome
+          record: true
+          parallel: true
+          spec: cypress/integration/safe-apps-check.spec.js
+        env:
+          CI: 'true'
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_BASE_URL: ${{ github.event.inputs.baseUrl || 'http://gnosis-safe.io/app' }}
+          CYPRESS_NETWORK_PREFIX: ${{ github.event.inputs.networkPrefix || 'oeth' }}
+          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0xeb1116466B7eB1372cD1FAf5C26134db69A94cDA' }}
+          CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
+          SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - uses: cypress-io/github-action@v2
+        name: Volta
+        with:
+          browser: chrome
+          record: true
+          parallel: true
+          spec: cypress/integration/safe-apps-check.spec.js
+        env:
+          CI: 'true'
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_BASE_URL: ${{ github.event.inputs.baseUrl || 'http://gnosis-safe.io/app' }}
+          CYPRESS_NETWORK_PREFIX: ${{ github.event.inputs.networkPrefix || 'vt' }}
+          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0x6eaD891f8a756edBf248A5546ff51E01609C0DaB' }}
           CYPRESS_CONFIG_SERVICE_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.gnosis.io' }}
           SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

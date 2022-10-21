@@ -16,9 +16,9 @@ module.exports = async (on, config) => {
 
   try {
     safeAppsList = await axios.get(
-      `${process.env.CYPRESS_CONFIG_SERVICE_BASE_URL}/v1/chains/${getNetworkId(
-        process.env.CYPRESS_NETWORK_PREFIX,
-      )}/safe-apps?client_url=${encodeURIComponent(process.env.CYPRESS_BASE_URL)}`,
+      `${process.env.CYPRESS_CONFIG_SERVICE_BASE_URL}/v1/chains/${
+        NETWORK_ID[process.env.CYPRESS_NETWORK_PREFIX]
+      }/safe-apps?client_url=${encodeURIComponent(process.env.CYPRESS_BASE_URL)}`,
     )
   } catch (e) {
     console.log('Unable to fetch the default list: ', e)
@@ -34,15 +34,14 @@ module.exports = async (on, config) => {
   return config
 }
 
-const getNetworkId = prefix => {
-  switch (prefix) {
-    case 'eth':
-      return 1
-    case 'gno':
-      return 100
-    case 'matic':
-      return 137
-    default:
-      return 1
-  }
+const NETWORK_ID = {
+  eth: 1,
+  gno: 100,
+  matic: 137,
+  bnb: 56,
+  arb1: 42161,
+  aurora: 1313161554,
+  avax: 43114,
+  oeth: 10,
+  vt: 73799,
 }
