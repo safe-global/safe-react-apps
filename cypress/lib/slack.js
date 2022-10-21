@@ -49,7 +49,7 @@ const buildSlackMessage = results => {
       },
       {
         type: 'mrkdwn',
-        text: `*Config Service:*\n${process.env.CYPRESS_CONFIG_SERVICE_BASE_URL}`,
+        text: `*Config Service:*\n${process.env.CYPRESS_CLIENT_GATEWAY_BASE_URL}`,
       },
     ],
   }
