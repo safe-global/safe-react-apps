@@ -1,7 +1,7 @@
 const axios = require('axios')
 
 export const sendSlackMessage = async results => {
-  if (results) {
+  if (results && results.totalPassed !== results.totalTests) {
     try {
       const url = process.env.SLACK_WEBHOOK_URL
       if (!url) {
