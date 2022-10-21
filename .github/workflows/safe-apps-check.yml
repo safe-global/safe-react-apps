@@ -53,7 +53,6 @@ jobs:
         with:
           browser: chrome
           record: true
-          parallel: true
           spec: cypress/integration/safe-apps-check.spec.js
         env:
           CI: 'true'
@@ -71,7 +70,6 @@ jobs:
         with:
           browser: chrome
           record: true
-          parallel: true
           spec: cypress/integration/safe-apps-check.spec.js
         env:
           CI: 'true'
@@ -89,7 +87,6 @@ jobs:
         with:
           browser: chrome
           record: true
-          parallel: true
           spec: cypress/integration/safe-apps-check.spec.js
         env:
           CI: 'true'
@@ -107,7 +104,6 @@ jobs:
         with:
           browser: chrome
           record: true
-          parallel: true
           spec: cypress/integration/safe-apps-check.spec.js
         env:
           CI: 'true'
@@ -125,7 +121,6 @@ jobs:
         with:
           browser: chrome
           record: true
-          parallel: true
           spec: cypress/integration/safe-apps-check.spec.js
         env:
           CI: 'true'
@@ -143,7 +138,6 @@ jobs:
         with:
           browser: chrome
           record: true
-          parallel: true
           spec: cypress/integration/safe-apps-check.spec.js
         env:
           CI: 'true'
@@ -161,7 +155,6 @@ jobs:
         with:
           browser: chrome
           record: true
-          parallel: true
           spec: cypress/integration/safe-apps-check.spec.js
         env:
           CI: 'true'
@@ -179,7 +172,6 @@ jobs:
         with:
           browser: chrome
           record: true
-          parallel: true
           spec: cypress/integration/safe-apps-check.spec.js
         env:
           CI: 'true'
