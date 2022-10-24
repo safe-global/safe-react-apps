@@ -1,6 +1,6 @@
 import { GenericModal, Button } from '@gnosis.pm/safe-react-components'
 import styled from 'styled-components'
-import { ProposedTransaction } from '../typings/models'
+import { ProposedTransaction } from '../../typings/models'
 import SolidityForm, {
   CONTRACT_METHOD_INDEX_FIELD_NAME,
   CONTRACT_VALUES_FIELD_NAME,
@@ -9,8 +9,8 @@ import SolidityForm, {
   parseFormToProposedTransaction,
   SolidityFormValuesTypes,
   TO_ADDRESS_FIELD_NAME,
-} from './forms/SolidityForm'
-import { weiToEther } from '../utils'
+} from '../forms/SolidityForm'
+import { weiToEther } from '../../utils'
 
 type EditTransactionModalProps = {
   txIndex: number
