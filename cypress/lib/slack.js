@@ -1,7 +1,7 @@
 const axios = require('axios')
 
 export const sendSlackMessage = async results => {
-  if (results) {
+  if (results && results.totalPassed !== results.totalTests) {
     try {
       const url = process.env.SLACK_WEBHOOK_URL
       if (!url) {
@@ -49,7 +49,7 @@ const buildSlackMessage = results => {
       },
       {
         type: 'mrkdwn',
-        text: `*Config Service:*\n${process.env.CYPRESS_CONFIG_SERVICE_BASE_URL}`,
+        text: `*Config Service:*\n${process.env.CYPRESS_CLIENT_GATEWAY_BASE_URL}`,
       },
     ],
   }

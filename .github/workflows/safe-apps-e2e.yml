@@ -41,9 +41,10 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_BASE_URL: ${{env.BASE_URL}}
           CYPRESS_SAFE_APPS_BASE_URL: ${{env.SAFE_APPS_BASE_URL}}
+          CYPRESS_CHAIN_ID: '4'
           CYPRESS_NETWORK_PREFIX: 'rin'
           CYPRESS_TESTING_SAFE_ADDRESS: '0x3bc83f41490BfD25bBB44eBCAc3761DFF4Ae50DA'
-          CYPRESS_CONFIG_SERVICE_BASE_URL: 'https://safe-client.gnosis.io'
+          CYPRESS_CLIENT_GATEWAY_BASE_URL: 'https://safe-client.gnosis.io'
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
