@@ -90,6 +90,7 @@ type PersistedAppState = {
 export type AppState = PersistedAppState & {
   ecosystemClaim: VestingClaim | null
   userClaim: VestingClaim | null
+  investorClaim: VestingClaim | null
   isTokenPaused: boolean
   delegateAddressFromContract?: string
   delegateData: DelegateEntry[]
@@ -99,6 +100,7 @@ export type AppState = PersistedAppState & {
 const initialState: AppState = {
   ecosystemClaim: null,
   userClaim: null,
+  investorClaim: null,
   isTokenPaused: true,
   delegateData: [],
 }
@@ -121,7 +123,7 @@ const App = (): ReactElement => {
   const [delegates, , delegatesFileError] = useDelegatesFile()
 
   const [vestings, isVestingLoading, vestingFileError] = useAirdropFile()
-  const [userVesting, ecosystemVesting] = vestings
+  const [userVesting, ecosystemVesting, investorVesting] = vestings
 
   const [userVestingStatus, userVestingStatusError] = useFetchVestingStatus(
     userVesting?.vestingId,
@@ -132,6 +134,12 @@ const App = (): ReactElement => {
     useFetchVestingStatus(
       ecosystemVesting?.vestingId,
       chainConstants?.ECOSYSTEM_AIRDROP_ADDRESS
+    )
+
+  const [investorVestingStatus, investorVestingStatusError] =
+    useFetchVestingStatus(
+      investorVesting?.vestingId,
+      chainConstants?.INVESTOR_AIRDROP_ADDRESS
     )
 
   const userClaim: VestingClaim | null = useMemo(
@@ -147,6 +155,14 @@ const App = (): ReactElement => {
         ? { ...ecosystemVesting, ...ecosystemVestingStatus }
         : null,
     [ecosystemVestingStatus, ecosystemVesting]
+  )
+
+  const investorClaim: VestingClaim | null = useMemo(
+    () =>
+      investorVesting && investorVestingStatus
+        ? { ...investorVesting, ...investorVestingStatus }
+        : null,
+    [investorVestingStatus, investorVesting]
   )
   const isTokenPaused = useIsTokenPaused()
 
@@ -172,6 +188,7 @@ const App = (): ReactElement => {
       ...prev,
       userClaim,
       ecosystemClaim,
+      investorClaim,
       delegate: currentDelegate,
       isTokenPaused,
       delegateAddressFromContract,
@@ -183,6 +200,7 @@ const App = (): ReactElement => {
   }, [
     userClaim,
     ecosystemClaim,
+    investorClaim,
     isTokenPaused,
     delegates,
     currentDelegate,
@@ -198,11 +216,12 @@ const App = (): ReactElement => {
     if (
       userVesting === null &&
       ecosystemVesting === null &&
+      investorVesting === null &&
       !isVestingLoading
     ) {
       setActiveStep(NO_AIRDROP_STEP)
     }
-  }, [userVesting, ecosystemVesting, isVestingLoading])
+  }, [userVesting, ecosystemVesting, investorVesting, isVestingLoading])
 
   const handleBack = () => {
     if (activeStep === SUCCESS_STEP) {
@@ -235,7 +254,8 @@ const App = (): ReactElement => {
     vestingFileError ||
     delegatesFileError ||
     userVestingStatusError ||
-    ecosystemVestingStatusError
+    ecosystemVestingStatusError ||
+    investorVestingStatusError
 
   const progress =
     hasNoAirdrop || fatalError ? 0 : activeStep / (steps.length - 2)

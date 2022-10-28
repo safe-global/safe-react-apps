@@ -58,22 +58,28 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
 
   const chainConstants = CHAIN_CONSTANTS[safe.chainId]
 
-  const { delegate, userClaim, ecosystemClaim, isTokenPaused } = state
+  const { delegate, userClaim, ecosystemClaim, investorClaim, isTokenPaused } =
+    state
   const [amount, setAmount] = useState<string>()
   const [isMaxAmountSelected, setIsMaxAmountSelected] = useState(false)
   const [amountError, setAmountError] = useState<string>()
 
   const [userAirdropClaimable, userAirdropInVesting] = useAmounts(userClaim)
   const [ecosystemClaimable, ecosystemInVesting] = useAmounts(ecosystemClaim)
+  const [investorClaimable, investorInVesting] = useAmounts(investorClaim)
+
   const totalAmountClaimable = BigNumber.from(userAirdropClaimable)
     .add(BigNumber.from(ecosystemClaimable))
+    .add(BigNumber.from(investorClaimable))
     .toString()
   const totalAmountInVesting = BigNumber.from(userAirdropInVesting)
     .add(BigNumber.from(ecosystemInVesting))
+    .add(BigNumber.from(investorInVesting))
     .toString()
 
   const totalAllocation = BigNumber.from(userClaim?.amount || "0")
     .add(ecosystemClaim?.amount || "0")
+    .add(investorClaim?.amount || "0")
     .toString()
 
   const buttonDisabled = !amount || !!amountError
@@ -112,10 +118,11 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
     }
 
     // Create tx for userAirdrop
-    const [userAmount, ecosystemAmount] = splitAirdropAmounts(
+    const [userAmount, investorAmount, ecosystemAmount] = splitAirdropAmounts(
       isMaxAmountSelected,
       amount,
-      userAirdropClaimable
+      userAirdropClaimable,
+      investorClaimable
     )
 
     if (userClaim && BigNumber.from(userAmount).gt(0)) {
@@ -140,6 +147,20 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
           isTokenPaused
         )
       )
+    }
+    if (investorClaim && BigNumber.from(investorAmount).gt(0)) {
+      // Investors use the VestingPool contract and can not claim if paused
+      if (!isTokenPaused || true) {
+        txs.push(
+          ...createAirdropTxs(
+            investorClaim,
+            investorAmount,
+            safe.safeAddress,
+            chainConstants.INVESTOR_AIRDROP_ADDRESS,
+            false
+          )
+        )
+      }
     }
 
     try {

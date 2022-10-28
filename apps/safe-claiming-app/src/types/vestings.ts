@@ -1,5 +1,5 @@
 export type VestingData = {
-  tag: "user" | "ecosystem"
+  tag: "user" | "ecosystem" | "investor"
   account: string
   chainId: number
   contract: string

@@ -5,6 +5,7 @@ type ChainConstants = {
   SAFE_TOKEN_ADDRESS: string
   USER_AIRDROP_ADDRESS: string
   ECOSYSTEM_AIRDROP_ADDRESS: string
+  INVESTOR_AIRDROP_ADDRESS: string
 }
 
 export enum Chains {
@@ -28,7 +29,7 @@ export const GUARDIANS_IMAGE_URL =
   "https://safe-claiming-app-data.gnosis-safe.io/guardians/images/"
 
 export const VESTING_URL =
-  "https://safe-claiming-app-data.gnosis-safe.io/allocations/"
+  "https://safe-claiming-app-data.staging.5afe.dev/allocations/"
 
 export const FORUM_URL = "https://forum.gnosis-safe.io"
 
@@ -46,11 +47,13 @@ export const CHAIN_CONSTANTS: Record<number, ChainConstants> = {
     ECOSYSTEM_AIRDROP_ADDRESS: "0x29067F28306419923BCfF96E37F95E0f58ABdBBe",
     USER_AIRDROP_ADDRESS: "0xA0b937D5c8E32a80E3a8ed4227CD020221544ee6",
     SAFE_TOKEN_ADDRESS: "0x5afe3855358e112b5647b952709e6165e1c1eeee",
+    INVESTOR_AIRDROP_ADDRESS: "0x96B71e2551915d98d22c448b040A3BC4801eA4ff",
   },
   4: {
     DELEGATE_ID: "tutis.eth",
     ECOSYSTEM_AIRDROP_ADDRESS: "0x82F1267759e9Bea202a46f8FC04704b6A5E2Af77",
     USER_AIRDROP_ADDRESS: "0x6C6ea0B60873255bb670F838b03db9d9a8f045c4",
     SAFE_TOKEN_ADDRESS: "0xCFf1b0FdE85C102552D1D96084AF148f478F964A",
+    INVESTOR_AIRDROP_ADDRESS: "TODO",
   },
 }
