@@ -117,7 +117,7 @@ CYPRESS_BASE_URL=https://gnosis-safe.io/app
 CYPRESS_CHAIN_ID=1
 CYPRESS_NETWORK_PREFIX=rin
 CYPRESS_TESTING_SAFE_ADDRESS=0x0000000000000000000000000000000000000000
-CYPRESS_CLIENT_GATEWAY_BASE_URL=https://safe-client.gnosis.io
+CYPRESS_CLIENT_GATEWAY_BASE_URL=https://safe-client.safe.global
 ```
 
 Make sure to enter the desired values, for example a Safe address that you own
