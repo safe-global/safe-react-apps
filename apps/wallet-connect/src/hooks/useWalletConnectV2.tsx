@@ -60,7 +60,8 @@ const useWalletConnectV2 = (): useWalletConnectType => {
         async (proposal: SignClientTypes.EventArguments['session_proposal']) => {
           console.log('onSessionProposal event: ', proposal)
           const { id, params } = proposal
-          const { proposer, requiredNamespaces, relays } = params
+          // const { proposer, requiredNamespaces, relays } = params
+          const { requiredNamespaces, relays } = params
 
           const namespace = requiredNamespaces['eip155']
 
@@ -68,7 +69,8 @@ const useWalletConnectV2 = (): useWalletConnectType => {
           // TODO: check namespace methods
           // TODO: check namespace events
 
-          const { topic, acknowledged } = await signClient.approve({
+          // const { topic, acknowledged } = await signClient.approve({
+          const { acknowledged } = await signClient.approve({
             id,
             relayProtocol: relays[0].protocol,
             namespaces: {
