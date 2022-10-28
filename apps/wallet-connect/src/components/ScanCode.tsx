@@ -1,22 +1,18 @@
 import { useEffect, useState } from 'react'
-import { IWalletConnectSession, IClientMeta } from '@walletconnect/types'
-import useWebcam from '../hooks/useWebcam'
-import useQRCode from '../hooks/useQRCode'
 import styled from 'styled-components'
 import { Loader, Title, Text } from '@gnosis.pm/safe-react-components'
-import ErrorImg from '../assets/cam-permissions.png'
 
-type WcConnectProps = {
-  uri?: string | undefined
-  session?: IWalletConnectSession | undefined
-}
+import useWebcam from '../hooks/useWebcam'
+import useQRCode from '../hooks/useQRCode'
+import ErrorImg from '../assets/cam-permissions.png'
+import { useWalletConnectType, wcConnectType } from '../hooks/useWalletConnect'
 
 type Props = {
-  wcConnect: ({ uri }: WcConnectProps) => Promise<void>
-  wcClientData: IClientMeta | null
+  wcConnect: wcConnectType
+  wcSessionData: useWalletConnectType['wcSessionData']
 }
 
-function ScanCode({ wcConnect, wcClientData }: Props) {
+function ScanCode({ wcConnect, wcSessionData }: Props) {
   const { videoRef, isLoadingWebcam, errorConnectingWebcam } = useWebcam()
 
   const { QRCode } = useQRCode({ videoRef, errorConnectingWebcam })
@@ -24,14 +20,14 @@ function ScanCode({ wcConnect, wcClientData }: Props) {
   // this flag is needed to avoid to call multiple times to wcConnect
   const [hasBeenCalledToConnect, setHasBeenCalledToConnect] = useState(false)
 
-  const isAlreadyConnected = !!wcClientData
+  const isAlreadyConnected = !!wcSessionData
 
   useEffect(() => {
     if (QRCode) {
       const isValidWalletConnectQRCode = QRCode && QRCode.data.startsWith('wc:')
 
       if (isValidWalletConnectQRCode && !isAlreadyConnected && !hasBeenCalledToConnect) {
-        wcConnect({ uri: QRCode.data })
+        wcConnect(QRCode.data)
         setHasBeenCalledToConnect(true)
       }
     }

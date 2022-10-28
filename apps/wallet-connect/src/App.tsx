@@ -19,7 +19,8 @@ enum CONNECTION_STATUS {
 }
 
 const App = () => {
-  const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect()
+  const { wcConnect, wcSessionData, wcDisconnect } = useWalletConnect()
+
   const { findSafeApp, openSafeApp } = useApps()
   const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED)
   const [isNavigatingToSafeApp, setIsNavigatingToSafeApp] = useState(false)
@@ -35,25 +36,25 @@ const App = () => {
   )
 
   useEffect(() => {
-    if (wcClientData) {
+    if (wcSessionData) {
       setConnectionStatus(CONNECTION_STATUS.CONNECTING)
     }
-  }, [wcClientData])
+  }, [wcSessionData])
 
   useEffect(() => {
-    if (!wcClientData) {
+    if (!wcSessionData) {
       setConnectionStatus(CONNECTION_STATUS.DISCONNECTED)
       return
     }
 
     if (connectionStatus === CONNECTION_STATUS.CONNECTING) {
-      const safeApp = findSafeApp(wcClientData.url)
+      const safeApp = findSafeApp(wcSessionData.url)
 
       if (!safeApp) {
         setConnectionStatus(CONNECTION_STATUS.CONNECTED)
       }
     }
-  }, [connectionStatus, findSafeApp, wcClientData])
+  }, [connectionStatus, findSafeApp, wcSessionData])
 
   if (isNavigatingToSafeApp) {
     return (
@@ -72,19 +73,19 @@ const App = () => {
             <StyledCard>
               {connectionStatus === CONNECTION_STATUS.DISCONNECTED && (
                 <Disconnected>
-                  <WalletConnectField client={wcClientData} onConnect={data => wcConnect(data)} />
+                  <WalletConnectField wcSessionData={wcSessionData} wcConnect={wcConnect} />
                 </Disconnected>
               )}
               {connectionStatus === CONNECTION_STATUS.CONNECTING && (
                 <Connecting
-                  client={wcClientData}
-                  onOpenSafeApp={() => handleOpenSafeApp(wcClientData?.url || '')}
+                  wcSessionData={wcSessionData}
+                  onOpenSafeApp={() => handleOpenSafeApp(wcSessionData?.url || '')}
                   onKeepUsingWalletConnect={() => setConnectionStatus(CONNECTION_STATUS.CONNECTED)}
                 />
               )}
               {connectionStatus === CONNECTION_STATUS.CONNECTED && (
                 <Connected
-                  client={wcClientData}
+                  wcSessionData={wcSessionData}
                   onDisconnect={() => {
                     setConnectionStatus(CONNECTION_STATUS.DISCONNECTED)
                     wcDisconnect()

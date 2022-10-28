@@ -1,17 +1,22 @@
 import styled from 'styled-components'
-import { IClientMeta } from '@walletconnect/types'
 import Grid from '@material-ui/core/Grid'
 import { Icon, Text, Button, Link } from '@gnosis.pm/safe-react-components'
+
 import { StyledBoldText, StyledCardContainer, StyledImage } from './styles'
+import { useWalletConnectType } from '../hooks/useWalletConnect'
 
 type ConnectingProps = {
-  client: IClientMeta | null
+  wcSessionData: useWalletConnectType['wcSessionData']
   onOpenSafeApp: () => void
   onKeepUsingWalletConnect: () => void
 }
 
-const Connecting = ({ client, onOpenSafeApp, onKeepUsingWalletConnect }: ConnectingProps) => {
-  if (!client) {
+const Connecting = ({
+  wcSessionData,
+  onOpenSafeApp,
+  onKeepUsingWalletConnect,
+}: ConnectingProps) => {
+  if (!wcSessionData) {
     return null
   }
 
@@ -29,7 +34,7 @@ const Connecting = ({ client, onOpenSafeApp, onKeepUsingWalletConnect }: Connect
 
       <Grid item>
         <Text size="xl">
-          Trying to connect <StyledBoldText as="span">{client.name}</StyledBoldText>
+          Trying to connect <StyledBoldText as="span">{wcSessionData.name}</StyledBoldText>
         </Text>
       </Grid>
 
@@ -48,7 +53,7 @@ const Connecting = ({ client, onOpenSafeApp, onKeepUsingWalletConnect }: Connect
         spacing={3}
       >
         <Grid item xs={2}>
-          <StyledImage src={client.icons[0]} role="img" />
+          <StyledImage src={wcSessionData.icons[0]} role="img" />
         </Grid>
         <Grid container direction="column" item xs={10} spacing={1}>
           <Grid item>
@@ -57,7 +62,7 @@ const Connecting = ({ client, onOpenSafeApp, onKeepUsingWalletConnect }: Connect
             </StyledBoldText>
           </Grid>
           <Grid item>
-            <Text size="lg">{client.name ? client.name : new URL(client.url).hostname}</Text>
+            <Text size="lg">{wcSessionData.name || new URL(wcSessionData.url).hostname}</Text>
           </Grid>
         </Grid>
       </StyledSafeAppContainer>
