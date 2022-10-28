@@ -29,7 +29,7 @@ export const GUARDIANS_IMAGE_URL =
   "https://safe-claiming-app-data.gnosis-safe.io/guardians/images/"
 
 export const VESTING_URL =
-  "https://safe-claiming-app-data.staging.5afe.dev/allocations/"
+  "https://safe-claiming-app-data.gnosis-safe.io/allocations/"
 
 export const FORUM_URL = "https://forum.gnosis-safe.io"
 

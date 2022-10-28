@@ -150,7 +150,7 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
     }
     if (investorClaim && BigNumber.from(investorAmount).gt(0)) {
       // Investors use the VestingPool contract and can not claim if paused
-      if (!isTokenPaused || true) {
+      if (!isTokenPaused) {
         txs.push(
           ...createAirdropTxs(
             investorClaim,
