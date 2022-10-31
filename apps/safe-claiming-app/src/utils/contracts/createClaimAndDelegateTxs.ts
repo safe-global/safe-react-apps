@@ -11,9 +11,9 @@ export const createClaimAndDelegateTxs = (
   safeAddress: string,
   isMaxAmountSelected: boolean,
   amount: string,
-  userClaim: VestingClaim,
-  investorClaim: VestingClaim,
-  ecosystemClaim: VestingClaim,
+  userClaim: VestingClaim | null,
+  investorClaim: VestingClaim | null,
+  ecosystemClaim: VestingClaim | null,
   userClaimable: string,
   investorClaimable: string,
   isTokenPaused: boolean

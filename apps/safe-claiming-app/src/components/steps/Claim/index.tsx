@@ -19,9 +19,6 @@ import { maxDecimals, minMaxValue, mustBeFloat } from "src/utils/validation"
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { BigNumber, ethers } from "ethers"
 import { useAmounts } from "src/hooks/useAmounts"
-import { createAirdropTxs } from "src/utils/contracts/airdrop"
-import { createDelegateTx } from "src/utils/contracts/delegateRegistry"
-import { splitAirdropAmounts } from "src/utils/splitAirdropAmounts"
 import { InfoOutlined } from "@mui/icons-material"
 import { ClaimCard } from "./ClaimCard"
 import { formatAmount } from "src/utils/format"
@@ -117,7 +114,7 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
   const claimTokens = async () => {
     const txs = createClaimAndDelegateTxs(
       hasDelegateChanged,
-      state.delegate,
+      state.delegate?.address,
       safe.chainId,
       safe.safeAddress,
       isMaxAmountSelected,
