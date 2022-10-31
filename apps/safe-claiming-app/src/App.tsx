@@ -4,14 +4,12 @@ import {
   lazy,
   ReactElement,
   Suspense,
-  useCallback,
   useEffect,
   useMemo,
   useState,
 } from "react"
 
 import { ProgressBar } from "src/components/helpers/ProgressBar"
-import { useLocalStorage } from "src/hooks/useLocalStorage"
 import { FloatingTiles } from "./components/helpers/FloatingTiles"
 import { Loading } from "./components/helpers/Loading"
 import { ScrollContextProvider } from "./components/helpers/ScrollContext"
@@ -59,9 +57,6 @@ const Circle2 = styled("div")`
     rgb(246 247 248 / 0%) 70%
   );
 `
-
-const LS_APP_STATE = "claimingApp"
-
 const EDUCATION_END = 5
 const CLAIM_STEP = EDUCATION_END + 2
 const SUCCESS_STEP = EDUCATION_END + 3
@@ -83,17 +78,14 @@ const steps = [
   lazy(() => import("src/components/steps/NoAirdrop")),
 ]
 
-type PersistedAppState = {
-  delegate?: DelegateEntry
-}
-
-export type AppState = PersistedAppState & {
+export type AppState = {
   ecosystemClaim: VestingClaim | null
   userClaim: VestingClaim | null
   investorClaim: VestingClaim | null
   isTokenPaused: boolean
   delegateAddressFromContract?: string
   delegateData: DelegateEntry[]
+  delegate?: DelegateEntry
   claimedAmount?: string
 }
 
@@ -106,15 +98,7 @@ const initialState: AppState = {
 }
 
 const App = (): ReactElement => {
-  const localStorage = useLocalStorage()
-
-  const stateFromLocalStorage =
-    localStorage.getItem<PersistedAppState>(LS_APP_STATE) || {}
-
-  const [appState, setAppState] = useState<AppState>({
-    ...stateFromLocalStorage,
-    ...initialState,
-  })
+  const [appState, setAppState] = useState<AppState>(initialState)
 
   const { safe } = useSafeAppsSDK()
 
@@ -194,9 +178,6 @@ const App = (): ReactElement => {
       delegateAddressFromContract,
       delegateData: delegates,
     }))
-    localStorage.setItem<PersistedAppState>(LS_APP_STATE, {
-      delegate: currentDelegate,
-    })
   }, [
     userClaim,
     ecosystemClaim,
@@ -205,12 +186,22 @@ const App = (): ReactElement => {
     delegates,
     currentDelegate,
     delegateAddressFromContract,
-    localStorage,
   ])
 
   const [activeStep, setActiveStep] = useState<number>(
     appState?.delegate ? CLAIM_STEP : 0
   )
+
+  // once the delegate is fetched from on-chain we update the activeStep
+  useEffect(() => {
+    if (delegateAddressFromContract && !appState.delegate && activeStep === 0) {
+      setAppState({
+        ...appState,
+        delegate: { address: delegateAddressFromContract },
+      })
+      setActiveStep(CLAIM_STEP)
+    }
+  }, [delegateAddressFromContract, appState, activeStep])
 
   useEffect(() => {
     if (
@@ -235,16 +226,6 @@ const App = (): ReactElement => {
   const handleNext = () => {
     setActiveStep((prev) => prev + 1)
   }
-
-  const handleUpdateState = useCallback(
-    (newState: AppState) => {
-      setAppState(newState)
-      localStorage.setItem<PersistedAppState>(LS_APP_STATE, {
-        delegate: newState.delegate,
-      })
-    },
-    [localStorage]
-  )
 
   const Step = steps[activeStep]
 
@@ -294,7 +275,7 @@ const App = (): ReactElement => {
                       handleBack={handleBack}
                       handleNext={handleNext}
                       state={appState}
-                      handleUpdateState={handleUpdateState}
+                      handleUpdateState={setAppState}
                     />
                   </Suspense>
                 </>

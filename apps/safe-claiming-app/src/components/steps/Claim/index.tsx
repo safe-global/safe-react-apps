@@ -27,6 +27,7 @@ import { ClaimCard } from "./ClaimCard"
 import { formatAmount } from "src/utils/format"
 import { NavButtons } from "src/components/helpers/NavButtons"
 import { CHAIN_CONSTANTS } from "src/config/constants"
+import { createClaimAndDelegateTxs } from "src/utils/contracts/createClaimAndDelegateTxs"
 
 const ButtonLink = styled("button")`
   border: 0;
@@ -82,7 +83,18 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
     .add(investorClaim?.amount || "0")
     .toString()
 
-  const buttonDisabled = !amount || !!amountError
+  const hasDelegateChanged =
+    state.delegate !== undefined &&
+    state.delegateAddressFromContract !== state.delegate.address
+
+  const investorClaimingDisabled = investorClaim !== null && isTokenPaused
+
+  const isAmountGTZero = amount && !amountError && Number.parseFloat(amount) > 0
+
+  const buttonDisabled =
+    !(isAmountGTZero || hasDelegateChanged) ||
+    (investorClaimingDisabled && isAmountGTZero) ||
+    !!amountError
 
   const handleAmountChange = (event: ChangeEvent<HTMLInputElement>) => {
     const error = validateAmount(
@@ -103,65 +115,20 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
   }
 
   const claimTokens = async () => {
-    if (!state.delegate?.address) return
-    if (!amount) return
-
-    const txs = []
-
-    // Add delegate tx if necessary
-    const hasDelegateChanged =
-      state.delegateAddressFromContract !== state.delegate.address
-
-    if (hasDelegateChanged) {
-      const delegateTx = createDelegateTx(state.delegate.address, safe.chainId)
-      txs.push(delegateTx)
-    }
-
-    // Create tx for userAirdrop
-    const [userAmount, investorAmount, ecosystemAmount] = splitAirdropAmounts(
+    const txs = createClaimAndDelegateTxs(
+      hasDelegateChanged,
+      state.delegate,
+      safe.chainId,
+      safe.safeAddress,
       isMaxAmountSelected,
-      amount,
+      amount || "0",
+      userClaim,
+      investorClaim,
+      ecosystemClaim,
       userAirdropClaimable,
-      investorClaimable
+      investorClaimable,
+      isTokenPaused
     )
-
-    if (userClaim && BigNumber.from(userAmount).gt(0)) {
-      txs.push(
-        ...createAirdropTxs(
-          userClaim,
-          userAmount,
-          safe.safeAddress,
-          chainConstants.USER_AIRDROP_ADDRESS,
-          isTokenPaused
-        )
-      )
-    }
-
-    if (ecosystemClaim && BigNumber.from(ecosystemAmount).gt(0)) {
-      txs.push(
-        ...createAirdropTxs(
-          ecosystemClaim,
-          ecosystemAmount,
-          safe.safeAddress,
-          chainConstants.ECOSYSTEM_AIRDROP_ADDRESS,
-          isTokenPaused
-        )
-      )
-    }
-    if (investorClaim && BigNumber.from(investorAmount).gt(0)) {
-      // Investors use the VestingPool contract and can not claim if paused
-      if (!isTokenPaused) {
-        txs.push(
-          ...createAirdropTxs(
-            investorClaim,
-            investorAmount,
-            safe.safeAddress,
-            chainConstants.INVESTOR_AIRDROP_ADDRESS,
-            false
-          )
-        )
-      }
-    }
 
     try {
       await sdk.txs.send({ txs })
@@ -282,21 +249,38 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
                 </Button>
               </Grid>
             </Grid>
-            <Box display="flex" gap={1} mt={0} mb={4}>
-              <InfoOutlined
-                sx={{
-                  height: "16px",
-                  width: "16px",
-                  marginTop: "4px",
-                  color: ({ palette }) => palette.secondary.main,
-                }}
-              />
-              <Typography variant="subtitle2">
-                Execute at least one claim of any amount of tokens until
-                27.12.22 10:00 CET or your allocation will be transferred back
-                to the SafeDAO treasury
-              </Typography>
-            </Box>
+            {!investorClaim && (
+              <Box display="flex" gap={1} mt={0} mb={4}>
+                <InfoOutlined
+                  sx={{
+                    height: "16px",
+                    width: "16px",
+                    marginTop: "4px",
+                    color: ({ palette }) => palette.secondary.main,
+                  }}
+                />
+                <Typography variant="subtitle2">
+                  Execute at least one claim of any amount of tokens until
+                  27.12.22 10:00 CET or your allocation will be transferred back
+                  to the SafeDAO treasury
+                </Typography>
+              </Box>
+            )}
+            {investorClaim && isTokenPaused && (
+              <Box display="flex" gap={1} mt={0} mb={4}>
+                <InfoOutlined
+                  sx={{
+                    height: "16px",
+                    width: "16px",
+                    marginTop: "4px",
+                    color: ({ palette }) => palette.secondary.main,
+                  }}
+                />
+                <Typography variant="subtitle2">
+                  Claiming will be available once the token is transferable
+                </Typography>
+              </Box>
+            )}
           </>
         </Grid>
         {delegate && (

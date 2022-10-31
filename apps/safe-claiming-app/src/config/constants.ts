@@ -1,5 +1,7 @@
 import { BigNumber } from "ethers"
 
+const isProdEnv = process.env.NODE_ENV === "production"
+
 type ChainConstants = {
   DELEGATE_ID: string
   SAFE_TOKEN_ADDRESS: string
@@ -19,17 +21,18 @@ export const MAX_UINT128 = BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
 
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
+const CLAIMING_DATA_URL = isProdEnv
+  ? "https://safe-claiming-app-data.gnosis-safe.io"
+  : "https://safe-claiming-app-data.staging.5afe.dev"
+
 export const DelegateRegistryAddress =
   "0x469788fe6e9e9681c6ebf3bf78e7fd26fc015446"
 
-export const GUARDIANS_URL =
-  "https://safe-claiming-app-data.gnosis-safe.io/guardians/guardians.json"
+export const GUARDIANS_URL = `${CLAIMING_DATA_URL}/guardians/guardians.json`
 
-export const GUARDIANS_IMAGE_URL =
-  "https://safe-claiming-app-data.gnosis-safe.io/guardians/images/"
+export const GUARDIANS_IMAGE_URL = `${CLAIMING_DATA_URL}/guardians/images/`
 
-export const VESTING_URL =
-  "https://safe-claiming-app-data.gnosis-safe.io/allocations/"
+export const VESTING_URL = `${CLAIMING_DATA_URL}/allocations/`
 
 export const FORUM_URL = "https://forum.gnosis-safe.io"
 
