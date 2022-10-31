@@ -4,7 +4,7 @@ import { MAX_UINT128 } from "src/config/constants"
 /**
  * Splits the amount the user wants to claim into user airdrop and ecosystem airdrop.
  *
- * @returns userAmount in Wei, ecosystemAmount in Wei, investorAmount in Wei
+ * @returns userAmount in Wei, investorAmount in Wei, ecosystemAmount in Wei
  */
 export const splitAirdropAmounts = (
   isMaxAmountSelected: boolean,
