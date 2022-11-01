@@ -15,7 +15,7 @@ export const UnsupportedNetwork = () => {
       }}
     >
       <Typography variant="h3">
-        Only Mainnet and Rinkeby are supported by this Safe App
+        Only Mainnet, Rinkeby and Goerli are supported by this Safe App
       </Typography>
     </Paper>
   )

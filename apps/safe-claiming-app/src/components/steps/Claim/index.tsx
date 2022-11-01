@@ -23,7 +23,6 @@ import { InfoOutlined } from "@mui/icons-material"
 import { ClaimCard } from "./ClaimCard"
 import { formatAmount } from "src/utils/format"
 import { NavButtons } from "src/components/helpers/NavButtons"
-import { CHAIN_CONSTANTS } from "src/config/constants"
 import { createClaimAndDelegateTxs } from "src/utils/contracts/createClaimAndDelegateTxs"
 
 const ButtonLink = styled("button")`
@@ -53,9 +52,6 @@ const validateAmount = (amount: string, maxAmount: string) => {
 
 const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
   const { sdk, safe } = useSafeAppsSDK()
-
-  const chainConstants = CHAIN_CONSTANTS[safe.chainId]
-
   const { delegate, userClaim, ecosystemClaim, investorClaim, isTokenPaused } =
     state
   const [amount, setAmount] = useState<string>()

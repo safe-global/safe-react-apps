@@ -15,7 +15,7 @@ import { Loading } from "./components/helpers/Loading"
 import { ScrollContextProvider } from "./components/helpers/ScrollContext"
 import { UnexpectedError } from "./components/helpers/UnexpectedError"
 import { UnsupportedNetwork } from "./components/helpers/UnsupportedNetwork"
-import { Chains, CHAIN_CONSTANTS } from "./config/constants"
+import { Chains } from "./config/constants"
 import theme from "./config/theme"
 import { useAirdropFile } from "./hooks/useAirdropFile"
 import { useDelegate } from "./hooks/useDelegate"
@@ -102,8 +102,6 @@ const App = (): ReactElement => {
 
   const { safe } = useSafeAppsSDK()
 
-  const chainConstants = CHAIN_CONSTANTS[safe.chainId]
-
   const [delegates, , delegatesFileError] = useDelegatesFile()
 
   const [vestings, isVestingLoading, vestingFileError] = useAirdropFile()
@@ -111,20 +109,17 @@ const App = (): ReactElement => {
 
   const [userVestingStatus, userVestingStatusError] = useFetchVestingStatus(
     userVesting?.vestingId,
-    chainConstants?.USER_AIRDROP_ADDRESS
+    userVesting?.contract
   )
 
   const [ecosystemVestingStatus, ecosystemVestingStatusError] =
     useFetchVestingStatus(
       ecosystemVesting?.vestingId,
-      chainConstants?.ECOSYSTEM_AIRDROP_ADDRESS
+      ecosystemVesting?.contract
     )
 
   const [investorVestingStatus, investorVestingStatusError] =
-    useFetchVestingStatus(
-      investorVesting?.vestingId,
-      chainConstants?.INVESTOR_AIRDROP_ADDRESS
-    )
+    useFetchVestingStatus(investorVesting?.vestingId, investorVesting?.contract)
 
   const userClaim: VestingClaim | null = useMemo(
     () =>
@@ -242,7 +237,9 @@ const App = (): ReactElement => {
     hasNoAirdrop || fatalError ? 0 : activeStep / (steps.length - 2)
 
   const unsupportedChain =
-    safe.chainId !== Chains.MAINNET && safe.chainId !== Chains.RINKEBY
+    safe.chainId !== Chains.MAINNET &&
+    safe.chainId !== Chains.RINKEBY &&
+    safe.chainId !== Chains.GOERLI
 
   return (
     <>
