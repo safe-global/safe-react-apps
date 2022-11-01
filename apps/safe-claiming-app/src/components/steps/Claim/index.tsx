@@ -108,20 +108,15 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
   }
 
   const claimTokens = async () => {
-    const txs = createClaimAndDelegateTxs(
-      hasDelegateChanged,
-      state.delegate?.address,
-      safe.chainId,
-      safe.safeAddress,
-      isMaxAmountSelected,
-      amount || "0",
-      userClaim,
-      investorClaim,
-      ecosystemClaim,
-      userAirdropClaimable,
+    const txs = createClaimAndDelegateTxs({
+      appState: state,
+      amount: amount || "0",
+      chainId: safe.chainId,
+      safeAddress: safe.safeAddress,
       investorClaimable,
-      isTokenPaused
-    )
+      userClaimable: userAirdropClaimable,
+      isMaxAmountSelected,
+    })
 
     try {
       await sdk.txs.send({ txs })

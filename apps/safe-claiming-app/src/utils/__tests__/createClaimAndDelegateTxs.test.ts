@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 import { parseBytes32String } from "ethers/lib/utils"
-import { DelegateRegistryAddress } from "src/config/constants"
+import { AppState } from "src/App"
 import { Airdrop__factory } from "src/types/contracts"
 import { createClaimAndDelegateTxs } from "../contracts/createClaimAndDelegateTxs"
 import { delegateRegistryInterface } from "../contracts/delegateRegistry"
@@ -13,54 +13,10 @@ describe("createClaimAndDelegateTxs", () => {
   it("only delegate", () => {
     const safeAddress = ethers.utils.hexZeroPad("0x5afe", 20)
     const delegateAddress = ethers.utils.hexZeroPad("0x1", 20)
-    const txs = createClaimAndDelegateTxs(
-      true,
-      delegateAddress,
-      5,
-      safeAddress,
-      false,
-      "0",
-      {
-        account: safeAddress,
-        amount: "10000000000000000000",
-        amountClaimed: "0",
-        chainId: 5,
-        contract: mockUserAirdropAddress,
-        curve: 0,
-        durationWeeks: 416,
-        isRedeemed: false,
-        proof: [],
-        startDate: 10000,
-        tag: "user",
-        vestingId: "0x123",
-      },
-      null,
-      null,
-      "10000000000000000000",
-      "0",
-      true
-    )
-
-    expect(txs).toHaveLength(1)
-    const decodedTx = delegateRegistryInterface.decodeFunctionData(
-      "setDelegate",
-      txs[0].data
-    )
-    expect(parseBytes32String(decodedTx[0])).toEqual("tutis.eth")
-    expect(decodedTx[1]).toEqual(delegateAddress)
-  })
-
-  it("redeem + claim user airdrop while paused", () => {
-    const safeAddress = ethers.utils.hexZeroPad("0x5afe", 20)
-    const delegateAddress = ethers.utils.hexZeroPad("0x1", 20)
-    const txs = createClaimAndDelegateTxs(
-      false,
-      delegateAddress,
-      5,
-      safeAddress,
-      false,
-      "100",
-      {
+    const appState: AppState = {
+      delegateData: [],
+      ecosystemClaim: null,
+      userClaim: {
         account: safeAddress,
         amount: ethers.utils.parseEther("100").toString(),
         amountClaimed: "0",
@@ -77,12 +33,69 @@ describe("createClaimAndDelegateTxs", () => {
         vestingId:
           "0xabfe3d0bfb3df17a4aa39d6967f722ff82c765601417a4957434023c97d5b111",
       },
-      null,
-      null,
-      ethers.utils.parseEther("100").toString(),
-      "0",
-      true
+      investorClaim: null,
+      isTokenPaused: true,
+      claimedAmount: "0",
+      delegate: { address: delegateAddress },
+      delegateAddressFromContract: undefined,
+    }
+    const txs = createClaimAndDelegateTxs({
+      appState,
+      amount: "0",
+      chainId: 5,
+      safeAddress,
+      investorClaimable: "0",
+      isMaxAmountSelected: false,
+      userClaimable: ethers.utils.parseEther("100").toString(),
+    })
+
+    expect(txs).toHaveLength(1)
+    const decodedTx = delegateRegistryInterface.decodeFunctionData(
+      "setDelegate",
+      txs[0].data
     )
+    expect(parseBytes32String(decodedTx[0])).toEqual("tutis.eth")
+    expect(decodedTx[1]).toEqual(delegateAddress)
+  })
+
+  it("redeem + claim user airdrop while paused", () => {
+    const safeAddress = ethers.utils.hexZeroPad("0x5afe", 20)
+    const delegateAddress = ethers.utils.hexZeroPad("0x1", 20)
+    const appState: AppState = {
+      delegateData: [],
+      ecosystemClaim: null,
+      userClaim: {
+        account: safeAddress,
+        amount: ethers.utils.parseEther("100").toString(),
+        amountClaimed: "0",
+        chainId: 5,
+        contract: mockUserAirdropAddress,
+        curve: 0,
+        durationWeeks: 416,
+        isRedeemed: false,
+        proof: [
+          "0x4697528f2cd5e98bce29be252b25ed33b79d8f0245bb7a3d0f00bb32e50128bb",
+        ],
+        startDate: 10000,
+        tag: "user",
+        vestingId:
+          "0xabfe3d0bfb3df17a4aa39d6967f722ff82c765601417a4957434023c97d5b111",
+      },
+      investorClaim: null,
+      isTokenPaused: true,
+      claimedAmount: "0",
+      delegate: { address: delegateAddress },
+      delegateAddressFromContract: delegateAddress,
+    }
+    const txs = createClaimAndDelegateTxs({
+      appState,
+      amount: "100",
+      chainId: 5,
+      safeAddress,
+      investorClaimable: "0",
+      isMaxAmountSelected: false,
+      userClaimable: ethers.utils.parseEther("100").toString(),
+    })
 
     expect(txs).toHaveLength(2)
     const airdropInterface = Airdrop__factory.createInterface()
@@ -121,15 +134,11 @@ describe("createClaimAndDelegateTxs", () => {
   it("do not claim investor airdrop while paused", () => {
     const safeAddress = ethers.utils.hexZeroPad("0x5afe", 20)
     const delegateAddress = ethers.utils.hexZeroPad("0x1", 20)
-    const txs = createClaimAndDelegateTxs(
-      false,
-      delegateAddress,
-      5,
-      safeAddress,
-      false,
-      "100",
-      null,
-      {
+    const appState: AppState = {
+      delegateData: [],
+      ecosystemClaim: null,
+      userClaim: null,
+      investorClaim: {
         account: safeAddress,
         amount: ethers.utils.parseEther("100").toString(),
         amountClaimed: "0",
@@ -137,20 +146,29 @@ describe("createClaimAndDelegateTxs", () => {
         contract: mockInvestorVestingAddress,
         curve: 0,
         durationWeeks: 416,
-        isRedeemed: true,
+        isRedeemed: false,
         proof: [
           "0x4697528f2cd5e98bce29be252b25ed33b79d8f0245bb7a3d0f00bb32e50128bb",
         ],
         startDate: 10000,
-        tag: "investor",
+        tag: "user",
         vestingId:
           "0xabfe3d0bfb3df17a4aa39d6967f722ff82c765601417a4957434023c97d5b111",
       },
-      null,
-      ethers.utils.parseEther("100").toString(),
-      "0",
-      true
-    )
+      isTokenPaused: true,
+      claimedAmount: "0",
+      delegate: { address: delegateAddress },
+      delegateAddressFromContract: delegateAddress,
+    }
+    const txs = createClaimAndDelegateTxs({
+      appState,
+      amount: "100",
+      chainId: 5,
+      safeAddress,
+      investorClaimable: ethers.utils.parseEther("100").toString(),
+      isMaxAmountSelected: false,
+      userClaimable: "0",
+    })
 
     expect(txs).toHaveLength(0)
   })
@@ -158,15 +176,11 @@ describe("createClaimAndDelegateTxs", () => {
   it("claim investor airdrop if unpaused", () => {
     const safeAddress = ethers.utils.hexZeroPad("0x5afe", 20)
     const delegateAddress = ethers.utils.hexZeroPad("0x1", 20)
-    const txs = createClaimAndDelegateTxs(
-      false,
-      delegateAddress,
-      5,
-      safeAddress,
-      false,
-      "100",
-      null,
-      {
+    const appState: AppState = {
+      delegateData: [],
+      ecosystemClaim: null,
+      userClaim: null,
+      investorClaim: {
         account: safeAddress,
         amount: ethers.utils.parseEther("100").toString(),
         amountClaimed: "0",
@@ -179,15 +193,24 @@ describe("createClaimAndDelegateTxs", () => {
           "0x4697528f2cd5e98bce29be252b25ed33b79d8f0245bb7a3d0f00bb32e50128bb",
         ],
         startDate: 10000,
-        tag: "investor",
+        tag: "user",
         vestingId:
           "0xabfe3d0bfb3df17a4aa39d6967f722ff82c765601417a4957434023c97d5b111",
       },
-      null,
-      "0",
-      ethers.utils.parseEther("100").toString(),
-      false
-    )
+      isTokenPaused: false,
+      claimedAmount: "0",
+      delegate: { address: delegateAddress },
+      delegateAddressFromContract: delegateAddress,
+    }
+    const txs = createClaimAndDelegateTxs({
+      appState,
+      amount: "100",
+      chainId: 5,
+      safeAddress,
+      investorClaimable: ethers.utils.parseEther("100").toString(),
+      isMaxAmountSelected: false,
+      userClaimable: "0",
+    })
 
     expect(txs).toHaveLength(1)
     const airdropInterface = Airdrop__factory.createInterface()

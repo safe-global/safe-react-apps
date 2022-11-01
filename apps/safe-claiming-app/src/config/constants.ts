@@ -19,9 +19,9 @@ export const MAX_UINT128 = BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
 
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
-const CLAIMING_DATA_URL = isProdEnv
-  ? "https://safe-claiming-app-data.gnosis-safe.io"
-  : "https://safe-claiming-app-data.staging.5afe.dev"
+const CLAIMING_DATA_URL = // isProdEnv
+  //? "https://safe-claiming-app-data.gnosis-safe.io" :
+  "https://safe-claiming-app-data.staging.5afe.dev"
 
 export const DelegateRegistryAddress =
   "0x469788fe6e9e9681c6ebf3bf78e7fd26fc015446"
