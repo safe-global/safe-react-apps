@@ -183,20 +183,14 @@ const App = (): ReactElement => {
     delegateAddressFromContract,
   ])
 
-  const [activeStep, setActiveStep] = useState<number>(
-    appState?.delegate ? CLAIM_STEP : 0
-  )
+  const [activeStep, setActiveStep] = useState<number>(0)
 
   // once the delegate is fetched from on-chain we update the activeStep
   useEffect(() => {
-    if (delegateAddressFromContract && !appState.delegate && activeStep === 0) {
-      setAppState({
-        ...appState,
-        delegate: { address: delegateAddressFromContract },
-      })
+    if (delegateAddressFromContract) {
       setActiveStep(CLAIM_STEP)
     }
-  }, [delegateAddressFromContract, appState, activeStep])
+  }, [delegateAddressFromContract])
 
   useEffect(() => {
     if (
