@@ -1,7 +1,5 @@
 import { BigNumber } from "ethers"
 
-const isProdEnv = process.env.NODE_ENV === "production"
-
 type ChainConstants = {
   DELEGATE_ID: string
   SAFE_TOKEN_ADDRESS: string
@@ -18,6 +16,8 @@ export const STORAGE_PREFIX = "SAFE__"
 export const MAX_UINT128 = BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
 
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
+
+// const isProdEnv = process.env.NODE_ENV === "production"
 
 const CLAIMING_DATA_URL = // isProdEnv
   //? "https://safe-claiming-app-data.gnosis-safe.io" :
