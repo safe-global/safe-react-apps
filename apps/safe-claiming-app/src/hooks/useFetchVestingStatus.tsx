@@ -7,7 +7,7 @@ import { getWeb3Provider } from "src/utils/getWeb3Provider"
 
 export const useFetchVestingStatus = (
   vestingId: string | undefined,
-  airdropAddress: string
+  airdropAddress: string | undefined
 ): [VestingStatus | undefined, string | undefined] => {
   const { safe, sdk } = useSafeAppsSDK()
   const web3Provider = useMemo(() => getWeb3Provider(safe, sdk), [safe, sdk])
@@ -17,7 +17,7 @@ export const useFetchVestingStatus = (
   useEffect(() => {
     let isMounted = true
     const fetchVestingStatus = async () => {
-      if (!vestingId) {
+      if (!vestingId || !airdropAddress) {
         return
       }
       try {

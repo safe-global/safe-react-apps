@@ -5,7 +5,7 @@ import { CHAIN_CONSTANTS } from "src/config/constants"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
 import { useFetchVestingStatus } from "../useFetchVestingStatus"
 
-const SAFE_ADDRESS = "0x6a13e0280740cc5bd35eeee33b470b5bbb93df37"
+const contractAddress = "0x07dA2049Fa8127eF6280631BCbc56881d764C8Ee"
 
 const mockWeb3Provider = {
   _isProvider: true,
@@ -41,7 +41,7 @@ describe("useFetchVestingStatus", () => {
 
   it("returns undefined for undefined vestingId", () => {
     const { result } = renderHook(() =>
-      useFetchVestingStatus(undefined, CHAIN_CONSTANTS[4].USER_AIRDROP_ADDRESS)
+      useFetchVestingStatus(undefined, contractAddress)
     )
 
     expect(result.current[0]).toBeUndefined()
@@ -52,10 +52,7 @@ describe("useFetchVestingStatus", () => {
     const mockCall = jest.fn()
     web3Provider.call = mockCall
     const { result } = renderHook(() =>
-      useFetchVestingStatus(
-        hexZeroPad("0x1234", 32),
-        CHAIN_CONSTANTS[4].USER_AIRDROP_ADDRESS
-      )
+      useFetchVestingStatus(hexZeroPad("0x1234", 32), contractAddress)
     )
     await waitFor(() => {
       expect(result.current[0]).toBeUndefined()
