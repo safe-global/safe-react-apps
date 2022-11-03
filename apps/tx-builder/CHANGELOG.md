@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.12.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.11.1...tx-builder-1.12.0) (2022-11-03)
+
+
+### Bug Fixes
+
+* **tx-builder:** validate transactions in batch and add error message ([9ec71fb](https://github.com/safe-global/safe-react-apps/commit/9ec71fba5e6a1ae3dd86ba776277e22722caba6e))
+
+
+### Features
+
+* **tx-builder:** improve error message for overflow errors in tuples ([1bae379](https://github.com/safe-global/safe-react-apps/commit/1bae3798a532ff47fbd1a7f474cbeefe106ef2c7))
+
+
+
 ## [1.11.1](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.11.0...tx-builder-1.11.1) (2022-09-22)
 
 
