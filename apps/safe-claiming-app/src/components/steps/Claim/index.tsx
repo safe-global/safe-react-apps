@@ -91,7 +91,7 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
 
   const handleAmountChange = (event: ChangeEvent<HTMLInputElement>) => {
     const error = validateAmount(
-      event.target.value,
+      event.target.value || "0",
       ethers.utils.formatEther(totalAmountClaimable)
     )
     setAmountError(error)
