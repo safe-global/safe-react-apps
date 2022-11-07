@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { getSafeApps, SafeAppData, SafeAppsResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 
-const BASE_URL = 'https://safe-client.gnosis.io'
+const BASE_URL = 'https://safe-client.safe.global'
 
 type UseAppsResponse = {
   findSafeApp: (safeAddress: string) => SafeAppData | undefined

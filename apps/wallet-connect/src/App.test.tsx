@@ -50,7 +50,7 @@ jest.mock('@walletconnect/client', () => {
 jest.mock('jsqr', () => {
   return function () {
     return {
-      data: 'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.gnosis.io&key=xxxxxxxxxxx',
+      data: 'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.safe.global&key=xxxxxxxxxxx',
     }
   }
 })
@@ -90,7 +90,7 @@ describe('WalletConnect unit tests', () => {
             },
           ],
           getData: () =>
-            'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.gnosis.io&key=xxxxxxxxxxx',
+            'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.safe.global&key=xxxxxxxxxxx',
         },
       }
 
@@ -286,7 +286,7 @@ describe('WalletConnect unit tests', () => {
             },
           ],
           getData: () =>
-            'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.gnosis.io&key=xxxxxxxxxxx',
+            'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.safe.global&key=xxxxxxxxxxx',
         },
       }
 

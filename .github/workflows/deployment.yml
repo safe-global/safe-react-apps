@@ -42,7 +42,6 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.number }}
           REVIEW_BUCKET_NAME: ${{ secrets.AWS_REVIEW_BUCKET_NAME }}
-          REACT_APP_RPC_TOKEN: ${{ secrets.REACT_APP_RPC_TOKEN }}
           REACT_APP_TENDERLY_ORG_NAME: ${{ secrets.REACT_APP_TENDERLY_ORG_NAME }}
           REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ secrets.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL }}
           REACT_APP_TENDERLY_PROJECT_NAME: ${{ secrets.REACT_APP_TENDERLY_PROJECT_NAME }}
@@ -52,17 +51,16 @@ jobs:
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            * [Compound app](${{ env.REVIEW_FEATURE_URL }}/compound/)
-            * [WalletConnect app](${{ env.REVIEW_FEATURE_URL }}/wallet-connect/)
-            * [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)
             * [Drain Account App](${{ env.REVIEW_FEATURE_URL }}/drain-safe/)
             * [RAMP Network App](${{ env.REVIEW_FEATURE_URL }}/ramp-network/)
             * [Delegate Registry Manager App](${{ env.REVIEW_FEATURE_URL }}/delegate-registry-manager/)
             * [Safe Claiming App](${{ env.REVIEW_FEATURE_URL }}/safe-claiming-app/)
+            * [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)
+            * [WalletConnect app](${{ env.REVIEW_FEATURE_URL }}/wallet-connect/)
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
         env:
-          REVIEW_FEATURE_URL: https://pr${{ github.event.number }}--${{ env.REPO_NAME_ALPHANUMERIC }}.review.gnosisdev.com
+          REVIEW_FEATURE_URL: https://pr${{ github.event.number }}--${{ env.REPO_NAME_ALPHANUMERIC }}.review-react-hr.5afe.dev
 
   deploy:
     name: Deploy Dev/Staging
@@ -88,7 +86,6 @@ jobs:
           npx nx affected --target=test --parallel
           npx nx affected --target=build --parallel
         env:
-          REACT_APP_RPC_TOKEN: ${{ secrets.REACT_APP_RPC_TOKEN }}
           REACT_APP_TENDERLY_ORG_NAME: ${{ secrets.REACT_APP_TENDERLY_ORG_NAME }}
           REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ secrets.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL }}
           REACT_APP_TENDERLY_PROJECT_NAME: ${{ secrets.REACT_APP_TENDERLY_PROJECT_NAME }}
@@ -131,7 +128,6 @@ jobs:
           prod-deployment-hook-token: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
           prod-deployment-hook-url: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
           bucket-name: ${{ secrets.STAGING_BUCKET_NAME }}/releases
-          react-app-rpc-token: ${{ secrets.REACT_APP_RPC_TOKEN }}
           react-app-tenderly-org-name: ${{ secrets.REACT_APP_TENDERLY_ORG_NAME }}
           react-app-tenderly-project-name: ${{ secrets.REACT_APP_TENDERLY_PROJECT_NAME }}
           react-app-tenderly-simulate-endpoint-url: ${{ secrets.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL }}

@@ -7,7 +7,7 @@ export const minMaxValue = (
   value: string
 ) => {
   if (
-    Number.parseFloat(value) > Number(min) &&
+    Number.parseFloat(value) >= Number(min) &&
     Number.parseFloat(value) <= Number(max)
   ) {
     return undefined

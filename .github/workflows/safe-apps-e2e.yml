@@ -18,13 +18,13 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set PR Safe Apps base URL
         run: |
-          echo "SAFE_APPS_BASE_URL=https://pr${{ github.event.number }}--safereactapps.review.gnosisdev.com" >> $GITHUB_ENV
-          echo "BASE_URL=https://safe-team.dev.gnosisdev.com/app" >> $GITHUB_ENV
+          echo "SAFE_APPS_BASE_URL=https://pr${{ github.event.number }}--safereactapps.review-react-hr.5afe.dev" >> $GITHUB_ENV
+          echo "BASE_URL=https://safe-web.dev.5afe.dev/app" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/development'
       - name: Set development Safe Apps base URL
         run: |
-          echo "SAFE_APPS_BASE_URL=https://safe-apps.dev.gnosisdev.com" >> $GITHUB_ENV
-          echo "BASE_URL=https://safe-team.dev.gnosisdev.com/app" >> $GITHUB_ENV
+          echo "SAFE_APPS_BASE_URL=https://safe-apps.dev.5afe.dev" >> $GITHUB_ENV
+          echo "BASE_URL=https://safe-web.dev.5afe.dev/app" >> $GITHUB_ENV
         if: github.ref == 'refs/heads/development'
       - name: Set main Safe Apps base URL
         run: |
@@ -41,9 +41,10 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_BASE_URL: ${{env.BASE_URL}}
           CYPRESS_SAFE_APPS_BASE_URL: ${{env.SAFE_APPS_BASE_URL}}
+          CYPRESS_CHAIN_ID: '4'
           CYPRESS_NETWORK_PREFIX: 'rin'
           CYPRESS_TESTING_SAFE_ADDRESS: '0x3bc83f41490BfD25bBB44eBCAc3761DFF4Ae50DA'
-          CYPRESS_CONFIG_SERVICE_BASE_URL: 'https://safe-client.gnosis.io'
+          CYPRESS_CLIENT_GATEWAY_BASE_URL: 'https://safe-client.safe.global'
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true

@@ -1,19 +1,12 @@
 {
-  "name": "drain-safe",
-  "version": "1.3.2",
+  "name": "siwe-delegate-manager",
+  "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "@gnosis.pm/safe-apps-provider": "^0.14.0",
-    "@gnosis.pm/safe-react-components": "^1.2.0",
-    "@material-ui/core": "^4.12.4",
-    "@mui/x-data-grid": "4.0.2",
-    "bignumber.js": "^9.1.0",
-    "web3-eth-abi": "~1.8.0"
-  },
+  "homepage": "./",
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy:s3": "bash ../../scripts/deploy_to_s3_bucket.sh",
     "deploy:pr": "bash ../../scripts/deploy_pr.sh",
@@ -22,11 +15,14 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "plugin:jsx-a11y/recommended"
-    ],
-    "plugins": [
-      "jsx-a11y"
+      "react-app/jest"
     ]
+  },
+  "dependencies": {
+    "@gnosis.pm/safe-react-components": "^1.2.0",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
+    "ethers": "^5.6.9"
   },
   "browserslist": {
     "production": [
@@ -39,6 +35,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "homepage": "./"
+  }
 }

@@ -1,7 +1,7 @@
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { ethers } from "ethers"
 import { useEffect, useMemo, useState } from "react"
-import { parsePrefixedAddress } from "src/utils/addresses"
+import { parsePrefixedAddress, sameAddress } from "src/utils/addresses"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
 
 type ENSResult = {
@@ -43,10 +43,13 @@ export const useEnsResolution = (
     }
 
     if (ethers.utils.isAddress(customAddress)) {
+      const error = sameAddress(customAddress, safe.safeAddress)
+        ? "You can't delegate to your own Safe"
+        : undefined
       // No need to resolve via ENS
       setEnsResult({ address: ethers.utils.getAddress(customAddress) })
       setEnsLoading(false)
-      setError(undefined)
+      setError(error)
       return
     }
 
@@ -57,11 +60,16 @@ export const useEnsResolution = (
         const resolvedName = await web3Provider.resolveName(customAddress)
 
         if (resolvedName !== null && ethers.utils.isAddress(resolvedName)) {
-          isMounted &&
-            setEnsResult({
-              address: resolvedName,
-              ens: customAddress,
-            })
+          if (sameAddress(resolvedName, safe.safeAddress)) {
+            isMounted && setEnsResult(undefined)
+            isMounted && setError("You can't delegate to your own Safe")
+          } else {
+            isMounted &&
+              setEnsResult({
+                address: resolvedName,
+                ens: customAddress,
+              })
+          }
         } else {
           isMounted && setEnsResult(undefined)
           isMounted && setError("Invalid address / ENS name")
@@ -90,7 +98,7 @@ export const useEnsResolution = (
       isMounted = false
     }
     // If we add the ensTimeout it will always trigger
-  }, [chainPrefix, debounce, manualAddress, web3Provider])
+  }, [chainPrefix, debounce, manualAddress, safe.safeAddress, web3Provider])
 
   return [ensResult, error, ensLoading]
 }

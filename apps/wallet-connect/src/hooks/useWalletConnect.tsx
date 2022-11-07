@@ -1,10 +1,9 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
+import { ethers } from 'ethers'
 import WalletConnect from '@walletconnect/client'
 import { IClientMeta, IWalletConnectSession } from '@walletconnect/types'
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
-import { isMetaTxArray } from '../utils/transactions'
-import { areStringsEqual } from '../utils/strings'
-import { isObjectEIP712TypedData } from '@gnosis.pm/safe-apps-sdk'
+import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
 
 const rejectWithMessage = (connector: WalletConnect, id: number | undefined, message: string) => {
   connector.rejectRequest({ id, error: { message } })
@@ -14,6 +13,10 @@ const useWalletConnect = () => {
   const { safe, sdk } = useSafeAppsSDK()
   const [wcClientData, setWcClientData] = useState<IClientMeta | null>(null)
   const [connector, setConnector] = useState<WalletConnect | undefined>()
+  const web3Provider = useMemo(
+    () => new ethers.providers.Web3Provider(new SafeAppProvider(safe, sdk)),
+    [sdk, safe],
+  )
 
   const localStorageSessionKey = useRef(`session_${safe.safeAddress}`)
 
@@ -56,92 +59,7 @@ const useWalletConnect = () => {
         }
 
         try {
-          let result = '0x'
-
-          switch (payload.method) {
-            case 'eth_sendTransaction': {
-              const txInfo = payload.params[0]
-              const { safeTxHash } = await sdk.txs.send({
-                txs: [
-                  {
-                    to: txInfo.to,
-                    value: txInfo.value || '0x0',
-                    data: txInfo.data || '0x',
-                  },
-                ],
-              })
-
-              result = safeTxHash
-              break
-            }
-            case 'gs_multi_send': {
-              const txs = payload.params
-
-              if (!isMetaTxArray(txs)) {
-                throw new Error('INVALID_TRANSACTIONS_PROVIDED')
-              }
-
-              const { safeTxHash } = await sdk.txs.send({
-                txs: txs.map(txInfo => ({
-                  to: txInfo.to,
-                  value: (txInfo.value || '0x0').toString(),
-                  data: txInfo.data || '0x',
-                })),
-              })
-
-              result = safeTxHash
-              break
-            }
-
-            case 'personal_sign': {
-              const [message, address] = payload.params
-
-              if (!areStringsEqual(address, safe.safeAddress)) {
-                throw new Error('The address or message hash is invalid')
-              }
-
-              await sdk.txs.signMessage(message)
-
-              result = '0x'
-              break
-            }
-
-            case 'eth_sign': {
-              const [address, messageHash] = payload.params
-
-              if (!areStringsEqual(address, safe.safeAddress) || !messageHash.startsWith('0x')) {
-                throw new Error('The address or message hash is invalid')
-              }
-
-              await sdk.txs.signMessage(messageHash)
-
-              result = '0x'
-              break
-            }
-
-            case 'eth_signTypedData':
-            case 'eth_signTypedData_v4': {
-              const [address, typedDataString] = payload.params
-              const typedData = JSON.parse(typedDataString)
-
-              if (!areStringsEqual(address, safe.safeAddress)) {
-                throw new Error('The address is invalid')
-              }
-
-              if (isObjectEIP712TypedData(typedData)) {
-                await sdk.txs.signTypedMessage(typedData)
-
-                result = '0x'
-                break
-              } else {
-                throw new Error('Invalid typed data')
-              }
-            }
-            default: {
-              rejectWithMessage(wcConnector, payload.id, 'METHOD_NOT_SUPPORTED')
-              break
-            }
-          }
+          let result = await web3Provider.send(payload.method, payload.params)
 
           wcConnector.approveRequest({
             id: payload.id,
@@ -152,14 +70,14 @@ const useWalletConnect = () => {
         }
       })
 
-      wcConnector.on('disconnect', (error, payload) => {
+      wcConnector.on('disconnect', error => {
         if (error) {
           throw error
         }
         wcDisconnect()
       })
     },
-    [safe, sdk, wcDisconnect],
+    [safe, wcDisconnect, web3Provider],
   )
 
   useEffect(() => {

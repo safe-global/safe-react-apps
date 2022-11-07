@@ -26,6 +26,7 @@ describe("validation", () => {
   describe("minMaxValue", () => {
     describe("with number boundaries", () => {
       it("successfuly validation with integers", () => {
+        expect(minMaxValue(0, 100, "0")).toBeUndefined()
         expect(minMaxValue(0, 100, "1")).toBeUndefined()
         expect(minMaxValue(0, 100, "23")).toBeUndefined()
         expect(minMaxValue(0, 100, "99")).toBeUndefined()
@@ -34,7 +35,6 @@ describe("validation", () => {
 
       it("failed validation with integers", () => {
         expect(minMaxValue(0, 100, "-1")).toBeDefined()
-        expect(minMaxValue(0, 100, "0")).toBeDefined()
         expect(minMaxValue(0, 100, "101")).toBeDefined()
       })
 
@@ -47,7 +47,7 @@ describe("validation", () => {
 
       it("failed validation with floats", () => {
         expect(minMaxValue(0, 100, "-1.991")).toBeDefined()
-        expect(minMaxValue(0, 100, "0.0")).toBeDefined()
+        expect(minMaxValue(0, 100, "-0.0001")).toBeDefined()
         expect(minMaxValue(0, 100, "100.000000000001")).toBeDefined()
       })
     })
@@ -62,7 +62,6 @@ describe("validation", () => {
 
       it("failed validation with integers", () => {
         expect(minMaxValue("0", "100", "-1")).toBeDefined()
-        expect(minMaxValue("0", "100", "0")).toBeDefined()
         expect(minMaxValue("0", "100", "101")).toBeDefined()
       })
 
@@ -75,7 +74,6 @@ describe("validation", () => {
 
       it("failed validation with floats", () => {
         expect(minMaxValue("0", "100", "-1.991")).toBeDefined()
-        expect(minMaxValue("0", "100", "0.0")).toBeDefined()
         expect(minMaxValue("0", "100", "100.000000000001")).toBeDefined()
       })
     })

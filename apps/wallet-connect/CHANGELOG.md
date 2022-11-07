@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.7.1](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.7.0...wallet-connect-1.7.1) (2022-10-11)
+
+
+### Bug Fixes
+
+* **wallet-connect:** accept string as an argument for signing typed data ([2ab365b](https://github.com/safe-global/safe-react-apps/commit/2ab365b26ab2f5f0f6c56bffcd476951da350a5e))
+
+
+
+# [1.7.0](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.6.1...wallet-connect-1.7.0) (2022-10-05)
+
+
+### Features
+
+* **wallet-connect:** switch to the safe-apps-provider under the hood ([352f6b9](https://github.com/safe-global/safe-react-apps/commit/352f6b96e08c46b2bb7a87aaa7451bfa1315fa4a)), closes [#377](https://github.com/safe-global/safe-react-apps/issues/377)
+
+
+
 ## [1.6.1](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.6.0...wallet-connect-1.6.1) (2022-09-22)
 
 
