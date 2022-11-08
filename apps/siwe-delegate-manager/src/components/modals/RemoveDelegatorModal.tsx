@@ -30,7 +30,6 @@ const RemoveDelegatorModal = ({ space, delegator, onClose }: RemoveDelegatorModa
             onSubmit={handleSubmit}
             delegator={delegator}
             initialSpace={space}
-            showSpace={space !== ALL_SPACES}
             buttonLabel={'Remove delegate'}
             disableFields
           />

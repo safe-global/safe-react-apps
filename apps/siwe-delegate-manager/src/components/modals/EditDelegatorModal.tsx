@@ -30,7 +30,6 @@ const EditDelegatorModal = ({ space, delegator, onClose }: EditDelegatorModalPro
             onSubmit={handleSubmit}
             delegator={delegator}
             initialSpace={space}
-            showSpace={space !== ALL_SPACES}
             buttonLabel={'Edit delegate'}
           />
         </FormContainer>

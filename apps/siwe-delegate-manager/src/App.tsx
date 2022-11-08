@@ -8,10 +8,9 @@ import AddressLabel from 'src/components/address-label/AddressLabel'
 import DelegateForm from 'src/components/delegate-form/DelegateForm'
 import DelegationTable from 'src/components/delegation-table/DelegationTable'
 import DelegationHistoryTable from 'src/components/delegation-history-table/DelegationHistoryTable'
-import Loader from 'src/components/loader/Loader'
 
 function App() {
-  const { delegateRegistryContract, isContractLoading, setDelegate } = useDelegateRegistry()
+  const { delegateRegistryContract, setDelegate } = useDelegateRegistry()
 
   const handleAddNewDelegate = async (space: string, delegateAddress: string) => {
     await setDelegate(space, delegateAddress)
@@ -25,42 +24,36 @@ function App() {
       {/* Delegate Registry Title & Form */}
       <AppWrapper>
         <TitleContainer>
-          <Loader
-            isLoading={isContractLoading}
-            minHeight={350}
-            loadingText="Loading Delegate Registry contract..."
-          >
-            <Typography component="h2" variant="h5" gutterBottom>
-              Delegate Registry Contract
+          <Typography component="h2" variant="h5" gutterBottom>
+            Delegate Registry Contract
+          </Typography>
+
+          <Typography component="h3" variant="h6" gutterBottom>
+            <AddressLabel
+              address={delegateRegistryContract?.address || ''}
+              showCopyIntoClipboardButton
+              showBlockExplorerLink
+              ariaLabel="Delegate Registry contract"
+            />
+          </Typography>
+
+          <DescriptionContainer>
+            <Typography gutterBottom>
+              The Delegate Registry Contract allows owners of a Safe to delegate certain off-chain
+              rights to another wallet e.g. gasless signing into a social application or gasless
+              voting on behalf of a Safe.
             </Typography>
 
-            <Typography component="h3" variant="h6" gutterBottom>
-              <AddressLabel
-                address={delegateRegistryContract?.address || ''}
-                showCopyIntoClipboardButton
-                showBlockExplorerLink
-                ariaLabel="Delegate Registry contract"
-              />
+            <Typography>
+              Safe has no influence on what off-chain actions other projects allow set delegates in
+              the Delegation Registry Contract. Delegates do not have any control over on-chain
+              assets in the Safe.
             </Typography>
+          </DescriptionContainer>
 
-            <DescriptionContainer>
-              <Typography gutterBottom>
-                The Delegate Registry Contract allows owners of a Safe to delegate certain off-chain
-                rights to another wallet e.g. gasless signing into a social application or gasless
-                voting on behalf of a Safe.
-              </Typography>
-
-              <Typography>
-                Safe has no influence on what off-chain actions other projects allow set delegates
-                in the Delegation Registry Contract. Delegates do not have any control over on-chain
-                assets in the Safe.
-              </Typography>
-            </DescriptionContainer>
-
-            <AddDelegateFormContainer>
-              <DelegateForm onSubmit={handleAddNewDelegate} />
-            </AddDelegateFormContainer>
-          </Loader>
+          <AddDelegateFormContainer>
+            <DelegateForm onSubmit={handleAddNewDelegate} />
+          </AddDelegateFormContainer>
         </TitleContainer>
 
         {/* Active Delegation Table */}

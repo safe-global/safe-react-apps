@@ -1,7 +1,7 @@
 {
-  "short_name": "Delegate Registry Manager",
-  "name": "Delegate Registry Manager",
-  "description": "Delegate Registry Manager",
+  "short_name": "SiWe Delegate Manager",
+  "name": "Sign-In with Ethereum Delegate Manager",
+  "description": "Manage your Sign-In with Ethereum delegates",
   "iconPath": "logo512.png",
   "icons": [
     {
