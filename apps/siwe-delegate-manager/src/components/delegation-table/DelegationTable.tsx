@@ -20,9 +20,8 @@ import SpaceLabel, { ALL_SPACES } from '../space-label/SpaceLabel'
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 const DelegationTable = () => {
-  const { delegations, isDelegationsLoading } = useDelegateRegistry()
+  const { delegations } = useDelegateRegistry()
 
-  const [spaceToUpdate, setSpaceToUpdate] = useState<string>('')
   const [delegatorToUpdate, setDelegatorToUpdate] = useState<string>('')
 
   const { openModal: openEditModal, open: showEditModal, closeModal: closeEditModal } = useModal()
@@ -34,13 +33,11 @@ const DelegationTable = () => {
 
   const openRemoveDelegatorModal = (space: string, delegate: string) => {
     openRemoveModal()
-    setSpaceToUpdate(space)
     setDelegatorToUpdate(delegate)
   }
 
   const openEditDelegatorModal = (space: string, delegate: string) => {
     openEditModal()
-    setSpaceToUpdate(space)
     setDelegatorToUpdate(delegate)
   }
 
@@ -73,27 +70,18 @@ const DelegationTable = () => {
           columns={columns}
           rows={rows}
           ariaLabel="delegations table"
-          isTableLoading={isDelegationsLoading}
           loadingText="Loading Delegations..."
         />
       </Container>
 
       {/* Edit Delegator modal */}
       {showEditModal && (
-        <EditDelegatorModal
-          space={spaceToUpdate}
-          delegator={delegatorToUpdate}
-          onClose={closeEditModal}
-        />
+        <EditDelegatorModal delegator={delegatorToUpdate} onClose={closeEditModal} />
       )}
 
       {/* Remove Delegator modal */}
       {showRemoveModal && (
-        <RemoveDelegatorModal
-          space={spaceToUpdate}
-          delegator={delegatorToUpdate}
-          onClose={closeRemoveModal}
-        />
+        <RemoveDelegatorModal delegator={delegatorToUpdate} onClose={closeRemoveModal} />
       )}
     </>
   )

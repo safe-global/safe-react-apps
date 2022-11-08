@@ -4,24 +4,17 @@ import styled from 'styled-components'
 import { isAddress } from 'ethers/lib/utils'
 
 import { useSafeWallet } from 'src/store/safeWalletContext'
+import { getSiWeSpaceId } from '../../utils/siwe'
 
 type DelegateFormProps = {
   onSubmit: (address: string, space: string) => Promise<void>
   delegator?: string
-  initialSpace?: string
   buttonLabel?: string
   disableFields?: boolean
 }
 
-const DelegateForm = ({
-  onSubmit,
-  delegator,
-  initialSpace,
-  buttonLabel,
-  disableFields,
-}: DelegateFormProps) => {
+const DelegateForm = ({ onSubmit, delegator, buttonLabel, disableFields }: DelegateFormProps) => {
   const [delegateAddress, setDelegateAddress] = useState<string>(delegator || '')
-  const [space, setSpace] = useState<string>(initialSpace || '')
 
   const { getAddressFromDomain, chainInfo } = useSafeWallet()
 
@@ -33,8 +26,8 @@ const DelegateForm = ({
 
     // TODO: add validations & errors
     try {
-      const customSpace = ''
-      onSubmit(customSpace, delegateAddress)
+      const space = getSiWeSpaceId(delegateAddress)
+      onSubmit(space, delegateAddress)
     } catch (error) {
       console.log('error: ', error)
     }

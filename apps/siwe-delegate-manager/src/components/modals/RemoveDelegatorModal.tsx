@@ -5,15 +5,11 @@ import DelegateForm from 'src/components/delegate-form/DelegateForm'
 import { useDelegateRegistry } from 'src/store/delegateRegistryContext'
 
 type RemoveDelegatorModalProps = {
-  space: string
   delegator: string
   onClose: () => void
 }
 
-// TODO: ADD CONSTANT
-const ALL_SPACES = ''
-
-const RemoveDelegatorModal = ({ space, delegator, onClose }: RemoveDelegatorModalProps) => {
+const RemoveDelegatorModal = ({ delegator, onClose }: RemoveDelegatorModalProps) => {
   const { clearDelegate } = useDelegateRegistry()
 
   const handleSubmit = async (space: string) => {
@@ -29,7 +25,6 @@ const RemoveDelegatorModal = ({ space, delegator, onClose }: RemoveDelegatorModa
           <DelegateForm
             onSubmit={handleSubmit}
             delegator={delegator}
-            initialSpace={space}
             buttonLabel={'Remove delegate'}
             disableFields
           />

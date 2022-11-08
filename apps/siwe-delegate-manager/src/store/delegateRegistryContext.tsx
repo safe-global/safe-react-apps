@@ -1,9 +1,10 @@
-import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Contract, ethers } from 'ethers'
-import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils'
 
 import delegateRegistryContractABI from 'src/assets/delegateRegistryContractABI'
 import { useSafeWallet } from './safeWalletContext'
+import { getSiWeSpaceId } from '../utils/siwe'
+import { findLast } from '../utils/arrays'
 
 // The Delegate Registry is a smart contract that is deterministically deployed to this address
 const DELEGATE_REGISTRY_CONTRACT_ADDRESS = '0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446'
@@ -12,8 +13,7 @@ type delegateRegistryContextValue = {
   delegateRegistryContractAddress: string
   delegateRegistryContract?: Contract
   delegations: delegateType[]
-  isDelegationsLoading: boolean
-  spaces: string[]
+  spaces: Set<string>
   setDelegate: (space: string, delegate: string) => Promise<void>
   clearDelegate: (space: string) => Promise<void>
   delegateEvents: delegateEvent[]
@@ -43,7 +43,7 @@ const initialState = {
   delegateRegistryContractAddress: DELEGATE_REGISTRY_CONTRACT_ADDRESS,
   delegations: [],
   isDelegationsLoading: true,
-  spaces: [],
+  spaces: new Set<string>(),
   delegateEvents: [],
   isEventsLoading: true,
   setDelegate: () => Promise.resolve(undefined),
@@ -68,8 +68,7 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
   const delegateRegistryContractAddress = DELEGATE_REGISTRY_CONTRACT_ADDRESS
 
   const [delegations, setDelegations] = useState<delegateType[]>([])
-  const [isDelegationsLoading, setIsDelegationsLoading] = useState<boolean>(true)
-  const [spaces, setSpaces] = useState<string[]>([])
+  const [spaces, setSpaces] = useState<Set<string>>(new Set())
 
   // delegate events
   const [delegateEvents, setDelegateEvents] = useState<delegateEvent[]>([])
@@ -88,33 +87,28 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
   }, [provider])
 
   // load delegations for each defined space
-  const getDelegations = useCallback(async () => {
+  useEffect(() => {
     if (delegateRegistryContract && !isEventsLoading) {
-      const delegations = await Promise.all(
-        spaces.map(async space => {
-          const delegate = await delegateRegistryContract.delegation(
-            safe.safeAddress, // safe address
-            formatBytes32String(space), // space
-          )
+      const delegationsFromEvents: delegateType[] = []
+      spaces.forEach(spaceId => {
+        const latestEvent = findLast(delegateEvents, event => event.space === spaceId)
 
-          return {
+        if (latestEvent && latestEvent.eventType === 'SetDelegate') {
+          delegationsFromEvents.push({
             space: {
-              name: space,
+              name: spaceId,
               isLoading: false,
             },
-            delegate,
-          }
-        }),
-      )
+            delegate: latestEvent.delegate,
+          })
+        }
+      })
 
-      setDelegations(delegations)
-      setIsDelegationsLoading(false)
+      if (delegationsFromEvents.length > 0) {
+        setDelegations(delegationsFromEvents)
+      }
     }
-  }, [delegateRegistryContract, isEventsLoading, spaces, safe])
-
-  useEffect(() => {
-    getDelegations()
-  }, [getDelegations])
+  }, [delegateRegistryContract, isEventsLoading, spaces, safe, delegateEvents])
 
   // fetch all events filtered by the current Safe address (SetDelegate & ClearDelegate events)
   const getEvents = useCallback(async () => {
@@ -135,35 +129,46 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
       )
 
       // fetch SetDelegate & ClearDelegate Events
+      const siweSpaceIds = new Set<string>()
       const [delegateEvents, clearDelegateEvents] = await Promise.all([
         // fetch SetDelegate Events
-        delegateRegistryContract.queryFilter(
-          filteredSetDelegateEvents, // events filterd by the current safe
-          0, // fromBlock
-          'latest', // toBlock
-        ),
+        delegateRegistryContract
+          .queryFilter(
+            filteredSetDelegateEvents, // events filtered by the current safe
+            0, // fromBlock
+            'latest', // toBlock
+          )
+          .then(events =>
+            events.filter(event => {
+              const [, spaceId, delegateAddress] = event.args || []
+              if (!spaceId || !delegateAddress) return false
+
+              const siweSpaceId = spaceId === getSiWeSpaceId(delegateAddress)
+              console.log(spaceId, getSiWeSpaceId(delegateAddress))
+              if (siweSpaceId) siweSpaceIds.add(spaceId)
+
+              return siweSpaceId
+            }),
+          ),
         // fetch ClearDelegate Events
-        delegateRegistryContract.queryFilter(
-          filteredClearDelegateEvents, // events filterd by the current safe
-          0, // fromBlock
-          'latest', // toBlock
-        ),
+        delegateRegistryContract
+          .queryFilter(
+            filteredClearDelegateEvents, // events filtered by the current safe
+            0, // fromBlock
+            'latest', // toBlock
+          )
+          .then(events =>
+            events.filter(event => {
+              const [, spaceId, delegateAddress] = event.args || []
+              if (!spaceId || !delegateAddress) return false
+
+              return spaceId === getSiWeSpaceId(delegateAddress)
+            }),
+          ),
       ])
 
       // spaces defined (needed for the Delegation Table)
-      setSpaces(
-        delegateEvents.reduce<string[]>((spaces, event) => {
-          const newSpace = parseBytes32String(event.args?.id)
-
-          const isSpaceAlreadyAdded = spaces.some(space => space === newSpace)
-
-          if (isSpaceAlreadyAdded) {
-            return spaces
-          }
-
-          return [...spaces, newSpace]
-        }, []),
-      )
+      setSpaces(siweSpaceIds)
 
       // merge SetDelegate & ClearDelegate events and order them by blockNumber
       const allEvents = [...delegateEvents, ...clearDelegateEvents].sort((a, b) =>
@@ -176,7 +181,7 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
           transactionHash,
           eventType: event as delegateEventType,
           delegator: args?.delegator,
-          space: parseBytes32String(args?.id),
+          space: args?.id,
           delegate: args?.delegate,
         })),
       )
@@ -226,7 +231,7 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
   const setDelegate = useCallback(
     async (space: string, delegate: string) => {
       await delegateRegistryContract?.setDelegate(
-        formatBytes32String(space), // id bytes32
+        space, // id bytes32
         delegate, // delegate address
       )
 
@@ -258,7 +263,7 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
   const clearDelegate = useCallback(
     async (space: string) => {
       await delegateRegistryContract?.clearDelegate(
-        formatBytes32String(space), // id bytes32
+        space, // id bytes32
       )
 
       // set this space as Loading
@@ -281,7 +286,6 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
     delegateRegistryContract,
 
     delegations,
-    isDelegationsLoading,
     spaces,
 
     setDelegate,

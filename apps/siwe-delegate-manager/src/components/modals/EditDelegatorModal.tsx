@@ -5,15 +5,11 @@ import DelegateForm from 'src/components/delegate-form/DelegateForm'
 import { useDelegateRegistry } from 'src/store/delegateRegistryContext'
 
 type EditDelegatorModalProps = {
-  space: string
   delegator: string
   onClose: () => void
 }
 
-// TODO: ADD CONSTANT
-const ALL_SPACES = ''
-
-const EditDelegatorModal = ({ space, delegator, onClose }: EditDelegatorModalProps) => {
+const EditDelegatorModal = ({ delegator, onClose }: EditDelegatorModalProps) => {
   const { setDelegate } = useDelegateRegistry()
 
   const handleSubmit = async (space: string, delegateAddress: string) => {
@@ -29,7 +25,6 @@ const EditDelegatorModal = ({ space, delegator, onClose }: EditDelegatorModalPro
           <DelegateForm
             onSubmit={handleSubmit}
             delegator={delegator}
-            initialSpace={space}
             buttonLabel={'Edit delegate'}
           />
         </FormContainer>
