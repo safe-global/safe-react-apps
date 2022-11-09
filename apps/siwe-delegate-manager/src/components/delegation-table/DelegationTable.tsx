@@ -95,7 +95,7 @@ const DelegateCell = ({
   openRemoveDelegatorModal,
 }: DelegateCellProps) => {
   return (
-    <Box display={'flex'} flexDirection="row" alignItems="center" justifyContent="center">
+    <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center">
       {/* Delegator Address label */}
       {delegate === ZERO_ADDRESS ? (
         // TODO: REFINE THIS

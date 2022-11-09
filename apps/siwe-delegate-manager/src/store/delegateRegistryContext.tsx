@@ -87,10 +87,6 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
 
   // load delegations for each defined space
   useEffect(() => {
-    console.log(
-      'delegateRegistryContract && !isEventsLoading: ',
-      delegateRegistryContract && !isEventsLoading,
-    )
     if (delegateRegistryContract && !isEventsLoading) {
       const delegationsFromEvents: delegateType[] = []
       spaces.forEach(spaceId => {
@@ -108,9 +104,7 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
         }
       })
 
-      if (delegationsFromEvents.length > 0) {
-        setDelegations(delegationsFromEvents)
-      }
+      setDelegations(delegationsFromEvents)
     }
   }, [delegateRegistryContract, isEventsLoading, spaces, safe, delegateEvents])
 
@@ -215,12 +209,10 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
       )
 
       delegateRegistryContract.on(filteredSetDelegateEvents, () => {
-        console.log('new SetDelegate event')
         getEvents()
       })
 
       delegateRegistryContract.on(filteredClearDelegateEvents, () => {
-        console.log('new ClearDelegate event')
         getEvents()
       })
     }
