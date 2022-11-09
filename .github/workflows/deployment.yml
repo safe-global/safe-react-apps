@@ -53,7 +53,7 @@ jobs:
           message: |
             * [Drain Account App](${{ env.REVIEW_FEATURE_URL }}/drain-safe/)
             * [RAMP Network App](${{ env.REVIEW_FEATURE_URL }}/ramp-network/)
-            * [Delegate Registry Manager App](${{ env.REVIEW_FEATURE_URL }}/delegate-registry-manager/)
+            * [Sign-In With Ethereum Delegate Manager App](${{ env.REVIEW_FEATURE_URL }}/siwe-delegate-manager/)
             * [Safe Claiming App](${{ env.REVIEW_FEATURE_URL }}/safe-claiming-app/)
             * [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)
             * [WalletConnect app](${{ env.REVIEW_FEATURE_URL }}/wallet-connect/)

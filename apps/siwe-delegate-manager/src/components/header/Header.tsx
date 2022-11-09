@@ -13,7 +13,7 @@ const Header = () => {
       <Toolbar>
         <TitleWapper>
           <Typography component="h1" variant="h6">
-            Delegate Registry Manager
+            Sign-In With Ethereum Delegate Manager
           </Typography>
         </TitleWapper>
 

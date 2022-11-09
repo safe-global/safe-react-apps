@@ -25,7 +25,7 @@ function App() {
       <AppWrapper>
         <TitleContainer>
           <Typography component="h2" variant="h5" gutterBottom>
-            Delegate Registry Contract
+            Sign-In With Ethereum Delegate Registry Contract
           </Typography>
 
           <Typography component="h3" variant="h6" gutterBottom>
@@ -33,21 +33,21 @@ function App() {
               address={delegateRegistryContract?.address || ''}
               showCopyIntoClipboardButton
               showBlockExplorerLink
-              ariaLabel="Delegate Registry contract"
+              ariaLabel="Sign-In With Ethereum Delegate Registry contract"
             />
           </Typography>
 
           <DescriptionContainer>
             <Typography gutterBottom>
-              The Delegate Registry Contract allows owners of a Safe to delegate certain off-chain
-              rights to another wallet e.g. gasless signing into a social application or gasless
-              voting on behalf of a Safe.
+              The Sign-In With Ethereum Delegate allows owners of a Safe to delegate certain rights
+              to another wallet e.g. gasless signing into a social application or gasless voting on
+              behalf of a Safe.
             </Typography>
 
             <Typography>
-              Safe has no influence on what off-chain actions other projects allow set delegates in
-              the Delegation Registry Contract. Delegates do not have any control over on-chain
-              assets in the Safe.
+              Safe has no influence on what actions other projects allow set delegates in the
+              Delegation Registry Contract. Delegates do not have any control over on-chain assets
+              in the Safe.
             </Typography>
           </DescriptionContainer>
 
