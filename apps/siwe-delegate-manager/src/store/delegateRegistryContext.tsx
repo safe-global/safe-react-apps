@@ -4,7 +4,6 @@ import { Contract, ethers } from 'ethers'
 import delegateRegistryContractABI from 'src/assets/delegateRegistryContractABI'
 import { useSafeWallet } from './safeWalletContext'
 import { getSiWeSpaceId } from '../utils/siwe'
-import { findLast } from '../utils/arrays'
 
 // The Delegate Registry is a smart contract that is deterministically deployed to this address
 const DELEGATE_REGISTRY_CONTRACT_ADDRESS = '0x469788fE6E9E9681C6ebF3bF78e7Fd26Fc015446'
@@ -33,7 +32,7 @@ type delegateEvent = {
 
 type delegateType = {
   space: {
-    name: string
+    id: string
     isLoading: boolean
   }
   delegate: string
@@ -88,15 +87,20 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
 
   // load delegations for each defined space
   useEffect(() => {
+    console.log(
+      'delegateRegistryContract && !isEventsLoading: ',
+      delegateRegistryContract && !isEventsLoading,
+    )
     if (delegateRegistryContract && !isEventsLoading) {
       const delegationsFromEvents: delegateType[] = []
       spaces.forEach(spaceId => {
-        const latestEvent = findLast(delegateEvents, event => event.space === spaceId)
+        // since the events are sorted by block number, we can find the last event for each space
+        const latestEvent = delegateEvents.find(event => event.space === spaceId)
 
         if (latestEvent && latestEvent.eventType === 'SetDelegate') {
           delegationsFromEvents.push({
             space: {
-              name: spaceId,
+              id: spaceId,
               isLoading: false,
             },
             delegate: latestEvent.delegate,
@@ -144,7 +148,6 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
               if (!spaceId || !delegateAddress) return false
 
               const siweSpaceId = spaceId === getSiWeSpaceId(delegateAddress)
-              console.log(spaceId, getSiWeSpaceId(delegateAddress))
               if (siweSpaceId) siweSpaceIds.add(spaceId)
 
               return siweSpaceId
@@ -170,7 +173,7 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
       // spaces defined (needed for the Delegation Table)
       setSpaces(siweSpaceIds)
 
-      // merge SetDelegate & ClearDelegate events and order them by blockNumber
+      // merge SetDelegate & ClearDelegate events and order them by blockNumber (descending)
       const allEvents = [...delegateEvents, ...clearDelegateEvents].sort((a, b) =>
         a.blockNumber > b.blockNumber ? -1 : 1,
       )
@@ -212,10 +215,12 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
       )
 
       delegateRegistryContract.on(filteredSetDelegateEvents, () => {
+        console.log('new SetDelegate event')
         getEvents()
       })
 
       delegateRegistryContract.on(filteredClearDelegateEvents, () => {
+        console.log('new ClearDelegate event')
         getEvents()
       })
     }
@@ -237,7 +242,7 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
 
       // set this space as Loading
       setDelegations(delegations => {
-        const delegation = delegations.find(delegation => delegation.space.name === space)
+        const delegation = delegations.find(delegation => delegation.space.id === space)
 
         if (delegation) {
           delegation.space.isLoading = true
@@ -249,7 +254,7 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
           ...delegations,
           {
             space: {
-              name: space,
+              id: space,
               isLoading: true,
             },
             delegate,
@@ -268,7 +273,7 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
 
       // set this space as Loading
       setDelegations(delegations => {
-        const delegation = delegations.find(delegation => delegation.space.name === space)
+        const delegation = delegations.find(delegation => delegation.space.id === space)
 
         if (delegation) {
           delegation.space.isLoading = true

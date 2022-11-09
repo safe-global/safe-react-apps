@@ -4,7 +4,6 @@ import Paper from '@material-ui/core/Paper'
 import Box from '@material-ui/core/Box'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded'
 import { green } from '@material-ui/core/colors'
 import styled from 'styled-components'
@@ -13,7 +12,6 @@ import useModal from 'src/hooks/useModal'
 import DataTable from 'src/components/data-table/DataTable'
 import { useDelegateRegistry } from 'src/store/delegateRegistryContext'
 import AddressLabel from 'src/components/address-label/AddressLabel'
-import EditDelegatorModal from 'src/components/modals/EditDelegatorModal'
 import RemoveDelegatorModal from 'src/components/modals/RemoveDelegatorModal'
 import SpaceLabel, { ALL_SPACES } from '../space-label/SpaceLabel'
 
@@ -24,7 +22,6 @@ const DelegationTable = () => {
 
   const [delegatorToUpdate, setDelegatorToUpdate] = useState<string>('')
 
-  const { openModal: openEditModal, open: showEditModal, closeModal: closeEditModal } = useModal()
   const {
     openModal: openRemoveModal,
     open: showRemoveModal,
@@ -36,27 +33,21 @@ const DelegationTable = () => {
     setDelegatorToUpdate(delegate)
   }
 
-  const openEditDelegatorModal = (space: string, delegate: string) => {
-    openEditModal()
-    setDelegatorToUpdate(delegate)
-  }
-
   const columns: string[] = ['status', 'space', 'delegate']
 
   const rows = delegations.map(({ space, delegate }) => {
     const isSpaceLoading = space.isLoading
 
     return {
-      id: space.name,
+      id: space.id,
       status: <StatusCell isSpaceLoading={isSpaceLoading} />,
-      space: <SpaceLabel space={space.name} />,
+      space: <SpaceLabel space="SiWe Delegate" />,
       delegate: (
         <DelegateCell
           isSpaceLoading={isSpaceLoading}
           delegate={delegate}
-          space={space.name}
-          openRemoveDelegatorModal={() => openRemoveDelegatorModal(space.name, delegate)}
-          openEditDelegatorModal={() => openEditDelegatorModal(space.name, delegate)}
+          space={space.id}
+          openRemoveDelegatorModal={() => openRemoveDelegatorModal(space.id, delegate)}
         />
       ),
     }
@@ -73,11 +64,6 @@ const DelegationTable = () => {
           loadingText="Loading Delegations..."
         />
       </Container>
-
-      {/* Edit Delegator modal */}
-      {showEditModal && (
-        <EditDelegatorModal delegator={delegatorToUpdate} onClose={closeEditModal} />
-      )}
 
       {/* Remove Delegator modal */}
       {showRemoveModal && (
@@ -99,7 +85,6 @@ type DelegateCellProps = {
   delegate: string
   space: string
   isSpaceLoading: boolean
-  openEditDelegatorModal: () => void
   openRemoveDelegatorModal: () => void
 }
 
@@ -107,7 +92,6 @@ const DelegateCell = ({
   delegate,
   space,
   isSpaceLoading,
-  openEditDelegatorModal,
   openRemoveDelegatorModal,
 }: DelegateCellProps) => {
   return (
@@ -125,20 +109,6 @@ const DelegateCell = ({
           ariaLabel="delegate address"
         />
       )}
-
-      {/* Edit Delegator */}
-      <Tooltip title="Edit delegator" backgroundColor="primary" textColor="white" arrow>
-        <span>
-          <IconButton
-            disabled={isSpaceLoading}
-            aria-label="Edit delegator"
-            size="small"
-            onClick={openEditDelegatorModal}
-          >
-            <EditOutlinedIcon fontSize="inherit" />
-          </IconButton>
-        </span>
-      </Tooltip>
 
       {/* Remove Delegator */}
       {delegate !== ZERO_ADDRESS && (
