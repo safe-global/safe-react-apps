@@ -41,7 +41,7 @@ const DelegationTable = () => {
     return {
       id: space.id,
       status: <StatusCell isSpaceLoading={isSpaceLoading} />,
-      space: <SpaceLabel space="SiWe Delegate" />,
+      space: <SpaceLabel space="SIWE Delegate" />,
       delegate: (
         <DelegateCell
           isSpaceLoading={isSpaceLoading}
