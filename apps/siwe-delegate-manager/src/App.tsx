@@ -1,5 +1,6 @@
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
+import Link from '@material-ui/core/Link'
 import styled from 'styled-components'
 
 import { useDelegateRegistry } from 'src/store/delegateRegistryContext'
@@ -42,9 +43,9 @@ function App() {
               The Sign-In With Ethereum Delegate Manager App allows owners of a Safe to delegate
               sign-in authority for applications that have integrated with Sign-In With Ethereum for
               Safes{' '}
-              <a target="_blank" href="https://login.xyz/" rel="noreferrer">
+              <Link target="_blank" href="https://login.xyz/" rel="noreferrer">
                 Sign-In With Ethereum for Safes
-              </a>{' '}
+              </Link>{' '}
               to one or multiple other accounts. These accounts do not have to go through the
               multi-signature flow to sign-in.
             </Typography>

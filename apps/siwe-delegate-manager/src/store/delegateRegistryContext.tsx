@@ -227,32 +227,48 @@ const DelegateRegistryProvider = ({ children }: { children: JSX.Element }) => {
 
   const setDelegate = useCallback(
     async (space: string, delegate: string) => {
-      await delegateRegistryContract?.setDelegate(
-        space, // id bytes32
-        delegate, // delegate address
-      )
+      try {
+        await delegateRegistryContract?.setDelegate(
+          space, // id bytes32
+          delegate, // delegate address
+        )
 
-      // set this space as Loading
-      setDelegations(delegations => {
-        const delegation = delegations.find(delegation => delegation.space.id === space)
+        // set this space as Loading
+        setDelegations(delegations => {
+          const delegation = delegations.find(delegation => delegation.space.id === space)
 
-        if (delegation) {
-          delegation.space.isLoading = true
-          return [...delegations]
+          if (delegation) {
+            delegation.space.isLoading = true
+            return [...delegations]
+          }
+
+          // new space
+          return [
+            ...delegations,
+            {
+              space: {
+                id: space,
+                isLoading: true,
+              },
+              delegate,
+            },
+          ]
+        })
+      } catch (error: any) {
+        const isSelfDelegationError = error?.reason?.includes("Can't delegate to self")
+
+        if (isSelfDelegationError) {
+          throw new Error("Can't delegate to self address")
         }
 
-        // new space
-        return [
-          ...delegations,
-          {
-            space: {
-              id: space,
-              isLoading: true,
-            },
-            delegate,
-          },
-        ]
-      })
+        const isAlreadyDelegatedError = error?.reason?.includes('Already delegated to this address')
+
+        if (isAlreadyDelegatedError) {
+          throw new Error('Already delegated to this address')
+        }
+
+        throw error
+      }
     },
     [delegateRegistryContract],
   )

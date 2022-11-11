@@ -1,4 +1,4 @@
-import { useState, SyntheticEvent } from 'react'
+import { useState, SyntheticEvent, useEffect } from 'react'
 import { AddressInput, Button } from '@gnosis.pm/safe-react-components'
 import styled from 'styled-components'
 import { isAddress } from 'ethers/lib/utils'
@@ -15,22 +15,39 @@ type DelegateFormProps = {
 
 const DelegateForm = ({ onSubmit, delegator, buttonLabel, disableFields }: DelegateFormProps) => {
   const [delegateAddress, setDelegateAddress] = useState<string>(delegator || '')
+  const [formError, setFormError] = useState<string>('')
 
   const { getAddressFromDomain, chainInfo } = useSafeWallet()
 
-  const isDelegateAddressValid = !delegateAddress || (delegateAddress && isAddress(delegateAddress))
   const networkPrefix = chainInfo?.shortName
 
-  const handleSubmit = (event: SyntheticEvent) => {
+  const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault()
+
+    if (!delegateAddress) {
+      setFormError('Delegate address required')
+      return
+    }
 
     try {
       const space = getSiWeSpaceId(delegateAddress)
-      onSubmit(space, delegateAddress)
-    } catch (error) {
+      await onSubmit(space, delegateAddress)
+    } catch (error: any) {
+      setFormError(error.message)
       console.log('error: ', error)
     }
   }
+
+  useEffect(() => {
+    const isDelegateAddressValid =
+      !delegateAddress || (delegateAddress && isAddress(delegateAddress))
+
+    if (isDelegateAddressValid) {
+      setFormError('')
+    } else {
+      setFormError('Address not valid')
+    }
+  }, [delegateAddress])
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -44,7 +61,7 @@ const DelegateForm = ({ onSubmit, delegator, buttonLabel, disableFields }: Deleg
           fullWidth
           showNetworkPrefix={!!networkPrefix}
           networkPrefix={networkPrefix}
-          error={isDelegateAddressValid ? '' : 'The address is not valid'}
+          error={formError}
           showErrorsInTheLabel={false}
           getAddressFromDomain={getAddressFromDomain}
           onChangeAddress={address => setDelegateAddress(address)}
