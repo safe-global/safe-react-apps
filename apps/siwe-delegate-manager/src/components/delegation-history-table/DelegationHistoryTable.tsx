@@ -17,7 +17,7 @@ const DelegationHistoryTable = () => {
     () =>
       delegateEvents.map(({ EventId, space, delegate, transactionHash, eventType }) => ({
         id: EventId,
-        space: <SpaceLabel space="SiWe Delegate" />,
+        space: <SpaceLabel space="SIWE Delegate" />,
         delegate: (
           <AddressLabel
             address={delegate}
