@@ -13,9 +13,7 @@ import DataTable from 'src/components/data-table/DataTable'
 import { useDelegateRegistry } from 'src/store/delegateRegistryContext'
 import AddressLabel from 'src/components/address-label/AddressLabel'
 import RemoveDelegatorModal from 'src/components/modals/RemoveDelegatorModal'
-import SpaceLabel, { ALL_SPACES } from '../space-label/SpaceLabel'
-
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+import SpaceLabel from '../space-label/SpaceLabel'
 
 const DelegationTable = () => {
   const { delegations } = useDelegateRegistry()
@@ -46,7 +44,6 @@ const DelegationTable = () => {
         <DelegateCell
           isSpaceLoading={isSpaceLoading}
           delegate={delegate}
-          space={space.id}
           openRemoveDelegatorModal={() => openRemoveDelegatorModal(space.id, delegate)}
         />
       ),
@@ -83,48 +80,38 @@ const Container = styled(Paper)`
 
 type DelegateCellProps = {
   delegate: string
-  space: string
   isSpaceLoading: boolean
   openRemoveDelegatorModal: () => void
 }
 
 const DelegateCell = ({
   delegate,
-  space,
   isSpaceLoading,
   openRemoveDelegatorModal,
 }: DelegateCellProps) => {
   return (
     <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center">
       {/* Delegator Address label */}
-      {delegate === ZERO_ADDRESS ? (
-        // TODO: REFINE THIS
-        `No delegate defined ${space !== ALL_SPACES ? 'for this space' : ''}`
-      ) : (
-        <AddressLabel
-          address={delegate}
-          // showFullAddress
-          showCopyIntoClipboardButton
-          showBlockExplorerLink
-          ariaLabel="delegate address"
-        />
-      )}
+      <AddressLabel
+        address={delegate}
+        showCopyIntoClipboardButton
+        showBlockExplorerLink
+        ariaLabel="delegate address"
+      />
 
       {/* Remove Delegator */}
-      {delegate !== ZERO_ADDRESS && (
-        <Tooltip title="Remove delegator" backgroundColor="primary" textColor="white" arrow>
-          <span>
-            <IconButton
-              disabled={isSpaceLoading}
-              aria-label="Remove delegator"
-              size="small"
-              onClick={openRemoveDelegatorModal}
-            >
-              <DeleteOutlineIcon fontSize="inherit" />
-            </IconButton>
-          </span>
-        </Tooltip>
-      )}
+      <Tooltip title="Remove delegator" backgroundColor="primary" textColor="white" arrow>
+        <span>
+          <IconButton
+            disabled={isSpaceLoading}
+            aria-label="Remove delegator"
+            size="small"
+            onClick={openRemoveDelegatorModal}
+          >
+            <DeleteOutlineIcon fontSize="inherit" />
+          </IconButton>
+        </span>
+      </Tooltip>
     </Box>
   )
 }

@@ -24,7 +24,6 @@ const DelegateForm = ({ onSubmit, delegator, buttonLabel, disableFields }: Deleg
   const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault()
 
-    // TODO: add validations & errors
     try {
       const space = getSiWeSpaceId(delegateAddress)
       onSubmit(space, delegateAddress)

@@ -41,15 +41,18 @@ function App() {
             <Typography gutterBottom>
               The Sign-In With Ethereum Delegate Manager App allows owners of a Safe to delegate
               sign-in authority for applications that have integrated with Sign-In With Ethereum for
-              Safes <a href="https://login.xyz/">Sign-In With Ethereum for Safes</a> to one or
-              multiple other accounts. These accounts do not have to go through the multi-signature
-              flow to sign-in.
+              Safes{' '}
+              <a target="_blank" href="https://login.xyz/" rel="noreferrer">
+                Sign-In With Ethereum for Safes
+              </a>{' '}
+              to one or multiple other accounts. These accounts do not have to go through the
+              multi-signature flow to sign-in.
             </Typography>
 
             <Typography>
-              Safe has no influence over the actions other projects enable via Sign-In With Ethereum
-              and the Delegation Registry Contract. Delegates do not have any control over on-chain
-              assets stored in the Safe
+              Safe has no influence on what actions projects allow, that are using the Delegation
+              Registry Contract. Delegates do not have any control over on-chain assets stored in
+              the Safe.
             </Typography>
           </DescriptionContainer>
 

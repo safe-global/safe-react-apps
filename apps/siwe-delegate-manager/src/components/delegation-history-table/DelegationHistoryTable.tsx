@@ -41,7 +41,6 @@ const DelegationHistoryTable = () => {
 
   return (
     <Container>
-      {/* TODO: Add loader component */}
       <DataTable
         columns={columns}
         rows={rows}
