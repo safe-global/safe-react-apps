@@ -55,7 +55,7 @@ const DelegateForm = ({ onSubmit, delegator, buttonLabel, disableFields }: Deleg
         <AddressInput
           id="delegateAddress"
           name="delegateAddress"
-          label="Enter delegate Address or ENS Name"
+          label="Enter delegate address or ENS Name"
           hiddenLabel={false}
           address={delegateAddress}
           fullWidth
@@ -81,7 +81,7 @@ const DelegateForm = ({ onSubmit, delegator, buttonLabel, disableFields }: Deleg
 export default DelegateForm
 
 const Form = styled.form`
-  padding: 16px;
+  padding: 16px 0;
 `
 
 const FormFieldWrapper = styled.div`

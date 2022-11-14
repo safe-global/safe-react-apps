@@ -25,37 +25,33 @@ function App() {
       {/* Delegate Registry Title & Form */}
       <AppWrapper>
         <TitleContainer>
-          <Typography component="h2" variant="h5" gutterBottom>
-            Sign-In With Ethereum Delegate Registry Contract
-          </Typography>
-
-          <Typography component="h3" variant="h6" gutterBottom>
-            <AddressLabel
-              address={delegateRegistryContract?.address || ''}
-              showCopyIntoClipboardButton
-              showBlockExplorerLink
-              ariaLabel="Sign-In With Ethereum Delegate Registry contract"
-            />
-          </Typography>
-
           <DescriptionContainer>
-            <Typography gutterBottom>
-              The Sign-In With Ethereum Delegate Manager App allows owners of a Safe to delegate
-              sign-in authority for applications that have integrated with Sign-In With Ethereum for
-              Safes{' '}
+            <Typography align="justify" gutterBottom>
+              The Sign-In with Ethereum Delegate Manager app allows owners of a Safe to delegate
+              sign-in authority for applications that have integrated with{' '}
               <Link target="_blank" href="https://login.xyz/" rel="noreferrer">
-                Sign-In With Ethereum for Safes
+                Sign-In with Ethereum for Safes
               </Link>{' '}
               to one or multiple other accounts. These accounts do not have to go through the
               multi-signature flow to sign-in.
             </Typography>
 
-            <Typography>
+            <Typography align="justify">
               Safe has no influence on what actions projects allow, that are using the Delegation
               Registry Contract. Delegates do not have any control over on-chain assets stored in
               the Safe.
             </Typography>
           </DescriptionContainer>
+
+          <Typography variant="h6">
+            Delegation Registry Contract
+            <AddressLabel
+              address={delegateRegistryContract?.address || ''}
+              showCopyIntoClipboardButton
+              showBlockExplorerLink
+              ariaLabel="Sign-In with Ethereum Delegate Registry contract"
+            />
+          </Typography>
 
           <AddDelegateFormContainer>
             <DelegateForm onSubmit={handleAddNewDelegate} />

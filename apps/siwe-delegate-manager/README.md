@@ -1,3 +1,3 @@
-# delegate-registry-manager
+# Sign-In with Ethereum Delegate Manager
 
 // TODO: Create Readme
