@@ -1,9 +1,10 @@
-import { Box, Typography } from "@mui/material"
+import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
+import { Box, Button, Typography } from "@mui/material"
 import { BigNumber, ethers } from "ethers"
 import { useMemo } from "react"
-import { AppState } from "src/App"
 import { ReactComponent as SafeIcon } from "src/assets/images/safe-token.svg"
 import { SelectedDelegate } from "src/components/steps/Claim/SelectedDelegate"
+import { CLAIMING_DATA_URL } from "src/config/constants"
 import { useAirdropFile } from "src/hooks/useAirdropFile"
 import { useDelegate } from "src/hooks/useDelegate"
 import { useDelegatesFile } from "src/hooks/useDelegatesFile"
@@ -16,6 +17,7 @@ const Widget = () => {
   const [delegates] = useDelegatesFile()
   const delegateAddressFromContract = useDelegate()
   const balance = useTokenBalance()
+  const { safe } = useSafeAppsSDK()
 
   const [vestings, isVestingLoading, vestingFileError] = useAirdropFile()
   const [userVesting, ecosystemVesting, investorVesting] = vestings
@@ -56,6 +58,15 @@ const Widget = () => {
 
   const votingPower = totalAllocation.add(balance).sub(totalClaimed)
 
+  const handleClickClaim = () => {
+    const url = `${window.location.ancestorOrigins[0]}/apps?safe=${
+      safe.chainId === 1 ? "eth" : "gor"
+    }:${safe.safeAddress}&appUrl=${CLAIMING_DATA_URL}`
+
+    // @ts-ignore
+    window.top.location.href = url
+  }
+
   return (
     <Box
       display="flex"
@@ -75,17 +86,36 @@ const Widget = () => {
         </Typography>
       </Box>
 
-      <Typography variant="subtitle2" mb="22px">
-        You've already claimed{" "}
-        {formatAmount(Number(ethers.utils.formatEther(totalClaimed)), 2)} SAFE
-      </Typography>
-      {currentDelegate && (
-        <Box width={1}>
-          <Typography variant="caption" marginBottom={1}>
-            Delegated to
+      {totalClaimed.gt(0) ? (
+        <>
+          <Typography variant="subtitle2" mb="22px">
+            You've already claimed{" "}
+            {formatAmount(Number(ethers.utils.formatEther(totalClaimed)), 2)}{" "}
+            SAFE
           </Typography>
-          <SelectedDelegate delegate={currentDelegate} onClick={() => {}} />
-        </Box>
+          {currentDelegate && (
+            <Box width={1}>
+              <Typography variant="caption" marginBottom={1}>
+                Delegated to
+              </Typography>
+              <SelectedDelegate delegate={currentDelegate} onClick={() => {}} />
+            </Box>
+          )}
+        </>
+      ) : (
+        <>
+          <Typography variant="subtitle2" mb="22px" textAlign="center">
+            Claim you tokens to start participating in voting
+          </Typography>
+          <Button
+            size="large"
+            onClick={handleClickClaim}
+            variant="contained"
+            disableElevation
+          >
+            Claim and Delegate
+          </Button>
+        </>
       )}
     </Box>
   )

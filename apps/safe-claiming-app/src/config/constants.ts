@@ -19,7 +19,7 @@ export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 const isProdEnv = process.env.NODE_ENV === "production"
 
-const CLAIMING_DATA_URL = isProdEnv
+export const CLAIMING_DATA_URL = isProdEnv
   ? "https://safe-claiming-app-data.gnosis-safe.io"
   : "https://safe-claiming-app-data.staging.5afe.dev"
 
