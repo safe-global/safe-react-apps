@@ -1,6 +1,6 @@
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { BigNumber } from "ethers"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { CHAIN_CONSTANTS } from "src/config/constants"
 import { SafeToken__factory } from "src/types/contracts/factories/SafeToken__factory"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
@@ -11,7 +11,7 @@ import { getWeb3Provider } from "src/utils/getWeb3Provider"
 export const useTokenBalance = () => {
   const [balance, setBalance] = useState(BigNumber.from(0))
   const { safe, sdk } = useSafeAppsSDK()
-  const web3Provider = getWeb3Provider(safe, sdk)
+  const web3Provider = useMemo(() => getWeb3Provider(safe, sdk), [safe, sdk])
   const chainConstants = CHAIN_CONSTANTS[safe.chainId]
 
   useEffect(() => {
