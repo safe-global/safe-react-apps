@@ -63,7 +63,7 @@ const Widget = () => {
   const balance = useTokenBalance()
   const { safe } = useSafeAppsSDK()
 
-  const [vestings, isVestingLoading, vestingFileError] = useAirdropFile()
+  const [vestings] = useAirdropFile()
   const [userVesting, ecosystemVesting, investorVesting] = vestings
 
   const totalAllocation = BigNumber.from(userVesting?.amount || 0)
@@ -81,26 +81,31 @@ const Widget = () => {
     }
   }, [delegateAddressFromContract, delegates])
 
-  // fetch the claimed amount
-  const [userVestingStatus, userVestingStatusError] = useFetchVestingStatus(
+  const [userVestingStatus] = useFetchVestingStatus(
     userVesting?.vestingId,
     userVesting?.contract
   )
 
-  const [ecosystemVestingStatus, ecosystemVestingStatusError] =
-    useFetchVestingStatus(
-      ecosystemVesting?.vestingId,
-      ecosystemVesting?.contract
-    )
+  const [ecosystemVestingStatus] = useFetchVestingStatus(
+    ecosystemVesting?.vestingId,
+    ecosystemVesting?.contract
+  )
 
-  const [investorVestingStatus, investorVestingStatusError] =
-    useFetchVestingStatus(investorVesting?.vestingId, investorVesting?.contract)
+  const [investorVestingStatus] = useFetchVestingStatus(
+    investorVesting?.vestingId,
+    investorVesting?.contract
+  )
 
   const totalClaimed = BigNumber.from(userVestingStatus?.amountClaimed || 0)
     .add(ecosystemVestingStatus?.amountClaimed || 0)
     .add(investorVestingStatus?.amountClaimed || 0)
 
-  const votingPower = totalAllocation.add(balance).sub(totalClaimed)
+  const votingPower = useMemo(() => {
+    if (totalAllocation.gt(0) && totalClaimed.gt(0) && balance.gt(0)) {
+      return totalAllocation.sub(totalClaimed).add(balance)
+    }
+    return BigNumber.from(0)
+  }, [balance, totalAllocation, totalClaimed])
 
   const handleClickClaim = () => {
     const url = `${window.location.ancestorOrigins[0]}/apps?safe=${
@@ -127,7 +132,13 @@ const Widget = () => {
     <SpaceContent>
       <div>
         <Title>Your voting power</Title>
-        <Box display="flex" alignItems="center" gap={1} mb={1}>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          gap={1}
+          mb={1}
+        >
           <SafeIcon />
           <Typography variant="h5">
             {formatAmount(Number(ethers.utils.formatEther(votingPower)), 2)}{" "}
