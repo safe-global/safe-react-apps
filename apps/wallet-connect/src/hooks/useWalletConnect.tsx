@@ -75,9 +75,9 @@ const useWalletConnect = () => {
         }
 
         try {
-          trackEvent('WalletConnect: Transaction sent', wcConnector.peerMeta)
-
           let result = await web3Provider.send(payload.method, payload.params)
+
+          trackEvent('WalletConnect: Transaction Confirmed', wcConnector.peerMeta)
 
           wcConnector.approveRequest({
             id: payload.id,
