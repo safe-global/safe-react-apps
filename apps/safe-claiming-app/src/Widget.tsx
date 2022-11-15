@@ -1,5 +1,12 @@
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
-import { Box, Button, Typography } from "@mui/material"
+import {
+  Box,
+  Button,
+  type ButtonProps,
+  styled,
+  Typography,
+  type TypographyProps,
+} from "@mui/material"
 import { BigNumber, ethers } from "ethers"
 import { useMemo } from "react"
 import { ReactComponent as SafeIcon } from "src/assets/images/safe-token.svg"
@@ -12,6 +19,43 @@ import { useFetchVestingStatus } from "src/hooks/useFetchVestingStatus"
 import { useTokenBalance } from "src/hooks/useTokenBalance"
 import { sameAddress } from "src/utils/addresses"
 import { formatAmount } from "src/utils/format"
+
+const SpaceContent = styled("div")`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`
+
+const Title = (props: TypographyProps) => (
+  <Typography
+    color="primary.main"
+    style={{ fontWeight: "bold", textAlign: "center" }}
+  >
+    {props.children}
+  </Typography>
+)
+
+const Subtitle = (props: TypographyProps) => (
+  <Typography
+    variant="subtitle2"
+    color="primary.light"
+    style={{ marginBottom: "16px", textAlign: "center" }}
+  >
+    {props.children}
+  </Typography>
+)
+
+const StyledButton = (props: ButtonProps) => (
+  <Button
+    size="large"
+    onClick={props.onClick}
+    variant="contained"
+    disableElevation
+  >
+    {props.children}
+  </Button>
+)
 
 const Widget = () => {
   const [delegates] = useDelegatesFile()
@@ -67,32 +111,36 @@ const Widget = () => {
     window.top.location.href = url
   }
 
-  return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      height="300px"
-      p={3}
-      sx={{ backgroundColor: "background.paper" }}
-    >
-      <Typography variant="subtitle1" fontWeight={700} color="primary.main">
-        Voting power{" "}
-      </Typography>
-      <Box display="flex" alignItems="center" gap={1} mb={1}>
-        <SafeIcon />
-        <Typography variant="h5">
-          {formatAmount(Number(ethers.utils.formatEther(votingPower)), 2)}{" "}
-        </Typography>
-      </Box>
+  const ctaWidget = (
+    <SpaceContent>
+      <div>
+        <Title>Become the part of Safe future!</Title>
+        <Subtitle>
+          Holding $SAFE is required to participate in governance.
+        </Subtitle>
+      </div>
+      <StyledButton>Buy Tokens</StyledButton>
+    </SpaceContent>
+  )
 
+  const votingPowerWidget = (
+    <SpaceContent>
+      <div>
+        <Title>Your voting power</Title>
+        <Box display="flex" alignItems="center" gap={1} mb={1}>
+          <SafeIcon />
+          <Typography variant="h5">
+            {formatAmount(Number(ethers.utils.formatEther(votingPower)), 2)}{" "}
+          </Typography>
+        </Box>
+      </div>
       {totalClaimed.gt(0) ? (
         <>
-          <Typography variant="subtitle2" mb="22px">
+          <Subtitle>
             You've already claimed{" "}
             {formatAmount(Number(ethers.utils.formatEther(totalClaimed)), 2)}{" "}
             SAFE
-          </Typography>
+          </Subtitle>
           {currentDelegate && (
             <Box width={1}>
               <Typography variant="caption" marginBottom={1}>
@@ -104,19 +152,27 @@ const Widget = () => {
         </>
       ) : (
         <>
-          <Typography variant="subtitle2" mb="22px" textAlign="center">
-            Claim you tokens to start participating in voting
-          </Typography>
-          <Button
-            size="large"
-            onClick={handleClickClaim}
-            variant="contained"
-            disableElevation
-          >
-            Claim and Delegate
-          </Button>
+          <Subtitle>
+            Claim your tokens to start participating in voting
+          </Subtitle>
+          <StyledButton onClick={handleClickClaim}>
+            Claim And Delegate
+          </StyledButton>
         </>
       )}
+    </SpaceContent>
+  )
+
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      height="300px"
+      p={3}
+      sx={{ backgroundColor: "background.paper" }}
+    >
+      {votingPower.eq(0) ? ctaWidget : votingPowerWidget}
     </Box>
   )
 }
