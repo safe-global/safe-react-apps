@@ -6,12 +6,13 @@ import {
   styled,
   Typography,
   type TypographyProps,
+  Link,
 } from "@mui/material"
 import { BigNumber, ethers } from "ethers"
 import { useMemo } from "react"
 import { ReactComponent as SafeIcon } from "src/assets/images/safe-token.svg"
 import { SelectedDelegate } from "src/components/steps/Claim/SelectedDelegate"
-import { CLAIMING_DATA_URL } from "src/config/constants"
+import { CLAIMING_APP_URL } from "src/config/constants"
 import { useAirdropFile } from "src/hooks/useAirdropFile"
 import { useDelegate } from "src/hooks/useDelegate"
 import { useDelegatesFile } from "src/hooks/useDelegatesFile"
@@ -52,6 +53,8 @@ const StyledButton = (props: ButtonProps) => (
     onClick={props.onClick}
     variant="contained"
     disableElevation
+    fullWidth
+    disabled={props.disabled}
   >
     {props.children}
   </Button>
@@ -107,24 +110,17 @@ const Widget = () => {
     return BigNumber.from(0)
   }, [balance, totalAllocation, totalClaimed])
 
-  const handleClickClaim = () => {
-    const url = `${window.location.ancestorOrigins[0]}/apps?safe=${
-      safe.chainId === 1 ? "eth" : "gor"
-    }:${safe.safeAddress}&appUrl=${CLAIMING_DATA_URL}`
-
-    // @ts-ignore
-    window.top.location.href = url
-  }
-
   const ctaWidget = (
     <SpaceContent>
       <div>
         <Title>Become the part of Safe future!</Title>
+        <br />
         <Subtitle>
-          Holding $SAFE is required to participate in governance.
+          You will be able to buy $SAFE once the token transferability is
+          enabled.
         </Subtitle>
       </div>
-      <StyledButton>Buy Tokens</StyledButton>
+      <StyledButton disabled>Buy Tokens</StyledButton>
     </SpaceContent>
   )
 
@@ -166,9 +162,18 @@ const Widget = () => {
           <Subtitle>
             Claim your tokens to start participating in voting
           </Subtitle>
-          <StyledButton onClick={handleClickClaim}>
-            Claim And Delegate
-          </StyledButton>
+          <Link
+            href={`${window.location.ancestorOrigins[0]}/apps?safe=${
+              safe.chainId === 1 ? "eth" : "gor"
+            }:${safe.safeAddress}&appUrl=${CLAIMING_APP_URL}`}
+            rel="noopener noreferrer"
+            target="_blank"
+            display="inline-flex"
+            alignItems={"center"}
+            underline="none"
+          >
+            <StyledButton>Claim And Delegate</StyledButton>
+          </Link>
         </>
       )}
     </SpaceContent>
