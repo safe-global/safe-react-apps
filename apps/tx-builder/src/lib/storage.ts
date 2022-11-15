@@ -1,5 +1,6 @@
 import localforage from 'localforage'
 import { BatchFile } from '../typings/models'
+import { trackSafeAppEvent } from './analytics'
 import { stringifyReplacer } from './checksum'
 
 localforage.config({
@@ -13,6 +14,8 @@ const saveBatch = async (batchFile: BatchFile): Promise<{ id: string; batchFile:
   const id = uuidv4()
   try {
     await localforage.setItem(id, batchFile)
+
+    trackSafeAppEvent('Saved batch', batchFile.transactions.length.toString())
   } catch (error) {
     console.error(error)
   }
@@ -26,6 +29,8 @@ const saveBatch = async (batchFile: BatchFile): Promise<{ id: string; batchFile:
 const removeBatch = async (batchId: string): Promise<void> => {
   try {
     await localforage.removeItem(batchId)
+
+    trackSafeAppEvent('Remove batch')
   } catch (error) {
     console.error(error)
   }
@@ -34,6 +39,8 @@ const removeBatch = async (batchId: string): Promise<void> => {
 const updateBatch = async (batchId: string, batchFile: BatchFile): Promise<void> => {
   try {
     await localforage.setItem(batchId, batchFile)
+
+    trackSafeAppEvent('Update batch')
   } catch (error) {
     console.error(error)
   }
@@ -76,6 +83,8 @@ const downloadObjectAsJson = (batchFile: BatchFile) => {
 
 const downloadBatch = async (batchFile: BatchFile) => {
   downloadObjectAsJson(batchFile)
+
+  trackSafeAppEvent('Download batch')
 }
 
 const importBatch = async (file: File): Promise<BatchFile> => {
@@ -85,6 +94,8 @@ const importBatch = async (file: File): Promise<BatchFile> => {
     reader.onload = () => {
       const batchFile: BatchFile = JSON.parse(reader.result as string)
       resolve(batchFile)
+
+      trackSafeAppEvent('Import batch')
     }
   })
 }
