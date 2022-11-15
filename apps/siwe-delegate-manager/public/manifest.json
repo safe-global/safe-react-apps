@@ -1,0 +1,18 @@
+{
+  "short_name": "SIWE Delegate Manager",
+  "name": "Sign-In with Ethereum Delegate Manager",
+  "description": "Manage your Sign-In with Ethereum delegates",
+  "iconPath": "logo.svg",
+  "icons": [
+    {
+      "src": "logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "safe_apps_permissions": ["clipboard-write"]
+}
