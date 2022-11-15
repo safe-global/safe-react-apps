@@ -6,7 +6,7 @@
   "dependencies": {
     "@gnosis.pm/safe-apps-provider": "^0.14.0",
     "@gnosis.pm/safe-deployments": "^1.16.0",
-    "@gnosis.pm/safe-react-components": "^1.1.5",
+    "@gnosis.pm/safe-react-components": "1.1.5",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.60",
@@ -14,19 +14,19 @@
     "evm-proxy-detection": "1.0.0",
     "localforage": "^1.10.0",
     "react-beautiful-dnd": "^13.1.1",
-    "react-hook-form": "^7.38.0",
-    "react-router-dom": "^6.4.2",
+    "react-hook-form": "^7.39.1",
+    "react-router-dom": "^6.4.3",
     "react-virtuoso": "^2.8.2",
     "web3": "~1.8.0"
   },
   "devDependencies": {
-    "@hookform/devtools": "^4.2.2",
-    "@nomiclabs/hardhat-ethers": "^2.2.0",
-    "@nomiclabs/hardhat-etherscan": "^3.1.1",
+    "@hookform/devtools": "^4.2.3",
+    "@nomiclabs/hardhat-ethers": "^2.2.1",
+    "@nomiclabs/hardhat-etherscan": "^3.1.2",
     "@types/react-beautiful-dnd": "^13.1.2",
     "ethers": "^5.7.2",
-    "hardhat": "^2.12.0",
-    "hardhat-deploy": "^0.11.18"
+    "hardhat": "^2.12.2",
+    "hardhat-deploy": "^0.11.20"
   },
   "scripts": {
     "start": "dotenv -e .env -- react-app-rewired start",
