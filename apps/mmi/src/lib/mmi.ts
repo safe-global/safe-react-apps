@@ -22,10 +22,10 @@ export const authenticate = async (refreshToken: string) => {
       method: 'metamaskinstitutional_authenticate',
       params: {
         token: refreshToken,
-        apiUrl: 'https://safe-mmi.staging.5afe.dev/api',
+        apiUrl: `${process.env.REACT_APP_MMI_BACKEND_BASE_URL}/api`,
         feature: 'custodian',
         service: 'JSONRPC',
-        environment: 'gnosis-safe-staging',
+        environment: process.env.REACT_APP_MMI_ENVIRONMENT,
         labels: [
           {
             key: 'token',
