@@ -57,6 +57,7 @@ jobs:
             * [Safe Claiming App](${{ env.REVIEW_FEATURE_URL }}/safe-claiming-app/)
             * [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)
             * [WalletConnect app](${{ env.REVIEW_FEATURE_URL }}/wallet-connect/)
+            * [MMI App](${{ env.REVIEW_FEATURE_URL }}/mmi/)
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
         env:
