@@ -1,13 +1,13 @@
-import { Box } from '@material-ui/core'
-import styled from 'styled-components'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined'
 import {
+  Box,
+  Typography,
   Accordion,
   AccordionSummary,
-  IconText,
   AccordionDetails,
-  Text,
-  Dot,
-} from '@gnosis.pm/safe-react-components'
+  styled,
+} from '@mui/material'
 
 type HelpProps = {
   title: string
@@ -16,34 +16,26 @@ type HelpProps = {
 
 const Help = ({ title, steps }: HelpProps): React.ReactElement => {
   return (
-    <StyledAccordion compact>
-      <StyledAccordionSummary>
-        <StyledIconText iconSize="sm" textSize="lg" iconType="question" text={title} />
+    <StyledAccordion elevation={0}>
+      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <HelpOutlineOutlinedIcon sx={{ fontSize: '20px' }} />
+        <Typography variant="body2" ml={2}>
+          {title}
+        </Typography>
       </StyledAccordionSummary>
       <StyledAccordionDetails>
         {steps.map((step, index) => (
           <Box key={index} display="flex" marginBottom={2} alignItems="flex-start">
             <StyledDot color="primary">
-              <StyledDotText size="sm">{index + 1}</StyledDotText>
+              <Typography sx={{ fontSize: '10px' }}>{index + 1}</Typography>
             </StyledDot>
-            <Text size="lg">{step}</Text>
+            <Typography variant="body2">{step}</Typography>
           </Box>
         ))}
       </StyledAccordionDetails>
     </StyledAccordion>
   )
 }
-
-const StyledIconText = styled(IconText)`
-  svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  p {
-    margin-left: 13px;
-  }
-`
 
 const StyledAccordion = styled(Accordion)`
   && {
@@ -73,18 +65,17 @@ const StyledAccordionDetails = styled(AccordionDetails)`
   }
 `
 
-const StyledDot = styled(Dot)`
+const StyledDot = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
   min-width: 20px;
   width: 20px;
   height: 20px;
-  margin-right: 20px;
+  margin-right: 16px;
   background: #f0efee;
   color: #566976;
-`
-
-const StyledDotText = styled(Text)`
-  position: absolute;
-  font-size: 10px;
 `
 
 export default Help

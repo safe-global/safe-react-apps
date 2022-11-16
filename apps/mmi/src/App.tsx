@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { Grid, Container } from '@material-ui/core'
+import { ethers } from 'ethers'
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
-import { Button, Card, Text } from '@gnosis.pm/safe-react-components'
-import { getRefreshToken } from './lib/http'
-import { authenticate, sign } from './lib/mmi'
-
+import { Grid, Container, Button, Typography, Card, styled } from '@mui/material'
 import AppBar from './components/AppBar'
 import Help from './components/Help'
-import { ethers } from 'ethers'
+
+import { getRefreshToken } from './lib/http'
+import { authenticate, sign } from './lib/mmi'
 
 function App() {
   const { safe } = useSafeAppsSDK()
@@ -75,44 +73,43 @@ function App() {
                   <StyledLogo src="./mmi.svg" alt="safe-app-logo" />
                 </Grid>
                 <Grid container item justifyContent="center" alignItems="center">
-                  <StyledText size="xl">
-                    Setup your Safe account with Metamask Institutional
-                  </StyledText>
+                  <StyledText>Setup your Safe account with Metamask Institutional</StyledText>
                   {!hasError ? (
                     <>
                       <Button
-                        size="md"
                         id="connect"
+                        variant="contained"
+                        size="medium"
                         onClick={handleLogin}
-                        style={{ marginTop: '16px' }}
+                        sx={{ minWidth: '150px', mt: 2 }}
                       >
                         Start
                       </Button>
                       <StyledErrorContainer>
                         {error && (
-                          <Text size="lg" color="error">
+                          <Typography color="error" variant="body1">
                             {error}
-                          </Text>
+                          </Typography>
                         )}
                       </StyledErrorContainer>
                     </>
                   ) : (
                     <StyledErrorContainer>
                       {!isMMISupported ? (
-                        <Text size="lg" color="error">
+                        <Typography color="error" variant="body1">
                           MMI is not supported. Install MetaMask Institutional
-                        </Text>
+                        </Typography>
                       ) : (
                         <>
                           {safe.isReadOnly && (
-                            <Text size="lg" color="error">
+                            <Typography color="error" variant="body1">
                               You are not an owner of this safe
-                            </Text>
+                            </Typography>
                           )}
                           {isWrongOwner && (
-                            <Text size="lg" color="error">
+                            <Typography color="error" variant="body1">
                               You are connected with the wrong owner
-                            </Text>
+                            </Typography>
                           )}
                         </>
                       )}
@@ -169,17 +166,17 @@ const StyledContainer = styled(Grid)`
   padding: 38px 30px 45px 30px;
 `
 
-const StyledText = styled(Text)`
+const StyledText = styled(Typography)`
   text-align: center;
   margin-bottom: 8px;
 `
 
-const StyledLogo = styled.img`
+const StyledLogo = styled('img')`
   width: 64px;
   height: 64px;
 `
 
-const StyledErrorContainer = styled.div`
+const StyledErrorContainer = styled('div')`
   margin-top: 20px;
 `
 

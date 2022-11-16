@@ -1,11 +1,11 @@
-import MuiAppBar from '@material-ui/core/AppBar'
-import styled from 'styled-components'
-import { Text } from '@gnosis.pm/safe-react-components'
+import { AppBar as MuiAppBar, Typography, styled } from '@mui/material'
 
 const AppBar = () => {
   return (
     <StyledAppBar position="static" color="default">
-      <StyledAppBarText size="xl">MetaMask Institutional</StyledAppBarText>
+      <Typography variant="h6" pl={4}>
+        MetaMask Institutional
+      </Typography>
     </StyledAppBar>
   )
 }
@@ -22,12 +22,6 @@ const StyledAppBar = styled(MuiAppBar)`
     border-bottom: 2px solid #e8e7e6;
     box-shadow: none;
   }
-`
-
-const StyledAppBarText = styled(Text)`
-  font-size: 20px;
-  margin-left: 38px;
-  margin-right: 16px;
 `
 
 export default AppBar
