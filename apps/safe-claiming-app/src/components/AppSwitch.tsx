@@ -1,13 +1,17 @@
 import App from "src/App"
-import Widget from "src/Widget"
+import Snapshot from "src/widgets/Snapshot"
+import ClaimingApp from "src/widgets/Widget"
 
 export const AppSwitch = () => {
   const location = window.location
   const hash = location.hash
 
-  if (hash === "#widget") {
-    return <Widget />
+  switch (hash) {
+    case "#widget":
+      return <ClaimingApp />
+    case "#snapshot_widget":
+      return <Snapshot />
+    default:
+      return <App />
   }
-
-  return <App />
 }

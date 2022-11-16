@@ -63,7 +63,7 @@ const StyledButton = (props: ButtonProps) => (
 
 const WIDGET_HEIGHT = 300
 
-const Widget = () => {
+const ClaimingApp = () => {
   const [delegates] = useDelegatesFile()
   const delegateAddressFromContract = useDelegate()
   const [balance, balanceLoading] = useTokenBalance()
@@ -210,4 +210,4 @@ const Widget = () => {
   )
 }
 
-export default Widget
+export default ClaimingApp
