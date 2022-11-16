@@ -7,6 +7,7 @@ import {
   Typography,
   type TypographyProps,
   Link,
+  Skeleton,
 } from "@mui/material"
 import { BigNumber, ethers } from "ethers"
 import { useMemo } from "react"
@@ -60,10 +61,12 @@ const StyledButton = (props: ButtonProps) => (
   </Button>
 )
 
+const WIDGET_HEIGHT = 300
+
 const Widget = () => {
   const [delegates] = useDelegatesFile()
   const delegateAddressFromContract = useDelegate()
-  const balance = useTokenBalance()
+  const [balance, balanceLoading] = useTokenBalance()
   const { safe } = useSafeAppsSDK()
 
   const [vestings] = useAirdropFile()
@@ -84,17 +87,18 @@ const Widget = () => {
     }
   }, [delegateAddressFromContract, delegates])
 
-  const [userVestingStatus] = useFetchVestingStatus(
+  const [userVestingStatus, userVestingLoading] = useFetchVestingStatus(
     userVesting?.vestingId,
     userVesting?.contract
   )
 
-  const [ecosystemVestingStatus] = useFetchVestingStatus(
-    ecosystemVesting?.vestingId,
-    ecosystemVesting?.contract
-  )
+  const [ecosystemVestingStatus, ecosystemVestingLoading] =
+    useFetchVestingStatus(
+      ecosystemVesting?.vestingId,
+      ecosystemVesting?.contract
+    )
 
-  const [investorVestingStatus] = useFetchVestingStatus(
+  const [investorVestingStatus, investorVestingLoading] = useFetchVestingStatus(
     investorVesting?.vestingId,
     investorVesting?.contract
   )
@@ -179,12 +183,25 @@ const Widget = () => {
     </SpaceContent>
   )
 
+  const onchainRequestsLoading =
+    userVestingLoading ||
+    ecosystemVestingLoading ||
+    investorVestingLoading ||
+    balanceLoading
+  if (onchainRequestsLoading) {
+    return (
+      <Box height={`${WIDGET_HEIGHT}px`}>
+        <Skeleton variant="rounded" width="100%" height="100%" />
+      </Box>
+    )
+  }
+
   return (
     <Box
       display="flex"
       flexDirection="column"
       alignItems="center"
-      height="300px"
+      height={`${WIDGET_HEIGHT}px`}
       p={3}
       sx={{ backgroundColor: "background.paper" }}
     >

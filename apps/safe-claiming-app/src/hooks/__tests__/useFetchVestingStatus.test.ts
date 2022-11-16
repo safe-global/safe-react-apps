@@ -56,7 +56,7 @@ describe("useFetchVestingStatus", () => {
     )
     await waitFor(() => {
       expect(result.current[0]).toBeUndefined()
-      expect(result.current[1]).toBeDefined()
+      expect(result.current[2]).toBeDefined()
       expect(mockCall).toBeCalledTimes(1)
     })
   })

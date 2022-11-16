@@ -8,8 +8,9 @@ import { getWeb3Provider } from "src/utils/getWeb3Provider"
 /**
  * Fetches the current token balance.
  */
-export const useTokenBalance = () => {
+export const useTokenBalance = (): [BigNumber, boolean] => {
   const [balance, setBalance] = useState(BigNumber.from(0))
+  const [loading, setLoading] = useState<boolean>(false)
   const { safe, sdk } = useSafeAppsSDK()
   const web3Provider = useMemo(() => getWeb3Provider(safe, sdk), [safe, sdk])
   const chainConstants = CHAIN_CONSTANTS[safe.chainId]
@@ -19,6 +20,8 @@ export const useTokenBalance = () => {
 
     const fetchTokenBalance = async () => {
       try {
+        setLoading(true)
+
         const newBalance = await SafeToken__factory.connect(
           chainConstants.SAFE_TOKEN_ADDRESS,
           web3Provider
@@ -27,6 +30,8 @@ export const useTokenBalance = () => {
         isMounted && setBalance(newBalance)
       } catch (error) {
         console.error(error)
+      } finally {
+        isMounted && setLoading(false)
       }
     }
     if (chainConstants) {
@@ -37,5 +42,5 @@ export const useTokenBalance = () => {
     }
   }, [chainConstants, safe.safeAddress, web3Provider])
 
-  return balance
+  return [balance, loading]
 }

@@ -42,7 +42,7 @@ describe("useTokenBalance", () => {
   it("should return 0 initially", () => {
     mockCall.mockImplementation(() => Promise.resolve)
     const { result } = renderHook(() => useTokenBalance())
-    expect(result.current).toEqual(ethers.utils.parseEther("0"))
+    expect(result.current[0]).toEqual(ethers.utils.parseEther("0"))
     expect(mockCall).toBeCalledTimes(0)
   })
 
@@ -50,7 +50,7 @@ describe("useTokenBalance", () => {
     mockCall.mockImplementation(() => Promise.reject("ERROR"))
     const { result } = renderHook(() => useTokenBalance())
     await waitFor(() => {
-      expect(result.current).toEqual(ethers.utils.parseEther("0"))
+      expect(result.current[0]).toEqual(ethers.utils.parseEther("0"))
       expect(mockCall).toBeCalledTimes(1)
     })
   })
@@ -65,7 +65,7 @@ describe("useTokenBalance", () => {
     )
     const { result } = renderHook(() => useTokenBalance())
     await waitFor(() => {
-      expect(result.current).toEqual(BigNumber.from("20000"))
+      expect(result.current[0]).toEqual(BigNumber.from("20000"))
       expect(mockCall).toBeCalledTimes(1)
     })
   })

@@ -8,10 +8,11 @@ import { getWeb3Provider } from "src/utils/getWeb3Provider"
 export const useFetchVestingStatus = (
   vestingId: string | undefined,
   airdropAddress: string | undefined
-): [VestingStatus | undefined, string | undefined] => {
+): [VestingStatus | undefined, boolean, string | undefined] => {
   const { safe, sdk } = useSafeAppsSDK()
   const web3Provider = useMemo(() => getWeb3Provider(safe, sdk), [safe, sdk])
   const [vestingStatus, setVestingStatus] = useState<VestingStatus>()
+  const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>()
 
   useEffect(() => {
@@ -21,6 +22,8 @@ export const useFetchVestingStatus = (
         return
       }
       try {
+        setLoading(true)
+
         // Check if vesting is already redeemed and amount claimed
         const newVesting = await Airdrop__factory.connect(
           airdropAddress,
@@ -44,6 +47,8 @@ export const useFetchVestingStatus = (
       } catch (error) {
         console.error(error)
         setError("Fetching vesting status failed.")
+      } finally {
+        isMounted && setLoading(false)
       }
     }
 
@@ -54,5 +59,5 @@ export const useFetchVestingStatus = (
     }
   }, [airdropAddress, vestingId, web3Provider])
 
-  return [vestingStatus, error]
+  return [vestingStatus, loading, error]
 }
