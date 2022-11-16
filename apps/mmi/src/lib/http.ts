@@ -1,4 +1,4 @@
-export const MMI_BASE_URL = process.env.REACT_APP_MMI_BACKEND_BASE_URL
+export const MMI_BASE_URL = `${process.env.REACT_APP_MMI_BACKEND_BASE_URL}/api/v1`
 
 export const getRefreshToken = async (address: string, signature: string): Promise<string> => {
   try {

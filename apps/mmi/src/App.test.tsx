@@ -1,5 +1,5 @@
 import App from './App'
 
-test('renders learn react link', () => {
+test('render App', () => {
   // render(<App />)
 })
