@@ -6,8 +6,8 @@ import { SafeToken__factory } from "src/types/contracts/factories/SafeToken__fac
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
 
 const getSafeBalance = (
-  provider: ethers.providers.Provider,
   tokenAddress: string,
+  provider: ethers.providers.Provider,
   safeAddress: string
 ): Promise<BigNumber> => {
   return SafeToken__factory.connect(tokenAddress, provider).balanceOf(
@@ -26,10 +26,10 @@ export const useTokenBalance = (): AsyncResult<BigNumber> => {
   return useAsync(
     () =>
       getSafeBalance(
-        web3Provider,
         chainConstants.SAFE_TOKEN_ADDRESS,
+        web3Provider,
         safe.safeAddress
       ),
-    []
+    [safe.chainId, web3Provider, safe.safeAddress]
   )
 }

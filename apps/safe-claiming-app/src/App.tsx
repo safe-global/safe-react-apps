@@ -107,18 +107,18 @@ const App = (): ReactElement => {
   const [vestings, isVestingLoading, vestingFileError] = useAirdropFile()
   const [userVesting, ecosystemVesting, investorVesting] = vestings
 
-  const [userVestingStatus, , userVestingStatusError] = useFetchVestingStatus(
+  const [userVestingStatus, userVestingStatusError] = useFetchVestingStatus(
     userVesting?.vestingId,
     userVesting?.contract
   )
 
-  const [ecosystemVestingStatus, , ecosystemVestingStatusError] =
+  const [ecosystemVestingStatus, ecosystemVestingStatusError] =
     useFetchVestingStatus(
       ecosystemVesting?.vestingId,
       ecosystemVesting?.contract
     )
 
-  const [investorVestingStatus, , investorVestingStatusError] =
+  const [investorVestingStatus, investorVestingStatusError] =
     useFetchVestingStatus(investorVesting?.vestingId, investorVesting?.contract)
 
   const userClaim: VestingClaim | null = useMemo(
