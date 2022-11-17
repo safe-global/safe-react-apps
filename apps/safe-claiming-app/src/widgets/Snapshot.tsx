@@ -1,13 +1,5 @@
 import { OpenInNewRounded } from "@mui/icons-material"
-import {
-  Box,
-  Chip,
-  Link,
-  SvgIcon,
-  Typography,
-  Skeleton,
-  styled,
-} from "@mui/material"
+import { Box, Chip, Link, Typography, Skeleton, styled } from "@mui/material"
 
 import useSafeSnapshot, {
   type SnapshotProposal,
@@ -15,13 +7,13 @@ import useSafeSnapshot, {
 
 export const _getProposalNumber = (title: string): string => {
   // Find anything that matches "SEP #n"
-  const SEP_REGEX = /SEP\s\#\d+/g
+  const SEP_REGEX = /SEP\s#\d+/g
   return title.match(SEP_REGEX)?.[0] || ""
 }
 
 export const _getProposalTitle = (title: string): string => {
   // Find anything after "] " or ": "
-  const TITLE_REGEX = /(\]|\:) (.*)/
+  const TITLE_REGEX = /(\]|:) (.*)/
   return title.match(TITLE_REGEX)?.at(-1) || ""
 }
 
@@ -33,23 +25,16 @@ const SpaceContent = styled("div")`
 `
 
 const Proposal = styled("a")`
-  height: 47px;
   width: 100%;
   display: grid;
   grid-gap: 4px;
   align-items: center;
   text-decoration: none;
-  padding: 8px 0px;
-  background-color: var(--color-background-paper);
-  border: 1px solid var(--color-border-light);
+  padding: 16px;
+  border: 1px solid #dcdee0;
   border-radius: 6px;
   grid-template-columns: 70px minmax(auto, 9fr) 1fr 1fr;
   grid-template-areas: "number title title title title title title title title title status link";
-
-  &:hover {
-    background-color: var(--color-background-light);
-    border-color: var(--color-secondary-light);
-  }
 `
 
 const StyledChip = styled(Chip)`
@@ -59,14 +44,23 @@ const StyledChip = styled(Chip)`
   text-align: center;
   height: 23px;
   color: #fff !important;
+  font-weight: bold;
 `
 
 const StyledNumber = styled(Box)`
-  grid-area: number;
+  grid-area: "number";
   border-radius: 6px;
   padding: 0px 8px;
   color: black;
   white-space: nowrap;
+`
+
+const StyledExternalLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  gap: 8px;
+  text-decoration: none;
 `
 
 const SnapshotProposals = ({
@@ -81,8 +75,17 @@ const SnapshotProposals = ({
         key={proposal.id}
         target="_blank"
         rel="noopener noreferrer"
+        sx={{
+          "&:hover": {
+            borderColor: "primary.light",
+          },
+        }}
       >
-        <StyledNumber sx={{ backgroundColor: "#DCDEE0" }}>
+        <StyledNumber
+          sx={{
+            backgroundColor: "#DCDEE0",
+          }}
+        >
           {_getProposalNumber(proposal.title)}
         </StyledNumber>
         <Box gridArea="title">
@@ -160,33 +163,22 @@ const SnapshotWidget = () => {
           </Box>
         </div>
         <Box display="flex" gap={4}>
-          <Link
+          <StyledExternalLink
             href={SNAPSHOT_LINK}
             rel="noreferrer noopener"
             target="_blank"
             variant="subtitle1"
-            // can abstract
-            display="flex"
-            alignItems="center"
-            fontWeight={700}
-            gap={1}
-            underline="none"
           >
             View all <OpenInNewRounded fontSize="small" />
-          </Link>
-          <Link
+          </StyledExternalLink>
+          <StyledExternalLink
             href={FORUM_LINK}
             rel="noreferrer noopener"
             target="_blank"
             variant="subtitle1"
-            display="flex"
-            alignItems="center"
-            fontWeight={700}
-            gap={1}
-            underline="none"
           >
             SafeDAO Forum <OpenInNewRounded fontSize="small" />
-          </Link>
+          </StyledExternalLink>
         </Box>
       </SpaceContent>
     </Box>
