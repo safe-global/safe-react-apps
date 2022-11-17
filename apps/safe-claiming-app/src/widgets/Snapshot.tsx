@@ -1,5 +1,7 @@
+import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { OpenInNewRounded } from "@mui/icons-material"
 import { Box, Chip, Link, Typography, Skeleton, styled } from "@mui/material"
+import { Chains } from "src/config/constants"
 
 import useSafeSnapshot, {
   type SnapshotProposal,
@@ -65,13 +67,15 @@ const StyledExternalLink = styled(Link)`
 
 const SnapshotProposals = ({
   proposals,
+  snapshotLink,
 }: {
   proposals: SnapshotProposal[]
+  snapshotLink: string
 }) => (
   <>
     {proposals?.map((proposal) => (
       <Proposal
-        href={`${SNAPSHOT_LINK}/proposal/${proposal.id}`}
+        href={`${snapshotLink}/proposal/${proposal.id}`}
         key={proposal.id}
         target="_blank"
         rel="noopener noreferrer"
@@ -115,10 +119,13 @@ const SnapshotProposals = ({
   </>
 )
 
-const SNAPSHOT_LINK = "https://snapshot.org/#/safe.eth"
-const FORUM_LINK = "https://forum.gnosis-safe.io"
-
 const SnapshotWidget = () => {
+  const { safe } = useSafeAppsSDK()
+
+  const SNAPSHOT_SPACE_ID =
+    safe.chainId === Chains.MAINNET ? "safe.eth" : "tutis.eth"
+  const SNAPSHOT_LINK = `https://snapshot.org/#/${SNAPSHOT_SPACE_ID}`
+  const FORUM_LINK = "https://forum.safe.global"
   const PROPOSAL_AMOUNT = 3
 
   const [proposals, loading] = useSafeSnapshot(PROPOSAL_AMOUNT)
@@ -158,7 +165,10 @@ const SnapshotWidget = () => {
                 />
               ))
             ) : (
-              <SnapshotProposals proposals={proposals} />
+              <SnapshotProposals
+                proposals={proposals}
+                snapshotLink={SNAPSHOT_LINK}
+              />
             )}
           </Box>
         </div>
