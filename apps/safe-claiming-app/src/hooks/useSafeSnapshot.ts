@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import useAsync, { type AsyncResult } from "src/hooks/useAsync"
 
 type ShapshotProposalVars = {
   space: string
@@ -75,34 +75,8 @@ const getSafeSnapshot = (amount: number): Promise<SnapshotProposal[]> => {
   })
 }
 
-const useSafeSnapshot = (amount: number): [SnapshotProposal[], boolean] => {
-  // return useAsync(() => getSafeSnapshot(amount), [])
-  const [proposals, setProposals] = useState<SnapshotProposal[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-
-  useEffect(() => {
-    let isMounted = true
-
-    const fetchProposals = async () => {
-      try {
-        setLoading(true)
-
-        const newProposals = await getSafeSnapshot(amount)
-
-        isMounted && setProposals(newProposals)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        isMounted && setLoading(false)
-      }
-    }
-    fetchProposals()
-    return () => {
-      isMounted = false
-    }
-  }, [amount])
-
-  return [proposals, loading]
+const useSafeSnapshot = (amount: number): AsyncResult<SnapshotProposal[]> => {
+  return useAsync(() => getSafeSnapshot(amount), [])
 }
 
 export default useSafeSnapshot
