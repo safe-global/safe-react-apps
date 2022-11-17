@@ -2,6 +2,7 @@
 
 Integrate Safe with MMI
 
-## Config Backend endpoint
+## Config env variables
 
-Add `BACKEND_BASE_URL` to .env
+- Add `REACT_APP_MMI_BACKEND_BASE_URL`
+- Add `REACT_APP_MMI_ENVIRONMENT` (safe-prod, safe-staging)

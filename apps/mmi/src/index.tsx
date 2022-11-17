@@ -8,7 +8,7 @@ import theme from './theme'
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <GlobalStyles styles={{ body: { paddingBottom: '24px' } }} />
+      <GlobalStyles styles={{}} />
       <CssBaseline />
       <SafeProvider loader={<h1>Waiting for Safe...</h1>}>
         <App />
