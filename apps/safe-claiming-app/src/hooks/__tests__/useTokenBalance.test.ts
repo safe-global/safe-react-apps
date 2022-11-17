@@ -39,18 +39,18 @@ describe("useTokenBalance", () => {
     jest.unmock("@gnosis.pm/safe-apps-react-sdk")
   })
 
-  it("should return 0 initially", () => {
+  it("should return undefined initially", () => {
     mockCall.mockImplementation(() => Promise.resolve)
     const { result } = renderHook(() => useTokenBalance())
-    expect(result.current[0]).toEqual(ethers.utils.parseEther("0"))
+    expect(result.current[0]).toEqual(undefined)
     expect(mockCall).toBeCalledTimes(0)
   })
 
-  it("should return 0 on error", async () => {
+  it("should return undefined on error", async () => {
     mockCall.mockImplementation(() => Promise.reject("ERROR"))
     const { result } = renderHook(() => useTokenBalance())
     await waitFor(() => {
-      expect(result.current[0]).toEqual(ethers.utils.parseEther("0"))
+      expect(result.current[0]).toEqual(undefined)
       expect(mockCall).toBeCalledTimes(1)
     })
   })

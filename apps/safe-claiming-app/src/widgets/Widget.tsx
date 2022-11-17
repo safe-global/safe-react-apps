@@ -108,7 +108,7 @@ const ClaimingApp = () => {
     .add(investorVestingStatus?.amountClaimed || 0)
 
   const votingPower = useMemo(() => {
-    if (totalAllocation.gt(0) && totalClaimed.gt(0) && balance.gt(0)) {
+    if (totalAllocation.gt(0) && totalClaimed.gt(0) && balance?.gt(0)) {
       return totalAllocation.sub(totalClaimed).add(balance)
     }
     return BigNumber.from(0)
