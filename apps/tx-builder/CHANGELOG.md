@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.13.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.12.0...tx-builder-1.13.0) (2022-11-18)
+
+
+### Features
+
+* **siwe-delegate-manager:** Sign-In With Ethereum Delegate Manager Safe App ([#499](https://github.com/safe-global/safe-react-apps/issues/499)) ([34c36c5](https://github.com/safe-global/safe-react-apps/commit/34c36c580300672c6366ad2d534de0a3b1534058))
+
+
+
 # [1.12.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.11.1...tx-builder-1.12.0) (2022-11-03)
 
 
