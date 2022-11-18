@@ -5,6 +5,7 @@ import { Airdrop__factory } from "src/types/contracts/factories/Airdrop__factory
 import { VestingStatus } from "src/types/vestings"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
 import { ethers } from "ethers"
+import { useMemo } from "react"
 
 const getVestingStatus = async (
   airdropAddress: string | undefined,
@@ -43,7 +44,7 @@ export const useFetchVestingStatus = (
   airdropAddress: string | undefined
 ): AsyncResult<VestingStatus> => {
   const { safe, sdk } = useSafeAppsSDK()
-  const web3Provider = getWeb3Provider(safe, sdk)
+  const web3Provider = useMemo(() => getWeb3Provider(safe, sdk), [safe, sdk])
 
   return useAsync(
     () => getVestingStatus(airdropAddress, web3Provider, vestingId),

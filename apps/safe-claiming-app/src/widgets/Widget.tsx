@@ -66,7 +66,7 @@ const WIDGET_HEIGHT = 300
 const ClaimingApp = () => {
   const [delegates] = useDelegatesFile()
   const delegateAddressFromContract = useDelegate()
-  const [balance, balanceLoading] = useTokenBalance()
+  const [balance, , balanceLoading] = useTokenBalance()
   const { safe } = useSafeAppsSDK()
 
   const [vestings] = useAirdropFile()
@@ -87,21 +87,19 @@ const ClaimingApp = () => {
     }
   }, [delegateAddressFromContract, delegates])
 
-  const [userVestingStatus, userVestingLoading] = useFetchVestingStatus(
+  const [userVestingStatus, , userVestingLoading] = useFetchVestingStatus(
     userVesting?.vestingId,
     userVesting?.contract
   )
 
-  const [ecosystemVestingStatus, ecosystemVestingLoading] =
+  const [ecosystemVestingStatus, , ecosystemVestingLoading] =
     useFetchVestingStatus(
       ecosystemVesting?.vestingId,
       ecosystemVesting?.contract
     )
 
-  const [investorVestingStatus, investorVestingLoading] = useFetchVestingStatus(
-    investorVesting?.vestingId,
-    investorVesting?.contract
-  )
+  const [investorVestingStatus, , investorVestingLoading] =
+    useFetchVestingStatus(investorVesting?.vestingId, investorVesting?.contract)
 
   const totalClaimed = BigNumber.from(userVestingStatus?.amountClaimed || 0)
     .add(ecosystemVestingStatus?.amountClaimed || 0)
