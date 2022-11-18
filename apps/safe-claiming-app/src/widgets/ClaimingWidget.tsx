@@ -8,6 +8,7 @@ import {
   type TypographyProps,
   Link,
   Skeleton,
+  Paper,
 } from "@mui/material"
 import { BigNumber, ethers } from "ethers"
 import { useMemo } from "react"
@@ -27,6 +28,8 @@ const SpaceContent = styled("div")`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: 300px;
+  padding: 24px;
 `
 
 const Title = (props: TypographyProps) => (
@@ -63,7 +66,7 @@ const StyledButton = (props: ButtonProps) => (
 
 const WIDGET_HEIGHT = 300
 
-const ClaimingApp = () => {
+const ClaimingWidget = () => {
   const [delegates] = useDelegatesFile()
   const delegateAddressFromContract = useDelegate()
   const [balance, , balanceLoading] = useTokenBalance()
@@ -113,7 +116,7 @@ const ClaimingApp = () => {
   }, [balance, totalAllocation, totalClaimed])
 
   const ctaWidget = (
-    <SpaceContent>
+    <>
       <div>
         <Title>Become the part of Safe future!</Title>
         <br />
@@ -123,11 +126,11 @@ const ClaimingApp = () => {
         </Subtitle>
       </div>
       <StyledButton disabled>Buy Tokens</StyledButton>
-    </SpaceContent>
+    </>
   )
 
   const votingPowerWidget = (
-    <SpaceContent>
+    <>
       <div>
         <Title>Your voting power</Title>
         <Box
@@ -178,7 +181,7 @@ const ClaimingApp = () => {
           </Link>
         </>
       )}
-    </SpaceContent>
+    </>
   )
 
   const onchainRequestsLoading =
@@ -195,17 +198,12 @@ const ClaimingApp = () => {
   }
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      height={`${WIDGET_HEIGHT}px`}
-      p={3}
-      sx={{ backgroundColor: "background.paper" }}
-    >
-      {votingPower.eq(0) ? ctaWidget : votingPowerWidget}
-    </Box>
+    <Paper>
+      <SpaceContent style={{ alignItems: "center" }}>
+        {votingPower.eq(0) ? ctaWidget : votingPowerWidget}
+      </SpaceContent>
+    </Paper>
   )
 }
 
-export default ClaimingApp
+export default ClaimingWidget

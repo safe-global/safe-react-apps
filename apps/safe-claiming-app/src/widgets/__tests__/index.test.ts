@@ -1,4 +1,4 @@
-import { _getProposalNumber, _getProposalTitle } from "../Snapshot"
+import { _getProposalNumber, _getProposalTitle } from "../SnapshotWidget"
 
 describe("SnapshotWidget", () => {
   describe("getProposalNumber", () => {

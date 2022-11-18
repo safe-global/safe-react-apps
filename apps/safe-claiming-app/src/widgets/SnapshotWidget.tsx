@@ -1,6 +1,14 @@
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { OpenInNewRounded } from "@mui/icons-material"
-import { Box, Chip, Link, Typography, Skeleton, styled } from "@mui/material"
+import {
+  Box,
+  Chip,
+  Link,
+  Typography,
+  Skeleton,
+  styled,
+  Paper,
+} from "@mui/material"
 import { Chains } from "src/config/constants"
 
 import useSafeSnapshot, {
@@ -24,6 +32,8 @@ const SpaceContent = styled("div")`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: 300px;
+  padding: 24px;
 `
 
 const Proposal = styled("a")`
@@ -131,13 +141,7 @@ const SnapshotWidget = () => {
   const [proposals, loading] = useSafeSnapshot(PROPOSAL_AMOUNT)
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      height="300px"
-      p={3}
-      sx={{ backgroundColor: "background.paper" }}
-    >
+    <Paper>
       <SpaceContent>
         <div>
           <Typography
@@ -191,7 +195,7 @@ const SnapshotWidget = () => {
           </StyledExternalLink>
         </Box>
       </SpaceContent>
-    </Box>
+    </Paper>
   )
 }
 

@@ -20,7 +20,7 @@ export const UnexpectedError = ({ error }: { error: string | Error }) => {
           color: ({ palette }) => palette.error.main,
         }}
       >
-        Unexpected Error while loading the app:{" "}
+        Unexpected error while loading the app:{" "}
         {typeof error === "string" ? error : error.message}
       </Typography>
       <Typography mt={4} variant="subtitle1">

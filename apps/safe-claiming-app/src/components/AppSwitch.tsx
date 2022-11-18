@@ -1,6 +1,6 @@
 import App from "src/App"
-import Snapshot from "src/widgets/Snapshot"
-import ClaimingApp from "src/widgets/Widget"
+import SnapshotWidget from "src/widgets/SnapshotWidget"
+import ClaimingWidget from "src/widgets/ClaimingWidget"
 
 const CLAIMING_WIDGET_ID = "#claiming-widget"
 const SNAPSHOT_WIDGET_ID = "#snapshot-widget"
@@ -11,9 +11,9 @@ export const AppSwitch = () => {
 
   switch (hash) {
     case CLAIMING_WIDGET_ID:
-      return <ClaimingApp />
+      return <ClaimingWidget />
     case SNAPSHOT_WIDGET_ID:
-      return <Snapshot />
+      return <SnapshotWidget />
     default:
       return <App />
   }
