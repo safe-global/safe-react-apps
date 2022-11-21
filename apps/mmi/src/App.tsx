@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
+import { hashMessage } from 'ethers/lib/utils'
 import { Grid, Container, Button, Typography, Card, styled } from '@mui/material'
 import AppBar from './components/AppBar'
 import Help from './components/Help'
 
 import { getRefreshToken } from './lib/http'
 import { authenticate, sign } from './lib/mmi'
+
+const getConnectedOwner = (safeOwners: string[], accounts: string[]) =>
+  safeOwners.find(owner => ethers.utils.getAddress(owner) === ethers.utils.getAddress(accounts[0]))
 
 function App() {
   const { safe } = useSafeAppsSDK()
@@ -33,24 +37,39 @@ function App() {
     }
   }, [isMMISupported])
 
+  useEffect(() => {
+    const handleAccountsChanged = window.ethereum.on('accountsChanged', (accounts: string[]) => {
+      setError(null)
+      setWrongOwner(!getConnectedOwner(safe.owners, accounts))
+    })
+
+    return () => {
+      window.ethereum.removeEventListener(handleAccountsChanged)
+    }
+  }, [safe])
+
   const handleLogin = async () => {
     try {
+      const message = `Safe-mmi-auth - ${Math.floor(Math.round(new Date().getTime() / 1000) / 300)}`
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
       })
-      const connectedOwner = safe.owners.find(
-        owner => ethers.utils.getAddress(owner) === ethers.utils.getAddress(accounts[0]),
-      )
+      const connectedOwner = getConnectedOwner(safe.owners, accounts)
 
       if (!connectedOwner) {
         setWrongOwner(true)
         return
       }
 
-      const signature = await sign(connectedOwner)
-      const refreshToken = await getRefreshToken(connectedOwner, signature)
+      const signature = await sign(connectedOwner, message)
 
-      await authenticate(refreshToken)
+      // Verify signature
+      if (ethers.utils.recoverAddress(hashMessage(message), signature) === connectedOwner) {
+        const refreshToken = await getRefreshToken(connectedOwner, signature)
+        await authenticate(refreshToken)
+      } else {
+        setWrongOwner(true)
+      }
 
       setError(null)
     } catch (error: any) {

@@ -1,7 +1,5 @@
 import { utils } from 'ethers'
-export const sign = async (address: string): Promise<string> => {
-  const msg = `Safe-mmi-auth - ${Math.floor(Math.round(new Date().getTime() / 1000) / 300)}`
-
+export const sign = async (address: string, msg: string): Promise<string> => {
   const checksumAddress = utils.getAddress(address)
 
   try {
