@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useState } from 'react'
+import { trackSafeAppEvent } from '../lib/analytics'
 import { ProposedTransaction } from '../typings/models'
 import { useNetwork } from './networkContext'
 
@@ -50,6 +51,8 @@ const TransactionsProvider: React.FC = ({ children }) => {
     await sdk.txs.send({
       txs: transactions.map(transaction => transaction.raw),
     })
+
+    trackSafeAppEvent('Submit transactions confirmed')
   }, [sdk.txs, transactions])
 
   const reorderTransactions = useCallback((sourceIndex, destinationIndex) => {
