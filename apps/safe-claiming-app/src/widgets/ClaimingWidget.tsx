@@ -108,9 +108,13 @@ const ClaimingWidget = () => {
     .add(ecosystemVestingStatus?.amountClaimed || 0)
     .add(investorVestingStatus?.amountClaimed || 0)
 
-  const votingPower = totalAllocation
-    .add(balance || BigNumber.from(0))
-    .sub(totalClaimed)
+  const votingPower = totalAllocation.add(balance || 0).sub(totalClaimed)
+
+  const unredeemedAllocations =
+    (!userVestingStatus?.isRedeemed &&
+      BigNumber.from(userVesting?.amount || 0).gt(0)) ||
+    (!ecosystemVestingStatus?.isRedeemed &&
+      BigNumber.from(ecosystemVesting?.amount || 0).gt(0))
 
   const ctaWidget = (
     <>
@@ -161,9 +165,12 @@ const ClaimingWidget = () => {
         </>
       ) : (
         <>
-          <Subtitle>
-            Claim your tokens to start participating in voting
-          </Subtitle>
+          {unredeemedAllocations && (
+            <Subtitle>
+              You have unredeemed tokens. Redeem them by 27th Dec or they will
+              be transfered back into the treasury.
+            </Subtitle>
+          )}
           <Link
             href={`${window.location.ancestorOrigins[0]}/apps?safe=${
               safe.chainId === 1 ? "eth" : "gor"

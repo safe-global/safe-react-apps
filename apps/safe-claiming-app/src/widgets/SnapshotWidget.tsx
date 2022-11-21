@@ -130,11 +130,7 @@ const SnapshotProposals = ({
 )
 
 const SnapshotWidget = () => {
-  const { safe } = useSafeAppsSDK()
-
-  const SNAPSHOT_SPACE_ID =
-    safe.chainId === Chains.MAINNET ? "safe.eth" : "tutis.eth"
-  const SNAPSHOT_LINK = `https://snapshot.org/#/${SNAPSHOT_SPACE_ID}`
+  const SNAPSHOT_LINK = "https://snapshot.org/#/safe.eth"
   const FORUM_LINK = "https://forum.safe.global"
   const PROPOSAL_AMOUNT = 3
 
