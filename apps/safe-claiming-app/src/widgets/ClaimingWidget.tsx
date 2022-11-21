@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   type ButtonProps,
-  styled,
   Typography,
   type TypographyProps,
   Link,
@@ -22,15 +21,7 @@ import { useFetchVestingStatus } from "src/hooks/useFetchVestingStatus"
 import { useTokenBalance } from "src/hooks/useTokenBalance"
 import { sameAddress } from "src/utils/addresses"
 import { formatAmount } from "src/utils/format"
-
-const SpaceContent = styled("div")`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 300px;
-  padding: 24px;
-`
+import { SpaceContent } from "src/widgets/styles"
 
 const Title = (props: TypographyProps) => (
   <Typography
@@ -203,7 +194,7 @@ const ClaimingWidget = () => {
 
   return (
     <Paper>
-      <SpaceContent style={{ alignItems: "center" }}>
+      <SpaceContent sx={{ alignItems: "center" }}>
         {votingPower.eq(0) ? ctaWidget : votingPowerWidget}
       </SpaceContent>
     </Paper>

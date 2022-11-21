@@ -11,6 +11,7 @@ import {
 import useSafeSnapshot, {
   type SnapshotProposal,
 } from "src/hooks/useSafeSnapshot"
+import { SpaceContent } from "src/widgets/styles"
 
 export const _getProposalNumber = (title: string): string => {
   // Find anything that matches "SEP #n"
@@ -23,15 +24,6 @@ export const _getProposalTitle = (title: string): string => {
   const TITLE_REGEX = /(\]|:) (.*)/
   return title.match(TITLE_REGEX)?.at(-1) || ""
 }
-
-const SpaceContent = styled("div")`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 300px;
-  padding: 24px;
-`
 
 const Proposal = styled("a")`
   width: 100%;
