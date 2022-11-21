@@ -107,10 +107,13 @@ const ClaimingWidget = () => {
     (!ecosystemVestingStatus?.isRedeemed &&
       BigNumber.from(ecosystemVesting?.amount || 0).gt(0))
 
+  const currentChainPrefix = safe.chainId === 1 ? "eth" : "gor"
+  const claimingSafeAppUrl = `${window.location.ancestorOrigins[0]}/apps?safe=${currentChainPrefix}:${safe.safeAddress}&appUrl=${CLAIMING_APP_URL}`
+
   const ctaWidget = (
     <>
       <div>
-        <Title>Become the part of Safe future!</Title>
+        <Title>Become the part of Safe's future!</Title>
         <br />
         <Subtitle>
           You will be able to buy $SAFE once the token transferability is
@@ -163,28 +166,26 @@ const ClaimingWidget = () => {
             </Subtitle>
           )}
           <Link
-            href={`${window.location.ancestorOrigins[0]}/apps?safe=${
-              safe.chainId === 1 ? "eth" : "gor"
-            }:${safe.safeAddress}&appUrl=${CLAIMING_APP_URL}`}
+            href={claimingSafeAppUrl}
             rel="noopener noreferrer"
             target="_blank"
             display="inline-flex"
-            alignItems={"center"}
+            alignItems="center"
             underline="none"
           >
-            <StyledButton>Claim And Delegate</StyledButton>
+            <StyledButton>Claim and delegate</StyledButton>
           </Link>
         </>
       )}
     </>
   )
 
-  const onchainRequestsLoading =
+  const onChainRequestsLoading =
     userVestingLoading ||
     ecosystemVestingLoading ||
     investorVestingLoading ||
     balanceLoading
-  if (onchainRequestsLoading) {
+  if (onChainRequestsLoading) {
     return (
       <Box height={`${WIDGET_HEIGHT}px`}>
         <Skeleton variant="rounded" width="100%" height="100%" />

@@ -1,7 +1,6 @@
 import { waitFor } from "@testing-library/react"
 import { renderHook } from "@testing-library/react-hooks"
 import { hexZeroPad } from "ethers/lib/utils"
-import { CHAIN_CONSTANTS } from "src/config/constants"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
 import { useFetchVestingStatus } from "../useFetchVestingStatus"
 

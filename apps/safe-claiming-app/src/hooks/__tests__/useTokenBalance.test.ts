@@ -1,6 +1,6 @@
 import { waitFor } from "@testing-library/react"
 import { renderHook } from "@testing-library/react-hooks"
-import { BigNumber, ethers } from "ethers"
+import { BigNumber } from "ethers"
 import { useTokenBalance } from "src/hooks/useTokenBalance"
 import { SafeToken__factory } from "src/types/contracts/factories/SafeToken__factory"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"

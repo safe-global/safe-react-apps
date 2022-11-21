@@ -7,9 +7,8 @@ const SNAPSHOT_WIDGET_ID = "#snapshot-widget"
 
 export const AppSwitch = () => {
   const location = window.location
-  const hash = location.hash
 
-  switch (hash) {
+  switch (location.hash) {
     case CLAIMING_WIDGET_ID:
       return <ClaimingWidget />
     case SNAPSHOT_WIDGET_ID:
