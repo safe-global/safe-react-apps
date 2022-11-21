@@ -45,8 +45,8 @@ jobs:
           REACT_APP_TENDERLY_ORG_NAME: ${{ secrets.REACT_APP_TENDERLY_ORG_NAME }}
           REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ secrets.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL }}
           REACT_APP_TENDERLY_PROJECT_NAME: ${{ secrets.REACT_APP_TENDERLY_PROJECT_NAME }}
-          REACT_APP_MMI_BACKEND_BASE_URL: ${{ secrets.MMI_BACKEND_BASE_URL }}
-          REACT_APP_MMI_ENVIRONMENT: ${{ secrets.MMI_ENVIRONMENT }}
+          REACT_APP_MMI_BACKEND_BASE_URL: ${{ secrets.MMI_STAGING_BACKEND_BASE_URL }}
+          REACT_APP_MMI_ENVIRONMENT: ${{ secrets.MMI_STAGING_ENVIRONMENT }}
 
       - name: 'PRaul: Comment PR with app URLs'
         if: success() && github.event.number
