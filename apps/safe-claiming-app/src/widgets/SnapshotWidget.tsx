@@ -1,4 +1,3 @@
-import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { OpenInNewRounded } from "@mui/icons-material"
 import {
   Box,
@@ -9,8 +8,6 @@ import {
   styled,
   Paper,
 } from "@mui/material"
-import { Chains } from "src/config/constants"
-
 import useSafeSnapshot, {
   type SnapshotProposal,
 } from "src/hooks/useSafeSnapshot"
