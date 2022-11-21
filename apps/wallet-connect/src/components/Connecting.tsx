@@ -6,17 +6,13 @@ import { StyledBoldText, StyledCardContainer, StyledImage } from './styles'
 import { useWalletConnectType } from '../hooks/useWalletConnect'
 
 type ConnectingProps = {
-  wcSessionData: useWalletConnectType['wcSessionData']
+  wcClientData: useWalletConnectType['wcClientData']
   onOpenSafeApp: () => void
   onKeepUsingWalletConnect: () => void
 }
 
-const Connecting = ({
-  wcSessionData,
-  onOpenSafeApp,
-  onKeepUsingWalletConnect,
-}: ConnectingProps) => {
-  if (!wcSessionData) {
+const Connecting = ({ wcClientData, onOpenSafeApp, onKeepUsingWalletConnect }: ConnectingProps) => {
+  if (!wcClientData) {
     return null
   }
 
@@ -34,7 +30,7 @@ const Connecting = ({
 
       <Grid item>
         <Text size="xl">
-          Trying to connect <StyledBoldText as="span">{wcSessionData.name}</StyledBoldText>
+          Trying to connect <StyledBoldText as="span">{wcClientData.name}</StyledBoldText>
         </Text>
       </Grid>
 
@@ -53,7 +49,7 @@ const Connecting = ({
         spacing={3}
       >
         <Grid item xs={2}>
-          <StyledImage src={wcSessionData.icons[0]} role="img" />
+          <StyledImage src={wcClientData.icons[0]} role="img" />
         </Grid>
         <Grid container direction="column" item xs={10} spacing={1}>
           <Grid item>
@@ -62,7 +58,7 @@ const Connecting = ({
             </StyledBoldText>
           </Grid>
           <Grid item>
-            <Text size="lg">{wcSessionData.name || new URL(wcSessionData.url).hostname}</Text>
+            <Text size="lg">{wcClientData.name || new URL(wcClientData.url).hostname}</Text>
           </Grid>
         </Grid>
       </StyledSafeAppContainer>

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { CoreTypes } from '@walletconnect/types'
 import useWalletConnectV1 from './useWalletConnectV1'
 import useWalletConnectV2 from './useWalletConnectV2'
@@ -9,20 +9,24 @@ export type wcDisconnectType = () => Promise<void>
 export type useWalletConnectType = {
   wcConnect: wcConnectType
   wcDisconnect: wcDisconnectType
-  wcSessionData: CoreTypes.Metadata | undefined
+  wcClientData: CoreTypes.Metadata | undefined
+  isWallectConnectInitialized: boolean
 }
 
 const useWalletConnect = (): useWalletConnectType => {
+  // wallet-connect v1
   const {
     wcConnect: wcConnectV1,
     wcClientData: wcSessionV1,
     wcDisconnect: wcDisconnectV1,
   } = useWalletConnectV1()
 
+  // wallet-connect v2
   const {
     wcConnect: wcConnectV2,
-    wcSession: wcSessionV2,
+    wcClientData: wcSessionV2,
     wcDisconnect: wcDisconnectV2,
+    isWallectConnectInitialized,
   } = useWalletConnectV2()
 
   const wcConnect = useCallback<wcConnectType>(
@@ -32,6 +36,7 @@ const useWalletConnect = (): useWalletConnectType => {
       const walletConnectVersion = getWalletConnectVersion(uri)
       const isWalletConnectV1 = walletConnectVersion === '1'
 
+      // we need to keep both v1 & v2 versions, see https://docs.walletconnect.com/2.0/javascript/sign/wallet-usage#migrating-from-v1x
       if (isWalletConnectV1) {
         wcConnectV1({ uri })
       } else {
@@ -46,15 +51,16 @@ const useWalletConnect = (): useWalletConnectType => {
     wcDisconnectV2()
   }, [wcDisconnectV1, wcDisconnectV2])
 
-  const wcSessionData = wcSessionV1 || wcSessionV2?.peer?.metadata
+  const wcClientData = wcSessionV1 || wcSessionV2
 
-  return { wcConnect, wcSessionData, wcDisconnect }
+  return { wcConnect, wcClientData, wcDisconnect, isWallectConnectInitialized }
 }
 
 export default useWalletConnect
 
 const getWalletConnectVersion = (uri: string): string => {
-  const version = uri?.split('@')?.[1]?.[0]
+  const encodedURI = encodeURI(uri)
+  const version = encodedURI?.split('@')?.[1]?.[0]
 
   return version
 }

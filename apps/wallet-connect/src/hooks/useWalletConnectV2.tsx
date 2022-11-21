@@ -1,24 +1,28 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
-import { ethers } from 'ethers'
 import SignClient from '@walletconnect/sign-client'
 import { SignClientTypes, SessionTypes } from '@walletconnect/types'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
+import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
+import { ethers } from 'ethers'
 
-const { REACT_APP_WALLETCONNECT_PROJECT_ID } = process.env
+const { REACT_APP_WALLETCONNECT_PROJECT_ID, NODE_ENV } = process.env
+
+const isProduction = NODE_ENV === 'production'
 
 export type wcConnectType = (uri: string) => Promise<void>
 export type wcDisconnectType = () => Promise<void>
 
 type useWalletConnectType = {
-  wcSession: SessionTypes.Struct | undefined
+  wcClientData: SignClientTypes.Metadata | undefined
   wcConnect: wcConnectType
   wcDisconnect: wcDisconnectType
+  isWallectConnectInitialized: boolean
 }
 
 const useWalletConnectV2 = (): useWalletConnectType => {
   const [signClient, setSignClient] = useState<SignClient>()
   const [wcSession, setWcSession] = useState<SessionTypes.Struct>()
+  const [isWallectConnectInitialized, setIsWallectConnectInitialized] = useState<boolean>(false)
 
   const { safe, sdk } = useSafeAppsSDK()
   const web3Provider = useMemo(
@@ -29,28 +33,27 @@ const useWalletConnectV2 = (): useWalletConnectType => {
   const initializeWalletConnectClient = useCallback(async () => {
     const signClient = await SignClient.init({
       projectId: REACT_APP_WALLETCONNECT_PROJECT_ID,
-      // optional parameters
-      // logger: 'debug',
-      // TODO: DO WE NEED A relayUrl ??
-      // relayUrl: "<YOUR RELAY URL>",
+      logger: isProduction ? undefined : 'debug',
       metadata: {
         name: 'Safe Wallet',
-        description: 'Safe Wallet short description',
-        url: 'https://gnosis-safe.io/app/welcome',
-        icons: [
-          'https://safe-transaction-assets.gnosis-safe.io/contracts/logos/0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2.png',
-        ],
+        description: 'The most trusted platform to manage digital assets on Ethereum',
+        url: 'https://app.safe.global',
+        // TODO: add icons
+        icons: ['https://app.safe.global/favicons/favicon.ico'],
       },
     })
+    const sessions = signClient.session.getAll()
 
     setSignClient(signClient)
+    setWcSession(sessions[0])
+    setIsWallectConnectInitialized(true)
   }, [])
 
   useEffect(() => {
     initializeWalletConnectClient()
   }, [initializeWalletConnectClient])
 
-  // we set here the events
+  // we set here the events & restore previous session
   useEffect(() => {
     const isWallectConnectInitialized = signClient && safe?.safeAddress && web3Provider
 
@@ -58,33 +61,51 @@ const useWalletConnectV2 = (): useWalletConnectType => {
       signClient.on(
         'session_proposal',
         async (proposal: SignClientTypes.EventArguments['session_proposal']) => {
-          console.log('onSessionProposal event: ', proposal)
           const { id, params } = proposal
-          // const { proposer, requiredNamespaces, relays } = params
           const { requiredNamespaces, relays } = params
 
-          const namespace = requiredNamespaces['eip155']
+          const EIP155Namespace = requiredNamespaces['eip155']
 
-          // TODO: check that only the current chain should be present
-          // TODO: check namespace methods
-          // TODO: check namespace events
+          // only eip155 connections are allowed
+          const isEIP155NamespaceDefined = EIP155Namespace !== undefined
+          const isOnlyEIP155NamespacePresent = Object.keys(requiredNamespaces).length === 1
+          const isValidEIP155Connection = isEIP155NamespaceDefined && isOnlyEIP155NamespacePresent
 
-          // const { topic, acknowledged } = await signClient.approve({
+          if (!isValidEIP155Connection) {
+            await signClient.reject({
+              id,
+              reason: {
+                code: 1006,
+                message: 'Only eip155 namespaces are allowed for your Safe Wallet',
+              },
+            })
+            return
+          }
+
+          // only safe.chainId connections are allowed
+          const isChainIdValid = EIP155Namespace.chains[0].split(':')[1] === `${safe.chainId}`
+          const isOnlySafeChainPresent = EIP155Namespace.chains.length === 1
+          const isValidChainConnection = isOnlySafeChainPresent && isChainIdValid
+
+          if (!isValidChainConnection) {
+            await signClient.reject({
+              id,
+              reason: {
+                code: 1006,
+                message: `Only eip155:${safe.chainId} chain allowed for your Safe Wallet`,
+              },
+            })
+            return
+          }
+
           const { acknowledged } = await signClient.approve({
             id,
             relayProtocol: relays[0].protocol,
             namespaces: {
               eip155: {
                 accounts: [`eip155:${safe.chainId}:${safe.safeAddress}`],
-                methods: namespace.methods,
-                events: namespace.events,
-                // extension: [
-                //   {
-                //     accounts: ['eip:137'],
-                //     methods: ['eth_sign'],
-                //     events: [],
-                //   },
-                // ],
+                methods: EIP155Namespace.methods,
+                events: EIP155Namespace.events,
               },
             },
           })
@@ -92,8 +113,6 @@ const useWalletConnectV2 = (): useWalletConnectType => {
           const wcSession = await acknowledged()
 
           setWcSession(wcSession)
-
-          console.log('wcSession: ', wcSession)
         },
       )
 
@@ -103,32 +122,47 @@ const useWalletConnectV2 = (): useWalletConnectType => {
           const { topic, id } = event
           const { method, params } = event.params.request
 
+          // TODO: https://docs.walletconnect.com/2.0/specs/sign/error-codes#invalid
+
           try {
-            const hash = await web3Provider.send(method, params)
+            const result = await web3Provider.send(method, params)
 
             await signClient.respond({
               topic,
               response: {
                 id,
                 jsonrpc: '2.0',
-                result: hash,
+                result,
               },
             })
           } catch (error: any) {
-            console.log('error: ', error.message)
+            console.log('walletconnect version 2 session_request error: ', error.message)
             signClient.respond({
               topic,
               response: {
                 id,
                 jsonrpc: '2.0',
-                result: error.message,
+                error: error.message,
               },
             })
           }
         },
       )
 
+      signClient.on('session_event', (event: SignClientTypes.EventArguments['session_event']) => {
+        // Handle session events, such as "chainChanged", "accountsChanged", etc.
+
+        console.log('event: ', event)
+      })
+
+      signClient.on('session_ping', (event: SignClientTypes.EventArguments['session_ping']) => {
+        // React to session ping event
+
+        console.log('ping: ', event)
+      })
+
       signClient.on('session_delete', (event: SignClientTypes.EventArguments['session_delete']) => {
+        console.log('event: ', event)
         setWcSession(undefined)
       })
     }
@@ -136,12 +170,10 @@ const useWalletConnectV2 = (): useWalletConnectType => {
 
   const wcConnect = useCallback<wcConnectType>(
     async (uri: string) => {
-      const isValidWalletConnectUri = uri && uri.startsWith('wc:')
+      const isValidWalletConnectUri = uri && uri.startsWith('wc')
 
       if (isValidWalletConnectUri && signClient) {
-        console.log('uri: ', uri)
-        const pairResponse = await signClient.pair({ uri })
-        console.log('pairResponse: ', pairResponse)
+        await signClient.core.pairing.pair({ uri })
       }
     },
     [signClient],
@@ -150,17 +182,19 @@ const useWalletConnectV2 = (): useWalletConnectType => {
   const wcDisconnect = useCallback<wcDisconnectType>(async () => {
     if (wcSession && signClient) {
       setWcSession(undefined)
-      signClient.disconnect({
+      await signClient.disconnect({
         topic: wcSession.topic,
         reason: {
-          code: 6000,
-          message: 'test',
+          code: 6000, // TODO: check the code
+          message: 'Safe Wallet Session ended by the user',
         },
       })
     }
   }, [signClient, wcSession])
 
-  return { wcConnect, wcSession, wcDisconnect }
+  const wcClientData = wcSession?.peer.metadata
+
+  return { wcConnect, wcClientData, wcDisconnect, isWallectConnectInitialized }
 }
 
 export default useWalletConnectV2

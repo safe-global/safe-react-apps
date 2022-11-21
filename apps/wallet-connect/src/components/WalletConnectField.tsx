@@ -12,12 +12,12 @@ import ScanCode from './ScanCode'
 import { useWalletConnectType, wcConnectType } from '../hooks/useWalletConnect'
 
 type WalletConnectFieldProps = {
-  wcSessionData: useWalletConnectType['wcSessionData']
+  wcClientData: useWalletConnectType['wcClientData']
   wcConnect: wcConnectType
 }
 
 const WalletConnectField = ({
-  wcSessionData,
+  wcClientData,
   wcConnect,
 }: WalletConnectFieldProps): React.ReactElement => {
   const [invalidQRCode, setInvalidQRCode] = useState(false)
@@ -30,10 +30,10 @@ const WalletConnectField = ({
   }
 
   useEffect(() => {
-    if (wcSessionData) {
+    if (wcClientData) {
       setOpenDialog(false)
     }
-  }, [wcSessionData])
+  }, [wcClientData])
 
   // WalletConnect does not provide a loading/connecting status
   // This effects simulates a connecting status, and prevents
@@ -50,7 +50,7 @@ const WalletConnectField = ({
   const onPaste = useCallback(
     (event: React.ClipboardEvent) => {
       const connectWithUri = (data: string) => {
-        if (data.startsWith('wc:')) {
+        if (data.startsWith('wc')) {
           setIsConnecting(true)
           wcConnect(data)
         }
@@ -81,7 +81,7 @@ const WalletConnectField = ({
       setInvalidQRCode(false)
       setInputValue('')
 
-      if (wcSessionData) {
+      if (wcClientData) {
         return
       }
 
@@ -99,7 +99,7 @@ const WalletConnectField = ({
         }
       }
     },
-    [wcSessionData, wcConnect],
+    [wcClientData, wcConnect],
   )
 
   if (isConnecting) {
@@ -148,7 +148,7 @@ const WalletConnectField = ({
             </IconButton>
           </Tooltip>
         </StyledCloseDialogContainer>
-        <ScanCode wcConnect={wcConnect} wcSessionData={wcSessionData} />
+        <ScanCode wcConnect={wcConnect} wcClientData={wcClientData} />
       </Dialog>
     </>
   )

@@ -6,12 +6,12 @@ import { StyledCardContainer, StyledImage } from './styles'
 import { useWalletConnectType } from '../hooks/useWalletConnect'
 
 type ConnectedProps = {
-  wcSessionData: useWalletConnectType['wcSessionData']
+  wcClientData: useWalletConnectType['wcClientData']
   onDisconnect: () => void
 }
 
-const Connected = ({ wcSessionData, onDisconnect }: ConnectedProps) => {
-  if (!wcSessionData) {
+const Connected = ({ wcClientData, onDisconnect }: ConnectedProps) => {
+  if (!wcClientData) {
     return null
   }
 
@@ -19,14 +19,14 @@ const Connected = ({ wcSessionData, onDisconnect }: ConnectedProps) => {
     <StyledCardContainer container direction="column" spacing={3}>
       <Grid container alignItems="center" wrap="nowrap" spacing={3}>
         <Grid item>
-          <StyledImage src={wcSessionData.icons[0] || ''} role="img" />
+          <StyledImage src={wcClientData.icons[0] || ''} role="img" />
         </Grid>
         <Grid item>
           <StyledText size="md" color="primary">
             CONNECTED
           </StyledText>
           <Text size="xl" as="span">
-            {wcSessionData.name || new URL(wcSessionData.url).hostname}
+            {wcClientData.name || new URL(wcClientData.url).hostname}
           </Text>
         </Grid>
       </Grid>

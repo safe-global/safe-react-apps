@@ -9,10 +9,10 @@ import { useWalletConnectType, wcConnectType } from '../hooks/useWalletConnect'
 
 type Props = {
   wcConnect: wcConnectType
-  wcSessionData: useWalletConnectType['wcSessionData']
+  wcClientData: useWalletConnectType['wcClientData']
 }
 
-function ScanCode({ wcConnect, wcSessionData }: Props) {
+function ScanCode({ wcConnect, wcClientData }: Props) {
   const { videoRef, isLoadingWebcam, errorConnectingWebcam } = useWebcam()
 
   const { QRCode } = useQRCode({ videoRef, errorConnectingWebcam })
@@ -20,11 +20,11 @@ function ScanCode({ wcConnect, wcSessionData }: Props) {
   // this flag is needed to avoid to call multiple times to wcConnect
   const [hasBeenCalledToConnect, setHasBeenCalledToConnect] = useState(false)
 
-  const isAlreadyConnected = !!wcSessionData
+  const isAlreadyConnected = !!wcClientData
 
   useEffect(() => {
     if (QRCode) {
-      const isValidWalletConnectQRCode = QRCode && QRCode.data.startsWith('wc:')
+      const isValidWalletConnectQRCode = QRCode && QRCode.data.startsWith('wc')
 
       if (isValidWalletConnectQRCode && !isAlreadyConnected && !hasBeenCalledToConnect) {
         wcConnect(QRCode.data)
