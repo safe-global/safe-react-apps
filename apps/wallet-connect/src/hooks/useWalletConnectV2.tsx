@@ -9,6 +9,19 @@ const { REACT_APP_WALLETCONNECT_PROJECT_ID, NODE_ENV } = process.env
 
 const isProduction = NODE_ENV === 'production'
 
+const safeAllowedMethods: string[] = [
+  'eth_sendTransaction',
+  'eth_signTransaction',
+  'eth_sign',
+  'personal_sign',
+  'eth_signTypedData',
+]
+
+const EVMBasedNamespaces = 'eip155'
+
+// no accountsChanged or chainChanged events are allowed for Safe Wallets
+const safeAllowedEvents: string[] = []
+
 export type wcConnectType = (uri: string) => Promise<void>
 export type wcDisconnectType = () => Promise<void>
 
@@ -64,10 +77,10 @@ const useWalletConnectV2 = (): useWalletConnectType => {
           const { id, params } = proposal
           const { requiredNamespaces, relays } = params
 
-          const EIP155Namespace = requiredNamespaces['eip155']
+          const EIP155Namespace = requiredNamespaces[EVMBasedNamespaces]
 
-          // only eip155 connections are allowed
-          const isEIP155NamespaceDefined = EIP155Namespace !== undefined
+          // only EVM-based (eip155) namespace allowed
+          const isEIP155NamespaceDefined = !!EIP155Namespace
           const isOnlyEIP155NamespacePresent = Object.keys(requiredNamespaces).length === 1
           const isValidEIP155Connection = isEIP155NamespaceDefined && isOnlyEIP155NamespacePresent
 
@@ -76,7 +89,7 @@ const useWalletConnectV2 = (): useWalletConnectType => {
               id,
               reason: {
                 code: 1006,
-                message: 'Only eip155 namespaces are allowed for your Safe Wallet',
+                message: 'Only EVM-based (eip155) namespaces are allowed for your Safe Wallet',
               },
             })
             return
@@ -92,20 +105,22 @@ const useWalletConnectV2 = (): useWalletConnectType => {
               id,
               reason: {
                 code: 1006,
-                message: `Only eip155:${safe.chainId} chain allowed for your Safe Wallet`,
+                message: `Only ${EVMBasedNamespaces}:${safe.chainId} namespace allowed for your Safe Wallet`,
               },
             })
             return
           }
+
+          const safeAccount = [`${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`]
 
           const { acknowledged } = await signClient.approve({
             id,
             relayProtocol: relays[0].protocol,
             namespaces: {
               eip155: {
-                accounts: [`eip155:${safe.chainId}:${safe.safeAddress}`],
-                methods: EIP155Namespace.methods,
-                events: EIP155Namespace.events,
+                accounts: safeAccount,
+                methods: safeAllowedMethods,
+                events: safeAllowedEvents,
               },
             },
           })

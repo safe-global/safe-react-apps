@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { CoreTypes } from '@walletconnect/types'
 import useWalletConnectV1 from './useWalletConnectV1'
 import useWalletConnectV2 from './useWalletConnectV2'
