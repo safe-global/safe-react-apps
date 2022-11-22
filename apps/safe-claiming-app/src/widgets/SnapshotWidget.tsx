@@ -135,6 +135,7 @@ const SnapshotWidget = () => {
             variant="subtitle1"
             marginBottom="0"
             fontWeight="bold"
+            color="text.primary"
           >
             Latest proposals
           </Typography>
