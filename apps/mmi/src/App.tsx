@@ -13,9 +13,10 @@ const getConnectedOwner = (safeOwners: string[], accounts: string[]) =>
   safeOwners.find(owner => ethers.utils.getAddress(owner) === ethers.utils.getAddress(accounts[0]))
 
 function App() {
-  const { safe } = useSafeAppsSDK()
+  const { safe, sdk } = useSafeAppsSDK()
   const [isMMISupported, setMMISupported] = useState(false)
   const [isWrongOwner, setWrongOwner] = useState(false)
+  const [isReadOnly, setIsReadOnly] = useState(() => safe.isReadOnly)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -37,30 +38,28 @@ function App() {
     }
   }, [isMMISupported])
 
-  useEffect(() => {
-    const handleAccountsChanged = window.ethereum.on('accountsChanged', (accounts: string[]) => {
-      setError(null)
-      setWrongOwner(!getConnectedOwner(safe.owners, accounts))
-    })
-
-    return () => {
-      window.ethereum.removeEventListener(handleAccountsChanged)
-    }
-  }, [safe])
-
   const handleLogin = async () => {
     try {
-      const message = `Safe-mmi-auth - ${Math.floor(Math.round(new Date().getTime() / 1000) / 300)}`
+      const safeInfo = await sdk.safe.getInfo()
+
+      // Verify the Safe is connected with any of its owners
+      if (safeInfo.isReadOnly) {
+        setIsReadOnly(true)
+        return
+      }
+
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
       })
       const connectedOwner = getConnectedOwner(safe.owners, accounts)
 
+      // Verify the connected owner and the extension owner are the same
       if (!connectedOwner) {
         setWrongOwner(true)
         return
       }
 
+      const message = `Safe-mmi-auth - ${Math.floor(Math.round(new Date().getTime() / 1000) / 300)}`
       const signature = await sign(connectedOwner, message)
 
       // Verify signature
@@ -78,7 +77,7 @@ function App() {
     }
   }
 
-  const hasError = !isMMISupported || safe.isReadOnly || isWrongOwner
+  const hasError = !isMMISupported || isReadOnly || isWrongOwner
 
   return (
     <main>
@@ -120,7 +119,7 @@ function App() {
                         </Typography>
                       ) : (
                         <>
-                          {safe.isReadOnly && (
+                          {isReadOnly && (
                             <Typography color="error" variant="body1">
                               You are not an owner of this safe
                             </Typography>
