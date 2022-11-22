@@ -7,7 +7,7 @@ import {
   type TypographyProps,
   Link,
   Skeleton,
-  Paper,
+  Card,
 } from "@mui/material"
 import { BigNumber, ethers } from "ethers"
 import { useMemo } from "react"
@@ -136,7 +136,7 @@ const ClaimingWidget = () => {
           mb={1}
         >
           <SafeIcon />
-          <Typography variant="h5">
+          <Typography variant="h5" color="text.primary">
             {formatAmount(Number(ethers.utils.formatEther(votingPower)), 2)}{" "}
           </Typography>
         </Box>
@@ -150,7 +150,11 @@ const ClaimingWidget = () => {
           </Subtitle>
           {currentDelegate && (
             <Box width={1}>
-              <Typography variant="caption" marginBottom={1}>
+              <Typography
+                variant="caption"
+                color="text.primary"
+                marginBottom={1}
+              >
                 Delegated to
               </Typography>
               <SelectedDelegate delegate={currentDelegate} onClick={() => {}} />
@@ -194,11 +198,11 @@ const ClaimingWidget = () => {
   }
 
   return (
-    <Paper>
+    <Card sx={{ borderRadius: "4px" }}>
       <SpaceContent sx={{ alignItems: "center" }}>
         {votingPower.eq(0) ? ctaWidget : votingPowerWidget}
       </SpaceContent>
-    </Paper>
+    </Card>
   )
 }
 

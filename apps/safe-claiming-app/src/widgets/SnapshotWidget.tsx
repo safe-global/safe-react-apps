@@ -6,7 +6,7 @@ import {
   Typography,
   Skeleton,
   styled,
-  Paper,
+  Card,
 } from "@mui/material"
 import useSafeSnapshot, {
   type SnapshotProposal,
@@ -32,7 +32,7 @@ const Proposal = styled("a")`
   align-items: center;
   text-decoration: none;
   padding: 16px;
-  border: 1px solid #dcdee0;
+  border: 1px solid;
   border-radius: 6px;
   grid-template-columns: 70px minmax(auto, 9fr) 1fr 1fr;
   grid-template-areas: "number title title title title title title title title title status link";
@@ -79,8 +79,9 @@ const SnapshotProposals = ({
         target="_blank"
         rel="noopener noreferrer"
         sx={{
+          borderColor: "primary.light",
           "&:hover": {
-            borderColor: "primary.light",
+            borderColor: "primary.main",
           },
         }}
       >
@@ -126,7 +127,7 @@ const SnapshotWidget = () => {
   const [proposals, loading] = useSafeSnapshot(PROPOSAL_AMOUNT)
 
   return (
-    <Paper>
+    <Card sx={{ borderRadius: "4px" }}>
       <SpaceContent>
         <div>
           <Typography
@@ -180,7 +181,7 @@ const SnapshotWidget = () => {
           </StyledExternalLink>
         </Box>
       </SpaceContent>
-    </Paper>
+    </Card>
   )
 }
 
