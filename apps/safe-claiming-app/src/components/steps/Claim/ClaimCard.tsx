@@ -1,7 +1,14 @@
 import { ShieldOutlined } from "@mui/icons-material"
-import { Grid, Paper, Typography, Tooltip, Badge, styled } from "@mui/material"
+import {
+  Grid,
+  Paper,
+  Typography,
+  Tooltip,
+  Badge,
+  styled,
+  useTheme,
+} from "@mui/material"
 import { ethers } from "ethers"
-import theme from "src/config/theme"
 import { formatAmount } from "src/utils/format"
 import { Odometer } from "./Odometer/Odometer"
 import { ReactComponent as SingleGreenTile } from "src/assets/images/single-green-tile.svg"
@@ -59,6 +66,7 @@ export const ClaimCard = ({
   totalAmount: string
   variant: "claimable" | "vesting"
 }) => {
+  const { palette } = useTheme()
   const ecosystemAmountInDecimals = formatAmount(
     Number(ethers.utils.formatEther(ecosystemAmount)),
     2
@@ -67,8 +75,8 @@ export const ClaimCard = ({
   const isClaimable = variant === "claimable"
 
   const backgroundColor = isClaimable
-    ? theme.palette.primary.main
-    : theme.palette.background.default
+    ? palette.primary.main
+    : palette.background.default
 
   const color = isClaimable ? "white" : "rgba(0, 0, 0, 0.87)"
 
