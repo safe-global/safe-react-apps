@@ -52,6 +52,11 @@ const theme = createTheme({
       lineHeight: "24px",
       color: "#B2BBC0",
     },
+    caption: {
+      fontSize: "12px",
+      lineHeight: "16px",
+      letterSpacing: "0.4px",
+    },
   },
   palette: {
     primary: {

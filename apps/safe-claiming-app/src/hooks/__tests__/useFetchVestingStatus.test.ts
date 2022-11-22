@@ -1,7 +1,6 @@
 import { waitFor } from "@testing-library/react"
 import { renderHook } from "@testing-library/react-hooks"
 import { hexZeroPad } from "ethers/lib/utils"
-import { CHAIN_CONSTANTS } from "src/config/constants"
 import { getWeb3Provider } from "src/utils/getWeb3Provider"
 import { useFetchVestingStatus } from "../useFetchVestingStatus"
 
@@ -56,7 +55,7 @@ describe("useFetchVestingStatus", () => {
     )
     await waitFor(() => {
       expect(result.current[0]).toBeUndefined()
-      expect(result.current[1]).toBeDefined()
+      expect(result.current[2]).toBeDefined()
       expect(mockCall).toBeCalledTimes(1)
     })
   })

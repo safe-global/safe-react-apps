@@ -1,6 +1,6 @@
 import { Paper, Typography } from "@mui/material"
 
-export const UnexpectedError = ({ error }: { error: string }) => {
+export const UnexpectedError = ({ error }: { error: string | Error }) => {
   return (
     <Paper
       elevation={0}
@@ -20,7 +20,8 @@ export const UnexpectedError = ({ error }: { error: string }) => {
           color: ({ palette }) => palette.error.main,
         }}
       >
-        Unexpected Error while loading the app: {error}
+        Unexpected error while loading the app:{" "}
+        {typeof error === "string" ? error : error.message}
       </Typography>
       <Typography mt={4} variant="subtitle1">
         Please try refreshing the app.
