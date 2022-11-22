@@ -11,7 +11,7 @@ const isProduction = NODE_ENV === 'production'
 
 const safeAllowedMethods: string[] = [
   'eth_sendTransaction',
-  'eth_signTransaction',
+  // 'eth_signTransaction', // not implemented for Safe wallets
   'eth_sign',
   'personal_sign',
   'eth_signTypedData',
@@ -89,7 +89,7 @@ const useWalletConnectV2 = (): useWalletConnectType => {
               id,
               reason: {
                 code: 1006,
-                message: 'Only EVM-based (eip155) namespaces are allowed for your Safe Wallet',
+                message: `Only EVM-based (${EVMBasedNamespaces}) namespace allowed for your Safe Wallet`,
               },
             })
             return
@@ -106,6 +106,21 @@ const useWalletConnectV2 = (): useWalletConnectType => {
               reason: {
                 code: 1006,
                 message: `Only ${EVMBasedNamespaces}:${safe.chainId} namespace allowed for your Safe Wallet`,
+              },
+            })
+            return
+          }
+
+          // no accountsChanged or chainChanged events are allowed for Safe Wallets
+          const isEventsValid = EIP155Namespace.events.length === 0
+
+          if (!isEventsValid) {
+            await signClient.reject({
+              id,
+              reason: {
+                code: 1006,
+                message:
+                  'no accountsChanged or chainChanged events are allowed for your Safe Wallet',
               },
             })
             return
