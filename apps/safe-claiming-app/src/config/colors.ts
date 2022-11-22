@@ -4,6 +4,10 @@ const palette = {
     secondary: "#A1A3A7",
     disabled: "#DDDEE0",
   },
+  safeGreen: {
+    main: "#12ff80",
+    light: "#EFFFF4",
+  },
   primary: {
     main: "#121312",
     light: "#636669",

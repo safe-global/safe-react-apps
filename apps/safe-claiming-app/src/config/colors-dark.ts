@@ -4,6 +4,10 @@ const darkPalette = {
     secondary: "#636669",
     disabled: "#636669",
   },
+  safeGreen: {
+    main: "#12ff80",
+    light: "#0cb259",
+  },
   primary: {
     main: "#12FF80",
     light: "#A1A3A7",

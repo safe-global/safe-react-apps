@@ -51,6 +51,7 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
             <PercentageWrapper
               sx={{
                 backgroundColor: ({ palette }) => palette.safeGreen.main,
+                color: "#121312",
               }}
             >
               60%
@@ -70,6 +71,7 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
             <PercentageWrapper
               sx={{
                 backgroundColor: ({ palette }) => palette.secondary.light,
+                color: "#121312",
               }}
             >
               15%
@@ -85,6 +87,7 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
             <PercentageWrapper
               sx={{
                 backgroundColor: ({ palette }) => palette.info.main,
+                color: "#121312",
               }}
             >
               15%

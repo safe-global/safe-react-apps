@@ -20,10 +20,6 @@ const initTheme = (darkMode: boolean) => {
   return createTheme({
     palette: {
       mode: darkMode ? "dark" : "light",
-      safeGreen: {
-        main: "#12ff80",
-        light: "#EFFFF4",
-      },
       safeGrey: {
         main: "rgb(161, 163, 167)",
       },
@@ -59,6 +55,7 @@ const initTheme = (darkMode: boolean) => {
       h5: {
         fontSize: "24px",
         fontWeight: "bold",
+        color: colors.text.primary,
       },
       button: {
         textTransform: "none",
@@ -69,14 +66,13 @@ const initTheme = (darkMode: boolean) => {
         fontWeight: 400,
         fontSize: "16px",
         lineHeight: "24px",
-        color: "#636669",
       },
       subtitle2: {
         fontStyle: "normal",
         fontWeight: 400,
         fontSize: "14px",
         lineHeight: "24px",
-        color: "#B2BBC0",
+        color: colors.text.secondary,
       },
       caption: {
         fontSize: "12px",
@@ -102,8 +98,8 @@ const initTheme = (darkMode: boolean) => {
       MuiTooltip: {
         styleOverrides: {
           tooltip: {
-            backgroundColor: "#121312",
-            color: "#FFF",
+            backgroundColor: colors.background.default,
+            color: colors.text.primary,
             fontSize: 12,
             paddingTop: "12px",
             paddingBottom: "8px",
@@ -113,7 +109,7 @@ const initTheme = (darkMode: boolean) => {
             boxShadow: "rgba(33, 48, 77, 0.1) 0px 0px 10px 0px",
           },
           arrow: {
-            color: "#121312",
+            color: colors.text.primary,
           },
         },
       },
@@ -121,7 +117,7 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           elevation: {
             zIndex: 2,
-            color: "#121312",
+            color: colors.text.primary,
           },
         },
       },
@@ -142,7 +138,7 @@ const initTheme = (darkMode: boolean) => {
             "&:hover": {
               backgroundColor: "transparent",
               border: "1px solid #121312",
-              color: "#121312",
+              color: colors.primary.main,
             },
           },
         },
@@ -168,7 +164,7 @@ const initTheme = (darkMode: boolean) => {
         styleOverrides: {
           root: {
             "&.Mui-expanded": {
-              backgroundColor: "#EFFFF4",
+              backgroundColor: colors.safeGreen.light,
             },
           },
         },

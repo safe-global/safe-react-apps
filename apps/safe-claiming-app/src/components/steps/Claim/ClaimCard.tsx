@@ -78,7 +78,7 @@ export const ClaimCard = ({
     ? palette.primary.main
     : palette.background.default
 
-  const color = isClaimable ? "white" : "rgba(0, 0, 0, 0.87)"
+  const color = isClaimable ? palette.background.default : palette.text.primary
 
   const dotColor = isClaimable ? "white" : "#12ff80"
 
