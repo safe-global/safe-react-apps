@@ -89,9 +89,6 @@ const initTheme = (darkMode: boolean) => {
           root: ({ theme }) => ({
             borderRadius: theme.shape.borderRadius,
             background: theme.palette.background.paper,
-            // boxSizing: "border-box",
-            // border: "2px solid transparent",
-            // boxShadow: "none",
           }),
         },
       },

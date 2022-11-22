@@ -20,6 +20,11 @@ const palette = {
     main: "#B2BBC0",
     light: "#B0FFC9",
   },
+  border: {
+    main: "#A1A3A7",
+    light: "#DCDEE0",
+    background: "#F4F4F4",
+  },
 }
 
 export default palette

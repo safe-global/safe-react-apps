@@ -20,6 +20,11 @@ const darkPalette = {
     main: "#FFFFFF",
     light: "#12FF80",
   },
+  border: {
+    main: "#636669",
+    light: "#303033",
+    background: "#121312",
+  },
 }
 
 export default darkPalette

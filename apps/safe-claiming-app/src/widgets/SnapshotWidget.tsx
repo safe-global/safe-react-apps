@@ -39,20 +39,16 @@ const Proposal = styled("a")`
 `
 
 const StyledChip = styled(Chip)`
-  grid-area: "status";
   border-radius: 20px;
   min-width: 68px;
   text-align: center;
   height: 23px;
-  color: #fff !important;
   font-weight: bold;
 `
 
 const StyledNumber = styled(Box)`
-  grid-area: "number";
   border-radius: 6px;
   padding: 0px 8px;
-  color: black;
   white-space: nowrap;
 `
 
@@ -87,7 +83,9 @@ const SnapshotProposals = ({
       >
         <StyledNumber
           sx={{
-            backgroundColor: "#DCDEE0",
+            color: "primary.main",
+            backgroundColor: "border.light",
+            gridArea: "number",
           }}
         >
           {_getProposalNumber(proposal.title)}
@@ -107,6 +105,10 @@ const SnapshotProposals = ({
         <StyledChip
           label={proposal.state}
           sx={{
+            "& .MuiChip-root": {
+              color: "background.paper",
+            },
+            gridArea: "status",
             backgroundColor:
               proposal.state === "active" ? "success.main" : "#743EE4",
           }}
