@@ -13,7 +13,7 @@ import { BigNumber, ethers } from "ethers"
 import { useMemo } from "react"
 import { ReactComponent as SafeIcon } from "src/assets/images/safe-token.svg"
 import { SelectedDelegate } from "src/components/steps/Claim/SelectedDelegate"
-import { CLAIMING_APP_URL } from "src/config/constants"
+import { CLAIMING_APP_URL, WEB_APP_URL } from "src/config/constants"
 import { useAirdropFile } from "src/hooks/useAirdropFile"
 import { useDelegate } from "src/hooks/useDelegate"
 import { useDelegatesFile } from "src/hooks/useDelegatesFile"
@@ -108,7 +108,7 @@ const ClaimingWidget = () => {
       BigNumber.from(ecosystemVesting?.amount || 0).gt(0))
 
   const currentChainPrefix = safe.chainId === 1 ? "eth" : "gor"
-  const claimingSafeAppUrl = `${window.location.ancestorOrigins[0]}/apps?safe=${currentChainPrefix}:${safe.safeAddress}&appUrl=${CLAIMING_APP_URL}`
+  const claimingSafeAppUrl = `${WEB_APP_URL}/apps?safe=${currentChainPrefix}:${safe.safeAddress}&appUrl=${CLAIMING_APP_URL}`
 
   const ctaWidget = (
     <>

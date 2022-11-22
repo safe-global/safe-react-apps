@@ -91,7 +91,7 @@ const SnapshotProposals = ({
         >
           {_getProposalNumber(proposal.title)}
         </StyledNumber>
-        <Box gridArea="title">
+        <Box gridArea="title" overflow="hidden">
           <Typography
             overflow="hidden"
             color="text.primary"
