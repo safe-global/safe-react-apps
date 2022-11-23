@@ -23,13 +23,18 @@ export const SelectedDelegate = ({
         avatar={<DelegateAvatar selected={false} delegate={delegate} />}
         title={delegate.name}
         subheader={delegate.ens ?? shortenAddress(delegate.address)}
+        sx={{
+          "& .MuiCardHeader-action": {
+            margin: "0px",
+          },
+        }}
         action={
           hasAction && (
             <IconButton
               color={isHover ? "primary" : undefined}
-              sx={({ palette }) => ({
-                backgroundColor: palette.background.default,
-              })}
+              sx={{
+                backgroundColor: "background.default",
+              }}
               onMouseEnter={() => setIsHover(true)}
               onMouseLeave={() => setIsHover(false)}
               onClick={onClick}

@@ -34,7 +34,7 @@ const Proposal = styled("a")`
   padding: 16px;
   border: 1px solid;
   border-radius: 6px;
-  grid-template-columns: 70px minmax(auto, 9fr) 1fr 1fr;
+  grid-template-columns: 80px minmax(auto, 9fr) 1fr 1fr;
   grid-template-areas: "number title title title title title title title title title status link";
 `
 
@@ -50,6 +50,7 @@ const StyledNumber = styled(Box)`
   border-radius: 6px;
   padding: 0px 8px;
   white-space: nowrap;
+  margin-right: 12px;
 `
 
 const StyledExternalLink = styled(Link)`
@@ -113,7 +114,7 @@ const SnapshotProposals = ({
               proposal.state === "active" ? "success.main" : "#743EE4",
           }}
         />
-        <Box gridArea="link" display="flex" alignItems="center">
+        <Box gridArea="link" display="flex" alignItems="center" ml="12px">
           <OpenInNewRounded fontSize="small" sx={{ color: "text.primary" }} />
         </Box>
       </Proposal>

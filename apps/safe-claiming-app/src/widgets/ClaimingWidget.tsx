@@ -26,7 +26,7 @@ import { SpaceContent } from "src/widgets/styles"
 const Title = (props: TypographyProps) => (
   <Typography
     color="primary.main"
-    style={{ fontWeight: "bold", textAlign: "center" }}
+    style={{ fontSize: "20px", fontWeight: "bold", textAlign: "center" }}
   >
     {props.children}
   </Typography>
