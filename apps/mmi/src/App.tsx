@@ -16,7 +16,7 @@ function App() {
   const { safe, sdk } = useSafeAppsSDK()
   const [isMMISupported, setMMISupported] = useState(false)
   const [isWrongOwner, setWrongOwner] = useState(false)
-  const [isReadOnly, setIsReadOnly] = useState(() => safe.isReadOnly)
+  const [isReadOnly, setIsReadOnly] = useState(false)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -39,6 +39,10 @@ function App() {
   }, [isMMISupported])
 
   const handleLogin = async () => {
+    setError(null)
+    setIsReadOnly(false)
+    setWrongOwner(false)
+
     try {
       const safeInfo = await sdk.safe.getInfo()
 
@@ -80,9 +84,9 @@ function App() {
   const hasError = !isMMISupported || isReadOnly || isWrongOwner
 
   return (
-    <main>
+    <StyledMainContainer as="main">
       <AppBar />
-      <StyledMainContainer as="main">
+      <>
         <StyledAppContainer container direction="column" alignItems="center">
           <StyledCardContainer item>
             <StyledCard>
@@ -90,19 +94,25 @@ function App() {
                 <Grid item>
                   <StyledLogo src="./mmi.svg" alt="safe-app-logo" />
                 </Grid>
-                <Grid container item justifyContent="center" alignItems="center">
+                <Grid
+                  container
+                  item
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                >
                   <StyledText>Setup your Safe account with Metamask Institutional</StyledText>
+                  <Button
+                    id="connect"
+                    variant="contained"
+                    size="medium"
+                    onClick={handleLogin}
+                    sx={{ minWidth: '150px', mt: 2 }}
+                  >
+                    Start
+                  </Button>
                   {!hasError ? (
                     <>
-                      <Button
-                        id="connect"
-                        variant="contained"
-                        size="medium"
-                        onClick={handleLogin}
-                        sx={{ minWidth: '150px', mt: 2 }}
-                      >
-                        Start
-                      </Button>
                       <StyledErrorContainer>
                         {error && (
                           <Typography color="error" variant="body1">
@@ -141,16 +151,16 @@ function App() {
             <Help title={HELP_CONNECT.title} steps={HELP_CONNECT.steps} />
           </StyledHelpContainer>
         </StyledAppContainer>
-      </StyledMainContainer>
-    </main>
+      </>
+    </StyledMainContainer>
   )
 }
+
 const StyledMainContainer = styled(Container)`
   && {
+    height: 100vh;
     max-width: 100%;
-    background-color: #f3f5f6;
     display: flex;
-    height: calc(100% - 70px);
     justify-content: center;
     align-items: center;
     flex-direction: column;

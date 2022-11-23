@@ -66,7 +66,7 @@ const theme = createTheme({
       main: 'rgb(161, 163, 167)',
     },
     background: {
-      default: 'transparent',
+      default: '#f3f5f6',
       paper: '#FFFFFF',
     },
     secondary: {
