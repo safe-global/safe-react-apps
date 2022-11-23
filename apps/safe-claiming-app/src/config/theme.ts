@@ -7,10 +7,16 @@ declare module "@mui/material/styles" {
   interface Palette {
     safeGreen: Palette["primary"]
     safeGrey: Palette["primary"]
+    border: Palette["primary"]
   }
   interface PaletteOptions {
     safeGreen: PaletteOptions["primary"]
     safeGrey: PaletteOptions["primary"]
+    border: PaletteOptions["primary"]
+  }
+
+  interface PaletteColor {
+    background?: string
   }
 }
 
@@ -160,8 +166,11 @@ const initTheme = (darkMode: boolean) => {
       MuiAccordion: {
         styleOverrides: {
           root: {
+            borderColor: colors.primary.light,
+            border: "1px solid",
             "&.Mui-expanded": {
               backgroundColor: colors.safeGreen.light,
+              borderColor: colors.primary.main,
             },
           },
         },

@@ -6,6 +6,7 @@ import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined"
 import { DelegateEntry } from "src/hooks/useDelegatesFile"
 import { DelegateAvatar } from "../Delegate/DelegateAvatar"
 import { shortenAddress } from "src/utils/format"
+import { useDarkMode } from "src/hooks/useDarkMode"
 
 export const SelectedDelegate = ({
   onClick,
@@ -16,6 +17,7 @@ export const SelectedDelegate = ({
 }) => {
   const [isHover, setIsHover] = useState(false)
 
+  const isDarkMode = useDarkMode()
   const hasAction = onClick !== undefined
   return (
     <Card variant={hasAction ? "outlined" : "elevation"} elevation={0}>
@@ -31,9 +33,20 @@ export const SelectedDelegate = ({
         action={
           hasAction && (
             <IconButton
-              color={isHover ? "primary" : undefined}
               sx={{
-                backgroundColor: "background.default",
+                color: "text.primary",
+                backgroundColor: ({ palette }) =>
+                  isHover
+                    ? `${palette.safeGreen.light} !important`
+                    : isDarkMode
+                    ? `${palette.background.paper} !important`
+                    : `${palette.border.background} !important`,
+                border: isDarkMode
+                  ? ({ palette }) =>
+                      isHover
+                        ? `1px solid ${palette.safeGreen.main}`
+                        : `1px solid ${palette.text.primary}`
+                  : undefined,
               }}
               onMouseEnter={() => setIsHover(true)}
               onMouseLeave={() => setIsHover(false)}
