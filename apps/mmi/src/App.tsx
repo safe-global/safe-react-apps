@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
+import { hashMessage } from 'ethers/lib/utils'
 import { Grid, Container, Button, Typography, Card, styled } from '@mui/material'
 import AppBar from './components/AppBar'
 import Help from './components/Help'
@@ -8,10 +9,14 @@ import Help from './components/Help'
 import { getRefreshToken } from './lib/http'
 import { authenticate, sign } from './lib/mmi'
 
+const getConnectedOwner = (safeOwners: string[], accounts: string[]) =>
+  safeOwners.find(owner => ethers.utils.getAddress(owner) === ethers.utils.getAddress(accounts[0]))
+
 function App() {
-  const { safe } = useSafeAppsSDK()
+  const { safe, sdk } = useSafeAppsSDK()
   const [isMMISupported, setMMISupported] = useState(false)
   const [isWrongOwner, setWrongOwner] = useState(false)
+  const [isReadOnly, setIsReadOnly] = useState(false)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -34,23 +39,40 @@ function App() {
   }, [isMMISupported])
 
   const handleLogin = async () => {
+    setError(null)
+    setIsReadOnly(false)
+    setWrongOwner(false)
+
     try {
+      const safeInfo = await sdk.safe.getInfo()
+
+      // Verify the Safe is connected with any of its owners
+      if (safeInfo.isReadOnly) {
+        setIsReadOnly(true)
+        return
+      }
+
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
       })
-      const connectedOwner = safe.owners.find(
-        owner => ethers.utils.getAddress(owner) === ethers.utils.getAddress(accounts[0]),
-      )
+      const connectedOwner = getConnectedOwner(safe.owners, accounts)
 
+      // Verify the connected owner and the extension owner are the same
       if (!connectedOwner) {
         setWrongOwner(true)
         return
       }
 
-      const signature = await sign(connectedOwner)
-      const refreshToken = await getRefreshToken(connectedOwner, signature)
+      const message = `Safe-mmi-auth - ${Math.floor(Math.round(new Date().getTime() / 1000) / 300)}`
+      const signature = await sign(connectedOwner, message)
 
-      await authenticate(refreshToken)
+      // Verify signature
+      if (ethers.utils.recoverAddress(hashMessage(message), signature) === connectedOwner) {
+        const refreshToken = await getRefreshToken(connectedOwner, signature)
+        await authenticate(refreshToken)
+      } else {
+        setWrongOwner(true)
+      }
 
       setError(null)
     } catch (error: any) {
@@ -59,12 +81,12 @@ function App() {
     }
   }
 
-  const hasError = !isMMISupported || safe.isReadOnly || isWrongOwner
+  const hasError = !isMMISupported || isReadOnly || isWrongOwner
 
   return (
-    <main>
+    <StyledMainContainer as="main">
       <AppBar />
-      <StyledMainContainer as="main">
+      <>
         <StyledAppContainer container direction="column" alignItems="center">
           <StyledCardContainer item>
             <StyledCard>
@@ -72,19 +94,25 @@ function App() {
                 <Grid item>
                   <StyledLogo src="./mmi.svg" alt="safe-app-logo" />
                 </Grid>
-                <Grid container item justifyContent="center" alignItems="center">
+                <Grid
+                  container
+                  item
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                >
                   <StyledText>Setup your Safe account with Metamask Institutional</StyledText>
+                  <Button
+                    id="connect"
+                    variant="contained"
+                    size="medium"
+                    onClick={handleLogin}
+                    sx={{ minWidth: '150px', mt: 2 }}
+                  >
+                    Start
+                  </Button>
                   {!hasError ? (
                     <>
-                      <Button
-                        id="connect"
-                        variant="contained"
-                        size="medium"
-                        onClick={handleLogin}
-                        sx={{ minWidth: '150px', mt: 2 }}
-                      >
-                        Start
-                      </Button>
                       <StyledErrorContainer>
                         {error && (
                           <Typography color="error" variant="body1">
@@ -101,7 +129,7 @@ function App() {
                         </Typography>
                       ) : (
                         <>
-                          {safe.isReadOnly && (
+                          {isReadOnly && (
                             <Typography color="error" variant="body1">
                               You are not an owner of this safe
                             </Typography>
@@ -123,16 +151,16 @@ function App() {
             <Help title={HELP_CONNECT.title} steps={HELP_CONNECT.steps} />
           </StyledHelpContainer>
         </StyledAppContainer>
-      </StyledMainContainer>
-    </main>
+      </>
+    </StyledMainContainer>
   )
 }
+
 const StyledMainContainer = styled(Container)`
   && {
+    height: 100vh;
     max-width: 100%;
-    background-color: #f3f5f6;
     display: flex;
-    height: calc(100% - 70px);
     justify-content: center;
     align-items: center;
     flex-direction: column;
