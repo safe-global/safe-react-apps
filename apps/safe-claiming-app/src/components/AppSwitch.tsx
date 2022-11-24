@@ -5,8 +5,7 @@ import Widget from "src/widgets/Widget"
 
 export const AppSwitch = () => {
   const theme = useLightDarkTheme()
-  const location = window.location
-  const [widgetId] = location.hash.split("+")
+  const widgetId = window.location.hash
 
   return (
     <ThemeProvider theme={theme}>
