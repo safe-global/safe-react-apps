@@ -18,6 +18,7 @@ function App() {
   const [isWrongOwner, setWrongOwner] = useState(false)
   const [isReadOnly, setIsReadOnly] = useState(false)
   const [error, setError] = useState(null)
+  const [accounts, setAccounts] = useState([])
 
   useEffect(() => {
     ;(async () => {
@@ -30,6 +31,23 @@ function App() {
         console.error(error)
       }
     })()
+  }, [])
+
+  useEffect(() => {
+    ;(async () => {
+      const acc = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      })
+      setAccounts(acc)
+    })()
+
+    window.ethereum.on('accountsChanged', (acc: any) => {
+      setAccounts(acc)
+    })
+
+    return () => {
+      window.ethereum.removeAllListeners('accountsChanged')
+    }
   }, [])
 
   useEffect(() => {
@@ -55,6 +73,9 @@ function App() {
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
       })
+
+      console.log('MMI account: ', accounts[0])
+
       const connectedOwner = getConnectedOwner(safe.owners, accounts)
 
       // Verify the connected owner and the extension owner are the same
@@ -85,7 +106,7 @@ function App() {
 
   return (
     <StyledMainContainer as="main">
-      <AppBar />
+      <AppBar account={accounts[0]} />
       <>
         <StyledAppContainer container direction="column" alignItems="center">
           <StyledCardContainer item>
