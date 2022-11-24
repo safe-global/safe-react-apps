@@ -16,7 +16,7 @@ export const useDarkMode = (): boolean => {
     const urlDarkMode = urlParams.get("theme")
 
     setIsDarkMode(urlDarkMode === "dark" || isSystemDarkMode())
-  }, [location.hash, location.search])
+  }, [location.search])
 
   return isDarkMode
 }
