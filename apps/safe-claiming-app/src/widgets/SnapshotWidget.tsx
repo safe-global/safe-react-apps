@@ -133,7 +133,7 @@ const SnapshotWidget = () => {
   const [proposals, loading] = useSafeSnapshot(PROPOSAL_AMOUNT)
 
   return (
-    <Card sx={{ borderRadius: "4px" }}>
+    <Card elevation={0}>
       <SpaceContent>
         <div>
           <Typography
