@@ -133,7 +133,7 @@ const SnapshotWidget = () => {
   const [proposals, loading] = useSafeSnapshot(PROPOSAL_AMOUNT)
 
   return (
-    <Card elevation={0}>
+    <Card elevation={0} sx={{ flexGrow: 1 }}>
       <SpaceContent>
         <div>
           <Typography
@@ -175,6 +175,7 @@ const SnapshotWidget = () => {
             rel="noreferrer noopener"
             target="_blank"
             variant="subtitle1"
+            textAlign="center"
           >
             View all <OpenInNewRounded fontSize="small" />
           </StyledExternalLink>
@@ -183,6 +184,7 @@ const SnapshotWidget = () => {
             rel="noreferrer noopener"
             target="_blank"
             variant="subtitle1"
+            textAlign="center"
           >
             SafeDAO Forum <OpenInNewRounded fontSize="small" />
           </StyledExternalLink>
