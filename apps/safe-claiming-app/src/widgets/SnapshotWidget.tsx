@@ -12,6 +12,7 @@ import useSafeSnapshot, {
   type SnapshotProposal,
 } from "src/hooks/useSafeSnapshot"
 import { SpaceContent } from "src/widgets/styles"
+import palette from "../config/colors"
 
 export const _getProposalNumber = (title: string): string => {
   // Find anything that matches "SEP #n"
@@ -26,15 +27,16 @@ export const _getProposalTitle = (title: string): string => {
 }
 
 const Proposal = styled("a")`
+  height: 47px;
   width: 100%;
   display: grid;
   grid-gap: 4px;
   align-items: center;
   text-decoration: none;
-  padding: 16px;
+  padding: 0px 16px;
   border: 1px solid;
   border-radius: 6px;
-  grid-template-columns: 80px minmax(auto, 9fr) 1fr 1fr;
+  grid-template-columns: auto minmax(auto, 9fr) 1fr 1fr;
   grid-template-areas: "number title title title title title title title title title status link";
 `
 
@@ -47,8 +49,10 @@ const StyledChip = styled(Chip)`
 `
 
 const StyledNumber = styled(Box)`
+  height: 18px;
+  font-size: 13px;
   border-radius: 6px;
-  padding: 0px 8px;
+  padding: 0px 6px;
   white-space: nowrap;
   margin-right: 12px;
 `
@@ -76,9 +80,9 @@ const SnapshotProposals = ({
         target="_blank"
         rel="noopener noreferrer"
         sx={{
-          borderColor: "primary.light",
+          borderColor: "border.light",
           "&:hover": {
-            borderColor: "primary.main",
+            borderColor: "border.main",
           },
         }}
       >
@@ -95,6 +99,7 @@ const SnapshotProposals = ({
           <Typography
             overflow="hidden"
             color="text.primary"
+            fontSize={14}
             sx={{
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -106,10 +111,8 @@ const SnapshotProposals = ({
         <StyledChip
           label={proposal.state}
           sx={{
-            "& .MuiChip-root": {
-              color: "background.paper",
-            },
             gridArea: "status",
+            color: palette.background.paper,
             backgroundColor:
               proposal.state === "active" ? "success.main" : "#743EE4",
           }}
