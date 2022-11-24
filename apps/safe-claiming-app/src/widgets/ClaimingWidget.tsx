@@ -198,7 +198,7 @@ const ClaimingWidget = () => {
   }
 
   return (
-    <Card sx={{ borderRadius: "4px" }}>
+    <Card elevation={0} sx={{ minWidth: "280px" }}>
       <SpaceContent sx={{ alignItems: "center" }}>
         {votingPower.eq(0) ? ctaWidget : votingPowerWidget}
       </SpaceContent>

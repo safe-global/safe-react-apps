@@ -17,6 +17,7 @@ const palette = {
   background: {
     default: "#F6F7F8",
     paper: "#FFFFFF",
+    main: "#F4F4F4",
   },
   secondary: {
     main: "#B2BBC0",
