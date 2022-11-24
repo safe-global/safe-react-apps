@@ -8,7 +8,6 @@ import {
   styled,
   TextField,
   Typography,
-  useTheme,
 } from "@mui/material"
 import { ChangeEvent, useState } from "react"
 import { AppState } from "src/App"
@@ -53,7 +52,6 @@ const validateAmount = (amount: string, maxAmount: string) => {
 
 const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
   const { sdk, safe } = useSafeAppsSDK()
-  const { palette } = useTheme()
 
   const { delegate, userClaim, ecosystemClaim, investorClaim, isTokenPaused } =
     state
@@ -176,10 +174,10 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
         />
         <Typography variant="subtitle2">
           Awarded total allocation is{" "}
-          <span style={{ color: palette.text.primary }}>
+          <Typography component="span" variant="subtitle2" color="text.primary">
             {formatAmount(Number(ethers.utils.formatEther(totalAllocation)), 2)}{" "}
             SAFE
-          </span>
+          </Typography>
         </Typography>
       </Box>
 

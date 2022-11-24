@@ -136,14 +136,16 @@ const initTheme = (darkMode: boolean) => {
           sizeLarge: {
             padding: "10px 40px",
           },
-          contained: {
-            border: "1px solid transparent",
+          root: ({ theme }) => ({
+            borderRadius: theme.shape.borderRadius,
+            fontWeight: "bold",
+            lineHeight: 1.25,
+            borderColor: theme.palette.primary.main,
+            textTransform: "none",
             "&:hover": {
-              backgroundColor: "transparent",
-              border: "1px solid #121312",
-              color: colors.primary.main,
+              boxShadow: "none",
             },
-          },
+          }),
         },
       },
       MuiLink: {

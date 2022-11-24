@@ -1,5 +1,6 @@
 import { Box, Button } from "@mui/material"
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"
+import { useDarkMode } from "src/hooks/useDarkMode"
 
 export const NavButtons = ({
   handleBack,
@@ -17,6 +18,7 @@ export const NavButtons = ({
   const showNext = handleNext !== undefined
   const showBack = handleBack !== undefined
   nextLabel = nextLabel || "Next"
+  const isDarkMode = useDarkMode()
 
   return (
     <Box mt={4} width="100%" display="flex" justifyContent="space-between">
@@ -26,12 +28,17 @@ export const NavButtons = ({
           size="large"
           startIcon={<ArrowBackIcon />}
           sx={
-            finalScreen
+            finalScreen && !isDarkMode
               ? {
-                  backgroundColor: "#fff",
+                  border: ({ palette }) =>
+                    `1px solid ${palette.safeGreen.main}`,
+                  backgroundColor: "primary.main",
+                  color: "safeGreen.main",
                   alignSelf: "flex-start",
                   "&:hover": {
-                    backgroundColor: ({ palette }) => palette.safeGrey.main,
+                    backgroundColor: ({ palette }) => palette.safeGreen.dark,
+                    border: ({ palette }) =>
+                      `1px solid ${palette.safeGreen.main}`,
                   },
                 }
               : undefined
