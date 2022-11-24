@@ -6,12 +6,13 @@ import {
   Typography,
   Skeleton,
   styled,
-  Paper,
+  Card,
 } from "@mui/material"
 import useSafeSnapshot, {
   type SnapshotProposal,
 } from "src/hooks/useSafeSnapshot"
 import { SpaceContent } from "src/widgets/styles"
+import palette from "../config/colors"
 
 export const _getProposalNumber = (title: string): string => {
   // Find anything that matches "SEP #n"
@@ -26,34 +27,34 @@ export const _getProposalTitle = (title: string): string => {
 }
 
 const Proposal = styled("a")`
+  height: 47px;
   width: 100%;
   display: grid;
   grid-gap: 4px;
   align-items: center;
   text-decoration: none;
-  padding: 16px;
-  border: 1px solid #dcdee0;
+  padding: 0px 16px;
+  border: 1px solid;
   border-radius: 6px;
-  grid-template-columns: 70px minmax(auto, 9fr) 1fr 1fr;
+  grid-template-columns: auto minmax(auto, 9fr) 1fr 1fr;
   grid-template-areas: "number title title title title title title title title title status link";
 `
 
 const StyledChip = styled(Chip)`
-  grid-area: "status";
   border-radius: 20px;
   min-width: 68px;
   text-align: center;
   height: 23px;
-  color: #fff !important;
   font-weight: bold;
 `
 
 const StyledNumber = styled(Box)`
-  grid-area: "number";
+  height: 18px;
+  font-size: 13px;
   border-radius: 6px;
-  padding: 0px 8px;
-  color: black;
+  padding: 0px 6px;
   white-space: nowrap;
+  margin-right: 12px;
 `
 
 const StyledExternalLink = styled(Link)`
@@ -79,14 +80,17 @@ const SnapshotProposals = ({
         target="_blank"
         rel="noopener noreferrer"
         sx={{
+          borderColor: "border.light",
           "&:hover": {
-            borderColor: "primary.light",
+            borderColor: "border.main",
           },
         }}
       >
         <StyledNumber
           sx={{
-            backgroundColor: "#DCDEE0",
+            color: "primary.main",
+            backgroundColor: "border.light",
+            gridArea: "number",
           }}
         >
           {_getProposalNumber(proposal.title)}
@@ -95,6 +99,7 @@ const SnapshotProposals = ({
           <Typography
             overflow="hidden"
             color="text.primary"
+            fontSize={14}
             sx={{
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -106,11 +111,13 @@ const SnapshotProposals = ({
         <StyledChip
           label={proposal.state}
           sx={{
+            gridArea: "status",
+            color: palette.background.paper,
             backgroundColor:
               proposal.state === "active" ? "success.main" : "#743EE4",
           }}
         />
-        <Box gridArea="link" display="flex" alignItems="center">
+        <Box gridArea="link" display="flex" alignItems="center" ml="12px">
           <OpenInNewRounded fontSize="small" sx={{ color: "text.primary" }} />
         </Box>
       </Proposal>
@@ -126,7 +133,7 @@ const SnapshotWidget = () => {
   const [proposals, loading] = useSafeSnapshot(PROPOSAL_AMOUNT)
 
   return (
-    <Paper>
+    <Card sx={{ borderRadius: "4px" }}>
       <SpaceContent>
         <div>
           <Typography
@@ -134,6 +141,7 @@ const SnapshotWidget = () => {
             variant="subtitle1"
             marginBottom="0"
             fontWeight="bold"
+            color="text.primary"
           >
             Latest proposals
           </Typography>
@@ -180,7 +188,7 @@ const SnapshotWidget = () => {
           </StyledExternalLink>
         </Box>
       </SpaceContent>
-    </Paper>
+    </Card>
   )
 }
 

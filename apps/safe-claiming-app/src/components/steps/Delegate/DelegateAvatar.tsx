@@ -26,7 +26,7 @@ export const DelegateAvatar = ({
             position: "absolute",
             top: "10px",
             left: "10px",
-            backgroundColor: "#fff",
+            backgroundColor: ({ palette }) => palette.background.default,
             borderRadius: "10px",
           }}
         />

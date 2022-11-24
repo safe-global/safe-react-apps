@@ -1,16 +1,28 @@
-import { Card, Paper, Typography } from "@mui/material"
+import { Card, Paper, styled, Typography } from "@mui/material"
 import Box from "@mui/system/Box"
 
 import { ReactComponent as LockIcon } from "src/assets/images/lock.svg"
 import { ReactComponent as ValueIcon } from "src/assets/images/assets.svg"
 import { NavButtons } from "src/components/helpers/NavButtons"
+import { useDarkMode } from "src/hooks/useDarkMode"
 
 type Props = {
   handleBack: () => void
   handleNext: () => void
 }
 
+const InfoCard = styled(Card)<{ darkMode: boolean }>(({ darkMode, theme }) => ({
+  backgroundColor: darkMode
+    ? theme.palette.background.paper
+    : theme.palette.safeGreen.light,
+  border: `${theme.palette.primary.main} 1px solid`,
+  borderRadius: "8px",
+  padding: "24px",
+  minWidth: "220px",
+}))
+
 const SafeInfo = ({ handleNext, handleBack }: Props) => {
+  const isDarkMode = useDarkMode()
   return (
     <Paper elevation={0} sx={{ padding: 6 }}>
       <Box
@@ -33,15 +45,7 @@ const SafeInfo = ({ handleNext, handleBack }: Props) => {
       </Typography>
 
       <Box display="flex" mb={4} gap={5}>
-        <Card
-          elevation={0}
-          sx={{
-            backgroundColor: ({ palette }) => palette.safeGreen.light,
-            borderRadius: "8px",
-            padding: 3,
-            minWidth: "220px",
-          }}
-        >
+        <InfoCard elevation={0} darkMode={isDarkMode}>
           <Typography>Total Safes created</Typography>
           <Box
             display="inline-flex"
@@ -54,16 +58,8 @@ const SafeInfo = ({ handleNext, handleBack }: Props) => {
               167,414
             </Typography>
           </Box>
-        </Card>
-        <Card
-          elevation={0}
-          sx={{
-            backgroundColor: ({ palette }) => palette.safeGreen.light,
-            borderRadius: "8px",
-            padding: 3,
-            minWidth: "220px",
-          }}
-        >
+        </InfoCard>
+        <InfoCard elevation={0} darkMode={isDarkMode}>
           <Typography>Total value protected</Typography>
           <Box
             display="inline-flex"
@@ -76,7 +72,7 @@ const SafeInfo = ({ handleNext, handleBack }: Props) => {
               $41B
             </Typography>
           </Box>
-        </Card>
+        </InfoCard>
       </Box>
 
       <Typography variant="h5" fontWeight={700} mb={2}>
