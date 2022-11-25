@@ -11,6 +11,7 @@ export type useWalletConnectType = {
   wcDisconnect: wcDisconnectType
   wcClientData: CoreTypes.Metadata | undefined
   isWallectConnectInitialized: boolean
+  error: string | undefined
 }
 
 const useWalletConnect = (): useWalletConnectType => {
@@ -27,6 +28,7 @@ const useWalletConnect = (): useWalletConnectType => {
     wcClientData: wcSessionV2,
     wcDisconnect: wcDisconnectV2,
     isWallectConnectInitialized,
+    error,
   } = useWalletConnectV2()
 
   const wcConnect = useCallback<wcConnectType>(
@@ -53,7 +55,7 @@ const useWalletConnect = (): useWalletConnectType => {
 
   const wcClientData = wcSessionV1 || wcSessionV2
 
-  return { wcConnect, wcClientData, wcDisconnect, isWallectConnectInitialized }
+  return { wcConnect, wcClientData, wcDisconnect, isWallectConnectInitialized, error }
 }
 
 export default useWalletConnect

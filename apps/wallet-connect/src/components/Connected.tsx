@@ -8,9 +8,10 @@ import { useWalletConnectType } from '../hooks/useWalletConnect'
 type ConnectedProps = {
   wcClientData: useWalletConnectType['wcClientData']
   onDisconnect: () => void
+  error: string | undefined
 }
 
-const Connected = ({ wcClientData, onDisconnect }: ConnectedProps) => {
+const Connected = ({ wcClientData, onDisconnect, error }: ConnectedProps) => {
   if (!wcClientData) {
     return null
   }
@@ -34,6 +35,14 @@ const Connected = ({ wcClientData, onDisconnect }: ConnectedProps) => {
       <Grid item>
         <StyledDivider />
       </Grid>
+
+      {error && (
+        <Grid item>
+          <Text size="md" color="error" center>
+            {error}
+          </Text>
+        </Grid>
+      )}
 
       <StyledCenteredGridItem item>
         <Button size="md" color="error" variant="contained" onClick={onDisconnect}>

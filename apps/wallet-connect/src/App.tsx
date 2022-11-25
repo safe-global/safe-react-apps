@@ -19,7 +19,8 @@ enum CONNECTION_STATUS {
 }
 
 const App = () => {
-  const { wcConnect, wcClientData, wcDisconnect, isWallectConnectInitialized } = useWalletConnect()
+  const { wcConnect, wcClientData, wcDisconnect, isWallectConnectInitialized, error } =
+    useWalletConnect()
 
   const { findSafeApp, openSafeApp } = useApps()
   const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED)
@@ -86,6 +87,7 @@ const App = () => {
               {connectionStatus === CONNECTION_STATUS.CONNECTED && (
                 <Connected
                   wcClientData={wcClientData}
+                  error={error}
                   onDisconnect={() => {
                     setConnectionStatus(CONNECTION_STATUS.DISCONNECTED)
                     wcDisconnect()
