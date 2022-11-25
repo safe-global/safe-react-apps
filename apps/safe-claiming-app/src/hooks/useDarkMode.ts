@@ -12,7 +12,13 @@ export const useDarkMode = (): boolean => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
 
   useEffect(() => {
-    setIsDarkMode(location.hash.endsWith("+dark") || isSystemDarkMode())
+    const isDark = location.hash.endsWith("+dark")
+      ? true
+      : location.hash.endsWith("+light")
+      ? false
+      : isSystemDarkMode()
+
+    setIsDarkMode(isDark)
   }, [location.hash])
 
   return isDarkMode
