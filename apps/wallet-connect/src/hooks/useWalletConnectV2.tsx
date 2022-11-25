@@ -23,13 +23,13 @@ const safeAllowedEvents: string[] = ['accountsChanged', 'chainChanged']
 
 const EVMBasedNamespaces = 'eip155'
 
-// see https://docs.walletconnect.com/2.0/specs/sign/session-namespaces#example-proposal-namespaces-request
-const REJECT_SESSION_ERROR_CODE = 1006
 // see https://docs.walletconnect.com/2.0/specs/sign/error-codes
 const UNSUPPORTED_CHAIN_ERROR_CODE = 5100
 const INVALID_METHOD_ERROR_CODE = 1001
 const USER_DISCONNECTED_CODE = 6000
 const USER_REJECTED_REQUEST_CODE = 4001
+// see https://docs.walletconnect.com/2.0/specs/sign/session-namespaces#example-proposal-namespaces-request
+const REJECT_SESSION_ERROR_CODE = 1006
 
 export type wcConnectType = (uri: string) => Promise<void>
 export type wcDisconnectType = () => Promise<void>
@@ -68,30 +68,31 @@ const useWalletConnectV2 = (): useWalletConnectType => {
     getChainInfo()
   }, [sdk.safe])
 
-  const initializeWalletConnectClient = useCallback(async () => {
-    const signClient = await SignClient.init({
-      projectId: REACT_APP_WALLETCONNECT_PROJECT_ID,
-      logger: isProduction ? undefined : 'debug',
-      metadata: {
-        name: 'Safe Wallet',
-        description: 'The most trusted platform to manage digital assets on Ethereum',
-        url: 'https://app.safe.global',
-        icons: [
-          'https://app.safe.global/favicons/mstile-150x150.png',
-          'https://app.safe.global/favicons/logo_120x120.png',
-        ],
-      },
-    })
+  // Initializing the version 2 client, see https://docs.walletconnect.com/2.0/javascript/sign/wallet-usage#initializing-the-client
+  useEffect(() => {
+    const initializeWalletConnectV2Client = async () => {
+      const signClient = await SignClient.init({
+        projectId: REACT_APP_WALLETCONNECT_PROJECT_ID,
+        logger: isProduction ? undefined : 'debug',
+        metadata: {
+          name: 'Safe Wallet',
+          description: 'The most trusted platform to manage digital assets on Ethereum',
+          url: 'https://app.safe.global',
+          icons: [
+            'https://app.safe.global/favicons/mstile-150x150.png',
+            'https://app.safe.global/favicons/logo_120x120.png',
+          ],
+        },
+      })
 
-    setSignClient(signClient)
-    setIsWallectConnectInitialized(true)
+      setSignClient(signClient)
+      setIsWallectConnectInitialized(true)
+    }
+
+    initializeWalletConnectV2Client()
   }, [])
 
-  useEffect(() => {
-    initializeWalletConnectClient()
-  }, [initializeWalletConnectClient])
-
-  // we set here the events & restore previous session
+  // we set here the events & restore an active previous session
   useEffect(() => {
     const isWallectConnectInitialized = signClient && safe?.safeAddress && web3Provider
 
@@ -127,7 +128,7 @@ const useWalletConnectV2 = (): useWalletConnectType => {
             return
           }
 
-          // Safe chainId should be present
+          // chain Safe should be present
           const isSafeChainIdPresent = EIP155Namespace.chains.some(
             chain => chain === `${EVMBasedNamespaces}:${safe.chainId}`,
           )
@@ -219,8 +220,13 @@ const useWalletConnectV2 = (): useWalletConnectType => {
         },
       )
 
+      signClient.on('session_delete', (event: SignClientTypes.EventArguments['session_delete']) => {
+        setWcSession(undefined)
+        setError(undefined)
+      })
+
       signClient.on('session_event', (event: SignClientTypes.EventArguments['session_event']) => {
-        // Handle session events, such as "chainChanged", "accountsChanged", etc.
+        // Handle session events, such as "chainChanged", "accountsChanged", etc...
 
         console.log('event: ', event)
       })
@@ -229,11 +235,6 @@ const useWalletConnectV2 = (): useWalletConnectType => {
         // React to session ping event
 
         console.log('ping: ', event)
-      })
-
-      signClient.on('session_delete', (event: SignClientTypes.EventArguments['session_delete']) => {
-        setWcSession(undefined)
-        setError(undefined)
       })
     }
   }, [safe, signClient, web3Provider, chainInfo])
