@@ -66,7 +66,7 @@ const SafeNavigation = ({ handleNext, handleBack }: Props) => {
               process
               <ExternalLink style={{ marginLeft: "4px" }} />
             </Link>{" "}
-            and post an SIP.
+            and post an SEP.
           </Typography>
         </Box>
         <Box display="inline-flex" alignItems="flex-start" gap={2}>
