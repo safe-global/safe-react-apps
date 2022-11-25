@@ -12,11 +12,14 @@ export const useDarkMode = (): boolean => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search)
-    const urlDarkMode = urlParams.get("theme")
+    const isDark = location.hash.endsWith("+dark")
+      ? true
+      : location.hash.endsWith("+light")
+      ? false
+      : isSystemDarkMode()
 
-    setIsDarkMode(urlDarkMode === "dark" || isSystemDarkMode())
-  }, [location.search])
+    setIsDarkMode(isDark)
+  }, [location.hash])
 
   return isDarkMode
 }
