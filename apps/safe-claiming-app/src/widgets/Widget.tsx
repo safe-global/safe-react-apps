@@ -1,4 +1,4 @@
-import { Box, Card, styled } from "@mui/material"
+import { Box, styled } from "@mui/material"
 import ClaimingWidget from "src/widgets/ClaimingWidget"
 import SnapshotWidget from "src/widgets/SnapshotWidget"
 
@@ -14,12 +14,10 @@ const WidgetsWrapper = styled(Box)`
 
 const Widget = () => {
   return (
-    <Card>
-      <WidgetsWrapper sx={{ backgroundColor: "background.main" }}>
-        <SnapshotWidget />
-        <ClaimingWidget />
-      </WidgetsWrapper>
-    </Card>
+    <WidgetsWrapper sx={{ backgroundColor: "background.main" }}>
+      <SnapshotWidget />
+      <ClaimingWidget />
+    </WidgetsWrapper>
   )
 }
 
