@@ -9,8 +9,7 @@ export const AppSwitch = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      {widgetId === "#widget" && <Widget />}
-      {widgetId === undefined && <App />}
+      {widgetId === "#widget" ? <Widget /> : <App />}
     </ThemeProvider>
   )
 }
