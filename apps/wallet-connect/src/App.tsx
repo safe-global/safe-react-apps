@@ -115,7 +115,7 @@ const StyledMainContainer = styled(Container)`
     max-width: 100%;
     background-color: #f3f5f6;
     display: flex;
-    height: 100%;
+    height: calc(100% - 70px);
     justify-content: center;
     align-items: center;
     flex-direction: column;
