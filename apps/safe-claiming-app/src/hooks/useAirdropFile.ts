@@ -3,14 +3,17 @@ import { useEffect, useState } from "react"
 import { VESTING_URL } from "src/config/constants"
 import { VestingData } from "src/types/vestings"
 
+type PossibleVesting = VestingData | undefined | null
+
 export const useAirdropFile = (): [
-  [VestingData | undefined | null, VestingData | undefined | null],
+  [PossibleVesting, PossibleVesting, PossibleVesting],
   boolean,
   string | undefined
 ] => {
   const { safe } = useSafeAppsSDK()
   const [userVesting, setUserVesting] = useState<VestingData | null>()
   const [ecosystemVesting, setEcosystemVesting] = useState<VestingData | null>()
+  const [investorVesting, setInvestorVesting] = useState<VestingData | null>()
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>()
 
@@ -45,6 +48,11 @@ export const useAirdropFile = (): [
             vestingsForSafe.find((vesting) => vesting.tag === "ecosystem") ||
               null
           )
+        isMounted &&
+          setInvestorVesting(
+            vestingsForSafe.find((vesting) => vesting.tag === "investor") ||
+              null
+          )
       } catch (err) {
         console.error(err)
         isMounted && setError("Fetching vestings failed.")
@@ -59,5 +67,5 @@ export const useAirdropFile = (): [
       isMounted = false
     }
   }, [safe.chainId, safe.safeAddress])
-  return [[userVesting, ecosystemVesting], loading, error]
+  return [[userVesting, ecosystemVesting, investorVesting], loading, error]
 }

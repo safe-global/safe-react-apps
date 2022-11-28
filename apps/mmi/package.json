@@ -1,0 +1,39 @@
+{
+  "name": "mmi",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "./",
+  "dependencies": {
+    "@mui/material": "^5.10.12",
+    "@mui/icons-material": "^5.10.9",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "ethers": "^5.6.2"
+  },
+  "scripts": {
+    "start": "dotenv -e .env -- react-app-rewired start",
+    "build": "dotenv -e .env -- react-app-rewired build",
+    "test": "react-app-rewired test",
+    "deploy:s3": "bash ../../scripts/deploy_to_s3_bucket.sh",
+    "deploy:pr": "bash ../../scripts/deploy_pr.sh",
+    "deploy:prod-hook": "bash ../../scripts/prepare_production_deployment.sh"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

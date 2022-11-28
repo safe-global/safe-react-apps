@@ -1,0 +1,11 @@
+{
+  "name": "MetaMask Institutional",
+  "description": "Setup your Safe with MMI and use it inside the Metamask UI",
+  "icons": [
+    {
+      "src": "mmi.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

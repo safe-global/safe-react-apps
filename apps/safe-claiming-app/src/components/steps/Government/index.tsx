@@ -30,7 +30,6 @@ const InfoAccordion = ({
       sx={{
         borderRadius: "6px",
         marginBottom: 2,
-        border: "1px solid #DCDEE0",
         boxShadow: "none",
         "&::before": { display: "none" },
       }}
@@ -49,7 +48,7 @@ const InfoAccordion = ({
               content: '" "',
               borderRadius: "2px",
               position: "absolute",
-              backgroundColor: ({ palette }) => palette.primary.main,
+              backgroundColor: ({ palette }) => palette.text.primary,
               minWidth: "6px",
               minHeight: "6px",
               top: "9px",

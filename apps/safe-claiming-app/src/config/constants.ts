@@ -3,12 +3,11 @@ import { BigNumber } from "ethers"
 type ChainConstants = {
   DELEGATE_ID: string
   SAFE_TOKEN_ADDRESS: string
-  USER_AIRDROP_ADDRESS: string
-  ECOSYSTEM_AIRDROP_ADDRESS: string
 }
 
 export enum Chains {
   RINKEBY = 4,
+  GOERLI = 5,
   MAINNET = 1,
 }
 
@@ -18,17 +17,28 @@ export const MAX_UINT128 = BigNumber.from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
 
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
+const isProdEnv = process.env.NODE_ENV === "production"
+
+export const WEB_APP_URL = isProdEnv
+  ? "https://app.safe.global"
+  : "https://safe-web-core.dev.5afe.dev"
+
+export const CLAIMING_APP_URL = isProdEnv
+  ? "https://apps.gnosis-safe.io/safe-claiming-app"
+  : "https://safe-apps.dev.5afe.dev/safe-claiming-app"
+
+export const CLAIMING_DATA_URL = isProdEnv
+  ? "https://safe-claiming-app-data.gnosis-safe.io"
+  : "https://safe-claiming-app-data.staging.5afe.dev"
+
 export const DelegateRegistryAddress =
   "0x469788fe6e9e9681c6ebf3bf78e7fd26fc015446"
 
-export const GUARDIANS_URL =
-  "https://safe-claiming-app-data.gnosis-safe.io/guardians/guardians.json"
+export const GUARDIANS_URL = `${CLAIMING_DATA_URL}/guardians/guardians.json`
 
-export const GUARDIANS_IMAGE_URL =
-  "https://safe-claiming-app-data.gnosis-safe.io/guardians/images/"
+export const GUARDIANS_IMAGE_URL = `${CLAIMING_DATA_URL}/guardians/images/`
 
-export const VESTING_URL =
-  "https://safe-claiming-app-data.gnosis-safe.io/allocations/"
+export const VESTING_URL = `${CLAIMING_DATA_URL}/allocations/`
 
 export const FORUM_URL = "https://forum.gnosis-safe.io"
 
@@ -43,14 +53,14 @@ export const FULL_PROPOSAL_URL =
 export const CHAIN_CONSTANTS: Record<number, ChainConstants> = {
   1: {
     DELEGATE_ID: "safe.eth",
-    ECOSYSTEM_AIRDROP_ADDRESS: "0x29067F28306419923BCfF96E37F95E0f58ABdBBe",
-    USER_AIRDROP_ADDRESS: "0xA0b937D5c8E32a80E3a8ed4227CD020221544ee6",
     SAFE_TOKEN_ADDRESS: "0x5afe3855358e112b5647b952709e6165e1c1eeee",
   },
   4: {
     DELEGATE_ID: "tutis.eth",
-    ECOSYSTEM_AIRDROP_ADDRESS: "0x82F1267759e9Bea202a46f8FC04704b6A5E2Af77",
-    USER_AIRDROP_ADDRESS: "0x6C6ea0B60873255bb670F838b03db9d9a8f045c4",
     SAFE_TOKEN_ADDRESS: "0xCFf1b0FdE85C102552D1D96084AF148f478F964A",
+  },
+  5: {
+    DELEGATE_ID: "tutis.eth",
+    SAFE_TOKEN_ADDRESS: "0x61fD3b6d656F39395e32f46E2050953376c3f5Ff",
   },
 }

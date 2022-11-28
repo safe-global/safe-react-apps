@@ -2,6 +2,29 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.13.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.12.0...tx-builder-1.13.0) (2022-11-18)
+
+
+### Features
+
+* **siwe-delegate-manager:** Sign-In With Ethereum Delegate Manager Safe App ([#499](https://github.com/safe-global/safe-react-apps/issues/499)) ([34c36c5](https://github.com/safe-global/safe-react-apps/commit/34c36c580300672c6366ad2d534de0a3b1534058))
+
+
+
+# [1.12.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.11.1...tx-builder-1.12.0) (2022-11-03)
+
+
+### Bug Fixes
+
+* **tx-builder:** validate transactions in batch and add error message ([9ec71fb](https://github.com/safe-global/safe-react-apps/commit/9ec71fba5e6a1ae3dd86ba776277e22722caba6e))
+
+
+### Features
+
+* **tx-builder:** improve error message for overflow errors in tuples ([1bae379](https://github.com/safe-global/safe-react-apps/commit/1bae3798a532ff47fbd1a7f474cbeefe106ef2c7))
+
+
+
 ## [1.11.1](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.11.0...tx-builder-1.11.1) (2022-09-22)
 
 

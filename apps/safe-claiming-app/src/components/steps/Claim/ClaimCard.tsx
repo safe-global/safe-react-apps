@@ -1,12 +1,20 @@
 import { ShieldOutlined } from "@mui/icons-material"
-import { Grid, Paper, Typography, Tooltip, Badge, styled } from "@mui/material"
+import {
+  Grid,
+  Paper,
+  Typography,
+  Tooltip,
+  Badge,
+  styled,
+  useTheme,
+} from "@mui/material"
 import { ethers } from "ethers"
-import theme from "src/config/theme"
 import { formatAmount } from "src/utils/format"
 import { Odometer } from "./Odometer/Odometer"
 import { ReactComponent as SingleGreenTile } from "src/assets/images/single-green-tile.svg"
 import { ReactComponent as DoubleGreenTile } from "src/assets/images/double-green-tile.svg"
 import InfoOutlined from "@mui/icons-material/InfoOutlined"
+import { useDarkMode } from "src/hooks/useDarkMode"
 
 const StyledSingleTile = styled(SingleGreenTile)`
   position: absolute;
@@ -59,18 +67,21 @@ export const ClaimCard = ({
   totalAmount: string
   variant: "claimable" | "vesting"
 }) => {
+  const { palette } = useTheme()
   const ecosystemAmountInDecimals = formatAmount(
     Number(ethers.utils.formatEther(ecosystemAmount)),
     2
   )
 
+  const isDarkMode = useDarkMode()
+
   const isClaimable = variant === "claimable"
 
   const backgroundColor = isClaimable
-    ? theme.palette.primary.main
-    : theme.palette.background.default
+    ? palette.primary.main
+    : palette.background.default
 
-  const color = isClaimable ? "white" : "rgba(0, 0, 0, 0.87)"
+  const color = isClaimable ? palette.background.default : palette.text.primary
 
   const dotColor = isClaimable ? "white" : "#12ff80"
 
@@ -85,8 +96,16 @@ export const ClaimCard = ({
           position: "relative",
         }}
       >
-        {isClaimable && <StyledSingleTile />}
-        {isClaimable && <StyledDoubleTile />}
+        {isClaimable && (
+          <StyledSingleTile
+            color={isDarkMode ? undefined : palette.safeGreen.main}
+          />
+        )}
+        {isClaimable && (
+          <StyledDoubleTile
+            color={isDarkMode ? undefined : palette.safeGreen.main}
+          />
+        )}
 
         <Typography marginBottom={2} fontWeight={700}>
           {isClaimable ? "Claim now" : "Claim in future (vesting)"}

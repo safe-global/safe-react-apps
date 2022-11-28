@@ -5,6 +5,7 @@ import styled from "@emotion/styled"
 import { AppState } from "src/App"
 import { NavButtons } from "../helpers/NavButtons"
 import { formatAmount } from "src/utils/format"
+import { useDarkMode } from "src/hooks/useDarkMode"
 const TweetBox = styled(Box)`
   background: white;
   border-radius: 8px;
@@ -41,6 +42,7 @@ const Success = ({
     Number(state.claimedAmount ?? "0"),
     2
   )
+  const isDarkMode = useDarkMode()
 
   const isCustomDelegate = !state.delegateData.some(
     (delegate) => delegate.address === state.delegate?.address
@@ -65,7 +67,7 @@ const Success = ({
         flexDirection: "column",
         height: 1,
         gap: 2,
-        backgroundColor: "primary.main",
+        backgroundColor: isDarkMode ? undefined : "primary.main",
         alignItems: "center",
         color: "white",
       }}

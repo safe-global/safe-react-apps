@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.8.0](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.7.2...wallet-connect-1.8.0) (2022-11-18)
+
+
+### Features
+
+* **siwe-delegate-manager:** Sign-In With Ethereum Delegate Manager Safe App ([#499](https://github.com/safe-global/safe-react-apps/issues/499)) ([34c36c5](https://github.com/safe-global/safe-react-apps/commit/34c36c580300672c6366ad2d534de0a3b1534058))
+
+
+
+## [1.7.2](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.7.1...wallet-connect-1.7.2) (2022-11-03)
+
+
+
 ## [1.7.1](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.7.0...wallet-connect-1.7.1) (2022-10-11)
 
 

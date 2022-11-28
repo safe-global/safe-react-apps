@@ -19,14 +19,11 @@ import { maxDecimals, minMaxValue, mustBeFloat } from "src/utils/validation"
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { BigNumber, ethers } from "ethers"
 import { useAmounts } from "src/hooks/useAmounts"
-import { createAirdropTxs } from "src/utils/contracts/airdrop"
-import { createDelegateTx } from "src/utils/contracts/delegateRegistry"
-import { splitAirdropAmounts } from "src/utils/splitAirdropAmounts"
 import { InfoOutlined } from "@mui/icons-material"
 import { ClaimCard } from "./ClaimCard"
 import { formatAmount } from "src/utils/format"
 import { NavButtons } from "src/components/helpers/NavButtons"
-import { CHAIN_CONSTANTS } from "src/config/constants"
+import { createClaimAndDelegateTxs } from "src/utils/contracts/createClaimAndDelegateTxs"
 
 const ButtonLink = styled("button")`
   border: 0;
@@ -56,31 +53,46 @@ const validateAmount = (amount: string, maxAmount: string) => {
 const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
   const { sdk, safe } = useSafeAppsSDK()
 
-  const chainConstants = CHAIN_CONSTANTS[safe.chainId]
-
-  const { delegate, userClaim, ecosystemClaim, isTokenPaused } = state
+  const { delegate, userClaim, ecosystemClaim, investorClaim, isTokenPaused } =
+    state
   const [amount, setAmount] = useState<string>()
   const [isMaxAmountSelected, setIsMaxAmountSelected] = useState(false)
   const [amountError, setAmountError] = useState<string>()
 
   const [userAirdropClaimable, userAirdropInVesting] = useAmounts(userClaim)
   const [ecosystemClaimable, ecosystemInVesting] = useAmounts(ecosystemClaim)
+  const [investorClaimable, investorInVesting] = useAmounts(investorClaim)
+
   const totalAmountClaimable = BigNumber.from(userAirdropClaimable)
     .add(BigNumber.from(ecosystemClaimable))
+    .add(BigNumber.from(investorClaimable))
     .toString()
   const totalAmountInVesting = BigNumber.from(userAirdropInVesting)
     .add(BigNumber.from(ecosystemInVesting))
+    .add(BigNumber.from(investorInVesting))
     .toString()
 
   const totalAllocation = BigNumber.from(userClaim?.amount || "0")
     .add(ecosystemClaim?.amount || "0")
+    .add(investorClaim?.amount || "0")
     .toString()
 
-  const buttonDisabled = !amount || !!amountError
+  const hasDelegateChanged =
+    state.delegate !== undefined &&
+    state.delegateAddressFromContract !== state.delegate.address
+
+  const investorClaimingDisabled = investorClaim !== null && isTokenPaused
+
+  const isAmountGTZero = amount && !amountError && Number.parseFloat(amount) > 0
+
+  const buttonDisabled =
+    !(isAmountGTZero || hasDelegateChanged) ||
+    (investorClaimingDisabled && isAmountGTZero) ||
+    !!amountError
 
   const handleAmountChange = (event: ChangeEvent<HTMLInputElement>) => {
     const error = validateAmount(
-      event.target.value,
+      event.target.value || "0",
       ethers.utils.formatEther(totalAmountClaimable)
     )
     setAmountError(error)
@@ -97,50 +109,15 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
   }
 
   const claimTokens = async () => {
-    if (!state.delegate?.address) return
-    if (!amount) return
-
-    const txs = []
-
-    // Add delegate tx if necessary
-    const hasDelegateChanged =
-      state.delegateAddressFromContract !== state.delegate.address
-
-    if (hasDelegateChanged) {
-      const delegateTx = createDelegateTx(state.delegate.address, safe.chainId)
-      txs.push(delegateTx)
-    }
-
-    // Create tx for userAirdrop
-    const [userAmount, ecosystemAmount] = splitAirdropAmounts(
+    const txs = createClaimAndDelegateTxs({
+      appState: state,
+      amount: amount || "0",
+      chainId: safe.chainId,
+      safeAddress: safe.safeAddress,
+      investorClaimable,
+      userClaimable: userAirdropClaimable,
       isMaxAmountSelected,
-      amount,
-      userAirdropClaimable
-    )
-
-    if (userClaim && BigNumber.from(userAmount).gt(0)) {
-      txs.push(
-        ...createAirdropTxs(
-          userClaim,
-          userAmount,
-          safe.safeAddress,
-          chainConstants.USER_AIRDROP_ADDRESS,
-          isTokenPaused
-        )
-      )
-    }
-
-    if (ecosystemClaim && BigNumber.from(ecosystemAmount).gt(0)) {
-      txs.push(
-        ...createAirdropTxs(
-          ecosystemClaim,
-          ecosystemAmount,
-          safe.safeAddress,
-          chainConstants.ECOSYSTEM_AIRDROP_ADDRESS,
-          isTokenPaused
-        )
-      )
-    }
+    })
 
     try {
       await sdk.txs.send({ txs })
@@ -197,10 +174,10 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
         />
         <Typography variant="subtitle2">
           Awarded total allocation is{" "}
-          <span style={{ color: "#121312" }}>
+          <Typography component="span" variant="subtitle2" color="text.primary">
             {formatAmount(Number(ethers.utils.formatEther(totalAllocation)), 2)}{" "}
             SAFE
-          </span>
+          </Typography>
         </Typography>
       </Box>
 
@@ -261,21 +238,38 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
                 </Button>
               </Grid>
             </Grid>
-            <Box display="flex" gap={1} mt={0} mb={4}>
-              <InfoOutlined
-                sx={{
-                  height: "16px",
-                  width: "16px",
-                  marginTop: "4px",
-                  color: ({ palette }) => palette.secondary.main,
-                }}
-              />
-              <Typography variant="subtitle2">
-                Execute at least one claim of any amount of tokens until
-                27.12.22 10:00 CET or your allocation will be transferred back
-                to the SafeDAO treasury
-              </Typography>
-            </Box>
+            {!investorClaim && (
+              <Box display="flex" gap={1} mt={0} mb={4}>
+                <InfoOutlined
+                  sx={{
+                    height: "16px",
+                    width: "16px",
+                    marginTop: "4px",
+                    color: ({ palette }) => palette.secondary.main,
+                  }}
+                />
+                <Typography variant="subtitle2">
+                  Execute at least one claim of any amount of tokens until
+                  27.12.22 10:00 CET or your allocation will be transferred back
+                  to the SafeDAO treasury
+                </Typography>
+              </Box>
+            )}
+            {investorClaim && isTokenPaused && (
+              <Box display="flex" gap={1} mt={0} mb={4}>
+                <InfoOutlined
+                  sx={{
+                    height: "16px",
+                    width: "16px",
+                    marginTop: "4px",
+                    color: ({ palette }) => palette.secondary.main,
+                  }}
+                />
+                <Typography variant="subtitle2">
+                  Claiming will be available once the token is transferable
+                </Typography>
+              </Box>
+            )}
           </>
         </Grid>
         {delegate && (

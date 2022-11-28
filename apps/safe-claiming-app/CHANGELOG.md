@@ -2,6 +2,24 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [0.3.0](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.2.0...safe-claiming-app-0.3.0) (2022-11-18)
+
+
+### Features
+
+* **siwe-delegate-manager:** Sign-In With Ethereum Delegate Manager Safe App ([#499](https://github.com/safe-global/safe-react-apps/issues/499)) ([34c36c5](https://github.com/safe-global/safe-react-apps/commit/34c36c580300672c6366ad2d534de0a3b1534058))
+
+
+
+# [0.2.0](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.1.1...safe-claiming-app-0.2.0) (2022-11-03)
+
+
+### Features
+
+* **safe-claiming-app:** add support for investor vestings ([#562](https://github.com/safe-global/safe-react-apps/issues/562)) ([63899cb](https://github.com/safe-global/safe-react-apps/commit/63899cb032d30db8aa90c8ebc5e4dd7026038246))
+
+
+
 ## [0.1.1](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.1.0...safe-claiming-app-0.1.1) (2022-10-05)
 
 

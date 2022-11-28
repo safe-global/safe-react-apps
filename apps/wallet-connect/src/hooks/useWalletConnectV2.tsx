@@ -6,6 +6,9 @@ import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 import { ChainInfo } from '@gnosis.pm/safe-apps-sdk'
 import { ethers } from 'ethers'
 
+import { useApps } from './useApps'
+import { trackSafeAppEvent } from '../utils/analytics'
+
 const { REACT_APP_WALLETCONNECT_PROJECT_ID, NODE_ENV } = process.env
 
 const isProduction = NODE_ENV === 'production'
@@ -53,6 +56,19 @@ const useWalletConnectV2 = (): useWalletConnectType => {
   const web3Provider = useMemo(
     () => new ethers.providers.Web3Provider(new SafeAppProvider(safe, sdk)),
     [sdk, safe],
+  )
+
+  const { findSafeApp } = useApps()
+
+  const trackEvent = useCallback(
+    (action, meta) => {
+      if (!meta) return
+
+      const safeApp = meta && findSafeApp(meta.url)
+
+      trackSafeAppEvent(action, safeApp?.name || meta?.url)
+    },
+    [findSafeApp],
   )
 
   useEffect(() => {
@@ -104,7 +120,11 @@ const useWalletConnectV2 = (): useWalletConnectType => {
           `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`,
         ),
       )
-      setWcSession(compatibleSession)
+
+      if (compatibleSession) {
+        setWcSession(compatibleSession)
+        trackEvent('New session', compatibleSession.peer.metadata)
+      }
 
       // events
       signClient.on(
@@ -161,6 +181,8 @@ const useWalletConnectV2 = (): useWalletConnectType => {
 
           const wcSession = await acknowledged()
 
+          trackEvent('New session', wcSession.peer.metadata)
+
           setWcSession(wcSession)
         },
       )
@@ -201,6 +223,7 @@ const useWalletConnectV2 = (): useWalletConnectType => {
                 result,
               },
             })
+            trackEvent('Transaction Confirmed', wcSession?.peer.metadata)
             setError(undefined)
           } catch (error: any) {
             const isUserRejection = error?.message?.includes?.('Transaction was rejected')
@@ -237,7 +260,7 @@ const useWalletConnectV2 = (): useWalletConnectType => {
         console.log('ping: ', event)
       })
     }
-  }, [safe, signClient, web3Provider, chainInfo])
+  }, [safe, signClient, web3Provider, chainInfo, trackEvent])
 
   const wcConnect = useCallback<wcConnectType>(
     async (uri: string) => {

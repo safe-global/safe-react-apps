@@ -28,7 +28,7 @@ export const DelegateSwitch = ({
               position: "absolute",
               top: "-10px",
               left: "-10px",
-              background: "white",
+              background: ({ palette }) => palette.background.paper,
             }}
           />
         )}
@@ -69,7 +69,7 @@ export const DelegateSwitch = ({
               position: "absolute",
               top: "-10px",
               left: "-10px",
-              background: "white",
+              background: ({ palette }) => palette.background.paper,
             }}
           />
         )}
