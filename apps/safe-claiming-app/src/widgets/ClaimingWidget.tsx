@@ -157,7 +157,7 @@ const ClaimingWidget = () => {
               >
                 Delegated to
               </Typography>
-              <SelectedDelegate delegate={currentDelegate} onClick={() => {}} />
+              <SelectedDelegate delegate={currentDelegate} />
             </Box>
           )}
         </>
@@ -191,7 +191,7 @@ const ClaimingWidget = () => {
     balanceLoading
   if (onChainRequestsLoading) {
     return (
-      <Box height={`${WIDGET_HEIGHT}px`}>
+      <Box height={`${WIDGET_HEIGHT}px`} sx={{ minWidth: "280px" }}>
         <Skeleton variant="rounded" width="100%" height="100%" />
       </Box>
     )
