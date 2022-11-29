@@ -1,7 +1,8 @@
 import App from "src/App"
 import { useLightDarkTheme } from "src/hooks/useDarkMode"
-import { ThemeProvider } from "@mui/material"
+import { Box, CircularProgress, ThemeProvider } from "@mui/material"
 import Widget from "src/widgets/Widget"
+import SafeProvider from "@gnosis.pm/safe-apps-react-sdk"
 
 export const AppSwitch = () => {
   const theme = useLightDarkTheme()
@@ -9,7 +10,23 @@ export const AppSwitch = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      {widgetId === "#widget" ? <Widget /> : <App />}
+      <SafeProvider
+        loader={
+          <Box
+            display="flex"
+            height="100vh"
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+              backgroundColor: ({ palette }) => palette.background.default,
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        }
+      >
+        {widgetId === "#widget" ? <Widget /> : <App />}
+      </SafeProvider>
     </ThemeProvider>
   )
 }

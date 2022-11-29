@@ -1,3 +1,4 @@
+import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { OpenInNewRounded } from "@mui/icons-material"
 import {
   Box,
@@ -8,6 +9,7 @@ import {
   styled,
   Card,
 } from "@mui/material"
+import { CHAIN_CONSTANTS, FORUM_URL } from "src/config/constants"
 import useSafeSnapshot, {
   type SnapshotProposal,
 } from "src/hooks/useSafeSnapshot"
@@ -126,8 +128,10 @@ const SnapshotProposals = ({
 )
 
 const SnapshotWidget = () => {
-  const SNAPSHOT_LINK = "https://snapshot.org/#/safe.eth"
-  const FORUM_LINK = "https://forum.safe.global"
+  const { safe } = useSafeAppsSDK()
+  const snapshotSpace = CHAIN_CONSTANTS[safe.chainId]?.DELEGATE_ID
+
+  const SNAPSHOT_LINK = `https://snapshot.org/#/${snapshotSpace}`
   const PROPOSAL_AMOUNT = 3
 
   const [proposals, loading] = useSafeSnapshot(PROPOSAL_AMOUNT)
@@ -180,7 +184,7 @@ const SnapshotWidget = () => {
             View all <OpenInNewRounded fontSize="small" />
           </StyledExternalLink>
           <StyledExternalLink
-            href={FORUM_LINK}
+            href={FORUM_URL}
             rel="noreferrer noopener"
             target="_blank"
             variant="subtitle1"
