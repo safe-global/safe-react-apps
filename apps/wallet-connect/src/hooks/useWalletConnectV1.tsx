@@ -6,7 +6,7 @@ import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
 
 import { useApps } from './useApps'
-import { trackSafeAppEvent } from '../utils/analytics'
+import { trackSafeAppEvent, WALLET_CONNECT_VERSION_1 } from '../utils/analytics'
 
 const rejectWithMessage = (connector: WalletConnect, id: number | undefined, message: string) => {
   connector.rejectRequest({ id, error: { message } })
@@ -31,7 +31,7 @@ const useWalletConnectV1 = () => {
 
       const safeApp = meta && findSafeApp(meta.url)
 
-      trackSafeAppEvent(action, safeApp?.name || meta?.url)
+      trackSafeAppEvent(action, WALLET_CONNECT_VERSION_1, safeApp?.name || meta?.url)
     },
     [findSafeApp],
   )

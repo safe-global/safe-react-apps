@@ -7,7 +7,7 @@ import { ChainInfo } from '@gnosis.pm/safe-apps-sdk'
 import { ethers } from 'ethers'
 
 import { useApps } from './useApps'
-import { trackSafeAppEvent } from '../utils/analytics'
+import { trackSafeAppEvent, WALLET_CONNECT_VERSION_2 } from '../utils/analytics'
 
 const { REACT_APP_WALLETCONNECT_PROJECT_ID, NODE_ENV } = process.env
 
@@ -33,6 +33,18 @@ const USER_DISCONNECTED_CODE = 6000
 const USER_REJECTED_REQUEST_CODE = 4001
 // see https://docs.walletconnect.com/2.0/specs/sign/session-namespaces#example-proposal-namespaces-request
 const REJECT_SESSION_ERROR_CODE = 1006
+
+const SAFE_WALLET_METADATA = {
+  name: 'Safe Wallet',
+  description: 'The most trusted platform to manage digital assets on Ethereum',
+  url: 'https://app.safe.global',
+  icons: [
+    'https://app.safe.global/favicons/mstile-150x150.png',
+    'https://app.safe.global/favicons/logo_120x120.png',
+  ],
+}
+
+const logger = isProduction ? undefined : 'debug'
 
 export type wcConnectType = (uri: string) => Promise<void>
 export type wcDisconnectType = () => Promise<void>
@@ -66,7 +78,7 @@ const useWalletConnectV2 = (): useWalletConnectType => {
 
       const safeApp = meta && findSafeApp(meta.url)
 
-      trackSafeAppEvent(action, safeApp?.name || meta?.url)
+      trackSafeAppEvent(action, WALLET_CONNECT_VERSION_2, safeApp?.name || meta?.url)
     },
     [findSafeApp],
   )
@@ -89,20 +101,11 @@ const useWalletConnectV2 = (): useWalletConnectType => {
     const initializeWalletConnectV2Client = async () => {
       const signClient = await SignClient.init({
         projectId: REACT_APP_WALLETCONNECT_PROJECT_ID,
-        logger: isProduction ? undefined : 'debug',
-        metadata: {
-          name: 'Safe Wallet',
-          description: 'The most trusted platform to manage digital assets on Ethereum',
-          url: 'https://app.safe.global',
-          icons: [
-            'https://app.safe.global/favicons/mstile-150x150.png',
-            'https://app.safe.global/favicons/logo_120x120.png',
-          ],
-        },
+        logger,
+        metadata: SAFE_WALLET_METADATA,
       })
 
       setSignClient(signClient)
-      setIsWallectConnectInitialized(true)
     }
 
     initializeWalletConnectV2Client()
@@ -110,9 +113,7 @@ const useWalletConnectV2 = (): useWalletConnectType => {
 
   // we set here the events & restore an active previous session
   useEffect(() => {
-    const isWallectConnectInitialized = signClient && safe?.safeAddress && web3Provider
-
-    if (isWallectConnectInitialized) {
+    if (!isWallectConnectInitialized && signClient) {
       // we try to find a compatible active sesssion
       const activeSessions = signClient.session.getAll()
       const compatibleSession = activeSessions.find(session =>
@@ -259,8 +260,18 @@ const useWalletConnectV2 = (): useWalletConnectType => {
 
         console.log('ping: ', event)
       })
+
+      setIsWallectConnectInitialized(true)
     }
-  }, [safe, signClient, web3Provider, chainInfo, trackEvent])
+  }, [
+    safe,
+    signClient,
+    isWallectConnectInitialized,
+    web3Provider,
+    chainInfo,
+    trackEvent,
+    wcSession,
+  ])
 
   const wcConnect = useCallback<wcConnectType>(
     async (uri: string) => {
