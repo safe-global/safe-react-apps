@@ -1,6 +1,5 @@
-import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
-import { CHAIN_CONSTANTS } from "src/config/constants"
 import useAsync, { type AsyncResult } from "src/hooks/useAsync"
+import { useSafeSnapshotSpace } from "./useSnapshotSpace"
 
 type ShapshotProposalVars = {
   space: string
@@ -67,12 +66,10 @@ const getSnapshot = async (
 
 const getSafeSnapshot = (
   amount: number,
-  chainId: number
+  space: string
 ): Promise<SnapshotProposal[]> => {
-  const SNAPSHOT_SPACE = CHAIN_CONSTANTS[chainId].DELEGATE_ID
-
   return getSnapshot({
-    space: SNAPSHOT_SPACE,
+    space,
     first: amount,
     skip: 0,
     orderBy: "created",
@@ -81,8 +78,8 @@ const getSafeSnapshot = (
 }
 
 const useSafeSnapshot = (amount: number): AsyncResult<SnapshotProposal[]> => {
-  const { safe } = useSafeAppsSDK()
-  return useAsync(() => getSafeSnapshot(amount, safe.chainId), [])
+  const snapshotSpace = useSafeSnapshotSpace()
+  return useAsync(() => getSafeSnapshot(amount, snapshotSpace), [snapshotSpace])
 }
 
 export default useSafeSnapshot

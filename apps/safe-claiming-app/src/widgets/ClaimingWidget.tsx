@@ -57,6 +57,27 @@ const StyledExternalLink = styled(Link)`
   text-decoration: none;
 `
 
+const ExternalLink = ({ url, label }: { url: string; label: string }) => {
+  return (
+    <StyledExternalLink
+      href={url}
+      rel="noreferrer noopener"
+      target="_blank"
+      variant="subtitle1"
+      textAlign="center"
+      fontSize="small"
+    >
+      {label}
+      <OpenInNewRounded
+        sx={{ width: "0.75em", height: "0.75em" }}
+        fontSize="small"
+      />
+    </StyledExternalLink>
+  )
+}
+
+const WIDGET_WIDTH = "300px"
+
 const StyledButton = (props: ButtonProps) => (
   <Button
     size="large"
@@ -131,38 +152,9 @@ const ClaimingWidget = () => {
         <Title>Become part of Safe's future</Title>
         <br />
         <Subtitle>
-          Help us unlocking ownership for everyone by joining the discussions in
-          the{" "}
-          <StyledExternalLink
-            href={FORUM_URL}
-            rel="noreferrer noopener"
-            target="_blank"
-            variant="subtitle1"
-            textAlign="center"
-            fontSize="small"
-          >
-            SafeDAO Forum
-            <OpenInNewRounded
-              sx={{ width: "0.75em", height: "0.75em" }}
-              fontSize="small"
-            />
-          </StyledExternalLink>{" "}
-          and our
-          <StyledExternalLink
-            href={DISCORD_URL}
-            rel="noreferrer noopener"
-            target="_blank"
-            variant="subtitle1"
-            textAlign="center"
-            fontSize="small"
-          >
-            Discord
-            <OpenInNewRounded
-              sx={{ width: "0.75em", height: "0.75em" }}
-              fontSize="small"
-            />
-          </StyledExternalLink>
-          .
+          Help us unlock ownership for everyone by joining the discussions on
+          the <ExternalLink url={FORUM_URL} label="SafeDAO Forum" /> and our{" "}
+          <ExternalLink url={DISCORD_URL} label="Discord" />.
         </Subtitle>
       </div>
     </>
@@ -238,8 +230,8 @@ const ClaimingWidget = () => {
       <Box
         height={`${WIDGET_HEIGHT}px`}
         sx={{
-          minWidth: "300px",
-          maxWidth: "300px",
+          minWidth: WIDGET_WIDTH,
+          maxWidth: WIDGET_WIDTH,
         }}
       >
         <Skeleton variant="rounded" width="100%" height="100%" />
@@ -248,7 +240,7 @@ const ClaimingWidget = () => {
   }
 
   return (
-    <Card elevation={0} sx={{ minWidth: "300px", maxWidth: "300px" }}>
+    <Card elevation={0} sx={{ minWidth: WIDGET_WIDTH, maxWidth: WIDGET_WIDTH }}>
       <SpaceContent sx={{ alignItems: "center" }}>
         {votingPower.eq(0) ? ctaWidget : votingPowerWidget}
       </SpaceContent>

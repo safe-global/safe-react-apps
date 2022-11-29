@@ -1,4 +1,3 @@
-import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
 import { OpenInNewRounded } from "@mui/icons-material"
 import {
   Box,
@@ -9,10 +8,11 @@ import {
   styled,
   Card,
 } from "@mui/material"
-import { CHAIN_CONSTANTS, FORUM_URL } from "src/config/constants"
+import { FORUM_URL } from "src/config/constants"
 import useSafeSnapshot, {
   type SnapshotProposal,
 } from "src/hooks/useSafeSnapshot"
+import { useSafeSnapshotSpace } from "src/hooks/useSnapshotSpace"
 import { SpaceContent } from "src/widgets/styles"
 import palette from "../config/colors"
 
@@ -128,8 +128,7 @@ const SnapshotProposals = ({
 )
 
 const SnapshotWidget = () => {
-  const { safe } = useSafeAppsSDK()
-  const snapshotSpace = CHAIN_CONSTANTS[safe.chainId]?.DELEGATE_ID
+  const snapshotSpace = useSafeSnapshotSpace()
 
   const SNAPSHOT_LINK = `https://snapshot.org/#/${snapshotSpace}`
   const PROPOSAL_AMOUNT = 3
