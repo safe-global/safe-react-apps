@@ -1,6 +1,7 @@
 import { Box } from '@material-ui/core'
 import { AppBar as MuiAppBar, Typography, styled } from '@mui/material'
 import { truncateEthAddress } from '../lib/utils'
+import Identicon from './Identicon'
 
 const AppBar = ({ account }: { account: string }) => {
   return (
@@ -8,12 +9,14 @@ const AppBar = ({ account }: { account: string }) => {
       <Typography variant="h6" pl={4}>
         MetaMask Institutional
       </Typography>
-      <Box display="flex">
-        <Typography pr={1}>MMI Account: </Typography>
-        <Typography pr={4} fontWeight={700}>
-          {truncateEthAddress(account)}
-        </Typography>
-      </Box>
+      {account && (
+        <Box display="flex" alignItems="center">
+          <Identicon address={account} size={24} />
+          <Typography pr={4} pl={1} fontWeight={700}>
+            {truncateEthAddress(account)}
+          </Typography>
+        </Box>
+      )}
     </StyledAppBar>
   )
 }
