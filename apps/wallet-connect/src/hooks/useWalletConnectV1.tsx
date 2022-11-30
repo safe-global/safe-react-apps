@@ -5,14 +5,15 @@ import { IClientMeta, IWalletConnectSession } from '@walletconnect/legacy-types'
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
 
-import { useApps } from './useApps'
-import { trackSafeAppEvent, WALLET_CONNECT_VERSION_1 } from '../utils/analytics'
+import { WalletConnectVersion, WALLET_CONNECT_VERSION_1 } from '../utils/analytics'
 
 const rejectWithMessage = (connector: WalletConnect, id: number | undefined, message: string) => {
   connector.rejectRequest({ id, error: { message } })
 }
 
-const useWalletConnectV1 = () => {
+const useWalletConnectV1 = (
+  trackEvent: (action: string, version: WalletConnectVersion, meta?: IClientMeta | null) => void,
+) => {
   const { safe, sdk } = useSafeAppsSDK()
   const [wcClientData, setWcClientData] = useState<IClientMeta | null>(null)
   const [connector, setConnector] = useState<WalletConnect | undefined>()
@@ -21,20 +22,7 @@ const useWalletConnectV1 = () => {
     [sdk, safe],
   )
 
-  const { findSafeApp } = useApps()
-
   const localStorageSessionKey = useRef(`session_${safe.safeAddress}`)
-
-  const trackEvent = useCallback(
-    (action, meta) => {
-      if (!meta) return
-
-      const safeApp = meta && findSafeApp(meta.url)
-
-      trackSafeAppEvent(action, WALLET_CONNECT_VERSION_1, safeApp?.name || meta?.url)
-    },
-    [findSafeApp],
-  )
 
   const wcDisconnect = useCallback(async () => {
     try {
@@ -66,7 +54,7 @@ const useWalletConnectV1 = () => {
           chainId: safe.chainId,
         })
 
-        trackEvent('New session', wcConnector.peerMeta)
+        trackEvent('New session', WALLET_CONNECT_VERSION_1, wcConnector.peerMeta)
 
         setWcClientData(payload.params[0].peerMeta)
       })
@@ -79,7 +67,7 @@ const useWalletConnectV1 = () => {
         try {
           let result = await web3Provider.send(payload.method, payload.params)
 
-          trackEvent('Transaction Confirmed', wcConnector.peerMeta)
+          trackEvent('Transaction Confirmed', WALLET_CONNECT_VERSION_1, wcConnector.peerMeta)
 
           wcConnector.approveRequest({
             id: payload.id,

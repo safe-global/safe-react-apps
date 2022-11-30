@@ -1,10 +1,16 @@
 import { useCallback } from 'react'
+import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { CoreTypes } from '@walletconnect/types'
+import { IClientMeta } from '@walletconnect/legacy-types'
+
 import useWalletConnectV1 from './useWalletConnectV1'
 import useWalletConnectV2 from './useWalletConnectV2'
+import { trackSafeAppEvent, WalletConnectVersion } from '../utils/analytics'
+import { useApps } from './useApps'
 
 export type wcConnectType = (uri: string) => Promise<void>
 export type wcDisconnectType = () => Promise<void>
+export type MetadataType = CoreTypes.Metadata | IClientMeta | null
 
 export type useWalletConnectType = {
   wcConnect: wcConnectType
@@ -12,15 +18,30 @@ export type useWalletConnectType = {
   wcClientData: CoreTypes.Metadata | undefined
   isWallectConnectInitialized: boolean
   error: string | undefined
+  findSafeApp: (safeAppUrl: string) => SafeAppData | undefined
+  openSafeApp: (safeAppUrl: string) => void
 }
 
 const useWalletConnect = (): useWalletConnectType => {
+  const { findSafeApp, openSafeApp } = useApps()
+
+  const trackEvent = useCallback(
+    (action: string, version: WalletConnectVersion, meta?: MetadataType) => {
+      if (!meta) return
+
+      const safeApp = meta && findSafeApp(meta.url)
+
+      trackSafeAppEvent(action, version, safeApp?.name || meta?.url)
+    },
+    [findSafeApp],
+  )
+
   // wallet-connect v1
   const {
     wcConnect: wcConnectV1,
     wcClientData: wcSessionV1,
     wcDisconnect: wcDisconnectV1,
-  } = useWalletConnectV1()
+  } = useWalletConnectV1(trackEvent)
 
   // wallet-connect v2
   const {
@@ -29,7 +50,7 @@ const useWalletConnect = (): useWalletConnectType => {
     wcDisconnect: wcDisconnectV2,
     isWallectConnectInitialized,
     error,
-  } = useWalletConnectV2()
+  } = useWalletConnectV2(trackEvent)
 
   const wcConnect = useCallback<wcConnectType>(
     async (uri: string) => {
@@ -55,7 +76,15 @@ const useWalletConnect = (): useWalletConnectType => {
 
   const wcClientData = wcSessionV1 || wcSessionV2
 
-  return { wcConnect, wcClientData, wcDisconnect, isWallectConnectInitialized, error }
+  return {
+    wcConnect,
+    wcClientData,
+    wcDisconnect,
+    isWallectConnectInitialized,
+    error,
+    findSafeApp,
+    openSafeApp,
+  }
 }
 
 export default useWalletConnect

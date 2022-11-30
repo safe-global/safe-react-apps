@@ -39,10 +39,3 @@ Object.defineProperty(window.HTMLCanvasElement.prototype, 'getContext', {
     }
   },
 })
-
-// TODO: implement walletconnect v2 tests
-jest.mock('@walletconnect/sign-client', () => {
-  return {
-    init: () => undefined,
-  }
-})

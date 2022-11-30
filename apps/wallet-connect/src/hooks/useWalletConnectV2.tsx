@@ -1,13 +1,12 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import SignClient from '@walletconnect/sign-client'
-import { SignClientTypes, SessionTypes } from '@walletconnect/types'
+import { SignClientTypes, SessionTypes, CoreTypes } from '@walletconnect/types'
 import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 import { ChainInfo } from '@gnosis.pm/safe-apps-sdk'
 import { ethers } from 'ethers'
 
-import { useApps } from './useApps'
-import { trackSafeAppEvent, WALLET_CONNECT_VERSION_2 } from '../utils/analytics'
+import { WalletConnectVersion, WALLET_CONNECT_VERSION_2 } from '../utils/analytics'
 
 const { REACT_APP_WALLETCONNECT_PROJECT_ID, NODE_ENV } = process.env
 
@@ -57,7 +56,9 @@ type useWalletConnectType = {
   error: string | undefined
 }
 
-const useWalletConnectV2 = (): useWalletConnectType => {
+const useWalletConnectV2 = (
+  trackEvent: (action: string, version: WalletConnectVersion, meta?: CoreTypes.Metadata) => void,
+): useWalletConnectType => {
   const [signClient, setSignClient] = useState<SignClient>()
   const [wcSession, setWcSession] = useState<SessionTypes.Struct>()
   const [isWallectConnectInitialized, setIsWallectConnectInitialized] = useState<boolean>(false)
@@ -68,19 +69,6 @@ const useWalletConnectV2 = (): useWalletConnectType => {
   const web3Provider = useMemo(
     () => new ethers.providers.Web3Provider(new SafeAppProvider(safe, sdk)),
     [sdk, safe],
-  )
-
-  const { findSafeApp } = useApps()
-
-  const trackEvent = useCallback(
-    (action, meta) => {
-      if (!meta) return
-
-      const safeApp = meta && findSafeApp(meta.url)
-
-      trackSafeAppEvent(action, WALLET_CONNECT_VERSION_2, safeApp?.name || meta?.url)
-    },
-    [findSafeApp],
   )
 
   useEffect(() => {
@@ -124,7 +112,7 @@ const useWalletConnectV2 = (): useWalletConnectType => {
 
       if (compatibleSession) {
         setWcSession(compatibleSession)
-        trackEvent('New session', compatibleSession.peer.metadata)
+        trackEvent('New session', WALLET_CONNECT_VERSION_2, compatibleSession.peer.metadata)
       }
 
       // events
@@ -132,7 +120,7 @@ const useWalletConnectV2 = (): useWalletConnectType => {
         'session_proposal',
         async (proposal: SignClientTypes.EventArguments['session_proposal']) => {
           const { id, params } = proposal
-          const { requiredNamespaces, relays } = params
+          const { requiredNamespaces } = params
           const EIP155Namespace = requiredNamespaces[EVMBasedNamespaces]
 
           // at least a EVM-based (eip155) namespace should be present
@@ -170,7 +158,6 @@ const useWalletConnectV2 = (): useWalletConnectType => {
 
           const { acknowledged } = await signClient.approve({
             id,
-            relayProtocol: relays[0].protocol,
             namespaces: {
               eip155: {
                 accounts: safeAccount,
@@ -182,7 +169,7 @@ const useWalletConnectV2 = (): useWalletConnectType => {
 
           const wcSession = await acknowledged()
 
-          trackEvent('New session', wcSession.peer.metadata)
+          trackEvent('New session', WALLET_CONNECT_VERSION_2, wcSession.peer.metadata)
 
           setWcSession(wcSession)
         },
@@ -215,6 +202,7 @@ const useWalletConnectV2 = (): useWalletConnectType => {
           }
 
           try {
+            setError(undefined)
             const result = await web3Provider.send(method, params)
             await signClient.respond({
               topic,
@@ -224,9 +212,9 @@ const useWalletConnectV2 = (): useWalletConnectType => {
                 result,
               },
             })
-            trackEvent('Transaction Confirmed', wcSession?.peer.metadata)
-            setError(undefined)
+            trackEvent('Transaction Confirmed', WALLET_CONNECT_VERSION_2, wcSession?.peer.metadata)
           } catch (error: any) {
+            setError(error?.message)
             const isUserRejection = error?.message?.includes?.('Transaction was rejected')
             const code = isUserRejection ? USER_REJECTED_REQUEST_CODE : INVALID_METHOD_ERROR_CODE
             signClient.respond({

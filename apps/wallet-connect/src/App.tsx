@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
 import Container from '@material-ui/core/Container'
 import { Card, Loader } from '@gnosis.pm/safe-react-components'
+
 import useWalletConnect from './hooks/useWalletConnect'
-import { useApps } from './hooks/useApps'
 import AppBar from './components/AppBar'
 import Help from './components/Help'
 import Disconnected from './components/Disconnected'
@@ -19,10 +19,16 @@ enum CONNECTION_STATUS {
 }
 
 const App = () => {
-  const { wcConnect, wcClientData, wcDisconnect, isWallectConnectInitialized, error } =
-    useWalletConnect()
+  const {
+    wcConnect,
+    wcClientData,
+    wcDisconnect,
+    isWallectConnectInitialized,
+    error,
+    openSafeApp,
+    findSafeApp,
+  } = useWalletConnect()
 
-  const { findSafeApp, openSafeApp } = useApps()
   const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED)
   const [isNavigatingToSafeApp, setIsNavigatingToSafeApp] = useState(false)
 
