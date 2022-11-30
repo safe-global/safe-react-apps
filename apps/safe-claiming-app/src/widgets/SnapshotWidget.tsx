@@ -8,9 +8,11 @@ import {
   styled,
   Card,
 } from "@mui/material"
+import { FORUM_URL } from "src/config/constants"
 import useSafeSnapshot, {
   type SnapshotProposal,
 } from "src/hooks/useSafeSnapshot"
+import { useSafeSnapshotSpace } from "src/hooks/useSnapshotSpace"
 import { SpaceContent } from "src/widgets/styles"
 import palette from "../config/colors"
 
@@ -126,8 +128,9 @@ const SnapshotProposals = ({
 )
 
 const SnapshotWidget = () => {
-  const SNAPSHOT_LINK = "https://snapshot.org/#/safe.eth"
-  const FORUM_LINK = "https://forum.safe.global"
+  const snapshotSpace = useSafeSnapshotSpace()
+
+  const SNAPSHOT_LINK = `https://snapshot.org/#/${snapshotSpace}`
   const PROPOSAL_AMOUNT = 3
 
   const [proposals, loading] = useSafeSnapshot(PROPOSAL_AMOUNT)
@@ -180,7 +183,7 @@ const SnapshotWidget = () => {
             View all <OpenInNewRounded fontSize="small" />
           </StyledExternalLink>
           <StyledExternalLink
-            href={FORUM_LINK}
+            href={FORUM_URL}
             rel="noreferrer noopener"
             target="_blank"
             variant="subtitle1"

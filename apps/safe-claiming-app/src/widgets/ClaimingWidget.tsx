@@ -1,4 +1,5 @@
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
+import { OpenInNewRounded } from "@mui/icons-material"
 import {
   Box,
   Button,
@@ -8,12 +9,18 @@ import {
   Link,
   Skeleton,
   Card,
+  styled,
 } from "@mui/material"
 import { BigNumber, ethers } from "ethers"
 import { useMemo } from "react"
 import { ReactComponent as SafeIcon } from "src/assets/images/safe-token.svg"
 import { SelectedDelegate } from "src/components/steps/Claim/SelectedDelegate"
-import { CLAIMING_APP_URL, WEB_APP_URL } from "src/config/constants"
+import {
+  CLAIMING_APP_URL,
+  DISCORD_URL,
+  FORUM_URL,
+  WEB_APP_URL,
+} from "src/config/constants"
 import { useAirdropFile } from "src/hooks/useAirdropFile"
 import { useDelegate } from "src/hooks/useDelegate"
 import { useDelegatesFile } from "src/hooks/useDelegatesFile"
@@ -41,6 +48,35 @@ const Subtitle = (props: TypographyProps) => (
     {props.children}
   </Typography>
 )
+
+const StyledExternalLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  gap: 4px;
+  text-decoration: none;
+`
+
+const ExternalLink = ({ url, label }: { url: string; label: string }) => {
+  return (
+    <StyledExternalLink
+      href={url}
+      rel="noreferrer noopener"
+      target="_blank"
+      variant="subtitle1"
+      textAlign="center"
+      fontSize="small"
+    >
+      {label}
+      <OpenInNewRounded
+        sx={{ width: "0.75em", height: "0.75em" }}
+        fontSize="small"
+      />
+    </StyledExternalLink>
+  )
+}
+
+const WIDGET_WIDTH = "300px"
 
 const StyledButton = (props: ButtonProps) => (
   <Button
@@ -113,14 +149,14 @@ const ClaimingWidget = () => {
   const ctaWidget = (
     <>
       <div>
-        <Title>Become the part of Safe's future!</Title>
+        <Title>Become part of Safe's future</Title>
         <br />
         <Subtitle>
-          You will be able to buy $SAFE once the token transferability is
-          enabled.
+          Help us unlock ownership for everyone by joining the discussions on
+          the <ExternalLink url={FORUM_URL} label="SafeDAO Forum" /> and our{" "}
+          <ExternalLink url={DISCORD_URL} label="Discord" />.
         </Subtitle>
       </div>
-      <StyledButton disabled>Buy Tokens</StyledButton>
     </>
   )
 
@@ -191,14 +227,20 @@ const ClaimingWidget = () => {
     balanceLoading
   if (onChainRequestsLoading) {
     return (
-      <Box height={`${WIDGET_HEIGHT}px`} sx={{ minWidth: "280px" }}>
+      <Box
+        height={`${WIDGET_HEIGHT}px`}
+        sx={{
+          minWidth: WIDGET_WIDTH,
+          maxWidth: WIDGET_WIDTH,
+        }}
+      >
         <Skeleton variant="rounded" width="100%" height="100%" />
       </Box>
     )
   }
 
   return (
-    <Card elevation={0} sx={{ minWidth: "280px" }}>
+    <Card elevation={0} sx={{ minWidth: WIDGET_WIDTH, maxWidth: WIDGET_WIDTH }}>
       <SpaceContent sx={{ alignItems: "center" }}>
         {votingPower.eq(0) ? ctaWidget : votingPowerWidget}
       </SpaceContent>
