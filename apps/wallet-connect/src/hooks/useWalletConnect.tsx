@@ -4,6 +4,8 @@ import WalletConnect from '@walletconnect/client'
 import { IClientMeta, IWalletConnectSession } from '@walletconnect/types'
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
+import { trackSafeAppEvent } from '../utils/analytics'
+import { useApps } from './useApps'
 
 const rejectWithMessage = (connector: WalletConnect, id: number | undefined, message: string) => {
   connector.rejectRequest({ id, error: { message } })
@@ -13,12 +15,24 @@ const useWalletConnect = () => {
   const { safe, sdk } = useSafeAppsSDK()
   const [wcClientData, setWcClientData] = useState<IClientMeta | null>(null)
   const [connector, setConnector] = useState<WalletConnect | undefined>()
+  const { findSafeApp } = useApps()
   const web3Provider = useMemo(
     () => new ethers.providers.Web3Provider(new SafeAppProvider(safe, sdk)),
     [sdk, safe],
   )
 
   const localStorageSessionKey = useRef(`session_${safe.safeAddress}`)
+
+  const trackEvent = useCallback(
+    (action, meta) => {
+      if (!meta) return
+
+      const safeApp = meta && findSafeApp(meta.url)
+
+      trackSafeAppEvent(action, safeApp?.name || meta?.url)
+    },
+    [findSafeApp],
+  )
 
   const wcDisconnect = useCallback(async () => {
     try {
@@ -50,6 +64,8 @@ const useWalletConnect = () => {
           chainId: safe.chainId,
         })
 
+        trackEvent('New session', wcConnector.peerMeta)
+
         setWcClientData(payload.params[0].peerMeta)
       })
 
@@ -60,6 +76,8 @@ const useWalletConnect = () => {
 
         try {
           let result = await web3Provider.send(payload.method, payload.params)
+
+          trackEvent('Transaction Confirmed', wcConnector.peerMeta)
 
           wcConnector.approveRequest({
             id: payload.id,
@@ -77,7 +95,7 @@ const useWalletConnect = () => {
         wcDisconnect()
       })
     },
-    [safe, wcDisconnect, web3Provider],
+    [safe, trackEvent, web3Provider, wcDisconnect],
   )
 
   useEffect(() => {

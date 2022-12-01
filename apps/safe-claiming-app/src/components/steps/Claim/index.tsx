@@ -52,6 +52,7 @@ const validateAmount = (amount: string, maxAmount: string) => {
 
 const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
   const { sdk, safe } = useSafeAppsSDK()
+
   const { delegate, userClaim, ecosystemClaim, investorClaim, isTokenPaused } =
     state
   const [amount, setAmount] = useState<string>()
@@ -173,10 +174,10 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
         />
         <Typography variant="subtitle2">
           Awarded total allocation is{" "}
-          <span style={{ color: "#121312" }}>
+          <Typography component="span" variant="subtitle2" color="text.primary">
             {formatAmount(Number(ethers.utils.formatEther(totalAllocation)), 2)}{" "}
             SAFE
-          </span>
+          </Typography>
         </Typography>
       </Box>
 

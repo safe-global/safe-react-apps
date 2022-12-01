@@ -5,6 +5,7 @@ import { ReactComponent as PieChart } from "src/assets/images/pie-chart-educatio
 import { NavButtons } from "src/components/helpers/NavButtons"
 import { FULL_PROPOSAL_URL } from "src/config/constants"
 import { ReactComponent as ExternalLink } from "src/assets/images/external_link.svg"
+import lightPalette from "src/config/colors"
 
 const PercentageWrapper = styled(Typography)`
   border-radius: 6px;
@@ -51,6 +52,7 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
             <PercentageWrapper
               sx={{
                 backgroundColor: ({ palette }) => palette.safeGreen.main,
+                color: lightPalette.text.primary,
               }}
             >
               60%
@@ -70,6 +72,7 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
             <PercentageWrapper
               sx={{
                 backgroundColor: ({ palette }) => palette.secondary.light,
+                color: lightPalette.text.primary,
               }}
             >
               15%
@@ -85,6 +88,7 @@ const Distribution = ({ handleNext, handleBack }: Props) => {
             <PercentageWrapper
               sx={{
                 backgroundColor: ({ palette }) => palette.info.main,
+                color: lightPalette.text.primary,
               }}
             >
               15%

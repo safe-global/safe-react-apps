@@ -54,6 +54,8 @@ runs:
         REACT_APP_TENDERLY_ORG_NAME: ${{ inputs.react-app-tenderly-org-name }}
         REACT_APP_TENDERLY_PROJECT_NAME: ${{ inputs.react-app-tenderly-project-name }}
         REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL: ${{ inputs.react-app-tenderly-simulate-endpoint-url }}
+        REACT_APP_MMI_BACKEND_BASE_URL: ${{ inputs.react-app-mmi-backend-base-url }}
+        REACT_APP_MMI_ENVIRONMENT: ${{ inputs.react-app-mmi-environment }}
 
     - name: Push changes
       uses: ad-m/github-push-action@8407731efefc0d8f72af254c74276b7a90be36e1

@@ -7,7 +7,6 @@ import { delegateRegistryInterface } from "../contracts/delegateRegistry"
 
 describe("createClaimAndDelegateTxs", () => {
   const mockUserAirdropAddress = ethers.utils.hexZeroPad("0x2", 20)
-  const mockGuardianAirdropAddress = ethers.utils.hexZeroPad("0x3", 20)
   const mockInvestorVestingAddress = ethers.utils.hexZeroPad("0x4", 20)
 
   it("only delegate", () => {

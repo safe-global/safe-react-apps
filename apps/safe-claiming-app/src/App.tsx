@@ -1,5 +1,5 @@
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
-import { styled } from "@mui/material"
+import { styled, useTheme } from "@mui/material"
 import {
   lazy,
   ReactElement,
@@ -16,7 +16,6 @@ import { ScrollContextProvider } from "./components/helpers/ScrollContext"
 import { UnexpectedError } from "./components/helpers/UnexpectedError"
 import { UnsupportedNetwork } from "./components/helpers/UnsupportedNetwork"
 import { Chains } from "./config/constants"
-import theme from "./config/theme"
 import { useAirdropFile } from "./hooks/useAirdropFile"
 import { useDelegate } from "./hooks/useDelegate"
 import { useDelegatesFile, DelegateEntry } from "./hooks/useDelegatesFile"
@@ -98,6 +97,7 @@ const initialState: AppState = {
 }
 
 const App = (): ReactElement => {
+  const { palette } = useTheme()
   const [appState, setAppState] = useState<AppState>(initialState)
 
   const { safe } = useSafeAppsSDK()
@@ -242,8 +242,8 @@ const App = (): ReactElement => {
         progress={progress}
         color={
           hasNoAirdrop || fatalError
-            ? theme.palette.primary.main
-            : theme.palette.safeGreen.main
+            ? palette.primary.main
+            : palette.safeGreen.main
         }
       />
 
