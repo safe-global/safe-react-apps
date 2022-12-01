@@ -7,31 +7,38 @@ import {
   findByAltText,
   findByText,
 } from '@testing-library/react'
+import { SignClientTypes } from '@walletconnect/types'
 
 import App from './App'
-import { mockChainInfo, mockOriginUrl, mockSafeAppsListResponse, mockSafeInfo } from './mocks/mocks'
+import { safeAllowedEvents, safeAllowedMethods } from './hooks/useWalletConnectV2'
+import {
+  mockChainInfo,
+  mockOriginUrl,
+  mockSafeAppsListResponse,
+  mockSafeInfo,
+  mockSessionProposal,
+  mockV2SessionObj,
+} from './mocks/mocks'
 import { renderWithProviders } from './utils/test-helpers'
 
 const CONNECTION_INPUT_TEXT = 'QR code or connection link'
 const HELP_TITLE = 'How to connect to a Dapp?'
 
-// TODO: create a input type URI test
-
-// TODO: create version 2 URI
 const version1URI =
   'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.safe.global&key=xxxxxxxxxxx'
 
-jest.mock('./utils/analytics', () => ({
-  trackSafeAppEvent: (event: any) => {
-    console.log('@@@@@ trackSafeAppEvent! ', event)
-  },
-}))
+const version2URI =
+  'wc:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@2?relay-protocol=irn&symKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => {
   return {
     getSafeApps: () => Promise.resolve(mockSafeAppsListResponse),
   }
 })
+
+jest.mock('./utils/analytics', () => ({
+  trackSafeAppEvent: jest.fn(),
+}))
 
 jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
   const originalModule = jest.requireActual('@gnosis.pm/safe-apps-react-sdk')
@@ -71,25 +78,31 @@ jest.mock('@walletconnect/client', () => {
   }
 })
 
+const mockPairing = jest.fn()
+const mockWalletconnectEvent = jest.fn()
+const mockReject = jest.fn()
+const mockApprove = jest.fn()
+const mockRespond = jest.fn()
+const mockDisconnect = jest.fn()
+
 // walletconnect version 2 mock
 jest.mock('@walletconnect/sign-client', () => {
   return {
     init: () => ({
       // default session:
       session: { getAll: () => [] },
-      // on session request:
-      on: jest.fn(),
-      reject: jest.fn(),
-      approve: jest.fn(),
-      respond: jest.fn(),
+      on: mockWalletconnectEvent,
+      reject: mockReject,
+      approve: mockApprove,
+      respond: mockRespond,
       // pair connection request
       core: {
         pairing: {
-          pair: jest.fn(),
+          pair: mockPairing,
         },
       },
       // disconnect
-      disconnect: jest.fn(),
+      disconnect: mockDisconnect,
     }),
   }
 })
@@ -104,10 +117,19 @@ jest.mock('jsqr', () => {
 })
 
 describe('Walletconnect unit tests', () => {
+  beforeEach(() => {
+    mockPairing.mockClear()
+    mockWalletconnectEvent.mockClear()
+    mockReject.mockClear()
+    mockApprove.mockClear()
+    mockRespond.mockClear()
+    mockDisconnect.mockClear()
+  })
+
   it('Renders Walletconnect Safe App', async () => {
     renderWithProviders(<App />)
 
-    // wait for loader is removed
+    // wait for loader to be removed
     await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
     const titleNode = screen.getByText('Wallet Connect')
@@ -125,7 +147,7 @@ describe('Walletconnect unit tests', () => {
   it('Shows scan QR dialog', async () => {
     renderWithProviders(<App />)
 
-    // wait for loader is removed
+    // wait for loader to be removed
     await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
     const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
@@ -143,13 +165,13 @@ describe('Walletconnect unit tests', () => {
     Object.defineProperty(window.HTMLMediaElement.prototype, 'play', {
       writable: true,
       value: jest.fn().mockImplementationOnce(() => {
-        throw 'Expected error, testing camera permission error...'
+        throw 'This is an Expected error, just testing camera permission error...'
       }),
     })
 
     renderWithProviders(<App />)
 
-    // wait for loader is removed
+    // wait for loader to be removed
     await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
     const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
@@ -175,30 +197,14 @@ describe('Walletconnect unit tests', () => {
       it('Connects via onPaste valid v1 URI', async () => {
         renderWithProviders(<App />)
 
-        // wait for loader is removed
+        // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
         const instructionsNode = screen.getByText(HELP_TITLE)
 
         expect(instructionsNode).toBeInTheDocument()
 
-        const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)
-
-        const URIPasteEvent = {
-          clipboardData: {
-            items: [
-              {
-                kind: 'string',
-                type: 'text/plain',
-              },
-            ],
-            getData: () => version1URI,
-          },
-        }
-
-        const pasteEvent = createEvent.paste(inputNode, URIPasteEvent)
-
-        fireEvent(inputNode, pasteEvent)
+        pasteWalletConnectURI(version1URI)
 
         expect(instructionsNode).not.toBeInTheDocument()
 
@@ -221,30 +227,14 @@ describe('Walletconnect unit tests', () => {
       it('No connection is created if an invalid v1 URI is provided', async () => {
         renderWithProviders(<App />)
 
-        // wait for loader is removed
+        // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
         const instructionsNode = screen.getByText(HELP_TITLE)
 
         expect(instructionsNode).toBeInTheDocument()
 
-        const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)
-
-        const URIPasteEvent = {
-          clipboardData: {
-            items: [
-              {
-                kind: 'string',
-                type: 'text/plain',
-              },
-            ],
-            getData: () => 'Invalid version 1 URI',
-          },
-        }
-
-        const pasteEvent = createEvent.paste(inputNode, URIPasteEvent)
-
-        fireEvent(inputNode, pasteEvent)
+        pasteWalletConnectURI('Invalid version 1 URI')
 
         const connectedNode = screen.queryByText('CONNECTED')
         expect(connectedNode).not.toBeInTheDocument()
@@ -254,7 +244,7 @@ describe('Walletconnect unit tests', () => {
     it('Scans a valid v1 QR code', async () => {
       renderWithProviders(<App />)
 
-      // wait for loader is removed
+      // wait for loader to be removed
       await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
       const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
@@ -278,30 +268,14 @@ describe('Walletconnect unit tests', () => {
       it('Disconnects if user clicks on Disconnect button', async () => {
         renderWithProviders(<App />)
 
-        // wait for loader is removed
+        // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
         const instructionsNode = screen.getByText(HELP_TITLE)
 
         expect(instructionsNode).toBeInTheDocument()
 
-        const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)
-
-        const URIPasteEvent = {
-          clipboardData: {
-            items: [
-              {
-                kind: 'string',
-                type: 'text/plain',
-              },
-            ],
-            getData: () => version1URI,
-          },
-        }
-
-        const pasteEvent = createEvent.paste(inputNode, URIPasteEvent)
-
-        fireEvent(inputNode, pasteEvent)
+        pasteWalletConnectURI(version1URI)
 
         const disconnectButtonNode = screen.getByText('Disconnect')
         expect(disconnectButtonNode).toBeInTheDocument()
@@ -309,19 +283,81 @@ describe('Walletconnect unit tests', () => {
         fireEvent.click(disconnectButtonNode)
 
         waitFor(() => {
-          expect(inputNode).toBeInTheDocument()
           expect(instructionsNode).toBeInTheDocument()
+          expect(screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)).toBeInTheDocument()
         })
       })
     })
   })
 
-  // TODO: ADD Version 2 tests
-  // describe('Walletconnect version 2', () => {
-  //   // TODO
-  // })
+  describe('Walletconnect version 2', () => {
+    it('Pairing via valid v2 URI', async () => {
+      renderWithProviders(<App />)
 
-  // TODO: check mockrestore here
+      // wait for loader to be removed
+      await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+      const instructionsNode = screen.getByText(HELP_TITLE)
+
+      expect(instructionsNode).toBeInTheDocument()
+
+      expect(mockPairing).not.toBeCalled()
+
+      pasteWalletConnectURI(version2URI)
+
+      expect(mockPairing).toBeCalledWith({ uri: version2URI })
+    })
+
+    it('Session Proposal event', async () => {
+      let sessionProposalEvent = (
+        proposal: SignClientTypes.EventArguments['session_proposal'],
+      ) => {}
+
+      mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+        if (eventType === 'session_proposal') {
+          sessionProposalEvent = callback
+        }
+      })
+
+      mockApprove.mockImplementation(() => {
+        return {
+          acknowledged: () => Promise.resolve(mockV2SessionObj),
+        }
+      })
+
+      renderWithProviders(<App />)
+
+      // wait for loader to be removed
+      await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+      expect(mockApprove).not.toBeCalled()
+      expect(mockReject).not.toBeCalled()
+
+      // simulate a session proposal event
+      sessionProposalEvent(mockSessionProposal)
+
+      const dappNameNode = await screen.findByText('Test v2 Dapp name')
+      expect(dappNameNode).toBeInTheDocument()
+
+      // no rejection is present in valid sessions
+      expect(mockReject).not.toBeCalled()
+
+      const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
+
+      // approved session is sent
+      expect(mockApprove).toBeCalledWith({
+        id: mockSessionProposal.id,
+        namespaces: {
+          eip155: {
+            accounts: safeAccount,
+            methods: safeAllowedMethods,
+            events: safeAllowedEvents,
+          },
+        },
+      })
+    })
+  })
+
   it('Closes webcam connection by closing the QR dialog', async () => {
     const stopWebcamSpy = jest.fn()
 
@@ -352,7 +388,7 @@ describe('Walletconnect unit tests', () => {
 
     renderWithProviders(<App />)
 
-    // wait for loader is removed
+    // wait for loader to be removed
     await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
     expect(openWebcamSpy).not.toHaveBeenCalled()
@@ -382,3 +418,24 @@ describe('Walletconnect unit tests', () => {
     expect(stopWebcamSpy).toHaveBeenCalled()
   })
 })
+
+// helper function to populate the input with the URI unsing an onPaste event
+const pasteWalletConnectURI = (uri: string) => {
+  const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)
+
+  const URIPasteEvent = {
+    clipboardData: {
+      items: [
+        {
+          kind: 'string',
+          type: 'text/plain',
+        },
+      ],
+      getData: () => uri,
+    },
+  }
+
+  const pasteEvent = createEvent.paste(inputNode, URIPasteEvent)
+
+  fireEvent(inputNode, pasteEvent)
+}

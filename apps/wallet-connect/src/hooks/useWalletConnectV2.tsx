@@ -12,7 +12,7 @@ const { REACT_APP_WALLETCONNECT_PROJECT_ID, NODE_ENV } = process.env
 
 const isProduction = NODE_ENV === 'production'
 
-const safeAllowedMethods: string[] = [
+export const safeAllowedMethods: string[] = [
   'eth_sendTransaction',
   'eth_signTransaction', // not implemented for Safe wallets
   'eth_sign',
@@ -21,7 +21,7 @@ const safeAllowedMethods: string[] = [
 ]
 
 // accountsChanged or chainChanged events are not allowed for Safe Wallets
-const safeAllowedEvents: string[] = ['accountsChanged', 'chainChanged']
+export const safeAllowedEvents: string[] = ['accountsChanged', 'chainChanged']
 
 const EVMBasedNamespaces = 'eip155'
 
