@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.1](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.3.0...safe-claiming-app-0.3.1) (2022-12-01)
+
+
+
 # [0.3.0](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.2.0...safe-claiming-app-0.3.0) (2022-11-18)
 
 
