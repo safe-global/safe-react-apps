@@ -8,6 +8,7 @@ import Help from './components/Help'
 
 import { getRefreshToken } from './lib/http'
 import { authenticate, sign } from './lib/mmi'
+import { truncateEthAddress } from './lib/utils'
 
 const getConnectedOwner = (safeOwners: string[], accounts: string[]) =>
   safeOwners.find(owner => ethers.utils.getAddress(owner) === ethers.utils.getAddress(accounts[0]))
@@ -73,8 +74,6 @@ function App() {
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
       })
-
-      console.log('MMI account: ', accounts[0])
 
       const connectedOwner = getConnectedOwner(safe.owners, accounts)
 
@@ -156,8 +155,10 @@ function App() {
                             </Typography>
                           )}
                           {isWrongOwner && (
-                            <Typography color="error" variant="body1">
-                              You are connected with the wrong owner
+                            <Typography color="error" variant="body1" textAlign="center">
+                              The Safe App connected account ({truncateEthAddress(accounts[0])}) is
+                              not an owner of the connected Safe (
+                              {truncateEthAddress(safe.safeAddress)})
                             </Typography>
                           )}
                         </>
