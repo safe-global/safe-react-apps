@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
 import Container from '@material-ui/core/Container'
-import { Card, Loader } from '@gnosis.pm/safe-react-components'
+import { Card } from '@gnosis.pm/safe-react-components'
 import useWalletConnect from './hooks/useWalletConnect'
 import { useApps } from './hooks/useApps'
 import AppBar from './components/AppBar'
@@ -22,14 +22,12 @@ const App = () => {
   const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect()
   const { findSafeApp, openSafeApp } = useApps()
   const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED)
-  const [isNavigatingToSafeApp, setIsNavigatingToSafeApp] = useState(false)
 
   const handleOpenSafeApp = useCallback(
     (url: string) => {
       openSafeApp(url)
       wcDisconnect()
       setConnectionStatus(CONNECTION_STATUS.DISCONNECTED)
-      setIsNavigatingToSafeApp(true)
     },
     [openSafeApp, wcDisconnect],
   )
@@ -54,14 +52,6 @@ const App = () => {
       }
     }
   }, [connectionStatus, findSafeApp, wcClientData])
-
-  if (isNavigatingToSafeApp) {
-    return (
-      <StyledMainContainer>
-        <Loader size="md" />
-      </StyledMainContainer>
-    )
-  }
 
   return (
     <>

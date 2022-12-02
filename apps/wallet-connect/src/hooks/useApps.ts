@@ -34,7 +34,7 @@ export function useApps(): UseAppsResponse {
   const openSafeApp = useCallback(
     (url: string) => {
       if (origin?.length) {
-        window.parent.location.href = `${origin}/app/${networkPrefix}:${safe.safeAddress}/apps?appUrl=${url}`
+        window.open(`${origin}/${networkPrefix}:${safe.safeAddress}/apps?appUrl=${url}`, '_blank')
       }
     },
     [networkPrefix, origin, safe],
