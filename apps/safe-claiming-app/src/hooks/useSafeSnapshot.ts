@@ -12,7 +12,7 @@ type ShapshotProposalVars = {
 export type SnapshotProposal = {
   id: string
   title: string
-  state: "active" | "closed"
+  state: "active" | "closed" | "pending"
   author: string
 }
 
