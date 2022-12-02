@@ -107,12 +107,12 @@ jest.mock('@walletconnect/sign-client', () => {
   }
 })
 
+const mockQRcodeStub = jest.fn()
+
 // QR code lib mock
 jest.mock('jsqr', () => {
   return function () {
-    return {
-      data: version1URI,
-    }
+    return mockQRcodeStub()
   }
 })
 
@@ -124,6 +124,7 @@ describe('Walletconnect unit tests', () => {
     mockApprove.mockClear()
     mockRespond.mockClear()
     mockDisconnect.mockClear()
+    mockQRcodeStub.mockClear()
   })
 
   it('Renders Walletconnect Safe App', async () => {
@@ -230,19 +231,20 @@ describe('Walletconnect unit tests', () => {
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-        const instructionsNode = screen.getByText(HELP_TITLE)
-
-        expect(instructionsNode).toBeInTheDocument()
-
         pasteWalletConnectURI('Invalid version 1 URI')
 
-        const connectedNode = screen.queryByText('CONNECTED')
-        expect(connectedNode).not.toBeInTheDocument()
+        // no connected label is present
+        expect(screen.queryByText('CONNECTED')).not.toBeInTheDocument()
       })
     })
 
     it('Scans a valid v1 QR code', async () => {
       renderWithProviders(<App />)
+
+      // we simulate a valid v1 URI returned by the QR lib
+      mockQRcodeStub.mockImplementation(() => ({
+        data: version1URI,
+      }))
 
       // wait for loader to be removed
       await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -282,8 +284,8 @@ describe('Walletconnect unit tests', () => {
 
         fireEvent.click(disconnectButtonNode)
 
-        waitFor(() => {
-          expect(instructionsNode).toBeInTheDocument()
+        await waitFor(() => {
+          expect(screen.getByText(HELP_TITLE)).toBeInTheDocument()
           expect(screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)).toBeInTheDocument()
         })
       })
@@ -296,10 +298,6 @@ describe('Walletconnect unit tests', () => {
 
       // wait for loader to be removed
       await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
-
-      const instructionsNode = screen.getByText(HELP_TITLE)
-
-      expect(instructionsNode).toBeInTheDocument()
 
       expect(mockPairing).not.toBeCalled()
 
