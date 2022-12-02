@@ -6,7 +6,12 @@ import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 import { ChainInfo } from '@gnosis.pm/safe-apps-sdk'
 import { ethers } from 'ethers'
 
-import { WalletConnectVersion, WALLET_CONNECT_VERSION_2 } from '../utils/analytics'
+import {
+  NEW_SESSION_ACTION,
+  TRANSACTION_CONFIRMED_ACTION,
+  WalletConnectVersion,
+  WALLET_CONNECT_VERSION_2,
+} from '../utils/analytics'
 
 const { REACT_APP_WALLETCONNECT_PROJECT_ID, NODE_ENV } = process.env
 
@@ -96,7 +101,12 @@ const useWalletConnectV2 = (
       setSignClient(signClient)
     }
 
-    initializeWalletConnectV2Client()
+    try {
+      initializeWalletConnectV2Client()
+    } catch (error) {
+      console.log('Error on walletconnect version 2 initialization: ', error)
+      setIsWallectConnectInitialized(true)
+    }
   }, [])
 
   // we set here the events & restore an active previous session
@@ -112,7 +122,6 @@ const useWalletConnectV2 = (
 
       if (compatibleSession) {
         setWcSession(compatibleSession)
-        trackEvent('New session', WALLET_CONNECT_VERSION_2, compatibleSession.peer.metadata)
       }
 
       // events
@@ -169,7 +178,7 @@ const useWalletConnectV2 = (
 
           const wcSession = await acknowledged()
 
-          trackEvent('New session', WALLET_CONNECT_VERSION_2, wcSession.peer.metadata)
+          trackEvent(NEW_SESSION_ACTION, WALLET_CONNECT_VERSION_2, wcSession.peer.metadata)
 
           setWcSession(wcSession)
         },
@@ -212,7 +221,11 @@ const useWalletConnectV2 = (
                 result,
               },
             })
-            trackEvent('Transaction Confirmed', WALLET_CONNECT_VERSION_2, wcSession?.peer.metadata)
+            trackEvent(
+              TRANSACTION_CONFIRMED_ACTION,
+              WALLET_CONNECT_VERSION_2,
+              wcSession?.peer.metadata,
+            )
           } catch (error: any) {
             setError(error?.message)
             const isUserRejection = error?.message?.includes?.('Transaction was rejected')

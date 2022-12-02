@@ -5,7 +5,12 @@ import { IClientMeta, IWalletConnectSession } from '@walletconnect/legacy-types'
 import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
 
-import { WalletConnectVersion, WALLET_CONNECT_VERSION_1 } from '../utils/analytics'
+import {
+  NEW_SESSION_ACTION,
+  TRANSACTION_CONFIRMED_ACTION,
+  WalletConnectVersion,
+  WALLET_CONNECT_VERSION_1,
+} from '../utils/analytics'
 
 const rejectWithMessage = (connector: WalletConnect, id: number | undefined, message: string) => {
   connector.rejectRequest({ id, error: { message } })
@@ -54,7 +59,7 @@ const useWalletConnectV1 = (
           chainId: safe.chainId,
         })
 
-        trackEvent('New session', WALLET_CONNECT_VERSION_1, wcConnector.peerMeta)
+        trackEvent(NEW_SESSION_ACTION, WALLET_CONNECT_VERSION_1, wcConnector.peerMeta)
 
         setWcClientData(payload.params[0].peerMeta)
       })
@@ -67,7 +72,7 @@ const useWalletConnectV1 = (
         try {
           let result = await web3Provider.send(payload.method, payload.params)
 
-          trackEvent('Transaction Confirmed', WALLET_CONNECT_VERSION_1, wcConnector.peerMeta)
+          trackEvent(TRANSACTION_CONFIRMED_ACTION, WALLET_CONNECT_VERSION_1, wcConnector.peerMeta)
 
           wcConnector.approveRequest({
             id: payload.id,
