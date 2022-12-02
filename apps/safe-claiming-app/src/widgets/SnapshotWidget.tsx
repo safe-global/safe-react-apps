@@ -14,6 +14,12 @@ import useSafeSnapshot, {
 import { SpaceContent } from "src/widgets/styles"
 import palette from "../config/colors"
 
+const SNAPSHOT_STATE_COLORS: Record<SnapshotProposal["state"], string> = {
+  active: "success.main",
+  pending: "border.main",
+  closed: "#743EE4",
+}
+
 export const _getProposalNumber = (title: string): string => {
   // Find anything that matches "SEP #n"
   const SEP_REGEX = /SEP\s#\d+/g
@@ -42,7 +48,8 @@ const Proposal = styled("a")`
 
 const StyledChip = styled(Chip)`
   border-radius: 20px;
-  min-width: 68px;
+  min-width: 76px;
+  max-width: 76px;
   text-align: center;
   height: 23px;
   font-weight: bold;
@@ -113,8 +120,7 @@ const SnapshotProposals = ({
           sx={{
             gridArea: "status",
             color: palette.background.paper,
-            backgroundColor:
-              proposal.state === "active" ? "success.main" : "#743EE4",
+            backgroundColor: SNAPSHOT_STATE_COLORS[proposal.state],
           }}
         />
         <Box gridArea="link" display="flex" alignItems="center" ml="12px">
