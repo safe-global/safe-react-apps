@@ -27,6 +27,12 @@ inputs:
   react-app-tenderly-simulate-endpoint-url:
     description: Tenderly simulation endpoint
     required: true
+  react-app-mmi-backend-base-url:
+    description: MMI backend base URL
+    required: true
+  react-app-mmi-environment:
+    description: MMI environment
+    required: true
 
 runs:
   using: composite

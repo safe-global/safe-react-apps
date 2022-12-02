@@ -30,14 +30,12 @@ const App = () => {
   } = useWalletConnect()
 
   const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED)
-  const [isNavigatingToSafeApp, setIsNavigatingToSafeApp] = useState(false)
 
   const handleOpenSafeApp = useCallback(
     (url: string) => {
       openSafeApp(url)
       wcDisconnect()
       setConnectionStatus(CONNECTION_STATUS.DISCONNECTED)
-      setIsNavigatingToSafeApp(true)
     },
     [openSafeApp, wcDisconnect],
   )
@@ -63,7 +61,7 @@ const App = () => {
     }
   }, [connectionStatus, findSafeApp, wcClientData])
 
-  if (isNavigatingToSafeApp || !isWallectConnectInitialized) {
+  if (!isWallectConnectInitialized) {
     return (
       <StyledMainContainer>
         <Loader size="md" />
