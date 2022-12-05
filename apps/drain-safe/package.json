@@ -1,6 +1,6 @@
 {
   "name": "drain-safe",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "private": true,
   "dependencies": {
     "@gnosis.pm/safe-apps-provider": "^0.14.0",
