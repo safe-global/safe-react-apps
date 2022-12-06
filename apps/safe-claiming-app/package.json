@@ -7,7 +7,7 @@
     "@craco/craco": "^6.4.3",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@gnosis.pm/safe-apps-provider": "^0.15.0",
+    "@gnosis.pm/safe-apps-provider": "^0.15.1",
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.12",
     "bezier-easing": "^2.1.0",
