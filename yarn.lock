@@ -2178,7 +2178,7 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
 
-"@gnosis.pm/safe-apps-provider@0.14.0", "@gnosis.pm/safe-apps-provider@^0.14.0":
+"@gnosis.pm/safe-apps-provider@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-provider/-/safe-apps-provider-0.14.0.tgz#52783800f1da5f1b633a42dcf8c8797e7fe31d99"
   integrity sha512-qOkPUfIu9dLoy4Muo40xzswqix7ZoJDmtEl35D+oYYa6JDw8cr4tVkPPjl6eDPNtMLiqGjs1POzHdZrfC8aHVw==
@@ -2186,20 +2186,25 @@
     "@gnosis.pm/safe-apps-sdk" "7.8.0"
     events "^3.3.0"
 
-"@gnosis.pm/safe-apps-react-sdk@^4.6.2":
-  version "4.6.2"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-4.6.2.tgz#205908311c685b378338f82da261f06f10336532"
-  integrity sha512-93r9aDw9HzxC/xMmvnW4j5XswKxaAAFizCCZhA+xfQ6EBxH0nnBUmDq3kbxAWofvNgUKaSVgY/iHMvwkDBrllQ==
+"@gnosis.pm/safe-apps-provider@https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-provider?safe-settings":
+  version "0.15.0"
+  resolved "https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-provider?safe-settings#a14140a22a25872a545ea95436ae355f3ac3c8ea"
   dependencies:
-    "@gnosis.pm/safe-apps-sdk" "7.8.0"
+    "@gnosis.pm/safe-apps-sdk" "https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-sdk?safe-settings"
+    events "^3.3.0"
 
-"@gnosis.pm/safe-apps-sdk@7.8.0", "@gnosis.pm/safe-apps-sdk@^7.8.0":
-  version "7.8.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-7.8.0.tgz#295ab9d563b94208e3042495cdba787fa035c71e"
-  integrity sha512-kO8fJi1ebiKN9qH1NdDToVBuDQQ0U9NkL467U+84LtNTx5PzUJIu6O7tb4nZD24e/OItinf5W8GDWhhfZeiqOA==
+"@gnosis.pm/safe-apps-react-sdk@https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-react-sdk?safe-settings":
+  version "4.6.2"
+  resolved "https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-react-sdk?safe-settings#10c92585c8893eb971153bfe8ac462268b4a8801"
   dependencies:
-    "@gnosis.pm/safe-react-gateway-sdk" "^3.1.3"
-    ethers "^5.6.8"
+    "@gnosis.pm/safe-apps-sdk" "https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-sdk?safe-settings"
+
+"@gnosis.pm/safe-apps-sdk@7.8.0", "@gnosis.pm/safe-apps-sdk@https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-sdk?safe-settings":
+  version "7.8.0"
+  resolved "https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-sdk?safe-settings#b55fdd8b92754008f76ec915d50b55d9628322d8"
+  dependencies:
+    "@gnosis.pm/safe-react-gateway-sdk" "^3.5.0"
+    ethers "^5.7.2"
 
 "@gnosis.pm/safe-deployments@^1.16.0":
   version "1.16.0"
@@ -2239,10 +2244,10 @@
   dependencies:
     cross-fetch "^3.1.5"
 
-"@gnosis.pm/safe-react-gateway-sdk@^3.1.3":
-  version "3.4.5"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-3.4.5.tgz#bd59ca973721991f54a2df6b05baeb884434208f"
-  integrity sha512-b8ZaYaQ1apS/4R9sEEUCtrg0AwTf8tfqS0Jp6JAopLxHdX0NItCvs5/Y1+rjDodv2l+I/Zf9vJJyUDC0XABfMA==
+"@gnosis.pm/safe-react-gateway-sdk@^3.5.0":
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-3.5.2.tgz#088b0d5db2eb7524ff4141795ecf948adc40c97c"
+  integrity sha512-6P2uJMnhHcJeErd/t13ChH6sda+vUIOqcrcUDKyWCNXpcmMniPcZzkQxZ8cYz186gQFbslsHSjQ6twnh4yhXUw==
   dependencies:
     cross-fetch "^3.1.5"
 
@@ -7964,7 +7969,7 @@ ethers@^5.5.3:
     "@ethersproject/web" "5.6.1"
     "@ethersproject/wordlists" "5.6.1"
 
-ethers@^5.6.2, ethers@^5.6.8, ethers@^5.6.9, ethers@^5.7.2:
+ethers@^5.6.2, ethers@^5.6.9, ethers@^5.7.2:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==

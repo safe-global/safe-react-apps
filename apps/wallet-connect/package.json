@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "@gnosis.pm/safe-apps-provider": "0.14.0",
+    "@gnosis.pm/safe-apps-provider": "https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-provider?safe-settings",
     "@gnosis.pm/safe-react-components": "^0.9.7",
     "@gnosis.pm/safe-react-gateway-sdk": "^2.10.1",
     "@walletconnect/client": "^1.8.0",
