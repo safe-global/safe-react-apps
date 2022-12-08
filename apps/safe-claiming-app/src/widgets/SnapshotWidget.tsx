@@ -8,11 +8,19 @@ import {
   styled,
   Card,
 } from "@mui/material"
+import { FORUM_URL } from "src/config/constants"
 import useSafeSnapshot, {
   type SnapshotProposal,
 } from "src/hooks/useSafeSnapshot"
+import { useSafeSnapshotSpace } from "src/hooks/useSnapshotSpace"
 import { SpaceContent } from "src/widgets/styles"
 import palette from "../config/colors"
+
+const SNAPSHOT_STATE_COLORS: Record<SnapshotProposal["state"], string> = {
+  active: "success.main",
+  pending: "border.main",
+  closed: "#743EE4",
+}
 
 export const _getProposalNumber = (title: string): string => {
   // Find anything that matches "SEP #n"
@@ -42,7 +50,8 @@ const Proposal = styled("a")`
 
 const StyledChip = styled(Chip)`
   border-radius: 20px;
-  min-width: 68px;
+  min-width: 76px;
+  max-width: 76px;
   text-align: center;
   height: 23px;
   font-weight: bold;
@@ -113,8 +122,7 @@ const SnapshotProposals = ({
           sx={{
             gridArea: "status",
             color: palette.background.paper,
-            backgroundColor:
-              proposal.state === "active" ? "success.main" : "#743EE4",
+            backgroundColor: SNAPSHOT_STATE_COLORS[proposal.state],
           }}
         />
         <Box gridArea="link" display="flex" alignItems="center" ml="12px">
@@ -126,14 +134,15 @@ const SnapshotProposals = ({
 )
 
 const SnapshotWidget = () => {
-  const SNAPSHOT_LINK = "https://snapshot.org/#/safe.eth"
-  const FORUM_LINK = "https://forum.safe.global"
+  const snapshotSpace = useSafeSnapshotSpace()
+
+  const SNAPSHOT_LINK = `https://snapshot.org/#/${snapshotSpace}`
   const PROPOSAL_AMOUNT = 3
 
   const [proposals, loading] = useSafeSnapshot(PROPOSAL_AMOUNT)
 
   return (
-    <Card sx={{ borderRadius: "4px" }}>
+    <Card elevation={0} sx={{ flexGrow: 1 }}>
       <SpaceContent>
         <div>
           <Typography
@@ -175,14 +184,16 @@ const SnapshotWidget = () => {
             rel="noreferrer noopener"
             target="_blank"
             variant="subtitle1"
+            textAlign="center"
           >
             View all <OpenInNewRounded fontSize="small" />
           </StyledExternalLink>
           <StyledExternalLink
-            href={FORUM_LINK}
+            href={FORUM_URL}
             rel="noreferrer noopener"
             target="_blank"
             variant="subtitle1"
+            textAlign="center"
           >
             SafeDAO Forum <OpenInNewRounded fontSize="small" />
           </StyledExternalLink>

@@ -18,7 +18,7 @@ export const SelectedDelegate = ({
   const hasAction = onClick !== undefined
 
   return (
-    <Card variant={hasAction ? "outlined" : "elevation"} elevation={0}>
+    <Card variant={"outlined"} elevation={0}>
       <CardHeader
         avatar={<DelegateAvatar selected={false} delegate={delegate} />}
         title={delegate.name}

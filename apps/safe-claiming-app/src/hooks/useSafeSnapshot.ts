@@ -1,4 +1,5 @@
 import useAsync, { type AsyncResult } from "src/hooks/useAsync"
+import { useSafeSnapshotSpace } from "./useSnapshotSpace"
 
 type ShapshotProposalVars = {
   space: string
@@ -11,7 +12,7 @@ type ShapshotProposalVars = {
 export type SnapshotProposal = {
   id: string
   title: string
-  state: "active" | "closed"
+  state: "active" | "closed" | "pending"
   author: string
 }
 
@@ -63,11 +64,12 @@ const getSnapshot = async (
   return data.proposals
 }
 
-const getSafeSnapshot = (amount: number): Promise<SnapshotProposal[]> => {
-  const SNAPSHOT_SPACE = "safe.eth"
-
+const getSafeSnapshot = (
+  amount: number,
+  space: string
+): Promise<SnapshotProposal[]> => {
   return getSnapshot({
-    space: SNAPSHOT_SPACE,
+    space,
     first: amount,
     skip: 0,
     orderBy: "created",
@@ -76,7 +78,8 @@ const getSafeSnapshot = (amount: number): Promise<SnapshotProposal[]> => {
 }
 
 const useSafeSnapshot = (amount: number): AsyncResult<SnapshotProposal[]> => {
-  return useAsync(() => getSafeSnapshot(amount), [])
+  const snapshotSpace = useSafeSnapshotSpace()
+  return useAsync(() => getSafeSnapshot(amount, snapshotSpace), [snapshotSpace])
 }
 
 export default useSafeSnapshot
