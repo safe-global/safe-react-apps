@@ -12,10 +12,8 @@ describe('Testing Tx-builder safe app', () => {
 
   beforeEach(() => {
     // Navigate to Safe App in TESTING SAFE
-    cy.visit(visitUrl)
+    cy.visitSafeApp(visitUrl)
 
-    // Accept cookies & disclaimer
-    cy.acceptCookiesAndSecurityFeedbackModal()
     cy.frameLoaded(iframeSelector)
   })
 
@@ -110,7 +108,8 @@ describe('Testing Tx-builder safe app', () => {
         .findByLabelText(/enter address or ens name/i)
         .type('0x3bc83f41490BfD25bBB44eBCAc3761DFF4Ae50DA')
       getBody()
-        .findByText(/Keep Proxy ABI/i).click()
+        .findByText(/Keep Proxy ABI/i)
+        .click()
       getBody()
         .findByLabelText(/ETH value/i)
         .type('0')
@@ -241,7 +240,8 @@ describe('Testing Tx-builder safe app', () => {
         .findByLabelText(/enter address or ens name/i)
         .type('rin:0x91dB860c37E83dab0A4A005E209577E64c61EEfA')
       getBody()
-        .findByText(/Keep Proxy ABI/i).click()
+        .findByText(/Keep Proxy ABI/i)
+        .click()
       getBody()
         .findByLabelText(/ETH value/i)
         .type('100')

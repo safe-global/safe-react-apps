@@ -2,32 +2,30 @@ import '@testing-library/cypress/add-commands'
 import './iframe'
 import './commands'
 
-Cypress.Commands.add('connectE2EWallet', () => {
+export const INFO_MODAL_KEY = 'SAFE_v2__SafeApps__infoModal'
+export const BROWSER_PERMISSIONS_KEY = 'SAFE_v2__SafeApps__browserPermissions'
+
+Cypress.Commands.add('visitSafeApp', appUrl => {
   cy.on('window:before:load', window => {
     window.localStorage.setItem(
-      'SAFE__lastUsedProvider',
-      JSON.stringify({ value: 'E2E Wallet', expiry: new Date().getTime() + 3600 * 1000 * 24 }),
+      INFO_MODAL_KEY,
+      JSON.stringify({
+        1: { consentsAccepted: true },
+        5: { consentsAccepted: true },
+      }),
     )
+
+    window.localStorage.setItem(
+      BROWSER_PERMISSIONS_KEY,
+      JSON.stringify({
+        'https://apps.gnosis-safe.io/wallet-connect': [{ feature: 'camera', status: 'granted' }],
+      }),
+    )
+
+    window.localStorage.setItem('SAFE_v2__lastWallet', JSON.stringify('E2E Wallet'))
   })
-})
 
-const goToLastStep = () => {
-  cy.findByText(/continue/i).then($btn => {
-    cy.findByRole('progressbar').then($progress => {
-      if ($progress.length && $progress[0].ariaValueNow !== '100') {
-        $btn.click()
-        cy.wait(800)
-      } else {
-        return
-      }
+  cy.visit(appUrl)
 
-      goToLastStep()
-    })
-  })
-}
-
-Cypress.Commands.add('acceptCookiesAndSecurityFeedbackModal', () => {
-  cy.findByText('Accept all').click({ force: true })
-  goToLastStep()
-  cy.findByText(/continue/i).click()
+  cy.wait(500)
 })

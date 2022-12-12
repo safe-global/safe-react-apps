@@ -12,10 +12,8 @@ describe('Testing Drain Account safe app', () => {
 
   beforeEach(() => {
     // Navigate to Safe App in TESTING SAFE
-    cy.visit(visitUrl)
+    cy.visitSafeApp(visitUrl)
 
-    // Accept cookies & disclaimer
-    cy.acceptCookiesAndSecurityFeedbackModal()
     cy.frameLoaded(iframeSelector)
   })
 
