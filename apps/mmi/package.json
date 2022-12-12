@@ -2,7 +2,7 @@
   "name": "mmi",
   "version": "0.1.0",
   "private": true,
-  "homepage": "./",
+  "homepage": "/mmi",
   "dependencies": {
     "@mui/material": "^5.10.12",
     "@mui/icons-material": "^5.10.9",
