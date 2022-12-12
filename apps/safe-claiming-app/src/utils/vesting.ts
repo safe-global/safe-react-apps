@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers"
-import { VestingClaim } from "src/types/vestings"
+import { Vesting } from "src/hooks/useSafeTokenAllocation"
 
 const LINEAR_CURVE = 0
 const EXPONENTIAL_CURVE = 1
@@ -11,7 +11,7 @@ const EXPONENTIAL_CURVE = 1
  */
 export const DESYNC_BUFFER = 30
 
-export const calculateVestedAmount = (vestingClaim: VestingClaim): string => {
+export const calculateVestedAmount = (vestingClaim: Vesting): string => {
   const durationInSeconds = vestingClaim.durationWeeks * 7 * 24 * 60 * 60
   const timeStampInSeconds =
     Math.floor(new Date().getTime() / 1000) - DESYNC_BUFFER
