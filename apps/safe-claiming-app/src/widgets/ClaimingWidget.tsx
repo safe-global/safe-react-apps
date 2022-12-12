@@ -201,8 +201,9 @@ const ClaimingWidget = () => {
         <>
           {unredeemedAllocations && (
             <Subtitle>
-              You have unredeemed tokens. Redeem them by 27th Dec or they will
-              be transfered back into the treasury.
+              You have unredeemed tokens. Claim any amount before the 27th of
+              December or the tokens will be transferred back into the SafeDAO
+              treasury.
             </Subtitle>
           )}
           <Link
