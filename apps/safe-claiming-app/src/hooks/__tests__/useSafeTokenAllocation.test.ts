@@ -81,7 +81,7 @@ describe("useSafeTokenAllocation", () => {
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalled()
       expect(result.current[0].votingPower?.toNumber()).toEqual(0)
-      expect(result.current[1]).toBeFalsy()
+      expect(result.current[2]).toBeFalsy()
     })
   })
 
@@ -102,7 +102,7 @@ describe("useSafeTokenAllocation", () => {
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalled()
       expect(result.current[0].votingPower?.eq(parseEther("100"))).toBeTruthy()
-      expect(result.current[1]).toBeFalsy()
+      expect(result.current[2]).toBeFalsy()
     })
   })
 
@@ -175,7 +175,7 @@ describe("useSafeTokenAllocation", () => {
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalled()
       expect(result.current[0]?.votingPower.toNumber()).toEqual(2000)
-      expect(result.current[1]).toBeFalsy()
+      expect(result.current[2]).toBeFalsy()
     })
   })
 
@@ -245,7 +245,7 @@ describe("useSafeTokenAllocation", () => {
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalled()
       expect(result.current[0].votingPower.toNumber()).toEqual(0)
-      expect(result.current[1]).toBeFalsy()
+      expect(result.current[2]).toBeFalsy()
     })
   })
 
@@ -315,7 +315,7 @@ describe("useSafeTokenAllocation", () => {
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalled()
       expect(result.current[0].votingPower?.toNumber()).toEqual(2000)
-      expect(result.current[1]).toBeFalsy()
+      expect(result.current[2]).toBeFalsy()
     })
   })
 
@@ -398,7 +398,7 @@ describe("useSafeTokenAllocation", () => {
       expect(result.current[0].votingPower?.toNumber()).toEqual(
         2000 - 1000 + 400
       )
-      expect(result.current[1]).toBeFalsy()
+      expect(result.current[2]).toBeFalsy()
     })
   })
 
@@ -479,7 +479,7 @@ describe("useSafeTokenAllocation", () => {
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalled()
       expect(result.current[0].votingPower?.toNumber()).toEqual(0)
-      expect(result.current[1]).toBeFalsy()
+      expect(result.current[2]).toBeFalsy()
     })
   })
 })
