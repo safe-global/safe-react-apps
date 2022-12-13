@@ -40,7 +40,7 @@ export const GUARDIANS_IMAGE_URL = `${CLAIMING_DATA_URL}/guardians/images/`
 
 export const VESTING_URL = `${CLAIMING_DATA_URL}/allocations/`
 
-export const FORUM_URL = "https://forum.gnosis-safe.io"
+export const FORUM_URL = "https://forum.safe.global"
 
 export const DISCORD_URL = "https://discord.gg/gXK3gt8w3D"
 

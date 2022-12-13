@@ -23,14 +23,8 @@ export const createClaimAndDelegateTxs = ({
   investorClaimable: string
 }) => {
   const txs: { to: string; value: string; data: string }[] = []
-  const {
-    delegate,
-    delegateAddressFromContract,
-    ecosystemClaim,
-    userClaim,
-    investorClaim,
-    isTokenPaused,
-  } = appState
+  const { delegate, delegateAddressFromContract, vestingData, isTokenPaused } =
+    appState
   if (!delegate?.address) return txs
 
   // Add delegate tx if necessary
@@ -49,6 +43,13 @@ export const createClaimAndDelegateTxs = ({
     userClaimable,
     investorClaimable
   )
+
+  const userClaim =
+    vestingData.find((vesting) => vesting.tag === "user") ?? null
+  const ecosystemClaim =
+    vestingData.find((vesting) => vesting.tag === "ecosystem") ?? null
+  const investorClaim =
+    vestingData.find((vesting) => vesting.tag === "investor") ?? null
 
   if (userClaim && BigNumber.from(userAmount).gt(0)) {
     txs.push(
