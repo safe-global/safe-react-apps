@@ -1,8 +1,9 @@
-import { Button, Paper, Typography } from "@mui/material"
+import { Button, Paper, Typography, useTheme } from "@mui/material"
 import { ReactComponent as ExternalLink } from "src/assets/images/external_link.svg"
-import { ReactComponent as SafeLogoHeader } from "src/assets/images/safe-header-logo-black.svg"
+import { ReactComponent as SafeLogoHeader } from "src/assets/images/safe-header-logo-plain.svg"
 
 const NoAirdrop = () => {
+  const { palette } = useTheme()
   return (
     <>
       <Paper
@@ -17,7 +18,7 @@ const NoAirdrop = () => {
           height: 1,
         }}
       >
-        <SafeLogoHeader />
+        <SafeLogoHeader color={palette.text.primary} />
         <Typography variant="h1" marginX="auto" fontWeight={700} mt={6} mb={3}>
           Sorry, the airdrop is not available for you at the moment.
         </Typography>
