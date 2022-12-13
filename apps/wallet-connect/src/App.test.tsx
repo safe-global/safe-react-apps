@@ -12,7 +12,11 @@ import { SignClientTypes } from '@walletconnect/types'
 import App from './App'
 import { safeAllowedEvents, safeAllowedMethods } from './hooks/useWalletConnectV2'
 import {
+  mockActiveSessions,
   mockChainInfo,
+  mockInvalidChainIdSessionProposal,
+  mockinvalidChainTransactionRequest,
+  mockInvalidEVMSessionProposal,
   mockOriginUrl,
   mockSafeAppsListResponse,
   mockSafeInfo,
@@ -84,13 +88,14 @@ const mockReject = jest.fn()
 const mockApprove = jest.fn()
 const mockRespond = jest.fn()
 const mockDisconnect = jest.fn()
+const mockGetAllSessions = jest.fn()
 
 // walletconnect version 2 mock
 jest.mock('@walletconnect/sign-client', () => {
   return {
     init: () => ({
       // default session:
-      session: { getAll: () => [] },
+      session: { getAll: mockGetAllSessions },
       on: mockWalletconnectEvent,
       reject: mockReject,
       approve: mockApprove,
@@ -125,6 +130,8 @@ describe('Walletconnect unit tests', () => {
     mockRespond.mockClear()
     mockDisconnect.mockClear()
     mockQRcodeStub.mockClear()
+    mockGetAllSessions.mockClear()
+    mockGetAllSessions.mockImplementation(() => [])
   })
 
   it('Renders Walletconnect Safe App', async () => {
@@ -293,65 +300,194 @@ describe('Walletconnect unit tests', () => {
   })
 
   describe('Walletconnect version 2', () => {
-    it('Pairing via valid v2 URI', async () => {
-      renderWithProviders(<App />)
+    describe('pairing', () => {
+      it('Pairing via valid v2 URI', async () => {
+        renderWithProviders(<App />)
 
-      // wait for loader to be removed
-      await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-      expect(mockPairing).not.toBeCalled()
+        expect(mockPairing).not.toBeCalled()
 
-      pasteWalletConnectURI(version2URI)
+        pasteWalletConnectURI(version2URI)
 
-      expect(mockPairing).toBeCalledWith({ uri: version2URI })
+        expect(mockPairing).toBeCalledWith({ uri: version2URI })
+      })
     })
 
-    it('Session Proposal event', async () => {
-      let sessionProposalEvent = (
-        proposal: SignClientTypes.EventArguments['session_proposal'],
-      ) => {}
+    describe('session proposal', () => {
+      it('valid Session Proposal event', async () => {
+        let fireSessionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_proposal'],
+        ) => {}
 
-      mockWalletconnectEvent.mockImplementation((eventType, callback) => {
-        if (eventType === 'session_proposal') {
-          sessionProposalEvent = callback
-        }
-      })
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_proposal') {
+            fireSessionProposalEvent = callback
+          }
+        })
 
-      mockApprove.mockImplementation(() => {
-        return {
-          acknowledged: () => Promise.resolve(mockV2SessionObj),
-        }
-      })
+        mockApprove.mockImplementation(() => {
+          return {
+            acknowledged: () => Promise.resolve(mockV2SessionObj),
+          }
+        })
 
-      renderWithProviders(<App />)
+        renderWithProviders(<App />)
 
-      // wait for loader to be removed
-      await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-      expect(mockApprove).not.toBeCalled()
-      expect(mockReject).not.toBeCalled()
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
 
-      // simulate a session proposal event
-      sessionProposalEvent(mockSessionProposal)
+        // simulate a session proposal event
+        fireSessionProposalEvent(mockSessionProposal)
 
-      const dappNameNode = await screen.findByText('Test v2 Dapp name')
-      expect(dappNameNode).toBeInTheDocument()
+        const dappNameNode = await screen.findByText('Test v2 Dapp name')
+        expect(dappNameNode).toBeInTheDocument()
 
-      // no rejection is present in valid sessions
-      expect(mockReject).not.toBeCalled()
+        // no rejection is present in valid sessions
+        expect(mockReject).not.toBeCalled()
 
-      const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
+        const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
 
-      // approved session is sent
-      expect(mockApprove).toBeCalledWith({
-        id: mockSessionProposal.id,
-        namespaces: {
-          eip155: {
-            accounts: safeAccount,
-            methods: safeAllowedMethods,
-            events: safeAllowedEvents,
+        // approved session is sent
+        expect(mockApprove).toBeCalledWith({
+          id: mockSessionProposal.id,
+          namespaces: {
+            eip155: {
+              accounts: safeAccount,
+              methods: safeAllowedMethods,
+              events: safeAllowedEvents,
+            },
           },
-        },
+        })
+      })
+
+      it('rejects session proposals without at least a EVM based namespace', async () => {
+        let fireSessionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_proposal'],
+        ) => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_proposal') {
+            fireSessionProposalEvent = callback
+          }
+        })
+
+        mockApprove.mockImplementation(() => {
+          return {
+            acknowledged: () => Promise.resolve(mockV2SessionObj),
+          }
+        })
+
+        renderWithProviders(<App />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
+
+        // simulate an invalid EVM compatible session proposal event
+        fireSessionProposalEvent(mockInvalidEVMSessionProposal)
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).toBeCalledWith({
+          id: mockInvalidEVMSessionProposal.id,
+          reason: {
+            code: 1006,
+            message: 'No EVM-based (eip155) namespace present in the session proposal',
+          },
+        })
+      })
+
+      it('rejects session proposals without Safe chain', async () => {
+        let fireSessionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_proposal'],
+        ) => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_proposal') {
+            fireSessionProposalEvent = callback
+          }
+        })
+
+        mockApprove.mockImplementation(() => {
+          return {
+            acknowledged: () => Promise.resolve(mockV2SessionObj),
+          }
+        })
+
+        renderWithProviders(<App />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
+
+        // simulate an invalid session proposal event (no Safe chain is present)
+        fireSessionProposalEvent(mockInvalidChainIdSessionProposal)
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).toBeCalledWith({
+          id: mockInvalidEVMSessionProposal.id,
+          reason: {
+            code: 1006,
+            message: 'No Goerli (eip155:5) namespace present in the session proposal',
+          },
+        })
+      })
+    })
+
+    describe('transaction proposal', () => {
+      it('rejects transactions from diffetent chains', async () => {
+        // configure autoconnection
+        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+
+        let fireTransactionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_request'],
+        ) => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_request') {
+            fireTransactionProposalEvent = callback
+          }
+        })
+
+        renderWithProviders(<App />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
+
+        // simulate an invalid transaction (from different chain Safe chain)
+        fireTransactionProposalEvent(mockinvalidChainTransactionRequest)
+
+        const errorMessageLabel =
+          'Transaction rejected: the connected Dapp is not set to the correct chain. Make sure the Dapp uses Goerli to interact with this Safe.'
+
+        // respond with an transaction rejected error
+        expect(mockRespond).toBeCalledWith({
+          topic: mockinvalidChainTransactionRequest.topic,
+          response: {
+            id: mockinvalidChainTransactionRequest.id,
+            jsonrpc: '2.0',
+            error: {
+              code: 5100, // unsupported chain error code
+              message: errorMessageLabel,
+            },
+          },
+        })
+
+        expect(mockRespond).toBeCalledTimes(1)
+
+        // we show an error label in the IU
+        await waitFor(() => expect(screen.getByText(errorMessageLabel)).toBeInTheDocument())
       })
     })
   })

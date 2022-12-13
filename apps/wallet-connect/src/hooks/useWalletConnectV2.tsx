@@ -109,6 +109,80 @@ const useWalletConnectV2 = (
     }
   }, [])
 
+  // we session_request needs a separate Effect because a valid wcSession should be present
+  useEffect(() => {
+    if (isWallectConnectInitialized && signClient && wcSession) {
+      signClient.on(
+        'session_request',
+        async (request: SignClientTypes.EventArguments['session_request']) => {
+          const { topic, id } = request
+          const { method, params } = request.params.request
+          const transactionChainId = request.params.chainId
+          const isSafeChainId = transactionChainId === `${EVMBasedNamespaces}:${safe.chainId}`
+
+          // we only accept transactions from the Safe chain
+          if (!isSafeChainId) {
+            const errorMessage = `Transaction rejected: the connected Dapp is not set to the correct chain. Make sure the Dapp uses ${chainInfo?.chainName} to interact with this Safe.`
+            setError(errorMessage)
+            await signClient.respond({
+              topic,
+              response: {
+                id,
+                jsonrpc: '2.0',
+                error: {
+                  code: UNSUPPORTED_CHAIN_ERROR_CODE,
+                  message: errorMessage,
+                },
+              },
+            })
+            return
+          }
+
+          try {
+            setError(undefined)
+            const result = await web3Provider.send(method, params)
+            await signClient.respond({
+              topic,
+              response: {
+                id,
+                jsonrpc: '2.0',
+                result,
+              },
+            })
+            trackEvent(
+              TRANSACTION_CONFIRMED_ACTION,
+              WALLET_CONNECT_VERSION_2,
+              wcSession.peer.metadata,
+            )
+          } catch (error: any) {
+            setError(error?.message)
+            const isUserRejection = error?.message?.includes?.('Transaction was rejected')
+            const code = isUserRejection ? USER_REJECTED_REQUEST_CODE : INVALID_METHOD_ERROR_CODE
+            signClient.respond({
+              topic,
+              response: {
+                id,
+                jsonrpc: '2.0',
+                error: {
+                  code,
+                  message: error.message,
+                },
+              },
+            })
+          }
+        },
+      )
+    }
+  }, [
+    chainInfo,
+    wcSession,
+    isWallectConnectInitialized,
+    signClient,
+    trackEvent,
+    safe,
+    web3Provider,
+  ])
+
   // we set here the events & restore an active previous session
   useEffect(() => {
     if (!isWallectConnectInitialized && signClient) {
@@ -184,67 +258,6 @@ const useWalletConnectV2 = (
         },
       )
 
-      signClient.on(
-        'session_request',
-        async (request: SignClientTypes.EventArguments['session_request']) => {
-          const { topic, id } = request
-          const { method, params } = request.params.request
-          const transactionChainId = request.params.chainId
-          const isSafeChainId = transactionChainId === `${EVMBasedNamespaces}:${safe.chainId}`
-
-          // we only accept transactions from the Safe chain
-          if (!isSafeChainId) {
-            const errorMessage = `Transaction rejected: the connected Dapp is not set to the correct chain. Make sure the Dapp uses ${chainInfo?.chainName} to interact with this Safe.`
-            setError(errorMessage)
-            await signClient.respond({
-              topic,
-              response: {
-                id,
-                jsonrpc: '2.0',
-                error: {
-                  code: UNSUPPORTED_CHAIN_ERROR_CODE,
-                  message: errorMessage,
-                },
-              },
-            })
-            return
-          }
-
-          try {
-            setError(undefined)
-            const result = await web3Provider.send(method, params)
-            await signClient.respond({
-              topic,
-              response: {
-                id,
-                jsonrpc: '2.0',
-                result,
-              },
-            })
-            trackEvent(
-              TRANSACTION_CONFIRMED_ACTION,
-              WALLET_CONNECT_VERSION_2,
-              wcSession?.peer.metadata,
-            )
-          } catch (error: any) {
-            setError(error?.message)
-            const isUserRejection = error?.message?.includes?.('Transaction was rejected')
-            const code = isUserRejection ? USER_REJECTED_REQUEST_CODE : INVALID_METHOD_ERROR_CODE
-            signClient.respond({
-              topic,
-              response: {
-                id,
-                jsonrpc: '2.0',
-                error: {
-                  code,
-                  message: error.message,
-                },
-              },
-            })
-          }
-        },
-      )
-
       signClient.on('session_delete', (event: SignClientTypes.EventArguments['session_delete']) => {
         setWcSession(undefined)
         setError(undefined)
@@ -264,15 +277,7 @@ const useWalletConnectV2 = (
 
       setIsWallectConnectInitialized(true)
     }
-  }, [
-    safe,
-    signClient,
-    isWallectConnectInitialized,
-    web3Provider,
-    chainInfo,
-    trackEvent,
-    wcSession,
-  ])
+  }, [safe, signClient, isWallectConnectInitialized, chainInfo, trackEvent])
 
   const wcConnect = useCallback<wcConnectType>(
     async (uri: string) => {
