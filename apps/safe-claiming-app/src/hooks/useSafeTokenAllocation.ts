@@ -166,13 +166,11 @@ const useSafeTokenAllocation = (): [
           )
       )
     )
-    // If the history tag changes we could have claimed / redeemed tokens
   }, [chainId, safe.safeAddress, safe.chainId])
 
   const [balance, balanceError, balanceLoading] = useAsync<string>(() => {
     if (!safe.safeAddress) return
     return fetchTokenBalance(safe.chainId, safe.safeAddress, web3Provider)
-    // If the history tag changes we could have claimed / redeemed tokens
   }, [chainId, safe.safeAddress, safe.chainId])
 
   const isLoading = allocationLoading || balanceLoading
