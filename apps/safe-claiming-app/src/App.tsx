@@ -96,7 +96,8 @@ const App = (): ReactElement => {
 
   const { safe } = useSafeAppsSDK()
 
-  const [safeTokenAllocation, isVestingLoading] = useSafeTokenAllocation()
+  const [safeTokenAllocation, allocationError, isVestingLoading] =
+    useSafeTokenAllocation()
   const { vestingData } = safeTokenAllocation
 
   const validVestingData = useMemo(
@@ -104,13 +105,10 @@ const App = (): ReactElement => {
     [vestingData]
   )
 
-  console.log(validVestingData)
-
   const [delegates, , delegatesFileError] = useDelegatesFile()
+  const delegateAddressFromContract = useDelegate()
 
   const isTokenPaused = useIsTokenPaused()
-
-  const delegateAddressFromContract = useDelegate()
 
   const currentDelegate = useMemo(() => {
     if (appState.delegate) {
@@ -176,7 +174,7 @@ const App = (): ReactElement => {
 
   const hasNoAirdrop = activeStep === NO_AIRDROP_STEP
 
-  const fatalError = delegatesFileError
+  const fatalError = delegatesFileError || allocationError
 
   const progress =
     hasNoAirdrop || fatalError ? 0 : activeStep / (steps.length - 2)

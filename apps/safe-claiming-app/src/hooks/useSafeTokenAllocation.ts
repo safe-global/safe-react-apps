@@ -146,6 +146,7 @@ const fetchTokenBalance = async (
  */
 const useSafeTokenAllocation = (): [
   { votingPower: BigNumber; vestingData: Vesting[] },
+  Error | undefined,
   boolean
 ] => {
   const { safe, sdk } = useSafeAppsSDK()
@@ -153,7 +154,7 @@ const useSafeTokenAllocation = (): [
 
   const chainId = safe.chainId
 
-  const [allocationData, _, allocationLoading] = useAsync<
+  const [allocationData, allocationError, allocationLoading] = useAsync<
     Vesting[] | undefined
   >(async () => {
     if (!safe.safeAddress) return
@@ -168,7 +169,7 @@ const useSafeTokenAllocation = (): [
     // If the history tag changes we could have claimed / redeemed tokens
   }, [chainId, safe.safeAddress, safe.chainId])
 
-  const [balance, _error, balanceLoading] = useAsync<string>(() => {
+  const [balance, balanceError, balanceLoading] = useAsync<string>(() => {
     if (!safe.safeAddress) return
     return fetchTokenBalance(safe.chainId, safe.safeAddress, web3Provider)
     // If the history tag changes we could have claimed / redeemed tokens
@@ -194,6 +195,7 @@ const useSafeTokenAllocation = (): [
       vestingData: allocationData ?? [],
       votingPower: votingPower ?? BigNumber.from(0),
     },
+    allocationError || balanceError,
     isLoading,
   ]
 }
