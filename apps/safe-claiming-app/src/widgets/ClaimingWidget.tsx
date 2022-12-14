@@ -149,9 +149,10 @@ const ClaimingWidget = () => {
         >
           <SafeIcon />
           <Typography variant="h5" color="text.primary">
-            {formatAmount(
-              Number(ethers.utils.formatEther(votingPower ?? 0)),
-              2
+            {votingPower ? (
+              formatAmount(Number(ethers.utils.formatEther(votingPower)), 2)
+            ) : (
+              <Skeleton />
             )}{" "}
           </Typography>
         </Box>
