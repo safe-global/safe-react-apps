@@ -114,6 +114,24 @@ jest.mock('@walletconnect/sign-client', () => {
   }
 })
 
+// web3 mock
+const mockWeb3Stub = { send: jest.fn() }
+
+jest.mock('ethers', () => {
+  const originalModule = jest.requireActual('ethers')
+  return {
+    ...originalModule,
+    ethers: {
+      ...originalModule.ethers,
+      providers: {
+        Web3Provider: function () {
+          return mockWeb3Stub
+        },
+      },
+    },
+  }
+})
+
 const mockQRcodeStub = jest.fn()
 
 // QR code lib mock
@@ -134,6 +152,7 @@ describe('Walletconnect unit tests', () => {
     mockQRcodeStub.mockClear()
     mockGetAllSessions.mockClear()
     mockGetAllSessions.mockImplementation(() => [])
+    mockWeb3Stub.send.mockClear()
   })
 
   it('Renders Walletconnect Safe App', async () => {
@@ -449,6 +468,9 @@ describe('Walletconnect unit tests', () => {
         // configure autoconnection
         mockGetAllSessions.mockImplementation(() => mockActiveSessions)
 
+        // mock web3 send
+        mockWeb3Stub.send.mockImplementation(() => Promise.resolve('0x'))
+
         let fireTransactionProposalEvent = (
           proposal: SignClientTypes.EventArguments['session_request'],
         ) => {}
@@ -541,6 +563,118 @@ describe('Walletconnect unit tests', () => {
 
         // we show an error label in the IU
         await waitFor(() => expect(screen.getByText(errorMessageLabel)).toBeInTheDocument())
+      })
+
+      it('shows an error if user manually rejects a transaction', async () => {
+        // configure autoconnection
+        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+
+        const errorMessageLabel = 'Transaction was rejected'
+
+        // mock web3 send with the user rejection
+        mockWeb3Stub.send.mockImplementation(() => Promise.reject({ message: errorMessageLabel }))
+
+        let fireTransactionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_request'],
+        ) => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_request') {
+            fireTransactionProposalEvent = callback
+          }
+        })
+
+        renderWithProviders(<App />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
+        expect(mockRespond).not.toBeCalled()
+
+        act(() => {
+          // simulate a valid transaction
+          fireTransactionProposalEvent(mockValidTransactionRequest)
+        })
+
+        // we show a error label
+        await waitFor(() => {
+          expect(screen.getByText(errorMessageLabel)).toBeInTheDocument()
+        })
+
+        // responds to the Dapp with a valid transaction message
+        await waitFor(() =>
+          expect(mockRespond).toBeCalledWith({
+            topic: mockValidTransactionRequest.topic,
+            response: {
+              id: mockValidTransactionRequest.id,
+              jsonrpc: '2.0',
+              error: {
+                code: 4001,
+                message: errorMessageLabel,
+              },
+            },
+          }),
+        )
+
+        expect(mockRespond).toBeCalledTimes(1)
+      })
+
+      it('shows an error if a invalid eth_signTransaction method is sent', async () => {
+        // configure autoconnection
+        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+
+        const errorMessageLabel = 'eth_signTransaction method is not implemented'
+
+        // mock web3 send with the user rejection
+        mockWeb3Stub.send.mockImplementation(() => Promise.reject({ message: errorMessageLabel }))
+
+        let fireTransactionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_request'],
+        ) => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_request') {
+            fireTransactionProposalEvent = callback
+          }
+        })
+
+        renderWithProviders(<App />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
+        expect(mockRespond).not.toBeCalled()
+
+        act(() => {
+          // simulate a valid transaction
+          fireTransactionProposalEvent(mockValidTransactionRequest)
+        })
+
+        // we show a error label
+        await waitFor(() => {
+          expect(screen.getByText(errorMessageLabel)).toBeInTheDocument()
+        })
+
+        // responds to the Dapp with a valid transaction message
+        await waitFor(() =>
+          expect(mockRespond).toBeCalledWith({
+            topic: mockValidTransactionRequest.topic,
+            response: {
+              id: mockValidTransactionRequest.id,
+              jsonrpc: '2.0',
+              error: {
+                code: 1001,
+                message: errorMessageLabel,
+              },
+            },
+          }),
+        )
+
+        expect(mockRespond).toBeCalledTimes(1)
       })
     })
 
