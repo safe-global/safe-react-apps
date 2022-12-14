@@ -78,7 +78,7 @@ const App = () => {
             <StyledCard>
               {connectionStatus === CONNECTION_STATUS.DISCONNECTED && (
                 <Disconnected>
-                  <WalletConnectField wcClientData={wcClientData} wcConnect={wcConnect} />
+                  <WalletConnectField wcClientData={wcClientData} onConnect={wcConnect} />
                 </Disconnected>
               )}
               {connectionStatus === CONNECTION_STATUS.CONNECTING && (

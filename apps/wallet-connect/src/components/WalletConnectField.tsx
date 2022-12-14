@@ -13,12 +13,12 @@ import { useWalletConnectType, wcConnectType } from '../hooks/useWalletConnect'
 
 type WalletConnectFieldProps = {
   wcClientData: useWalletConnectType['wcClientData']
-  wcConnect: wcConnectType
+  onConnect: wcConnectType
 }
 
 const WalletConnectField = ({
   wcClientData,
-  wcConnect,
+  onConnect,
 }: WalletConnectFieldProps): React.ReactElement => {
   const [invalidQRCode, setInvalidQRCode] = useState(false)
   const [isConnecting, setIsConnecting] = useState(false)
@@ -52,7 +52,7 @@ const WalletConnectField = ({
       const connectWithUri = (data: string) => {
         if (data.startsWith('wc')) {
           setIsConnecting(true)
-          wcConnect(data)
+          onConnect(data)
         }
       }
 
@@ -64,7 +64,7 @@ const WalletConnectField = ({
           const code = jsQr(imageData.data, imageData.width, imageData.height)
           if (code?.data) {
             setIsConnecting(true)
-            wcConnect(code.data)
+            onConnect(code.data)
           } else {
             setInvalidQRCode(true)
             setInputValue(
@@ -99,7 +99,7 @@ const WalletConnectField = ({
         }
       }
     },
-    [wcClientData, wcConnect],
+    [wcClientData, onConnect],
   )
 
   if (isConnecting) {
@@ -148,7 +148,7 @@ const WalletConnectField = ({
             </IconButton>
           </Tooltip>
         </StyledCloseDialogContainer>
-        <ScanCode wcConnect={wcConnect} wcClientData={wcClientData} />
+        <ScanCode wcConnect={onConnect} wcClientData={wcClientData} />
       </Dialog>
     </>
   )
