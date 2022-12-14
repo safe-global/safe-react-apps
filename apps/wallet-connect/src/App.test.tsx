@@ -6,6 +6,7 @@ import {
   waitForElementToBeRemoved,
   findByAltText,
   findByText,
+  act,
 } from '@testing-library/react'
 import { SignClientTypes } from '@walletconnect/types'
 
@@ -465,8 +466,10 @@ describe('Walletconnect unit tests', () => {
         expect(mockApprove).not.toBeCalled()
         expect(mockReject).not.toBeCalled()
 
-        // simulate an invalid transaction (from different chain Safe chain)
-        fireTransactionProposalEvent(mockinvalidChainTransactionRequest)
+        act(() => {
+          // simulate an invalid transaction (from different chain Safe chain)
+          fireTransactionProposalEvent(mockinvalidChainTransactionRequest)
+        })
 
         const errorMessageLabel =
           'Transaction rejected: the connected Dapp is not set to the correct chain. Make sure the Dapp uses Goerli to interact with this Safe.'
@@ -488,6 +491,60 @@ describe('Walletconnect unit tests', () => {
 
         // we show an error label in the IU
         await waitFor(() => expect(screen.getByText(errorMessageLabel)).toBeInTheDocument())
+      })
+    })
+
+    describe('remove session', () => {
+      it('remove session from the Safe App', async () => {
+        // configure autoconnection
+        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+
+        renderWithProviders(<App />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        // we click on disconnect button
+        const disconnectButtonNode = screen.getByText('Disconnect')
+        expect(disconnectButtonNode).toBeInTheDocument()
+
+        fireEvent.click(disconnectButtonNode)
+
+        await waitFor(() => {
+          expect(screen.getByText(HELP_TITLE)).toBeInTheDocument()
+          expect(screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)).toBeInTheDocument()
+
+          expect(mockDisconnect).toBeCalled()
+        })
+      })
+
+      it('remove session from the connected DApp', async () => {
+        // configure autoconnection
+        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+
+        // we simulate a remove session event from the DApp
+        let fireRemoveSessionEvent = () => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_delete') {
+            fireRemoveSessionEvent = callback
+          }
+        })
+
+        renderWithProviders(<App />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        act(() => {
+          // we mannualy fire the event
+          fireRemoveSessionEvent()
+        })
+
+        await waitFor(() => {
+          expect(screen.getByText(HELP_TITLE)).toBeInTheDocument()
+          expect(screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)).toBeInTheDocument()
+        })
       })
     })
   })

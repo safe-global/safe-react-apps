@@ -96,7 +96,7 @@ const useWalletConnectV2 = (
     }
   }, [])
 
-  // we session_request needs a separate Effect because a valid wcSession should be present
+  // session_request needs a separate Effect because a valid wcSession should be present
   useEffect(() => {
     if (isWallectConnectInitialized && signClient && wcSession) {
       signClient.on(
