@@ -12,10 +12,7 @@ import {
   WalletConnectVersion,
   WALLET_CONNECT_VERSION_2,
 } from '../utils/analytics'
-
-const { REACT_APP_WALLETCONNECT_PROJECT_ID, NODE_ENV } = process.env
-
-const isProduction = NODE_ENV === 'production'
+import { isProduction, SAFE_WALLET_METADATA, WALLETCONNECT_V2_PROJECT_ID } from '../constants'
 
 export const safeAllowedMethods: string[] = [
   'eth_sendTransaction',
@@ -37,16 +34,6 @@ const USER_DISCONNECTED_CODE = 6000
 const USER_REJECTED_REQUEST_CODE = 4001
 // see https://docs.walletconnect.com/2.0/specs/sign/session-namespaces#example-proposal-namespaces-request
 const REJECT_SESSION_ERROR_CODE = 1006
-
-const SAFE_WALLET_METADATA = {
-  name: 'Safe Wallet',
-  description: 'The most trusted platform to manage digital assets on Ethereum',
-  url: 'https://app.safe.global',
-  icons: [
-    'https://app.safe.global/favicons/mstile-150x150.png',
-    'https://app.safe.global/favicons/logo_120x120.png',
-  ],
-}
 
 const logger = isProduction ? undefined : 'debug'
 
@@ -93,9 +80,9 @@ const useWalletConnectV2 = (
   useEffect(() => {
     const initializeWalletConnectV2Client = async () => {
       const signClient = await SignClient.init({
-        projectId: REACT_APP_WALLETCONNECT_PROJECT_ID,
-        logger,
+        projectId: WALLETCONNECT_V2_PROJECT_ID,
         metadata: SAFE_WALLET_METADATA,
+        logger,
       })
 
       setSignClient(signClient)
