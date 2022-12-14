@@ -166,7 +166,19 @@ export const mockTransactionRequest = {
   },
 }
 
-export const mockinvalidChainTransactionRequest = {
+export const mockValidTransactionRequest = {
+  id: 1111111111111111,
+  topic: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+  params: {
+    request: {
+      method: 'personal_sign',
+      params: ['0x1111111111111', '0x57CB13cbef735FbDD65f5f2866638c546464E45F'],
+    },
+    chainId: 'eip155:5',
+  },
+}
+
+export const mockInvalidChainTransactionRequest = {
   id: 1111111111111111,
   topic: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
   params: {

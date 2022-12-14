@@ -16,13 +16,14 @@ import {
   mockActiveSessions,
   mockChainInfo,
   mockInvalidChainIdSessionProposal,
-  mockinvalidChainTransactionRequest,
+  mockInvalidChainTransactionRequest,
   mockInvalidEVMSessionProposal,
   mockOriginUrl,
   mockSafeAppsListResponse,
   mockSafeInfo,
   mockSessionProposal,
   mockV2SessionObj,
+  mockValidTransactionRequest,
 } from './mocks/mocks'
 import { renderWithProviders } from './utils/test-helpers'
 
@@ -444,6 +445,54 @@ describe('Walletconnect unit tests', () => {
     })
 
     describe('transaction proposal', () => {
+      it('acepts valid transactions', async () => {
+        // configure autoconnection
+        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+
+        let fireTransactionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_request'],
+        ) => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_request') {
+            fireTransactionProposalEvent = callback
+          }
+        })
+
+        renderWithProviders(<App />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
+        expect(mockRespond).not.toBeCalled()
+
+        act(() => {
+          // simulate a valid transaction
+          fireTransactionProposalEvent(mockValidTransactionRequest)
+        })
+
+        const errorMessageLabel =
+          'Transaction rejected: the connected Dapp is not set to the correct chain. Make sure the Dapp uses Goerli to interact with this Safe.'
+
+        expect(screen.queryByText(errorMessageLabel)).not.toBeInTheDocument()
+
+        // responds to the Dapp with a valid transaction message
+        await waitFor(() =>
+          expect(mockRespond).toBeCalledWith({
+            topic: mockValidTransactionRequest.topic,
+            response: {
+              id: mockValidTransactionRequest.id,
+              jsonrpc: '2.0',
+              result: '0x',
+            },
+          }),
+        )
+
+        expect(mockRespond).toBeCalledTimes(1)
+      })
+
       it('rejects transactions from diffetent chains', async () => {
         // configure autoconnection
         mockGetAllSessions.mockImplementation(() => mockActiveSessions)
@@ -465,10 +514,11 @@ describe('Walletconnect unit tests', () => {
 
         expect(mockApprove).not.toBeCalled()
         expect(mockReject).not.toBeCalled()
+        expect(mockRespond).not.toBeCalled()
 
         act(() => {
           // simulate an invalid transaction (from different chain Safe chain)
-          fireTransactionProposalEvent(mockinvalidChainTransactionRequest)
+          fireTransactionProposalEvent(mockInvalidChainTransactionRequest)
         })
 
         const errorMessageLabel =
@@ -476,9 +526,9 @@ describe('Walletconnect unit tests', () => {
 
         // respond with an transaction rejected error
         expect(mockRespond).toBeCalledWith({
-          topic: mockinvalidChainTransactionRequest.topic,
+          topic: mockInvalidChainTransactionRequest.topic,
           response: {
-            id: mockinvalidChainTransactionRequest.id,
+            id: mockInvalidChainTransactionRequest.id,
             jsonrpc: '2.0',
             error: {
               code: 5100, // unsupported chain error code
