@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.1](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.4.0...safe-claiming-app-0.4.1) (2022-12-15)
+
+
+### Bug Fixes
+
+* **safe-claiming-app:** loading state of unredeemed tokens ([#622](https://github.com/safe-global/safe-react-apps/issues/622)) ([ba97a3c](https://github.com/safe-global/safe-react-apps/commit/ba97a3c0cdce1e7a83d9a1f0b7d67e5d0796df74))
+
+
+
 # [0.4.0](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.3.1...safe-claiming-app-0.4.0) (2022-12-14)
 
 
