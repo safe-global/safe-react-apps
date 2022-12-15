@@ -98,11 +98,11 @@ const App = (): ReactElement => {
 
   const [safeTokenAllocation, allocationError, isVestingLoading] =
     useSafeTokenAllocation()
-  const { vestingData } = safeTokenAllocation
 
   const validVestingData = useMemo(
-    () => vestingData.filter((vesting) => !vesting.isExpired),
-    [vestingData]
+    () =>
+      safeTokenAllocation?.vestingData.filter((vesting) => !vesting.isExpired),
+    [safeTokenAllocation?.vestingData]
   )
 
   const [delegates, , delegatesFileError] = useDelegatesFile()
@@ -128,7 +128,7 @@ const App = (): ReactElement => {
   useEffect(() => {
     setAppState((prev) => ({
       ...prev,
-      vestingData: validVestingData,
+      vestingData: validVestingData ?? prev.vestingData,
       delegate: currentDelegate,
       isTokenPaused,
       delegateAddressFromContract,
@@ -152,10 +152,14 @@ const App = (): ReactElement => {
   }, [delegateAddressFromContract])
 
   useEffect(() => {
-    if (validVestingData.length === 0 && !isVestingLoading) {
+    if (
+      validVestingData &&
+      validVestingData.length === 0 &&
+      !isVestingLoading
+    ) {
       setActiveStep(NO_AIRDROP_STEP)
     }
-  }, [validVestingData.length, isVestingLoading])
+  }, [isVestingLoading, validVestingData])
 
   const handleBack = () => {
     if (activeStep === SUCCESS_STEP) {
