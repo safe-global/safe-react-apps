@@ -141,11 +141,21 @@ const fetchTokenBalance = async (
   }
 }
 
+const computeVotingPower = (allocationData: Vesting[], balance: string) => {
+  const tokensInVesting = allocationData.reduce(
+    (acc, data) =>
+      data.isExpired ? acc : acc.add(data.amount).sub(data.amountClaimed),
+    BigNumber.from(0)
+  )
+
+  // add balance
+  return tokensInVesting.add(balance || "0")
+}
 /**
  * Fetches allocated tokens and combines it with the on-chain status of the vesting.
  */
 const useSafeTokenAllocation = (): [
-  { votingPower: BigNumber; vestingData: Vesting[] },
+  { votingPower: BigNumber; vestingData: Vesting[] } | undefined,
   Error | undefined,
   boolean
 ] => {
@@ -154,11 +164,10 @@ const useSafeTokenAllocation = (): [
 
   const chainId = safe.chainId
 
-  const [allocationData, allocationError, allocationLoading] = useAsync<
-    Vesting[] | undefined
+  return useAsync<
+    { votingPower: BigNumber; vestingData: Vesting[] } | undefined
   >(async () => {
-    if (!safe.safeAddress) return
-    return Promise.all(
+    const vestingData = await Promise.all(
       await fetchAllocation(safe.chainId, safe.safeAddress).then(
         (allocations) =>
           allocations.map((allocation) =>
@@ -166,36 +175,16 @@ const useSafeTokenAllocation = (): [
           )
       )
     )
-  }, [chainId, safe.safeAddress, safe.chainId])
-
-  const [balance, balanceError, balanceLoading] = useAsync<string>(() => {
-    if (!safe.safeAddress) return
-    return fetchTokenBalance(safe.chainId, safe.safeAddress, web3Provider)
-  }, [chainId, safe.safeAddress, safe.chainId])
-
-  const isLoading = allocationLoading || balanceLoading
-  const votingPower = useMemo(() => {
-    if (!allocationData || !balance) return
-
-    const tokensInVesting = allocationData.reduce(
-      (acc, data) =>
-        data.isExpired ? acc : acc.add(data.amount).sub(data.amountClaimed),
-      BigNumber.from(0)
+    const balance = await fetchTokenBalance(
+      safe.chainId,
+      safe.safeAddress,
+      web3Provider
     )
 
-    // add balance
-    const totalAllocation = tokensInVesting.add(balance || "0")
-    return totalAllocation
-  }, [allocationData, balance])
+    const votingPower = computeVotingPower(vestingData, balance)
 
-  return [
-    {
-      vestingData: allocationData ?? [],
-      votingPower: votingPower ?? BigNumber.from(0),
-    },
-    allocationError || balanceError,
-    isLoading,
-  ]
+    return { votingPower, vestingData }
+  }, [chainId, safe.safeAddress, safe.chainId])
 }
 
 export default useSafeTokenAllocation

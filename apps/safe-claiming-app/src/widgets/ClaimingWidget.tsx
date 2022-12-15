@@ -107,15 +107,15 @@ const ClaimingWidget = () => {
     }
   }, [delegateAddressFromContract, delegates])
 
-  const [safeTokenAllocation, loading] = useSafeTokenAllocation()
-  const { vestingData, votingPower } = safeTokenAllocation
+  const [safeTokenAllocation, , loading] = useSafeTokenAllocation()
+  const { vestingData, votingPower } = safeTokenAllocation ?? {}
 
-  const totalClaimed = vestingData.reduce(
+  const totalClaimed = vestingData?.reduce(
     (prev, current) => prev.add(current.amountClaimed),
     BigNumber.from(0)
   )
 
-  const unredeemedAllocations = vestingData.some(
+  const unredeemedAllocations = vestingData?.some(
     (vesting) => !vesting.isRedeemed
   )
 
@@ -149,11 +149,15 @@ const ClaimingWidget = () => {
         >
           <SafeIcon />
           <Typography variant="h5" color="text.primary">
-            {formatAmount(Number(ethers.utils.formatEther(votingPower)), 2)}{" "}
+            {votingPower ? (
+              formatAmount(Number(ethers.utils.formatEther(votingPower)), 2)
+            ) : (
+              <Skeleton />
+            )}{" "}
           </Typography>
         </Box>
       </div>
-      {totalClaimed.gt(0) ? (
+      {totalClaimed?.gt(0) ? (
         <>
           <Subtitle>
             You've already claimed{" "}
@@ -214,7 +218,7 @@ const ClaimingWidget = () => {
   return (
     <Card elevation={0} sx={{ minWidth: WIDGET_WIDTH, maxWidth: WIDGET_WIDTH }}>
       <SpaceContent sx={{ alignItems: "center" }}>
-        {votingPower.eq(0) ? ctaWidget : votingPowerWidget}
+        {votingPower && votingPower.eq(0) ? ctaWidget : votingPowerWidget}
       </SpaceContent>
     </Card>
   )
