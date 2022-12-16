@@ -102,6 +102,15 @@ const WalletConnectField = ({
     [wcClientData, onConnect],
   )
 
+  // onConnect and close the dialog
+  const wcConnect = useCallback(
+    async (uri: string) => {
+      onConnect(uri)
+      setOpenDialog(false)
+    },
+    [onConnect],
+  )
+
   if (isConnecting) {
     return <Loader size="md" />
   }
@@ -148,7 +157,7 @@ const WalletConnectField = ({
             </IconButton>
           </Tooltip>
         </StyledCloseDialogContainer>
-        <ScanCode wcConnect={onConnect} wcClientData={wcClientData} />
+        <ScanCode wcConnect={wcConnect} wcClientData={wcClientData} />
       </Dialog>
     </>
   )
