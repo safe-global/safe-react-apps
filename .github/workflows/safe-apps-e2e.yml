@@ -39,7 +39,7 @@ jobs:
         env:
           CI: 'true'
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          CYPRESS_BASE_URL: ${{env.BASE_URL}}
+          CYPRESS_WEB_BASE_URL: ${{env.BASE_URL}}
           CYPRESS_SAFE_APPS_BASE_URL: ${{env.SAFE_APPS_BASE_URL}}
           CYPRESS_CHAIN_ID: '4'
           CYPRESS_NETWORK_PREFIX: 'rin'

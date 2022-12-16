@@ -18,7 +18,9 @@ Cypress.Commands.add('visitSafeApp', appUrl => {
     window.localStorage.setItem(
       BROWSER_PERMISSIONS_KEY,
       JSON.stringify({
-        'https://apps.gnosis-safe.io/wallet-connect': [{ feature: 'camera', status: 'granted' }],
+        [`${Cypress.env('SAFE_APPS_BASE_URL')}/wallet-connect`]: [
+          { feature: 'camera', status: 'granted' },
+        ],
       }),
     )
 
