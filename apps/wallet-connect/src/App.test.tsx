@@ -10,7 +10,7 @@ import {
 } from '@testing-library/react'
 import { SignClientTypes } from '@walletconnect/types'
 
-import App from './App'
+import WalletconnectSafeApp from './App'
 import { safeAllowedEvents, safeAllowedMethods } from './hooks/useWalletConnectV2'
 import {
   mockActiveSessions,
@@ -35,6 +35,9 @@ const version1URI =
 
 const version2URI =
   'wc:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@2?relay-protocol=irn&symKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
+const invalidConnectionErrorLabel =
+  'Connection refused: Incompatible chain detected. Make sure the Dapp uses Goerli to interact with this Safe.'
 
 jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => {
   return {
@@ -156,7 +159,7 @@ describe('Walletconnect unit tests', () => {
   })
 
   it('Renders Walletconnect Safe App', async () => {
-    renderWithProviders(<App />)
+    renderWithProviders(<WalletconnectSafeApp />)
 
     // wait for loader to be removed
     await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -174,7 +177,7 @@ describe('Walletconnect unit tests', () => {
   })
 
   it('Shows scan QR dialog', async () => {
-    renderWithProviders(<App />)
+    renderWithProviders(<WalletconnectSafeApp />)
 
     // wait for loader to be removed
     await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -198,7 +201,7 @@ describe('Walletconnect unit tests', () => {
       }),
     })
 
-    renderWithProviders(<App />)
+    renderWithProviders(<WalletconnectSafeApp />)
 
     // wait for loader to be removed
     await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -224,7 +227,7 @@ describe('Walletconnect unit tests', () => {
   describe('Walletconnect version 1', () => {
     describe('v1 URI connection', () => {
       it('Connects via onPaste valid v1 URI', async () => {
-        renderWithProviders(<App />)
+        renderWithProviders(<WalletconnectSafeApp />)
 
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -254,7 +257,7 @@ describe('Walletconnect unit tests', () => {
       })
 
       it('No connection is created if an invalid v1 URI is provided', async () => {
-        renderWithProviders(<App />)
+        renderWithProviders(<WalletconnectSafeApp />)
 
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -267,7 +270,7 @@ describe('Walletconnect unit tests', () => {
     })
 
     it('Scans a valid v1 QR code', async () => {
-      renderWithProviders(<App />)
+      renderWithProviders(<WalletconnectSafeApp />)
 
       // we simulate a valid v1 URI returned by the QR lib
       mockQRcodeStub.mockImplementation(() => ({
@@ -296,7 +299,7 @@ describe('Walletconnect unit tests', () => {
 
     describe('Disconnect v1 session', () => {
       it('Disconnects if user clicks on Disconnect button', async () => {
-        renderWithProviders(<App />)
+        renderWithProviders(<WalletconnectSafeApp />)
 
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -323,7 +326,7 @@ describe('Walletconnect unit tests', () => {
   describe('Walletconnect version 2', () => {
     describe('pairing', () => {
       it('Pairing via valid v2 URI', async () => {
-        renderWithProviders(<App />)
+        renderWithProviders(<WalletconnectSafeApp />)
 
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -354,7 +357,7 @@ describe('Walletconnect unit tests', () => {
           }
         })
 
-        renderWithProviders(<App />)
+        renderWithProviders(<WalletconnectSafeApp />)
 
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -363,13 +366,18 @@ describe('Walletconnect unit tests', () => {
         expect(mockReject).not.toBeCalled()
 
         // simulate a session proposal event
-        fireSessionProposalEvent(mockSessionProposal)
+        act(() => {
+          fireSessionProposalEvent(mockSessionProposal)
+        })
 
         const dappNameNode = await screen.findByText('Test v2 Dapp name')
         expect(dappNameNode).toBeInTheDocument()
 
         // no rejection is present in valid sessions
         expect(mockReject).not.toBeCalled()
+
+        // No error label is present
+        expect(screen.queryByText(invalidConnectionErrorLabel)).not.toBeInTheDocument()
 
         const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
 
@@ -403,7 +411,7 @@ describe('Walletconnect unit tests', () => {
           }
         })
 
-        renderWithProviders(<App />)
+        renderWithProviders(<WalletconnectSafeApp />)
 
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -412,7 +420,14 @@ describe('Walletconnect unit tests', () => {
         expect(mockReject).not.toBeCalled()
 
         // simulate an invalid EVM compatible session proposal event
-        fireSessionProposalEvent(mockInvalidEVMSessionProposal)
+        act(() => {
+          fireSessionProposalEvent(mockInvalidEVMSessionProposal)
+        })
+
+        // error label to provide feedback to the user
+        await waitFor(() =>
+          expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
+        )
 
         expect(mockApprove).not.toBeCalled()
         expect(mockReject).toBeCalledWith({
@@ -441,7 +456,7 @@ describe('Walletconnect unit tests', () => {
           }
         })
 
-        renderWithProviders(<App />)
+        renderWithProviders(<WalletconnectSafeApp />)
 
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -450,7 +465,14 @@ describe('Walletconnect unit tests', () => {
         expect(mockReject).not.toBeCalled()
 
         // simulate an invalid session proposal event (no Safe chain is present)
-        fireSessionProposalEvent(mockInvalidChainIdSessionProposal)
+        act(() => {
+          fireSessionProposalEvent(mockInvalidChainIdSessionProposal)
+        })
+
+        // error label to provide feedback to the user
+        await waitFor(() =>
+          expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
+        )
 
         expect(mockApprove).not.toBeCalled()
         expect(mockReject).toBeCalledWith({
@@ -481,7 +503,7 @@ describe('Walletconnect unit tests', () => {
           }
         })
 
-        renderWithProviders(<App />)
+        renderWithProviders(<WalletconnectSafeApp />)
 
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -529,7 +551,7 @@ describe('Walletconnect unit tests', () => {
           }
         })
 
-        renderWithProviders(<App />)
+        renderWithProviders(<WalletconnectSafeApp />)
 
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -584,7 +606,7 @@ describe('Walletconnect unit tests', () => {
           }
         })
 
-        renderWithProviders(<App />)
+        renderWithProviders(<WalletconnectSafeApp />)
 
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -640,7 +662,7 @@ describe('Walletconnect unit tests', () => {
           }
         })
 
-        renderWithProviders(<App />)
+        renderWithProviders(<WalletconnectSafeApp />)
 
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -683,7 +705,7 @@ describe('Walletconnect unit tests', () => {
         // configure autoconnection
         mockGetAllSessions.mockImplementation(() => mockActiveSessions)
 
-        renderWithProviders(<App />)
+        renderWithProviders(<WalletconnectSafeApp />)
 
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -715,7 +737,7 @@ describe('Walletconnect unit tests', () => {
           }
         })
 
-        renderWithProviders(<App />)
+        renderWithProviders(<WalletconnectSafeApp />)
 
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
@@ -761,7 +783,7 @@ describe('Walletconnect unit tests', () => {
       },
     })
 
-    renderWithProviders(<App />)
+    renderWithProviders(<WalletconnectSafeApp />)
 
     // wait for loader to be removed
     await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))

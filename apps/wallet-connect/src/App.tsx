@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
 import Container from '@material-ui/core/Container'
-import { Card, Loader } from '@gnosis.pm/safe-react-components'
+import { Card, Loader, Text } from '@gnosis.pm/safe-react-components'
 
 import useWalletConnect from './hooks/useWalletConnect'
 import AppBar from './components/AppBar'
@@ -91,12 +91,20 @@ const App = () => {
               {connectionStatus === CONNECTION_STATUS.CONNECTED && (
                 <Connected
                   wcClientData={wcClientData}
-                  error={error}
                   onDisconnect={() => {
                     setConnectionStatus(CONNECTION_STATUS.DISCONNECTED)
                     wcDisconnect()
                   }}
                 />
+              )}
+
+              {/* error label to provide feedback to the user */}
+              {error && (
+                <Grid item>
+                  <Text size="md" color="error" center>
+                    {error}
+                  </Text>
+                </Grid>
               )}
             </StyledCard>
           </StyledCardContainer>

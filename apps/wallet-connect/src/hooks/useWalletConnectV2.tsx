@@ -196,7 +196,10 @@ const useWalletConnectV2 = (
           // at least a EVM-based (eip155) namespace should be present
           const isEIP155NamespacePresent = !!EIP155Namespace
 
+          const errorMessage = `Connection refused: Incompatible chain detected. Make sure the Dapp uses ${chainInfo?.chainName} to interact with this Safe.`
+
           if (!isEIP155NamespacePresent) {
+            setError(errorMessage)
             await signClient.reject({
               id,
               reason: {
@@ -213,6 +216,7 @@ const useWalletConnectV2 = (
           )
 
           if (!isSafeChainIdPresent) {
+            setError(errorMessage)
             await signClient.reject({
               id,
               reason: {
@@ -226,22 +230,27 @@ const useWalletConnectV2 = (
           // As a workaround we lie to the Dapp, accepting all EVM accounts, methods & events
           const safeAccount = EIP155Namespace.chains.map(chain => `${chain}:${safe.safeAddress}`)
 
-          const { acknowledged } = await signClient.approve({
-            id,
-            namespaces: {
-              eip155: {
-                accounts: safeAccount,
-                methods: safeAllowedMethods,
-                events: safeAllowedEvents,
+          try {
+            const { acknowledged } = await signClient.approve({
+              id,
+              namespaces: {
+                eip155: {
+                  accounts: safeAccount,
+                  methods: safeAllowedMethods,
+                  events: safeAllowedEvents,
+                },
               },
-            },
-          })
+            })
 
-          const wcSession = await acknowledged()
+            const wcSession = await acknowledged()
 
-          trackEvent(NEW_SESSION_ACTION, WALLET_CONNECT_VERSION_2, wcSession.peer.metadata)
+            trackEvent(NEW_SESSION_ACTION, WALLET_CONNECT_VERSION_2, wcSession.peer.metadata)
 
-          setWcSession(wcSession)
+            setWcSession(wcSession)
+            setError(undefined)
+          } catch (error) {
+            setError(errorMessage)
+          }
         },
       )
 
