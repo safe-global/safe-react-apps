@@ -95,7 +95,7 @@ jobs:
           REACT_APP_TENDERLY_PROJECT_NAME: ${{ secrets.REACT_APP_TENDERLY_PROJECT_NAME }}
           REACT_APP_MMI_BACKEND_BASE_URL: ${{ secrets.MMI_BACKEND_BASE_URL }}
           REACT_APP_MMI_ENVIRONMENT: ${{ secrets.MMI_ENVIRONMENT }}
-          REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLETCONNECT_PROJECT_ID_STAGING }}
+          REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLETCONNECT_PROJECT_ID_DEVSTAGING }}
 
       # Script to deploy to the dev environment
       - name: 'Deploy to S3: Develop'
