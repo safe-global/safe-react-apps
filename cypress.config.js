@@ -14,7 +14,10 @@ export default defineConfig({
     runMode: 2,
     openMode: 0,
   },
-  env: {},
+  env: {
+    DRAIN_SAFE_URL: 'http://localhost:3001',
+    TX_BUILDER_URL: 'http://localhost:3002/tx-builder',
+  },
   e2e: {
     baseUrl: 'http://localhost:3000',
     async setupNodeEvents(on, config) {

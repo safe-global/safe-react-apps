@@ -5,13 +5,21 @@ import './commands'
 export const INFO_MODAL_KEY = 'SAFE_v2__SafeApps__infoModal'
 export const BROWSER_PERMISSIONS_KEY = 'SAFE_v2__SafeApps__browserPermissions'
 
+const warningCheckedCustomApps = ['http://localhost:3001', 'http://localhost:3002']
+
 Cypress.Commands.add('visitSafeApp', appUrl => {
   cy.on('window:before:load', window => {
     window.localStorage.setItem(
       INFO_MODAL_KEY,
       JSON.stringify({
-        1: { consentsAccepted: true },
-        5: { consentsAccepted: true },
+        1: {
+          consentsAccepted: true,
+          warningCheckedCustomApps,
+        },
+        5: {
+          consentsAccepted: true,
+          warningCheckedCustomApps,
+        },
       }),
     )
 

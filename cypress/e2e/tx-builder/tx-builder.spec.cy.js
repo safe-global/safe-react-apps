@@ -1,6 +1,6 @@
 describe('Testing Tx-builder safe app', () => {
   // TODO use an ENV parameter for appUrl so we can configure different environments or PRs
-  const appUrl = `${Cypress.env('SAFE_APPS_BASE_URL')}/tx-builder/`
+  const appUrl = Cypress.env('TX_BUILDER_URL')
   const iframeSelector = `iframe[id="iframe-${appUrl}"]`
   const visitUrl = `/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
     'TESTING_SAFE_ADDRESS',
@@ -11,19 +11,20 @@ describe('Testing Tx-builder safe app', () => {
   })
 
   beforeEach(() => {
-    // Navigate to Safe App in TESTING SAFE
     cy.visitSafeApp(visitUrl)
 
     cy.frameLoaded(iframeSelector)
   })
 
-  it('should allow to create and send a simple batch', () => {
+  it('should allow to create and send a simple batch', { defaultCommandTimeout: 12000 }, () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/enter address or ens name/i)
-        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
+        .type('0x51A099ac1BF46D471110AA8974024Bfe518Fd6C4')
+      getBody().find('[name="contractMethodIndex"]').parent().click()
+      getBody().findByRole('option', { name: 'testAddressValue' }).click()
       getBody()
-        .findByLabelText(/paramAddress/i)
+        .findByLabelText('newValue (address)')
         .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
       getBody()
         .findByText(/add transaction/i)
@@ -36,23 +37,22 @@ describe('Testing Tx-builder safe app', () => {
         .click()
     })
     cy.findByText(/transaction builder/i).should('be.visible')
-    cy.findByText(/contract interaction/i).click()
-    cy.findByText(/paramAddress/i).should('be.visible')
-    cy.findAllByText('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6').should('have.length', 2)
+    cy.findByRole('button', { name: /transaction details/i }).click()
+    cy.findByRole('region').should('exist')
+    cy.findByText('test Address Value').should('exist')
+    cy.findByText('newValue(address):').should('exist')
+    cy.findAllByText('0x49d4...26A6').should('have.length', 2)
   })
 
   it('should allow to create and send a complex batch', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/enter address or ens name/i)
-        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
-      getBody()
-        .findByLabelText(/paramAddress/i)
-        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
+        .type('0x51A099ac1BF46D471110AA8974024Bfe518Fd6C4')
       getBody()
         .findByText(/add transaction/i)
         .click()
-      getBody().find('#contract-method-selector').click()
+      getBody().find('[name="contractMethodIndex"]').parent().click()
       getBody().find('li[role="option"]').contains('testBool').click()
       getBody().find('#contract-field-paramBool').click()
       getBody().find('ul[role="listbox"]').contains('False').click()
