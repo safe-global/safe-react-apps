@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
 import Container from '@material-ui/core/Container'
-import { Card } from '@gnosis.pm/safe-react-components'
+import { Card, Loader, Text } from '@gnosis.pm/safe-react-components'
+
 import useWalletConnect from './hooks/useWalletConnect'
-import { useApps } from './hooks/useApps'
 import AppBar from './components/AppBar'
 import Help from './components/Help'
 import Disconnected from './components/Disconnected'
@@ -19,8 +19,16 @@ enum CONNECTION_STATUS {
 }
 
 const App = () => {
-  const { wcClientData, wcConnect, wcDisconnect } = useWalletConnect()
-  const { findSafeApp, openSafeApp } = useApps()
+  const {
+    wcConnect,
+    wcClientData,
+    wcDisconnect,
+    isWallectConnectInitialized,
+    error,
+    openSafeApp,
+    findSafeApp,
+  } = useWalletConnect()
+
   const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED)
 
   const handleOpenSafeApp = useCallback(
@@ -53,6 +61,14 @@ const App = () => {
     }
   }, [connectionStatus, findSafeApp, wcClientData])
 
+  if (!isWallectConnectInitialized) {
+    return (
+      <StyledMainContainer>
+        <Loader size="md" />
+      </StyledMainContainer>
+    )
+  }
+
   return (
     <>
       <AppBar />
@@ -62,24 +78,33 @@ const App = () => {
             <StyledCard>
               {connectionStatus === CONNECTION_STATUS.DISCONNECTED && (
                 <Disconnected>
-                  <WalletConnectField client={wcClientData} onConnect={data => wcConnect(data)} />
+                  <WalletConnectField wcClientData={wcClientData} onConnect={wcConnect} />
                 </Disconnected>
               )}
               {connectionStatus === CONNECTION_STATUS.CONNECTING && (
                 <Connecting
-                  client={wcClientData}
+                  wcClientData={wcClientData}
                   onOpenSafeApp={() => handleOpenSafeApp(wcClientData?.url || '')}
                   onKeepUsingWalletConnect={() => setConnectionStatus(CONNECTION_STATUS.CONNECTED)}
                 />
               )}
               {connectionStatus === CONNECTION_STATUS.CONNECTED && (
                 <Connected
-                  client={wcClientData}
+                  wcClientData={wcClientData}
                   onDisconnect={() => {
                     setConnectionStatus(CONNECTION_STATUS.DISCONNECTED)
                     wcDisconnect()
                   }}
                 />
+              )}
+
+              {/* error label to provide feedback to the user */}
+              {error && (
+                <Grid item>
+                  <Text size="md" color="error" center>
+                    {error}
+                  </Text>
+                </Grid>
               )}
             </StyledCard>
           </StyledCardContainer>

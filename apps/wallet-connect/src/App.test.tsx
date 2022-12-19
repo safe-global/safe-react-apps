@@ -6,12 +6,48 @@ import {
   waitForElementToBeRemoved,
   findByAltText,
   findByText,
+  act,
 } from '@testing-library/react'
-import App from './App'
+import { SignClientTypes } from '@walletconnect/types'
+
+import WalletconnectSafeApp from './App'
+import { safeAllowedEvents, safeAllowedMethods } from './hooks/useWalletConnectV2'
+import {
+  mockActiveSessions,
+  mockChainInfo,
+  mockInvalidChainIdSessionProposal,
+  mockInvalidChainTransactionRequest,
+  mockInvalidEVMSessionProposal,
+  mockOriginUrl,
+  mockSafeAppsListResponse,
+  mockSafeInfo,
+  mockSessionProposal,
+  mockV2SessionObj,
+  mockValidTransactionRequest,
+} from './mocks/mocks'
 import { renderWithProviders } from './utils/test-helpers'
 
 const CONNECTION_INPUT_TEXT = 'QR code or connection link'
 const HELP_TITLE = 'How to connect to a Dapp?'
+
+const version1URI =
+  'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.safe.global&key=xxxxxxxxxxx'
+
+const version2URI =
+  'wc:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@2?relay-protocol=irn&symKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
+const invalidConnectionErrorLabel =
+  'Connection refused: Incompatible chain detected. Make sure the Dapp uses Goerli to interact with this Safe.'
+
+jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => {
+  return {
+    getSafeApps: () => Promise.resolve(mockSafeAppsListResponse),
+  }
+})
+
+jest.mock('./utils/analytics', () => ({
+  trackSafeAppEvent: jest.fn(),
+}))
 
 jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
   const originalModule = jest.requireActual('@gnosis.pm/safe-apps-react-sdk')
@@ -20,18 +56,20 @@ jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
     useSafeAppsSDK: () => ({
       sdk: {
         txs: {
-          send: () => {},
-          signMessage: () => {},
+          send: jest.fn(),
+          signMessage: jest.fn(),
+        },
+        safe: {
+          getChainInfo: () => Promise.resolve(mockChainInfo),
+          getEnvironmentInfo: () => Promise.resolve(mockOriginUrl),
         },
       },
-      safe: {
-        safeAddress: '0x57CB13cbef735FbDD65f5f2866638c546464E45F',
-        chainId: 4,
-      },
+      safe: mockSafeInfo,
     }),
   }
 })
 
+// walletconnect version 1 mock
 jest.mock('@walletconnect/client', () => {
   return function () {
     return {
@@ -43,21 +81,88 @@ jest.mock('@walletconnect/client', () => {
       },
       on: jest.fn(),
       killSession: jest.fn(),
+      approveSession: jest.fn(),
+      approveRequest: jest.fn(),
     }
   }
 })
 
+const mockPairing = jest.fn()
+const mockWalletconnectEvent = jest.fn()
+const mockReject = jest.fn()
+const mockApprove = jest.fn()
+const mockRespond = jest.fn()
+const mockDisconnect = jest.fn()
+const mockGetAllSessions = jest.fn()
+
+// walletconnect version 2 mock
+jest.mock('@walletconnect/sign-client', () => {
+  return {
+    init: () => ({
+      // default session:
+      session: { getAll: mockGetAllSessions },
+      on: mockWalletconnectEvent,
+      reject: mockReject,
+      approve: mockApprove,
+      respond: mockRespond,
+      // pair connection request
+      core: {
+        pairing: {
+          pair: mockPairing,
+        },
+      },
+      // disconnect
+      disconnect: mockDisconnect,
+    }),
+  }
+})
+
+// web3 mock
+const mockWeb3Stub = { send: jest.fn() }
+
+jest.mock('ethers', () => {
+  const originalModule = jest.requireActual('ethers')
+  return {
+    ...originalModule,
+    ethers: {
+      ...originalModule.ethers,
+      providers: {
+        Web3Provider: function () {
+          return mockWeb3Stub
+        },
+      },
+    },
+  }
+})
+
+const mockQRcodeStub = jest.fn()
+
+// QR code lib mock
 jest.mock('jsqr', () => {
   return function () {
-    return {
-      data: 'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.safe.global&key=xxxxxxxxxxx',
-    }
+    return mockQRcodeStub()
   }
 })
 
-describe('WalletConnect unit tests', () => {
-  it('Renders Wallet Connect Safe App', () => {
-    renderWithProviders(<App />)
+describe('Walletconnect unit tests', () => {
+  beforeEach(() => {
+    mockPairing.mockClear()
+    mockWalletconnectEvent.mockClear()
+    mockReject.mockClear()
+    mockApprove.mockClear()
+    mockRespond.mockClear()
+    mockDisconnect.mockClear()
+    mockQRcodeStub.mockClear()
+    mockGetAllSessions.mockClear()
+    mockGetAllSessions.mockImplementation(() => [])
+    mockWeb3Stub.send.mockClear()
+  })
+
+  it('Renders Walletconnect Safe App', async () => {
+    renderWithProviders(<WalletconnectSafeApp />)
+
+    // wait for loader to be removed
+    await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
     const titleNode = screen.getByText('Wallet Connect')
 
@@ -71,126 +176,109 @@ describe('WalletConnect unit tests', () => {
     expect(instructionsNode).toBeInTheDocument()
   })
 
-  describe('URI connection', () => {
-    it('Connects via onPaste valid URI', () => {
-      renderWithProviders(<App />)
+  it('Shows scan QR dialog', async () => {
+    renderWithProviders(<WalletconnectSafeApp />)
 
-      const instructionsNode = screen.getByText(HELP_TITLE)
+    // wait for loader to be removed
+    await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-      expect(instructionsNode).toBeInTheDocument()
+    const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
 
-      const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)
+    expect(openDialogNode).toBeDefined()
 
-      const URIPasteEvent = {
-        clipboardData: {
-          items: [
-            {
-              kind: 'string',
-              type: 'text/plain',
-            },
-          ],
-          getData: () =>
-            'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.safe.global&key=xxxxxxxxxxx',
-        },
-      }
+    fireEvent.click(openDialogNode)
 
-      const pasteEvent = createEvent.paste(inputNode, URIPasteEvent)
+    const scanQRCodeDialog = await screen.findByRole('dialog')
 
-      fireEvent(inputNode, pasteEvent)
-
-      expect(instructionsNode).not.toBeInTheDocument()
-
-      const connectedNode = screen.getByText('CONNECTED')
-      expect(connectedNode).toBeInTheDocument()
-
-      const connectedInstructionsNode = screen.getByText('How to confirm transactions?')
-      expect(connectedInstructionsNode).toBeInTheDocument()
-
-      const dappNameNode = screen.getByText('Test name')
-      expect(dappNameNode).toBeInTheDocument()
-
-      const dappImgNode = screen.getByRole('img')
-      expect(dappImgNode).toBeInTheDocument()
-      expect(dappImgNode).toHaveStyle(
-        "background-image: url('https://cowswap.exchange/./favicon.png')",
-      )
-    })
-
-    it('No connection is set if an invalid URI is provided', () => {
-      renderWithProviders(<App />)
-
-      const instructionsNode = screen.getByText(HELP_TITLE)
-
-      expect(instructionsNode).toBeInTheDocument()
-
-      const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)
-
-      const URIPasteEvent = {
-        clipboardData: {
-          items: [
-            {
-              kind: 'string',
-              type: 'text/plain',
-            },
-          ],
-          getData: () => 'Invalid URI',
-        },
-      }
-
-      const pasteEvent = createEvent.paste(inputNode, URIPasteEvent)
-
-      fireEvent(inputNode, pasteEvent)
-
-      const connectedNode = screen.queryByText('CONNECTED')
-      expect(connectedNode).not.toBeInTheDocument()
-    })
+    await waitFor(() => expect(scanQRCodeDialog).toBeDefined())
   })
 
-  describe('Scan QR code connection', () => {
-    it('Shows scan QR dialog', async () => {
-      renderWithProviders(<App />)
-
-      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
-
-      expect(openDialogNode).toBeDefined()
-
-      fireEvent.click(openDialogNode)
-
-      const scanQRCodeDialog = await screen.findByRole('dialog')
-
-      await waitFor(() => expect(scanQRCodeDialog).toBeDefined())
+  it('Shows Camera Permissions error', async () => {
+    Object.defineProperty(window.HTMLMediaElement.prototype, 'play', {
+      writable: true,
+      value: jest.fn().mockImplementationOnce(() => {
+        throw 'This is an Expected error, just testing camera permission error...'
+      }),
     })
 
-    it('Shows Permissions error image', async () => {
-      Object.defineProperty(window.HTMLMediaElement.prototype, 'play', {
-        writable: true,
-        value: jest.fn().mockImplementationOnce(() => {
-          throw 'Expected error, testing camera permission error...'
-        }),
+    renderWithProviders(<WalletconnectSafeApp />)
+
+    // wait for loader to be removed
+    await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+    const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
+
+    expect(openDialogNode).toBeInTheDocument()
+
+    fireEvent.click(openDialogNode)
+
+    const scanQRCodeDialog = await screen.findByRole('dialog')
+
+    expect(scanQRCodeDialog).toBeDefined()
+
+    const permissionErrorTitle = await findByText(scanQRCodeDialog, 'Check browser permissions')
+
+    expect(permissionErrorTitle).toBeDefined()
+
+    const permissionErrorImg = await findByAltText(scanQRCodeDialog, 'camera permission error')
+    expect(permissionErrorImg).toBeDefined()
+  })
+
+  describe('Walletconnect version 1', () => {
+    describe('v1 URI connection', () => {
+      it('Connects via onPaste valid v1 URI', async () => {
+        renderWithProviders(<WalletconnectSafeApp />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        const instructionsNode = screen.getByText(HELP_TITLE)
+
+        expect(instructionsNode).toBeInTheDocument()
+
+        pasteWalletConnectURI(version1URI)
+
+        expect(instructionsNode).not.toBeInTheDocument()
+
+        const connectedNode = screen.getByText('CONNECTED')
+        expect(connectedNode).toBeInTheDocument()
+
+        const connectedInstructionsNode = screen.getByText('How to confirm transactions?')
+        expect(connectedInstructionsNode).toBeInTheDocument()
+
+        const dappNameNode = screen.getByText('Test name')
+        expect(dappNameNode).toBeInTheDocument()
+
+        const dappImgNode = screen.getByRole('img')
+        expect(dappImgNode).toBeInTheDocument()
+        expect(dappImgNode).toHaveStyle(
+          "background-image: url('https://cowswap.exchange/./favicon.png')",
+        )
       })
 
-      renderWithProviders(<App />)
+      it('No connection is created if an invalid v1 URI is provided', async () => {
+        renderWithProviders(<WalletconnectSafeApp />)
 
-      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-      expect(openDialogNode).toBeInTheDocument()
+        pasteWalletConnectURI('Invalid version 1 URI')
 
-      fireEvent.click(openDialogNode)
-
-      const scanQRCodeDialog = await screen.findByRole('dialog')
-
-      expect(scanQRCodeDialog).toBeDefined()
-
-      const permissionErrorTitle = await findByText(scanQRCodeDialog, 'Check browser permissions')
-
-      expect(permissionErrorTitle).toBeDefined()
-
-      const permissionErrorImg = await findByAltText(scanQRCodeDialog, 'camera permission error')
-      expect(permissionErrorImg).toBeDefined()
+        // no connected label is present
+        expect(screen.queryByText('CONNECTED')).not.toBeInTheDocument()
+      })
     })
 
-    it('Scans valid QR code', async () => {
-      renderWithProviders(<App />)
+    it('Scans a valid v1 QR code', async () => {
+      renderWithProviders(<WalletconnectSafeApp />)
+
+      // we simulate a valid v1 URI returned by the QR lib
+      mockQRcodeStub.mockImplementation(() => ({
+        data: version1URI,
+      }))
+
+      // wait for loader to be removed
+      await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
       const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
 
@@ -209,100 +297,542 @@ describe('WalletConnect unit tests', () => {
       )
     })
 
-    it('Closes webcam connection by closing the dialog', async () => {
-      const stopWebcamSpy = jest.fn()
+    describe('Disconnect v1 session', () => {
+      it('Disconnects if user clicks on Disconnect button', async () => {
+        renderWithProviders(<WalletconnectSafeApp />)
 
-      const openWebcamSpy = jest.fn().mockImplementation(() => ({
-        getTracks: () => [
-          {
-            stop: stopWebcamSpy,
-          },
-        ],
-      }))
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-      Object.defineProperty(window.navigator, 'mediaDevices', {
-        writable: true,
-        value: {
-          getUserMedia: openWebcamSpy,
-        },
+        const instructionsNode = screen.getByText(HELP_TITLE)
+
+        expect(instructionsNode).toBeInTheDocument()
+
+        pasteWalletConnectURI(version1URI)
+
+        const disconnectButtonNode = screen.getByText('Disconnect')
+        expect(disconnectButtonNode).toBeInTheDocument()
+
+        fireEvent.click(disconnectButtonNode)
+
+        await waitFor(() => {
+          expect(screen.getByText(HELP_TITLE)).toBeInTheDocument()
+          expect(screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)).toBeInTheDocument()
+        })
       })
-
-      Object.defineProperty(window.HTMLCanvasElement.prototype, 'getContext', {
-        writable: false,
-        value: () => {
-          return {
-            drawImage: jest.fn(),
-            getImageData: jest.fn(),
-          }
-        },
-      })
-
-      renderWithProviders(<App />)
-
-      expect(openWebcamSpy).not.toHaveBeenCalled()
-      expect(stopWebcamSpy).not.toHaveBeenCalled()
-
-      const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
-
-      // we open webcam dialog
-      fireEvent.click(openDialogNode)
-
-      const scanQRCodeDialog = await screen.findByRole('dialog')
-      expect(scanQRCodeDialog).toBeDefined()
-
-      // only webcam connection should be called at this point of the test
-      expect(openWebcamSpy).toHaveBeenCalled()
-      expect(stopWebcamSpy).not.toHaveBeenCalled()
-
-      // we close webcam dialog
-      const closeQRCodeDialogButton = screen.getByLabelText('Close scan QR code dialog')
-
-      expect(closeQRCodeDialogButton).toBeInTheDocument()
-      fireEvent.click(closeQRCodeDialogButton)
-
-      await waitForElementToBeRemoved(() => screen.queryByRole('dialog'))
-
-      // webcam connection should be closed
-      expect(stopWebcamSpy).toHaveBeenCalled()
     })
   })
 
-  describe('Disconnect WC', () => {
-    it('Disconnects if user clicks on Disconnect button', () => {
-      renderWithProviders(<App />)
+  describe('Walletconnect version 2', () => {
+    describe('pairing', () => {
+      it('Pairing via valid v2 URI', async () => {
+        renderWithProviders(<WalletconnectSafeApp />)
 
-      const instructionsNode = screen.getByText(HELP_TITLE)
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-      expect(instructionsNode).toBeInTheDocument()
+        expect(mockPairing).not.toBeCalled()
 
-      const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)
+        pasteWalletConnectURI(version2URI)
 
-      const URIPasteEvent = {
-        clipboardData: {
-          items: [
-            {
-              kind: 'string',
-              type: 'text/plain',
-            },
-          ],
-          getData: () =>
-            'wc:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx@1?bridge=wss://safe-walletconnect.safe.global&key=xxxxxxxxxxx',
-        },
-      }
-
-      const pasteEvent = createEvent.paste(inputNode, URIPasteEvent)
-
-      fireEvent(inputNode, pasteEvent)
-
-      const disconnectButtonNode = screen.getByText('Disconnect')
-      expect(disconnectButtonNode).toBeInTheDocument()
-
-      fireEvent.click(disconnectButtonNode)
-
-      waitFor(() => {
-        expect(inputNode).toBeInTheDocument()
-        expect(instructionsNode).toBeInTheDocument()
+        expect(mockPairing).toBeCalledWith({ uri: version2URI })
       })
     })
+
+    describe('session proposal', () => {
+      it('valid Session Proposal event', async () => {
+        let fireSessionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_proposal'],
+        ) => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_proposal') {
+            fireSessionProposalEvent = callback
+          }
+        })
+
+        mockApprove.mockImplementation(() => {
+          return {
+            acknowledged: () => Promise.resolve(mockV2SessionObj),
+          }
+        })
+
+        renderWithProviders(<WalletconnectSafeApp />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
+
+        // simulate a session proposal event
+        act(() => {
+          fireSessionProposalEvent(mockSessionProposal)
+        })
+
+        const dappNameNode = await screen.findByText('Test v2 Dapp name')
+        expect(dappNameNode).toBeInTheDocument()
+
+        // no rejection is present in valid sessions
+        expect(mockReject).not.toBeCalled()
+
+        // No error label is present
+        expect(screen.queryByText(invalidConnectionErrorLabel)).not.toBeInTheDocument()
+
+        const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
+
+        // approved session is sent
+        expect(mockApprove).toBeCalledWith({
+          id: mockSessionProposal.id,
+          namespaces: {
+            eip155: {
+              accounts: safeAccount,
+              methods: safeAllowedMethods,
+              events: safeAllowedEvents,
+            },
+          },
+        })
+      })
+
+      it('rejects session proposals without at least a EVM based namespace', async () => {
+        let fireSessionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_proposal'],
+        ) => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_proposal') {
+            fireSessionProposalEvent = callback
+          }
+        })
+
+        mockApprove.mockImplementation(() => {
+          return {
+            acknowledged: () => Promise.resolve(mockV2SessionObj),
+          }
+        })
+
+        renderWithProviders(<WalletconnectSafeApp />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
+
+        // simulate an invalid EVM compatible session proposal event
+        act(() => {
+          fireSessionProposalEvent(mockInvalidEVMSessionProposal)
+        })
+
+        // error label to provide feedback to the user
+        await waitFor(() =>
+          expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
+        )
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).toBeCalledWith({
+          id: mockInvalidEVMSessionProposal.id,
+          reason: {
+            code: 1006,
+            message: 'No EVM-based (eip155) namespace present in the session proposal',
+          },
+        })
+      })
+
+      it('rejects session proposals without Safe chain', async () => {
+        let fireSessionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_proposal'],
+        ) => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_proposal') {
+            fireSessionProposalEvent = callback
+          }
+        })
+
+        mockApprove.mockImplementation(() => {
+          return {
+            acknowledged: () => Promise.resolve(mockV2SessionObj),
+          }
+        })
+
+        renderWithProviders(<WalletconnectSafeApp />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
+
+        // simulate an invalid session proposal event (no Safe chain is present)
+        act(() => {
+          fireSessionProposalEvent(mockInvalidChainIdSessionProposal)
+        })
+
+        // error label to provide feedback to the user
+        await waitFor(() =>
+          expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
+        )
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).toBeCalledWith({
+          id: mockInvalidEVMSessionProposal.id,
+          reason: {
+            code: 1006,
+            message: 'No Goerli (eip155:5) namespace present in the session proposal',
+          },
+        })
+      })
+    })
+
+    describe('transaction proposal', () => {
+      it('acepts valid transactions', async () => {
+        // configure autoconnection
+        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+
+        // mock web3 send
+        mockWeb3Stub.send.mockImplementation(() => Promise.resolve('0x'))
+
+        let fireTransactionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_request'],
+        ) => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_request') {
+            fireTransactionProposalEvent = callback
+          }
+        })
+
+        renderWithProviders(<WalletconnectSafeApp />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
+        expect(mockRespond).not.toBeCalled()
+
+        act(() => {
+          // simulate a valid transaction
+          fireTransactionProposalEvent(mockValidTransactionRequest)
+        })
+
+        const errorMessageLabel =
+          'Transaction rejected: the connected Dapp is not set to the correct chain. Make sure the Dapp uses Goerli to interact with this Safe.'
+
+        expect(screen.queryByText(errorMessageLabel)).not.toBeInTheDocument()
+
+        // responds to the Dapp with a valid transaction message
+        await waitFor(() =>
+          expect(mockRespond).toBeCalledWith({
+            topic: mockValidTransactionRequest.topic,
+            response: {
+              id: mockValidTransactionRequest.id,
+              jsonrpc: '2.0',
+              result: '0x',
+            },
+          }),
+        )
+
+        expect(mockRespond).toBeCalledTimes(1)
+      })
+
+      it('rejects transactions from diffetent chains', async () => {
+        // configure autoconnection
+        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+
+        let fireTransactionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_request'],
+        ) => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_request') {
+            fireTransactionProposalEvent = callback
+          }
+        })
+
+        renderWithProviders(<WalletconnectSafeApp />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
+        expect(mockRespond).not.toBeCalled()
+
+        act(() => {
+          // simulate an invalid transaction (from different chain Safe chain)
+          fireTransactionProposalEvent(mockInvalidChainTransactionRequest)
+        })
+
+        const errorMessageLabel =
+          'Transaction rejected: the connected Dapp is not set to the correct chain. Make sure the Dapp uses Goerli to interact with this Safe.'
+
+        // respond with an transaction rejected error
+        expect(mockRespond).toBeCalledWith({
+          topic: mockInvalidChainTransactionRequest.topic,
+          response: {
+            id: mockInvalidChainTransactionRequest.id,
+            jsonrpc: '2.0',
+            error: {
+              code: 5100, // unsupported chain error code
+              message: errorMessageLabel,
+            },
+          },
+        })
+
+        expect(mockRespond).toBeCalledTimes(1)
+
+        // we show an error label in the IU
+        await waitFor(() => expect(screen.getByText(errorMessageLabel)).toBeInTheDocument())
+      })
+
+      it('shows an error if user manually rejects a transaction', async () => {
+        // configure autoconnection
+        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+
+        const errorMessageLabel = 'Transaction was rejected'
+
+        // mock web3 send with the user rejection
+        mockWeb3Stub.send.mockImplementation(() => Promise.reject({ message: errorMessageLabel }))
+
+        let fireTransactionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_request'],
+        ) => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_request') {
+            fireTransactionProposalEvent = callback
+          }
+        })
+
+        renderWithProviders(<WalletconnectSafeApp />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
+        expect(mockRespond).not.toBeCalled()
+
+        act(() => {
+          // simulate a valid transaction
+          fireTransactionProposalEvent(mockValidTransactionRequest)
+        })
+
+        // we show a error label
+        await waitFor(() => {
+          expect(screen.getByText(errorMessageLabel)).toBeInTheDocument()
+        })
+
+        // responds to the Dapp with a valid transaction message
+        await waitFor(() =>
+          expect(mockRespond).toBeCalledWith({
+            topic: mockValidTransactionRequest.topic,
+            response: {
+              id: mockValidTransactionRequest.id,
+              jsonrpc: '2.0',
+              error: {
+                code: 4001,
+                message: errorMessageLabel,
+              },
+            },
+          }),
+        )
+
+        expect(mockRespond).toBeCalledTimes(1)
+      })
+
+      it('shows an error if a invalid eth_signTransaction method is sent', async () => {
+        // configure autoconnection
+        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+
+        const errorMessageLabel = 'eth_signTransaction method is not implemented'
+
+        // mock web3 send with the user rejection
+        mockWeb3Stub.send.mockImplementation(() => Promise.reject({ message: errorMessageLabel }))
+
+        let fireTransactionProposalEvent = (
+          proposal: SignClientTypes.EventArguments['session_request'],
+        ) => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_request') {
+            fireTransactionProposalEvent = callback
+          }
+        })
+
+        renderWithProviders(<WalletconnectSafeApp />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        expect(mockApprove).not.toBeCalled()
+        expect(mockReject).not.toBeCalled()
+        expect(mockRespond).not.toBeCalled()
+
+        act(() => {
+          // simulate a valid transaction
+          fireTransactionProposalEvent(mockValidTransactionRequest)
+        })
+
+        // we show a error label
+        await waitFor(() => {
+          expect(screen.getByText(errorMessageLabel)).toBeInTheDocument()
+        })
+
+        // responds to the Dapp with a valid transaction message
+        await waitFor(() =>
+          expect(mockRespond).toBeCalledWith({
+            topic: mockValidTransactionRequest.topic,
+            response: {
+              id: mockValidTransactionRequest.id,
+              jsonrpc: '2.0',
+              error: {
+                code: 1001,
+                message: errorMessageLabel,
+              },
+            },
+          }),
+        )
+
+        expect(mockRespond).toBeCalledTimes(1)
+      })
+    })
+
+    describe('remove session', () => {
+      it('remove session from the Safe App', async () => {
+        // configure autoconnection
+        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+
+        renderWithProviders(<WalletconnectSafeApp />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        // we click on disconnect button
+        const disconnectButtonNode = screen.getByText('Disconnect')
+        expect(disconnectButtonNode).toBeInTheDocument()
+
+        fireEvent.click(disconnectButtonNode)
+
+        await waitFor(() => {
+          expect(screen.getByText(HELP_TITLE)).toBeInTheDocument()
+          expect(screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)).toBeInTheDocument()
+
+          expect(mockDisconnect).toBeCalled()
+        })
+      })
+
+      it('remove session from the connected DApp', async () => {
+        // configure autoconnection
+        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+
+        // we simulate a remove session event from the DApp
+        let fireRemoveSessionEvent = () => {}
+
+        mockWalletconnectEvent.mockImplementation((eventType, callback) => {
+          if (eventType === 'session_delete') {
+            fireRemoveSessionEvent = callback
+          }
+        })
+
+        renderWithProviders(<WalletconnectSafeApp />)
+
+        // wait for loader to be removed
+        await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+        act(() => {
+          // we mannualy fire the event
+          fireRemoveSessionEvent()
+        })
+
+        await waitFor(() => {
+          expect(screen.getByText(HELP_TITLE)).toBeInTheDocument()
+          expect(screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)).toBeInTheDocument()
+        })
+      })
+    })
+  })
+
+  it('Closes webcam connection by closing the QR dialog', async () => {
+    const stopWebcamSpy = jest.fn()
+
+    const openWebcamSpy = jest.fn().mockImplementation(() => ({
+      getTracks: () => [
+        {
+          stop: stopWebcamSpy,
+        },
+      ],
+    }))
+
+    Object.defineProperty(window.navigator, 'mediaDevices', {
+      writable: true,
+      value: {
+        getUserMedia: openWebcamSpy,
+      },
+    })
+
+    Object.defineProperty(window.HTMLCanvasElement.prototype, 'getContext', {
+      writable: false,
+      value: () => {
+        return {
+          drawImage: jest.fn(),
+          getImageData: jest.fn(),
+        }
+      },
+    })
+
+    renderWithProviders(<WalletconnectSafeApp />)
+
+    // wait for loader to be removed
+    await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
+
+    expect(openWebcamSpy).not.toHaveBeenCalled()
+    expect(stopWebcamSpy).not.toHaveBeenCalled()
+
+    const openDialogNode = await screen.findByTitle('Start your camera and scan a QR')
+
+    // we open webcam dialog
+    fireEvent.click(openDialogNode)
+
+    const scanQRCodeDialog = await screen.findByRole('dialog')
+    expect(scanQRCodeDialog).toBeDefined()
+
+    // only webcam connection should be called at this point of the test
+    expect(openWebcamSpy).toHaveBeenCalled()
+    expect(stopWebcamSpy).not.toHaveBeenCalled()
+
+    // we close webcam dialog
+    const closeQRCodeDialogButton = screen.getByLabelText('Close scan QR code dialog')
+
+    expect(closeQRCodeDialogButton).toBeInTheDocument()
+    fireEvent.click(closeQRCodeDialogButton)
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('dialog'))
+
+    // webcam connection should be closed
+    expect(stopWebcamSpy).toHaveBeenCalled()
   })
 })
+
+// helper function to populate the input with the URI unsing an onPaste event
+const pasteWalletConnectURI = (uri: string) => {
+  const inputNode = screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)
+
+  const URIPasteEvent = {
+    clipboardData: {
+      items: [
+        {
+          kind: 'string',
+          type: 'text/plain',
+        },
+      ],
+      getData: () => uri,
+    },
+  }
+
+  const pasteEvent = createEvent.paste(inputNode, URIPasteEvent)
+
+  fireEvent(inputNode, pasteEvent)
+}

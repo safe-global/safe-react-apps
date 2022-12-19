@@ -47,6 +47,7 @@ jobs:
           REACT_APP_TENDERLY_PROJECT_NAME: ${{ secrets.REACT_APP_TENDERLY_PROJECT_NAME }}
           REACT_APP_MMI_BACKEND_BASE_URL: ${{ secrets.MMI_STAGING_BACKEND_BASE_URL }}
           REACT_APP_MMI_ENVIRONMENT: ${{ secrets.MMI_STAGING_ENVIRONMENT }}
+          REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLETCONNECT_PROJECT_ID_DEVSTAGING }}
 
       - name: 'PRaul: Comment PR with app URLs'
         if: success() && github.event.number
@@ -94,6 +95,7 @@ jobs:
           REACT_APP_TENDERLY_PROJECT_NAME: ${{ secrets.REACT_APP_TENDERLY_PROJECT_NAME }}
           REACT_APP_MMI_BACKEND_BASE_URL: ${{ secrets.MMI_BACKEND_BASE_URL }}
           REACT_APP_MMI_ENVIRONMENT: ${{ secrets.MMI_ENVIRONMENT }}
+          REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLETCONNECT_PROJECT_ID_STAGING }}
 
       # Script to deploy to the dev environment
       - name: 'Deploy to S3: Develop'
@@ -138,3 +140,4 @@ jobs:
           react-app-tenderly-simulate-endpoint-url: ${{ secrets.REACT_APP_TENDERLY_SIMULATE_ENDPOINT_URL }}
           react-app-mmi-backend-base-url: ${{ secrets.MMI_BACKEND_BASE_URL }}
           react-app-mmi-environment: ${{ secrets.MMI_ENVIRONMENT }}
+          react-app-walletconnect-project-id: ${{ secrets.REACT_APP_WALLETCONNECT_PROJECT_ID }}

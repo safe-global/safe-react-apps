@@ -3,24 +3,23 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import IconButton from '@material-ui/core/IconButton'
 import Dialog from '@material-ui/core/Dialog'
 import { Icon, Loader, TextFieldInput, Tooltip } from '@gnosis.pm/safe-react-components'
-import { IWalletConnectSession, IClientMeta } from '@walletconnect/types'
 import styled from 'styled-components'
 import format from 'date-fns/format'
 import jsQr from 'jsqr'
+
 import { blobToImageData } from '../utils/images'
 import ScanCode from './ScanCode'
-
-type WcConnectProps = {
-  uri?: string | undefined
-  session?: IWalletConnectSession | undefined
-}
+import { useWalletConnectType, wcConnectType } from '../hooks/useWalletConnect'
 
 type WalletConnectFieldProps = {
-  client: IClientMeta | null
-  onConnect: ({ uri }: WcConnectProps) => Promise<void>
+  wcClientData: useWalletConnectType['wcClientData']
+  onConnect: wcConnectType
 }
 
-const WalletConnectField = ({ client, onConnect }: WalletConnectFieldProps): React.ReactElement => {
+const WalletConnectField = ({
+  wcClientData,
+  onConnect,
+}: WalletConnectFieldProps): React.ReactElement => {
   const [invalidQRCode, setInvalidQRCode] = useState(false)
   const [isConnecting, setIsConnecting] = useState(false)
   const [inputValue, setInputValue] = useState('')
@@ -31,10 +30,10 @@ const WalletConnectField = ({ client, onConnect }: WalletConnectFieldProps): Rea
   }
 
   useEffect(() => {
-    if (client) {
+    if (wcClientData) {
       setOpenDialog(false)
     }
-  }, [client])
+  }, [wcClientData])
 
   // WalletConnect does not provide a loading/connecting status
   // This effects simulates a connecting status, and prevents
@@ -51,9 +50,9 @@ const WalletConnectField = ({ client, onConnect }: WalletConnectFieldProps): Rea
   const onPaste = useCallback(
     (event: React.ClipboardEvent) => {
       const connectWithUri = (data: string) => {
-        if (data.startsWith('wc:')) {
+        if (data.startsWith('wc')) {
           setIsConnecting(true)
-          onConnect({ uri: data })
+          onConnect(data)
         }
       }
 
@@ -65,7 +64,7 @@ const WalletConnectField = ({ client, onConnect }: WalletConnectFieldProps): Rea
           const code = jsQr(imageData.data, imageData.width, imageData.height)
           if (code?.data) {
             setIsConnecting(true)
-            onConnect({ uri: code.data })
+            onConnect(code.data)
           } else {
             setInvalidQRCode(true)
             setInputValue(
@@ -82,7 +81,7 @@ const WalletConnectField = ({ client, onConnect }: WalletConnectFieldProps): Rea
       setInvalidQRCode(false)
       setInputValue('')
 
-      if (client) {
+      if (wcClientData) {
         return
       }
 
@@ -100,7 +99,16 @@ const WalletConnectField = ({ client, onConnect }: WalletConnectFieldProps): Rea
         }
       }
     },
-    [client, onConnect],
+    [wcClientData, onConnect],
+  )
+
+  // onConnect and close the dialog
+  const wcConnect = useCallback(
+    async (uri: string) => {
+      onConnect(uri)
+      setOpenDialog(false)
+    },
+    [onConnect],
   )
 
   if (isConnecting) {
@@ -149,7 +157,7 @@ const WalletConnectField = ({ client, onConnect }: WalletConnectFieldProps): Rea
             </IconButton>
           </Tooltip>
         </StyledCloseDialogContainer>
-        <ScanCode wcConnect={onConnect} wcClientData={client} />
+        <ScanCode wcConnect={wcConnect} wcClientData={wcClientData} />
       </Dialog>
     </>
   )

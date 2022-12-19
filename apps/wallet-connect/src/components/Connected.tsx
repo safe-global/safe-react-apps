@@ -1,16 +1,17 @@
 import Grid from '@material-ui/core/Grid'
 import styled from 'styled-components'
-import { IClientMeta } from '@walletconnect/types'
 import { Text, Icon, Button, Divider } from '@gnosis.pm/safe-react-components'
+
 import { StyledCardContainer, StyledImage } from './styles'
+import { useWalletConnectType } from '../hooks/useWalletConnect'
 
 type ConnectedProps = {
-  client: IClientMeta | null
+  wcClientData: useWalletConnectType['wcClientData']
   onDisconnect: () => void
 }
 
-const Connected = ({ client, onDisconnect }: ConnectedProps) => {
-  if (!client) {
+const Connected = ({ wcClientData, onDisconnect }: ConnectedProps) => {
+  if (!wcClientData) {
     return null
   }
 
@@ -18,14 +19,14 @@ const Connected = ({ client, onDisconnect }: ConnectedProps) => {
     <StyledCardContainer container direction="column" spacing={3}>
       <Grid container alignItems="center" wrap="nowrap" spacing={3}>
         <Grid item>
-          <StyledImage src={client.icons[0] || ''} role="img" />
+          <StyledImage src={wcClientData.icons[0] || ''} role="img" />
         </Grid>
         <Grid item>
           <StyledText size="md" color="primary">
             CONNECTED
           </StyledText>
           <Text size="xl" as="span">
-            {client.name ? client.name : new URL(client.url).hostname}
+            {wcClientData.name || new URL(wcClientData.url).hostname}
           </Text>
         </Grid>
       </Grid>
