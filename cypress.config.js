@@ -15,11 +15,11 @@ export default defineConfig({
     openMode: 0,
   },
   env: {
-    DRAIN_SAFE_URL: 'http://localhost:3001',
-    TX_BUILDER_URL: 'http://localhost:3002/tx-builder',
+    DRAIN_SAFE_URL: process.env.DRAIN_SAFE_URL,
+    TX_BUILDER_URL: process.env.TX_BUILDER_URL,
   },
   e2e: {
-    baseUrl: 'http://localhost:3000',
+    baseUrl: process.env.BASE_URL,
     async setupNodeEvents(on, config) {
       on('after:run', sendSlackMessage)
       on('task', {
