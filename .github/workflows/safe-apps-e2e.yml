@@ -5,6 +5,7 @@ on:
     branches:
       - development
       - main
+      - feat/update-e2e-test-for-web-core
 
 jobs:
   serve-web-core:
