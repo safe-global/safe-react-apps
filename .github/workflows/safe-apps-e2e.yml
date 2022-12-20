@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - development
-      - main      
+      - main
 
 jobs:
   serve-web-core:
@@ -83,7 +83,10 @@ jobs:
       - name: Start
         run: yarn start:tx-builder & yarn start:drain-safe
 
-  serve-safe-apps:
+  e2e:
+    runs-on: ubuntu-latest
+    name: E2E
+    steps:
       - uses: cypress-io/github-action@v2
         with:
           browser: chrome
