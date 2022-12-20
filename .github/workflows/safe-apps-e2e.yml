@@ -1,8 +1,6 @@
 name: Safe Apps E2E
 on:
-  # pull_request:
-  pull_request_target:
-    types: [opened, closed, synchronize]
+  pull_request:
   push:
     branches:
       - development
