@@ -2,10 +2,9 @@ name: Safe Apps E2E
 on:
   pull_request:
   push:
-    branches:
-      - development
-      - main
-      - feat/update-e2e-test-for-web-core
+    # branches:
+    #   - development
+    #   - main      
 
 jobs:
   serve-web-core:
