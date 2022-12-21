@@ -45,7 +45,7 @@ jobs:
 
       - name: Serve web-core
         working-directory: web-core
-        run: npx -y http-server out &
+        run: npx -y http-server out
 
       - name: Set PR Safe Apps base URL
         run: |
