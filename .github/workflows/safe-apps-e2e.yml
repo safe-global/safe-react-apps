@@ -47,8 +47,6 @@ jobs:
         working-directory: web-core
         run: |
           yarn serve &
-          sleep 10 &&
-          curl http://localhost:8080
 
       - name: Store compiled web-core site
         uses: actions/upload-artifact@v2
