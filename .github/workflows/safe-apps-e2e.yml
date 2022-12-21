@@ -80,12 +80,16 @@ jobs:
           repository: safe-global/safe-react-apps
           path: apps
 
+      - name: Curl web-core
+        run: curl http://localhost:8080
+
       - name: Execute E2E tests
         uses: cypress-io/github-action@v4
         with:
           browser: chrome
           record: true
           spec: cypress/e2e/drain-account/drain.spec.cy.js,cypress/e2e/tx-builder/tx-builder.spec.cy.js
+          config: baseUrl=http://localhost:8080
           working-directory: apps
         env:
           CI: 'true'
@@ -98,4 +102,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRAIN_SAFE_URL: ${{ env.SAFE_APPS_BASE_URL }}/drain-safe
           TX_BUILDER_URL: ${{ env.SAFE_APPS_BASE_URL }}/tx-builder
-        continue-on-error: true
+        continue-on-error: false
