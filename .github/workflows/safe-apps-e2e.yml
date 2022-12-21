@@ -76,7 +76,7 @@ jobs:
         with:
           browser: chrome
           record: true
-          spec: safe-react-apps/cypress/integration/drain-account/drain.spec.js,safe-react-apps/cypress/integration/tx-builder/tx-builder.spec.js
+          spec: cypress/integration/drain-account/drain.spec.js,cypress/integration/tx-builder/tx-builder.spec.js
         env:
           CI: 'true'
           CYPRESS_BASE_URL: 'http://localhost:8080'
