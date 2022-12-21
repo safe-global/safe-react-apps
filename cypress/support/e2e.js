@@ -35,7 +35,7 @@ Cypress.Commands.add('visitSafeApp', appUrl => {
     window.localStorage.setItem('SAFE_v2__lastWallet', JSON.stringify('E2E Wallet'))
   })
 
-  cy.visit(appUrl)
+  cy.visit(appUrl, { failOnStatusCode: false })
 
   cy.wait(500)
 })
