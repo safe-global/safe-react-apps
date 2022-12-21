@@ -20,22 +20,26 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: safe-global/web-core
+          path: web-core
 
       - name: Yarn install web-core
+        working-directory: web-core
         run: yarn install
 
       - name: Yarn cache web-core modules
         uses: actions/cache@v3
         with:
-          path: '**/node_modules'
+          path: 'web-core/**/node_modules'
           key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Yarn install web-core
+        working-directory: web-core
         run: |
           yarn install --immutable
           ./node_modules/.bin/cypress install
 
       - name: Build web-core
+        working-directory: web-core
         run: yarn build && yarn export
         env:
           NEXT_PUBLIC_INFURA_TOKEN: ${{ secrets.NEXT_PUBLIC_INFURA_TOKEN }}
@@ -46,6 +50,7 @@ jobs:
           NEXT_PUBLIC_CYPRESS_MNEMONIC: ${{ secrets.NEXT_PUBLIC_CYPRESS_MNEMONIC }}
 
       - name: Serve web-core
+        working-directory: web-core
         run: npx -y http-server out &
 
       - name: Set PR Safe Apps base URL
@@ -70,6 +75,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: safe-global/safe-react-apps
+          path: apps
 
       - name: Execute E2E tests
         uses: cypress-io/github-action@v4
@@ -77,6 +83,7 @@ jobs:
           browser: chrome
           record: true
           spec: cypress/e2e/drain-account/drain.spec.js,cypress/e2e/tx-builder/tx-builder.spec.js
+          working-directory: apps
         env:
           CI: 'true'
           CYPRESS_BASE_URL: 'http://localhost:8080'
