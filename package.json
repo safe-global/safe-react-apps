@@ -18,8 +18,7 @@
     "start:wallet-connect": "yarn workspace wallet-connect start",
     "start:mmi": "yarn workspace mmi start",
     "prepare": "husky install",
-    "e2e": "npx cypress open",
-    "serve-web-core": "npx -y http-server out"
+    "e2e": "npx cypress open"
   },
   "version": "2.5.1",
   "workspaces": [
