@@ -32,12 +32,6 @@ jobs:
           path: 'web-core/**/node_modules'
           key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
 
-      - name: Yarn install web-core
-        working-directory: web-core
-        run: |
-          yarn install --immutable
-          ./node_modules/.bin/cypress install
-
       - name: Build web-core
         working-directory: web-core
         run: yarn build && yarn export
@@ -82,7 +76,7 @@ jobs:
         with:
           browser: chrome
           record: true
-          spec: cypress/e2e/drain-account/drain.spec.js,cypress/e2e/tx-builder/tx-builder.spec.js
+          spec: cypress/e2e/drain-account/drain.spec.cy.js,cypress/e2e/tx-builder/tx-builder.spec.cy.js
           working-directory: apps
         env:
           CI: 'true'
