@@ -45,7 +45,10 @@ jobs:
 
       - name: Serve web-core
         working-directory: web-core
-        run: yarn serve &
+        run: |
+          yarn serve &
+          sleep 10 &&
+          curl http://localhost:8080
 
       - name: Set PR Safe Apps base URL
         run: |
