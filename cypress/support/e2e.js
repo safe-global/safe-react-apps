@@ -5,7 +5,7 @@ import './commands'
 export const INFO_MODAL_KEY = 'SAFE_v2__SafeApps__infoModal'
 export const BROWSER_PERMISSIONS_KEY = 'SAFE_v2__SafeApps__browserPermissions'
 
-const warningCheckedCustomApps = ['http://localhost:3001', 'http://localhost:3002']
+const warningCheckedCustomApps = [Cypress.env('DRAIN_SAFE_URL'), Cypress.env('TX_BUILDER_URL')]
 
 Cypress.Commands.add('visitSafeApp', appUrl => {
   cy.on('window:before:load', window => {
