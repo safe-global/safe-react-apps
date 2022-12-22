@@ -1,4 +1,4 @@
-describe('Testing Drain Account safe app', () => {
+describe('Testing Drain Account safe app', { defaultCommandTimeout: 12000 }, () => {
   const appUrl = Cypress.env('DRAIN_SAFE_URL')
   const iframeSelector = `iframe[id="iframe-${appUrl}"]`
   const visitUrl = `/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
@@ -14,9 +14,11 @@ describe('Testing Drain Account safe app', () => {
     cy.visitSafeApp(visitUrl)
 
     cy.frameLoaded(iframeSelector)
+
+    cy.findByRole('button', { name: /accept selection/i }).click()
   })
 
-  it('should allow to perform a drain', { defaultCommandTimeout: 12000 }, () => {
+  it('should allow to perform a drain', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/recipient/i)
