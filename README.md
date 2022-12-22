@@ -113,7 +113,7 @@ To run them it will be necessary to provide the following ENV parameters, that c
 Example:
 
 ```
-CYPRESS_WEB_BASE_URL=https://gnosis-safe.io/app
+CYPRESS_WEB_BASE_URL=https://app.safe.global
 CYPRESS_CHAIN_ID=1
 CYPRESS_NETWORK_PREFIX=rin
 CYPRESS_TESTING_SAFE_ADDRESS=0x0000000000000000000000000000000000000000

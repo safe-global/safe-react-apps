@@ -1,5 +1,4 @@
 describe('Testing Drain Account safe app', () => {
-  // TODO use an ENV parameter for appUrl so we can configure different environments or PRs
   const appUrl = Cypress.env('DRAIN_SAFE_URL')
   const iframeSelector = `iframe[id="iframe-${appUrl}"]`
   const visitUrl = `/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(

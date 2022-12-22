@@ -1,5 +1,4 @@
 describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => {
-  // TODO use an ENV parameter for appUrl so we can configure different environments or PRs
   const appUrl = Cypress.env('TX_BUILDER_URL')
   const iframeSelector = `iframe[id="iframe-${appUrl}"]`
   const visitUrl = `/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
