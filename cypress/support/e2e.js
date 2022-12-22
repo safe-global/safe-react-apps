@@ -5,7 +5,7 @@ import './commands'
 export const INFO_MODAL_KEY = 'SAFE_v2__SafeApps__infoModal'
 export const BROWSER_PERMISSIONS_KEY = 'SAFE_v2__SafeApps__browserPermissions'
 
-const warningCheckedCustomApps = [Cypress.env('DRAIN_SAFE_URL'), Cypress.env('TX_BUILDER_URL')]
+const warningCheckedCustomApps = [new URL(Cypress.env('DRAIN_SAFE_URL')).origin]
 
 Cypress.Commands.add('visitSafeApp', appUrl => {
   cy.on('window:before:load', window => {
@@ -26,9 +26,7 @@ Cypress.Commands.add('visitSafeApp', appUrl => {
     window.localStorage.setItem(
       BROWSER_PERMISSIONS_KEY,
       JSON.stringify({
-        [`${Cypress.env('SAFE_APPS_BASE_URL')}/wallet-connect`]: [
-          { feature: 'camera', status: 'granted' },
-        ],
+        [`${Cypress.env('SAFE_APPS_BASE_URL')}`]: [{ feature: 'camera', status: 'granted' }],
       }),
     )
 

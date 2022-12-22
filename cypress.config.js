@@ -15,11 +15,15 @@ export default defineConfig({
     openMode: 0,
   },
   env: {
-    DRAIN_SAFE_URL: process.env.DRAIN_SAFE_URL,
-    TX_BUILDER_URL: process.env.TX_BUILDER_URL,
+    SAFE_APPS_BASE_URL: process.env.CYPRESS_SAFE_APPS_BASE_URL,
+    CHAIN_ID: process.env.CYPRESS_CHAIN_ID,
+    NETWORK_PREFIX: process.env.CYPRESS_NETWORK_PREFIX,
+    TESTING_SAFE_ADDRESS: process.env.CYPRESS_TESTING_SAFE_ADDRESS,
+    DRAIN_SAFE_URL: process.env.CYPRESS_DRAIN_SAFE_URL,
+    TX_BUILDER_URL: process.env.CYPRESS_TX_BUILDER_URL,
   },
   e2e: {
-    baseUrl: process.env.BASE_URL,
+    baseUrl: process.env.CYPRESS_WEB_BASE_URL,
     async setupNodeEvents(on, config) {
       on('after:run', sendSlackMessage)
       on('task', {
@@ -41,13 +45,7 @@ export default defineConfig({
         console.log('Unable to fetch the default list: ', e)
       }
 
-      config.env.WEB_BASE_URL = process.env.CYPRESS_WEB_BASE_URL
-      config.env.SAFE_APPS_BASE_URL = process.env.CYPRESS_SAFE_APPS_BASE_URL
       config.env.SAFE_APPS_LIST = safeAppsList.data
-      config.env.CHAIN_ID = process.env.CYPRESS_CHAIN_ID
-      config.env.NETWORK_PREFIX = process.env.CYPRESS_NETWORK_PREFIX
-      config.env.TESTING_SAFE_ADDRESS = process.env.CYPRESS_TESTING_SAFE_ADDRESS
-      config.env.CYPRESS_MNEMONIC = process.env.CYPRESS_MNEMONIC
 
       return config
     },
