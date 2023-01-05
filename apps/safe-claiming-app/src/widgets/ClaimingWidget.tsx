@@ -89,6 +89,14 @@ const StyledButton = (props: ButtonProps) => (
   </Button>
 )
 
+const StyledButtonLink = styled(Button)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+`
+
 const WIDGET_HEIGHT = 300
 
 const ClaimingWidget = () => {
@@ -140,29 +148,19 @@ const ClaimingWidget = () => {
     <>
       <div>
         <Title>Your voting power</Title>
-        <Link
+        <StyledButtonLink
           href={claimingSafeAppUrl}
-          rel="noopener noreferrer"
-          target="_blank"
-          underline="none"
+          sx={{ "&:hover": { backgroundColor: "secondary.light" } }}
         >
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            gap={1}
-            mb={1}
-          >
-            <SafeIcon />
-            <Typography variant="h5" color="text.primary">
-              {votingPower ? (
-                formatAmount(Number(ethers.utils.formatEther(votingPower)), 2)
-              ) : (
-                <Skeleton />
-              )}{" "}
-            </Typography>
-          </Box>
-        </Link>
+          <SafeIcon />
+          <Typography variant="h5" color="text.primary">
+            {votingPower ? (
+              formatAmount(Number(ethers.utils.formatEther(votingPower)), 2)
+            ) : (
+              <Skeleton />
+            )}{" "}
+          </Typography>
+        </StyledButtonLink>
       </div>
       {totalClaimed?.gt(0) ? (
         <>
@@ -186,7 +184,10 @@ const ClaimingWidget = () => {
                 target="_blank"
                 underline="none"
               >
-                <SelectedDelegate delegate={currentDelegate} />
+                <SelectedDelegate
+                  delegate={currentDelegate}
+                  onClick={() => {}}
+                />
               </Link>
             </Box>
           )}
