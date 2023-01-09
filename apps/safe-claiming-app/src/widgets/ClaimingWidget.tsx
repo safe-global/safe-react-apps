@@ -89,14 +89,6 @@ const StyledButton = (props: ButtonProps) => (
   </Button>
 )
 
-const StyledButtonLink = styled(Button)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 8px;
-`
-
 const WIDGET_HEIGHT = 300
 
 const ClaimingWidget = () => {
@@ -148,10 +140,17 @@ const ClaimingWidget = () => {
     <>
       <div>
         <Title>Your voting power</Title>
-        <StyledButtonLink
+        <Button
           href={claimingSafeAppUrl}
           target="_blank"
-          sx={{ "&:hover": { backgroundColor: "secondary.light" } }}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            marginBottom: "8px",
+            "&:hover": { backgroundColor: "secondary.light" },
+          }}
         >
           <SafeIcon />
           <Typography variant="h5" color="text.primary">
@@ -161,7 +160,7 @@ const ClaimingWidget = () => {
               <Skeleton />
             )}{" "}
           </Typography>
-        </StyledButtonLink>
+        </Button>
       </div>
       {totalClaimed?.gt(0) ? (
         <>
