@@ -9,7 +9,7 @@ let warningCheckedCustomApps = []
 const drainSafeUrl = Cypress.env('DRAIN_SAFE_URL')
 
 if (drainSafeUrl) {
-  warningCheckedCustomApps.push(new URL().origin)
+  warningCheckedCustomApps.push(new URL(drainSafeUrl).origin)
 }
 
 Cypress.Commands.add('visitSafeApp', (visitUrl, appUrl) => {
