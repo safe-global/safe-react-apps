@@ -5,7 +5,7 @@ on:
       baseUrl:
         description: 'Safe Web URL'
         required: true
-        default: 'http://gnosis-safe.io/app'
+        default: 'https://app.safe.global'
       chainId:
         description: 'Chain Id'
         required: true
@@ -32,9 +32,9 @@ jobs:
     # let's make sure our tests pass on Chrome browser
     name: E2E on Chrome
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v5
         name: Mainnet
         with:
           browser: chrome
@@ -52,7 +52,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v5
         name: Gnosis Chain
         with:
           browser: chrome
@@ -70,7 +70,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v5
         name: Polygon
         with:
           browser: chrome
@@ -88,7 +88,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v5
         name: BNB Smart Chain
         with:
           browser: chrome
@@ -106,7 +106,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v5
         name: Arbitrum
         with:
           browser: chrome
@@ -124,7 +124,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v5
         name: Aurora
         with:
           browser: chrome
@@ -142,7 +142,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v5
         name: Avalanche
         with:
           browser: chrome
@@ -160,7 +160,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v5
         name: Optimism
         with:
           browser: chrome
@@ -178,7 +178,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v5
         name: Volta
         with:
           browser: chrome
