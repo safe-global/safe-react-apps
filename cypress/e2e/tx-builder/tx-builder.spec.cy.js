@@ -10,7 +10,7 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
   })
 
   beforeEach(() => {
-    cy.visitSafeApp(visitUrl)
+    cy.visitSafeApp(visitUrl, appUrl)
 
     cy.frameLoaded(iframeSelector)
 

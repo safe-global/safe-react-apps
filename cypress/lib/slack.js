@@ -8,7 +8,7 @@ export const sendSlackMessage = async results => {
         return
       }
 
-      if (!results.runs[0].spec.name.includes('safe-apps-check.spec.js')) {
+      if (!results.runs[0].spec.name.includes('safe-apps-check.spec.cy.js')) {
         return
       }
 

@@ -11,6 +11,7 @@ describe('Safe Apps List', () => {
         `/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env('TESTING_SAFE_ADDRESS')}/apps?appUrl=${
           safeApp.url
         }`,
+        safeApp.url,
       )
       const iframeSelector = `iframe[id="iframe-${safeApp.url}"]`
       cy.frameLoaded(iframeSelector)
