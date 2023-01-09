@@ -21,11 +21,9 @@ import {
   FORUM_URL,
   WEB_APP_URL,
 } from "src/config/constants"
-import { useAirdropFile } from "src/hooks/useAirdropFile"
 import { useDelegate } from "src/hooks/useDelegate"
 import { useDelegatesFile } from "src/hooks/useDelegatesFile"
-import { useFetchVestingStatus } from "src/hooks/useFetchVestingStatus"
-import { useTokenBalance } from "src/hooks/useTokenBalance"
+import useSafeTokenAllocation from "src/hooks/useSafeTokenAllocation"
 import { sameAddress } from "src/utils/addresses"
 import { formatAmount } from "src/utils/format"
 import { SpaceContent } from "src/widgets/styles"
@@ -96,15 +94,7 @@ const WIDGET_HEIGHT = 300
 const ClaimingWidget = () => {
   const [delegates] = useDelegatesFile()
   const delegateAddressFromContract = useDelegate()
-  const [balance, , balanceLoading] = useTokenBalance()
   const { safe } = useSafeAppsSDK()
-
-  const [vestings] = useAirdropFile()
-  const [userVesting, ecosystemVesting, investorVesting] = vestings
-
-  const totalAllocation = BigNumber.from(userVesting?.amount || 0)
-    .add(ecosystemVesting?.amount || 0)
-    .add(investorVesting?.amount || 0)
 
   const currentDelegate = useMemo(() => {
     if (delegateAddressFromContract) {
@@ -117,31 +107,17 @@ const ClaimingWidget = () => {
     }
   }, [delegateAddressFromContract, delegates])
 
-  const [userVestingStatus, , userVestingLoading] = useFetchVestingStatus(
-    userVesting?.vestingId,
-    userVesting?.contract
+  const [safeTokenAllocation, , loading] = useSafeTokenAllocation()
+  const { vestingData, votingPower } = safeTokenAllocation ?? {}
+
+  const totalClaimed = vestingData?.reduce(
+    (prev, current) => prev.add(current.amountClaimed),
+    BigNumber.from(0)
   )
 
-  const [ecosystemVestingStatus, , ecosystemVestingLoading] =
-    useFetchVestingStatus(
-      ecosystemVesting?.vestingId,
-      ecosystemVesting?.contract
-    )
-
-  const [investorVestingStatus, , investorVestingLoading] =
-    useFetchVestingStatus(investorVesting?.vestingId, investorVesting?.contract)
-
-  const totalClaimed = BigNumber.from(userVestingStatus?.amountClaimed || 0)
-    .add(ecosystemVestingStatus?.amountClaimed || 0)
-    .add(investorVestingStatus?.amountClaimed || 0)
-
-  const votingPower = totalAllocation.add(balance || 0).sub(totalClaimed)
-
-  const unredeemedAllocations =
-    (!userVestingStatus?.isRedeemed &&
-      BigNumber.from(userVesting?.amount || 0).gt(0)) ||
-    (!ecosystemVestingStatus?.isRedeemed &&
-      BigNumber.from(ecosystemVesting?.amount || 0).gt(0))
+  const unredeemedAllocations = vestingData?.some(
+    (vesting) => !vesting.isRedeemed
+  )
 
   const currentChainPrefix = safe.chainId === 1 ? "eth" : "gor"
   const claimingSafeAppUrl = `${WEB_APP_URL}/apps?safe=${currentChainPrefix}:${safe.safeAddress}&appUrl=${CLAIMING_APP_URL}`
@@ -173,11 +149,15 @@ const ClaimingWidget = () => {
         >
           <SafeIcon />
           <Typography variant="h5" color="text.primary">
-            {formatAmount(Number(ethers.utils.formatEther(votingPower)), 2)}{" "}
+            {votingPower ? (
+              formatAmount(Number(ethers.utils.formatEther(votingPower)), 2)
+            ) : (
+              <Skeleton />
+            )}{" "}
           </Typography>
         </Box>
       </div>
-      {totalClaimed.gt(0) ? (
+      {totalClaimed?.gt(0) ? (
         <>
           <Subtitle>
             You've already claimed{" "}
@@ -201,8 +181,9 @@ const ClaimingWidget = () => {
         <>
           {unredeemedAllocations && (
             <Subtitle>
-              You have unredeemed tokens. Redeem them by 27th Dec or they will
-              be transfered back into the treasury.
+              You have unredeemed tokens. Claim any amount before the 27th of
+              December or the tokens will be transferred back into the SafeDAO
+              treasury.
             </Subtitle>
           )}
           <Link
@@ -220,12 +201,7 @@ const ClaimingWidget = () => {
     </>
   )
 
-  const onChainRequestsLoading =
-    userVestingLoading ||
-    ecosystemVestingLoading ||
-    investorVestingLoading ||
-    balanceLoading
-  if (onChainRequestsLoading) {
+  if (loading) {
     return (
       <Box
         height={`${WIDGET_HEIGHT}px`}
@@ -242,7 +218,7 @@ const ClaimingWidget = () => {
   return (
     <Card elevation={0} sx={{ minWidth: WIDGET_WIDTH, maxWidth: WIDGET_WIDTH }}>
       <SpaceContent sx={{ alignItems: "center" }}>
-        {votingPower.eq(0) ? ctaWidget : votingPowerWidget}
+        {votingPower && votingPower.eq(0) ? ctaWidget : votingPowerWidget}
       </SpaceContent>
     </Card>
   )

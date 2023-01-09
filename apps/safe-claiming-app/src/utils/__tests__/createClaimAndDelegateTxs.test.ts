@@ -14,25 +14,26 @@ describe("createClaimAndDelegateTxs", () => {
     const delegateAddress = ethers.utils.hexZeroPad("0x1", 20)
     const appState: AppState = {
       delegateData: [],
-      ecosystemClaim: null,
-      userClaim: {
-        account: safeAddress,
-        amount: ethers.utils.parseEther("100").toString(),
-        amountClaimed: "0",
-        chainId: 5,
-        contract: mockUserAirdropAddress,
-        curve: 0,
-        durationWeeks: 416,
-        isRedeemed: false,
-        proof: [
-          "0x4697528f2cd5e98bce29be252b25ed33b79d8f0245bb7a3d0f00bb32e50128bb",
-        ],
-        startDate: 10000,
-        tag: "user",
-        vestingId:
-          "0xabfe3d0bfb3df17a4aa39d6967f722ff82c765601417a4957434023c97d5b111",
-      },
-      investorClaim: null,
+      vestingData: [
+        {
+          isExpired: false,
+          account: safeAddress,
+          amount: ethers.utils.parseEther("100").toString(),
+          amountClaimed: "0",
+          chainId: 5,
+          contract: mockUserAirdropAddress,
+          curve: 0,
+          durationWeeks: 416,
+          isRedeemed: false,
+          proof: [
+            "0x4697528f2cd5e98bce29be252b25ed33b79d8f0245bb7a3d0f00bb32e50128bb",
+          ],
+          startDate: 10000,
+          tag: "user",
+          vestingId:
+            "0xabfe3d0bfb3df17a4aa39d6967f722ff82c765601417a4957434023c97d5b111",
+        },
+      ],
       isTokenPaused: true,
       claimedAmount: "0",
       delegate: { address: delegateAddress },
@@ -62,25 +63,26 @@ describe("createClaimAndDelegateTxs", () => {
     const delegateAddress = ethers.utils.hexZeroPad("0x1", 20)
     const appState: AppState = {
       delegateData: [],
-      ecosystemClaim: null,
-      userClaim: {
-        account: safeAddress,
-        amount: ethers.utils.parseEther("100").toString(),
-        amountClaimed: "0",
-        chainId: 5,
-        contract: mockUserAirdropAddress,
-        curve: 0,
-        durationWeeks: 416,
-        isRedeemed: false,
-        proof: [
-          "0x4697528f2cd5e98bce29be252b25ed33b79d8f0245bb7a3d0f00bb32e50128bb",
-        ],
-        startDate: 10000,
-        tag: "user",
-        vestingId:
-          "0xabfe3d0bfb3df17a4aa39d6967f722ff82c765601417a4957434023c97d5b111",
-      },
-      investorClaim: null,
+      vestingData: [
+        {
+          isExpired: false,
+          account: safeAddress,
+          amount: ethers.utils.parseEther("100").toString(),
+          amountClaimed: "0",
+          chainId: 5,
+          contract: mockUserAirdropAddress,
+          curve: 0,
+          durationWeeks: 416,
+          isRedeemed: false,
+          proof: [
+            "0x4697528f2cd5e98bce29be252b25ed33b79d8f0245bb7a3d0f00bb32e50128bb",
+          ],
+          startDate: 10000,
+          tag: "user",
+          vestingId:
+            "0xabfe3d0bfb3df17a4aa39d6967f722ff82c765601417a4957434023c97d5b111",
+        },
+      ],
       isTokenPaused: true,
       claimedAmount: "0",
       delegate: { address: delegateAddress },
@@ -135,25 +137,26 @@ describe("createClaimAndDelegateTxs", () => {
     const delegateAddress = ethers.utils.hexZeroPad("0x1", 20)
     const appState: AppState = {
       delegateData: [],
-      ecosystemClaim: null,
-      userClaim: null,
-      investorClaim: {
-        account: safeAddress,
-        amount: ethers.utils.parseEther("100").toString(),
-        amountClaimed: "0",
-        chainId: 5,
-        contract: mockInvestorVestingAddress,
-        curve: 0,
-        durationWeeks: 416,
-        isRedeemed: false,
-        proof: [
-          "0x4697528f2cd5e98bce29be252b25ed33b79d8f0245bb7a3d0f00bb32e50128bb",
-        ],
-        startDate: 10000,
-        tag: "user",
-        vestingId:
-          "0xabfe3d0bfb3df17a4aa39d6967f722ff82c765601417a4957434023c97d5b111",
-      },
+      vestingData: [
+        {
+          isExpired: false,
+          account: safeAddress,
+          amount: ethers.utils.parseEther("100").toString(),
+          amountClaimed: "0",
+          chainId: 5,
+          contract: mockInvestorVestingAddress,
+          curve: 0,
+          durationWeeks: 416,
+          isRedeemed: false,
+          proof: [
+            "0x4697528f2cd5e98bce29be252b25ed33b79d8f0245bb7a3d0f00bb32e50128bb",
+          ],
+          startDate: 10000,
+          tag: "investor",
+          vestingId:
+            "0xabfe3d0bfb3df17a4aa39d6967f722ff82c765601417a4957434023c97d5b111",
+        },
+      ],
       isTokenPaused: true,
       claimedAmount: "0",
       delegate: { address: delegateAddress },
@@ -177,25 +180,26 @@ describe("createClaimAndDelegateTxs", () => {
     const delegateAddress = ethers.utils.hexZeroPad("0x1", 20)
     const appState: AppState = {
       delegateData: [],
-      ecosystemClaim: null,
-      userClaim: null,
-      investorClaim: {
-        account: safeAddress,
-        amount: ethers.utils.parseEther("100").toString(),
-        amountClaimed: "0",
-        chainId: 5,
-        contract: mockInvestorVestingAddress,
-        curve: 0,
-        durationWeeks: 416,
-        isRedeemed: true,
-        proof: [
-          "0x4697528f2cd5e98bce29be252b25ed33b79d8f0245bb7a3d0f00bb32e50128bb",
-        ],
-        startDate: 10000,
-        tag: "user",
-        vestingId:
-          "0xabfe3d0bfb3df17a4aa39d6967f722ff82c765601417a4957434023c97d5b111",
-      },
+      vestingData: [
+        {
+          isExpired: false,
+          account: safeAddress,
+          amount: ethers.utils.parseEther("100").toString(),
+          amountClaimed: "0",
+          chainId: 5,
+          contract: mockInvestorVestingAddress,
+          curve: 0,
+          durationWeeks: 416,
+          isRedeemed: true,
+          proof: [
+            "0x4697528f2cd5e98bce29be252b25ed33b79d8f0245bb7a3d0f00bb32e50128bb",
+          ],
+          startDate: 10000,
+          tag: "investor",
+          vestingId:
+            "0xabfe3d0bfb3df17a4aa39d6967f722ff82c765601417a4957434023c97d5b111",
+        },
+      ],
       isTokenPaused: false,
       claimedAmount: "0",
       delegate: { address: delegateAddress },

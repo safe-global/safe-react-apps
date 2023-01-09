@@ -53,11 +53,17 @@ const validateAmount = (amount: string, maxAmount: string) => {
 const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
   const { sdk, safe } = useSafeAppsSDK()
 
-  const { delegate, userClaim, ecosystemClaim, investorClaim, isTokenPaused } =
-    state
+  const { delegate, vestingData, isTokenPaused } = state
   const [amount, setAmount] = useState<string>()
   const [isMaxAmountSelected, setIsMaxAmountSelected] = useState(false)
   const [amountError, setAmountError] = useState<string>()
+
+  const userClaim =
+    vestingData.find((vesting) => vesting.tag === "user") ?? null
+  const ecosystemClaim =
+    vestingData.find((vesting) => vesting.tag === "ecosystem") ?? null
+  const investorClaim =
+    vestingData.find((vesting) => vesting.tag === "investor") ?? null
 
   const [userAirdropClaimable, userAirdropInVesting] = useAmounts(userClaim)
   const [ecosystemClaimable, ecosystemInVesting] = useAmounts(ecosystemClaim)

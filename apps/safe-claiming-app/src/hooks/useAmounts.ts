@@ -1,11 +1,9 @@
 import { BigNumber } from "ethers"
 import { useEffect, useState } from "react"
-import { VestingClaim } from "src/types/vestings"
 import { calculateVestedAmount } from "src/utils/vesting"
+import { Vesting } from "./useSafeTokenAllocation"
 
-export const useAmounts = (
-  vestingClaim: VestingClaim | null
-): [string, string] => {
+export const useAmounts = (vestingClaim: Vesting | null): [string, string] => {
   const [claimableAmount, setClaimableAmount] = useState("0")
   const [amountInVesting, setAmountInVesting] = useState("0")
 

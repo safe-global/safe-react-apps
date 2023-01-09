@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.1](https://github.com/safe-global/safe-react-apps/compare/mmi-0.1.0...mmi-0.1.1) (2022-12-14)
+
+
+### Bug Fixes
+
+* **mmi:** Error loading fonts ([609f3fe](https://github.com/safe-global/safe-react-apps/commit/609f3fe48fa6665f7fbb346fc6fde96653a83ec6))
+
+
+
 # 0.1.0 (2022-12-02)
 
 
