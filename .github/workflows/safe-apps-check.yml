@@ -39,7 +39,7 @@ jobs:
         with:
           browser: chrome
           record: true
-          spec: cypress/integration/safe-apps-check.spec.js
+          spec: cypress/integration/safe-apps-check.spec.cy.js
         env:
           CI: 'true'
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
@@ -57,7 +57,7 @@ jobs:
         with:
           browser: chrome
           record: true
-          spec: cypress/integration/safe-apps-check.spec.js
+          spec: cypress/integration/safe-apps-check.spec.cy.js
         env:
           CI: 'true'
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
@@ -75,7 +75,7 @@ jobs:
         with:
           browser: chrome
           record: true
-          spec: cypress/integration/safe-apps-check.spec.js
+          spec: cypress/integration/safe-apps-check.spec.cy.js
         env:
           CI: 'true'
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
@@ -93,7 +93,7 @@ jobs:
         with:
           browser: chrome
           record: true
-          spec: cypress/integration/safe-apps-check.spec.js
+          spec: cypress/integration/safe-apps-check.spec.cy.js
         env:
           CI: 'true'
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
@@ -111,7 +111,7 @@ jobs:
         with:
           browser: chrome
           record: true
-          spec: cypress/integration/safe-apps-check.spec.js
+          spec: cypress/integration/safe-apps-check.spec.cy.js
         env:
           CI: 'true'
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
@@ -129,7 +129,7 @@ jobs:
         with:
           browser: chrome
           record: true
-          spec: cypress/integration/safe-apps-check.spec.js
+          spec: cypress/integration/safe-apps-check.spec.cy.js
         env:
           CI: 'true'
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
@@ -147,7 +147,7 @@ jobs:
         with:
           browser: chrome
           record: true
-          spec: cypress/integration/safe-apps-check.spec.js
+          spec: cypress/integration/safe-apps-check.spec.cy.js
         env:
           CI: 'true'
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
@@ -165,7 +165,7 @@ jobs:
         with:
           browser: chrome
           record: true
-          spec: cypress/integration/safe-apps-check.spec.js
+          spec: cypress/integration/safe-apps-check.spec.cy.js
         env:
           CI: 'true'
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
@@ -183,7 +183,7 @@ jobs:
         with:
           browser: chrome
           record: true
-          spec: cypress/integration/safe-apps-check.spec.js
+          spec: cypress/integration/safe-apps-check.spec.cy.js
         env:
           CI: 'true'
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
