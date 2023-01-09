@@ -150,6 +150,8 @@ const ClaimingWidget = () => {
         <Title>Your voting power</Title>
         <StyledButtonLink
           href={claimingSafeAppUrl}
+          rel="noopener noreferrer"
+          target="_blank"
           sx={{ "&:hover": { backgroundColor: "secondary.light" } }}
         >
           <SafeIcon />
