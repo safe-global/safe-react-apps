@@ -29,21 +29,11 @@ Cypress.Commands.add('visitSafeApp', (visitUrl, appUrl) => {
     )
 
     try {
-      console.log('APP URL: ', appUrl)
       const response = await fetch(`${appUrl}/manifest.json`)
       const manifest = await response.json()
       const { safe_apps_permissions } = manifest
-      console.log('MANIFEST: ', manifest)
 
       if (safe_apps_permissions) {
-        console.log(
-          'PERMISSIONS: ',
-          safe_apps_permissions.map(permission => ({
-            feature: permission,
-            status: 'granted',
-          })),
-        )
-
         window.localStorage.setItem(
           BROWSER_PERMISSIONS_KEY,
           JSON.stringify({
