@@ -5,8 +5,8 @@ import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 const BASE_URL = 'https://safe-client.safe.global'
 
 type UseAppsResponse = {
-  findSafeApp: (safeAddress: string) => SafeAppData | undefined
-  openSafeApp: (safeAppAddress: string) => void
+  findSafeApp: (safeAppUrl: string) => SafeAppData | undefined
+  openSafeApp: (safeAppUrl: string) => void
 }
 
 export function useApps(): UseAppsResponse {

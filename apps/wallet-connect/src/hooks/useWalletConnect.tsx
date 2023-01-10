@@ -1,113 +1,97 @@
-import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
-import { ethers } from 'ethers'
-import WalletConnect from '@walletconnect/client'
-import { IClientMeta, IWalletConnectSession } from '@walletconnect/types'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
-import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
-import { trackSafeAppEvent } from '../utils/analytics'
+import { useCallback } from 'react'
+import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import { CoreTypes } from '@walletconnect/types'
+import { IClientMeta } from '@walletconnect/legacy-types'
+
+import useWalletConnectV1 from './useWalletConnectV1'
+import useWalletConnectV2 from './useWalletConnectV2'
+import { trackSafeAppEvent, WalletConnectVersion } from '../utils/analytics'
 import { useApps } from './useApps'
 
-const rejectWithMessage = (connector: WalletConnect, id: number | undefined, message: string) => {
-  connector.rejectRequest({ id, error: { message } })
+export type wcConnectType = (uri: string) => Promise<void>
+export type wcDisconnectType = () => Promise<void>
+export type MetadataType = CoreTypes.Metadata | IClientMeta | null
+
+export type useWalletConnectType = {
+  wcConnect: wcConnectType
+  wcDisconnect: wcDisconnectType
+  wcClientData: CoreTypes.Metadata | undefined
+  isWallectConnectInitialized: boolean
+  error: string | undefined
+  findSafeApp: (safeAppUrl: string) => SafeAppData | undefined
+  openSafeApp: (safeAppUrl: string) => void
 }
 
-const useWalletConnect = () => {
-  const { safe, sdk } = useSafeAppsSDK()
-  const [wcClientData, setWcClientData] = useState<IClientMeta | null>(null)
-  const [connector, setConnector] = useState<WalletConnect | undefined>()
-  const { findSafeApp } = useApps()
-  const web3Provider = useMemo(
-    () => new ethers.providers.Web3Provider(new SafeAppProvider(safe, sdk)),
-    [sdk, safe],
-  )
-
-  const localStorageSessionKey = useRef(`session_${safe.safeAddress}`)
+const useWalletConnect = (): useWalletConnectType => {
+  const { findSafeApp, openSafeApp } = useApps()
 
   const trackEvent = useCallback(
-    (action, meta) => {
+    (action: string, version: WalletConnectVersion, meta?: MetadataType) => {
       if (!meta) return
 
       const safeApp = meta && findSafeApp(meta.url)
 
-      trackSafeAppEvent(action, safeApp?.name || meta?.url)
+      trackSafeAppEvent(action, version, safeApp?.name || meta?.url)
     },
     [findSafeApp],
   )
 
-  const wcDisconnect = useCallback(async () => {
-    try {
-      await connector?.killSession()
-      setConnector(undefined)
-      setWcClientData(null)
-    } catch (error) {
-      console.log('Error trying to close WC session: ', error)
-    }
-  }, [connector])
+  // wallet-connect v1
+  const {
+    wcConnect: wcConnectV1,
+    wcClientData: wcSessionV1,
+    wcDisconnect: wcDisconnectV1,
+  } = useWalletConnectV1(trackEvent)
 
-  const wcConnect = useCallback(
-    async ({ uri, session }: { uri?: string; session?: IWalletConnectSession }) => {
-      const wcConnector = new WalletConnect({
-        uri,
-        session,
-        storageId: localStorageSessionKey.current,
-      })
-      setConnector(wcConnector)
-      setWcClientData(wcConnector.peerMeta)
+  // wallet-connect v2
+  const {
+    wcConnect: wcConnectV2,
+    wcClientData: wcSessionV2,
+    wcDisconnect: wcDisconnectV2,
+    isWallectConnectInitialized,
+    error,
+  } = useWalletConnectV2(trackEvent)
 
-      wcConnector.on('session_request', (error, payload) => {
-        if (error) {
-          throw error
-        }
+  const wcConnect = useCallback<wcConnectType>(
+    async (uri: string) => {
+      // walletconnect URI follows eip-1328 standard
+      // see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1328.md
+      const walletConnectVersion = getWalletConnectVersion(uri)
+      const isWalletConnectV1 = walletConnectVersion === '1'
 
-        wcConnector.approveSession({
-          accounts: [safe.safeAddress],
-          chainId: safe.chainId,
-        })
-
-        trackEvent('New session', wcConnector.peerMeta)
-
-        setWcClientData(payload.params[0].peerMeta)
-      })
-
-      wcConnector.on('call_request', async (error, payload) => {
-        if (error) {
-          throw error
-        }
-
-        try {
-          let result = await web3Provider.send(payload.method, payload.params)
-
-          trackEvent('Transaction Confirmed', wcConnector.peerMeta)
-
-          wcConnector.approveRequest({
-            id: payload.id,
-            result,
-          })
-        } catch (err) {
-          rejectWithMessage(wcConnector, payload.id, (err as Error).message)
-        }
-      })
-
-      wcConnector.on('disconnect', error => {
-        if (error) {
-          throw error
-        }
-        wcDisconnect()
-      })
+      // we need to keep both v1 & v2 versions, see https://docs.walletconnect.com/2.0/javascript/sign/wallet-usage#migrating-from-v1x
+      if (isWalletConnectV1) {
+        wcConnectV1({ uri })
+      } else {
+        wcConnectV2(uri)
+      }
     },
-    [safe, trackEvent, web3Provider, wcDisconnect],
+    [wcConnectV1, wcConnectV2],
   )
 
-  useEffect(() => {
-    if (!connector) {
-      const session = localStorage.getItem(localStorageSessionKey.current)
-      if (session) {
-        wcConnect({ session: JSON.parse(session) })
-      }
-    }
-  }, [connector, wcConnect])
+  const wcDisconnect = useCallback<wcDisconnectType>(async () => {
+    wcDisconnectV1()
+    wcDisconnectV2()
+  }, [wcDisconnectV1, wcDisconnectV2])
 
-  return { wcClientData, wcConnect, wcDisconnect }
+  const wcClientData = wcSessionV1 || wcSessionV2
+
+  return {
+    wcConnect,
+    wcClientData,
+    wcDisconnect,
+    isWallectConnectInitialized,
+    error,
+    findSafeApp,
+    openSafeApp,
+  }
 }
 
 export default useWalletConnect
+
+const getWalletConnectVersion = (uri: string): string => {
+  const encodedURI = encodeURI(uri)
+  const version = encodedURI?.split('@')?.[1]?.[0]
+
+  return version
+}
