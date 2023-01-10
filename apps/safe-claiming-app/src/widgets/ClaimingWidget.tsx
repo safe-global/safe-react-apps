@@ -140,12 +140,17 @@ const ClaimingWidget = () => {
     <>
       <div>
         <Title>Your voting power</Title>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          gap={1}
-          mb={1}
+        <Button
+          href={claimingSafeAppUrl}
+          target="_blank"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            marginBottom: "8px",
+            "&:hover": { backgroundColor: "secondary.light" },
+          }}
         >
           <SafeIcon />
           <Typography variant="h5" color="text.primary">
@@ -155,7 +160,7 @@ const ClaimingWidget = () => {
               <Skeleton />
             )}{" "}
           </Typography>
-        </Box>
+        </Button>
       </div>
       {totalClaimed?.gt(0) ? (
         <>
@@ -173,7 +178,17 @@ const ClaimingWidget = () => {
               >
                 Delegated to
               </Typography>
-              <SelectedDelegate delegate={currentDelegate} />
+              <Link
+                href={claimingSafeAppUrl}
+                rel="noopener noreferrer"
+                target="_blank"
+                underline="none"
+              >
+                <SelectedDelegate
+                  delegate={currentDelegate}
+                  onClick={() => {}}
+                />
+              </Link>
             </Box>
           )}
         </>
