@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.9.0](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.8.2...wallet-connect-1.9.0) (2023-01-12)
+
+
+### Features
+
+* **wallet-connect:** Wallet-connect v2 implementation ([#563](https://github.com/safe-global/safe-react-apps/issues/563)) ([789c535](https://github.com/safe-global/safe-react-apps/commit/789c5356873e0d53b5972a8ea840f76acfa886f3))
+
+
+
 ## [1.8.2](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.8.1...wallet-connect-1.8.2) (2022-12-14)
 
 
