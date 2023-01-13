@@ -1,6 +1,11 @@
 import App from "src/App"
 import { useLightDarkTheme } from "src/hooks/useDarkMode"
-import { Box, CircularProgress, ThemeProvider } from "@mui/material"
+import {
+  Box,
+  CircularProgress,
+  CssBaseline,
+  ThemeProvider,
+} from "@mui/material"
 import Widget from "src/widgets/Widget"
 import SafeProvider from "@gnosis.pm/safe-apps-react-sdk"
 
@@ -10,6 +15,7 @@ export const AppSwitch = () => {
 
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <SafeProvider
         loader={
           <Box

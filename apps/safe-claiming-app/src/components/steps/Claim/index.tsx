@@ -236,7 +236,7 @@ const Claim = ({ handleBack, state, handleUpdateState, handleNext }: Props) => {
                   variant="contained"
                   size="large"
                   disableElevation
-                  sx={{ width: 1, paddingX: 0 }}
+                  sx={{ width: 1, paddingX: 0, height: "47px" }}
                   disabled={buttonDisabled}
                   onClick={claimTokens}
                 >
