@@ -37,7 +37,9 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
         .findByText(/send batch/i)
         .click()
     })
-    cy.findByText(/transaction builder/i).should('be.visible')
+    cy.findByRole('heading', { name: /transaction builder transaction builder görli/i }).should(
+      'be.visible',
+    )
     cy.findByRole('button', { name: /transaction details/i }).click()
     cy.findByRole('region').should('exist')
     cy.findByText('test Address Value').should('exist')
@@ -130,7 +132,9 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
         .findByText(/send batch/i)
         .click()
     })
-    cy.findByText(/transaction builder/i).should('be.visible')
+    cy.findByRole('heading', { name: /transaction builder transaction builder görli/i }).should(
+      'be.visible',
+    )
     cy.findByText('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6').should('be.visible')
   })
 
@@ -156,7 +160,9 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
         .findByText(/send batch/i)
         .click()
     })
-    cy.findByText(/transaction builder/i).should('be.visible')
+    cy.findByRole('heading', { name: /transaction builder transaction builder görli/i }).should(
+      'be.visible',
+    )
     cy.findByText('0xc6b82bA149CFA113f8f48d5E3b1F78e933e16DfD').should('be.visible')
   })
 

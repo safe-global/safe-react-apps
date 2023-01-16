@@ -38,6 +38,8 @@ deployments/
 cypress/reports
 cypress/videos
 cypress/screenshots
+cypress/downloads
 
 # intellij ide files
 .idea
+
