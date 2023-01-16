@@ -48,6 +48,8 @@ jobs:
           REACT_APP_MMI_BACKEND_BASE_URL: ${{ secrets.MMI_BACKEND_BASE_URL }}
           REACT_APP_MMI_ENVIRONMENT: ${{ secrets.MMI_ENVIRONMENT }}
           REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLETCONNECT_PROJECT_ID_DEVSTAGING }}
+          NEXT_PUBLIC_WC_BRIDGE: ${{ secrets.NEXT_PUBLIC_WC_BRIDGE }}
+          NEXT_PUBLIC_INFURA_TOKEN: ${{ secrets.REACT_APP_RPC_TOKEN }}
 
       - name: 'PRaul: Comment PR with app URLs'
         if: success() && github.event.number
@@ -61,6 +63,7 @@ jobs:
             * [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)
             * [WalletConnect app](${{ env.REVIEW_FEATURE_URL }}/wallet-connect/)
             * [MMI App](${{ env.REVIEW_FEATURE_URL }}/mmi/)
+            * [Safe Claiming & Delegation App](${{ env.REVIEW_FEATURE_URL }}/safe-claiming-delegation/)
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
         env:
@@ -96,6 +99,8 @@ jobs:
           REACT_APP_MMI_BACKEND_BASE_URL: ${{ secrets.MMI_BACKEND_BASE_URL }}
           REACT_APP_MMI_ENVIRONMENT: ${{ secrets.MMI_ENVIRONMENT }}
           REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLETCONNECT_PROJECT_ID_DEVSTAGING }}
+          NEXT_PUBLIC_WC_BRIDGE: ${{ secrets.NEXT_PUBLIC_WC_BRIDGE }}
+          NEXT_PUBLIC_INFURA_TOKEN: ${{ secrets.REACT_APP_RPC_TOKEN }}
 
       # Script to deploy to the dev environment
       - name: 'Deploy to S3: Develop'
@@ -141,3 +146,5 @@ jobs:
           react-app-mmi-backend-base-url: ${{ secrets.MMI_BACKEND_BASE_URL }}
           react-app-mmi-environment: ${{ secrets.MMI_ENVIRONMENT }}
           react-app-walletconnect-project-id: ${{ secrets.REACT_APP_WALLETCONNECT_PROJECT_ID }}
+          next-public-wc-bridge: ${{ secrets.NEXT_PUBLIC_WC_BRIDGE }}
+          next-public-infura-token: ${{ secrets.REACT_APP_RPC_TOKEN }}
