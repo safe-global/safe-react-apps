@@ -71,8 +71,6 @@ const App = ({
 
             <PageLayout>
               <EnsureWalletConnection>
-                {/* 
-                // @ts-expect-error type mismatch with Next and React */}
                 <Component {...pageProps} />
               </EnsureWalletConnection>
             </PageLayout>
