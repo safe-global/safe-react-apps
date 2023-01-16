@@ -1,0 +1,10 @@
+.overview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 182px;
+  height: 93px;
+  background-color: var(--mui-palette-secondary-background);
+  border-radius: var(--mui-shape-borderRadius);
+}

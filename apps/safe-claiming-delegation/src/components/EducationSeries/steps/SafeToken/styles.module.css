@@ -1,0 +1,47 @@
+.accordion {
+  border: 1px solid var(--mui-palette-border-light);
+  border-radius: var(--mui-shape-borderRadius);
+  margin-bottom: 16px;
+  box-shadow: none;
+  width: 100%;
+}
+
+.accordion::before {
+  display: none;
+}
+
+.accordion :global .Mui-expanded {
+  border-radius: var(--mui-shape-borderRadius);
+  background-color: var(--mui-palette-background-light);
+}
+
+.details {
+  padding-top: 0;
+  background-color: var(--mui-palette-background-light);
+}
+
+.summaryText {
+  font-weight: 700;
+  position: relative;
+  margin-left: 24px;
+  list-style-type: none;
+}
+
+.summaryText::before {
+  content: '';
+  border-radius: 2px;
+  position: absolute;
+  background-color: var(--mui-palette-text-primary);
+  min-width: 6px;
+  min-height: 6px;
+  top: 9px;
+  left: -24px;
+}
+
+.list {
+  padding-top: 0;
+}
+
+.list :global .MuiListItem-root {
+  padding: 4px 0 4px 24px;
+}

@@ -1,0 +1,95 @@
+:root {
+  --onboard-white: var(--mui-palette-background-paper);
+  --onboard-black: var(--mui-palette-text-primary);
+
+  --onboard-primary-1: var(--mui-palette-secondary-main);
+  --onboard-primary-100: var(--mui-palette-secondary-background);
+  --onboard-primary-200: var(--mui-palette-primary-light);
+  --onboard-primary-400: var(--mui-palette-primary-light);
+  --onboard-primary-500: var(--mui-palette-primary-main);
+  --onboard-primary-600: var(--mui-palette-primary-main);
+  --onboard-primary-700: var(--mui-palette-secondary-main);
+
+  --onboard-gray-100: var(--mui-palette-border-light);
+  --onboard-gray-200: var(--mui-palette-border-main);
+  --onboard-gray-300: var(--mui-palette-primary-light);
+  --onboard-gray-400: var(--mui-palette-primary-main);
+  --onboard-gray-500: var(--mui-palette-primary-main);
+  --onboard-gray-600: var(--mui-palette-border-main);
+  --onboard-gray-700: var(--mui-palette-text-primary);
+
+  --onboard-success-100: var(--mui-palette-secondary-background);
+  --onboard-success-600: var(--mui-palette-secondary-light);
+  --onboard-success-700: var(--mui-palette-success-dark);
+
+  --onboard-danger-500: var(--mui-palette-error-main);
+  --onboard-danger-600: var(--mui-palette-error-main);
+  --onboard-danger-700: var(--mui-palette-error-dark);
+
+  --onboard-warning-100: var(--mui-palette-error-background);
+  --onboard-warning-400: var(--mui-palette-error-light);
+  --onboard-warning-500: var(--mui-palette-error-light);
+  --onboard-warning-600: var(--mui-palette-error-main);
+  --onboard-warning-700: var(--mui-palette-error-dark);
+
+  /* var(--mui-palette-backdrop-main) + opacity */
+  --onboard-modal-backdrop: rgba(99, 102, 105, 0.75);
+
+  --account-select-modal-white: var(--mui-palette-background-paper);
+  --account-select-modal-black: var(--mui-palette-primary-main);
+  --account-select-modal-primary-100: var(--mui-palette-secondary-background);
+  --account-select-modal-primary-200: var(--mui-palette-background-light);
+  --account-select-modal-primary-300: var(--mui-palette-secondary-background);
+  --account-select-modal-primary-500: var(--mui-palette-secondary-background);
+  --account-select-modal-primary-600: var(--mui-palette-secondary-light);
+
+  --account-select-primary-300: var(--mui-palette-primary-main);
+  --account-select-primary-500: var(--mui-palette-primary-main);
+
+  --onboard-connect-sidebar-color: var(--mui-palette-text-primary);
+  --onboard-wallet-button-color: var(--mui-palette-text-primary);
+  --onboard-wallet-app-icon-border-color: var(--mui-palette-border-light);
+  --onboard-wallet-app-icon-background-white: #fff;
+  --onboard-wallet-app-icon-background-transparent: #fff;
+  --onboard-wallet-app-icon-background-light-gray: rgba(255, 255, 255, 0.5);
+  --onboard-wallet-button-border-color: var(--mui-palette-border-light);
+  --onboard-wallet-button-border-radius: 8px;
+  --onboard-wallet-button-background-hover: var(--mui-palette-background-light);
+  --onboard-wallet-button-background-active: var(--mui-palette-background-light);
+  /* Needs to be brighter than var(--mui-palette-primary-main) to compensate for shadow blur */
+  --onboard-wallet-button-box-shadow-hover: 0 0 2px #00fd00;
+
+  /* Fonts */
+  --onboard-font-family-normal: DM Sans, sans-serif;
+  --onboard-font-family-semibold: DM Sans, sans-serif;
+  --onboard-font-family-light: DM Sans, sans-serif;
+  --account-select-modal-font-family-normal: DM Sans, sans-serif;
+  --account-select-modal-font-family-light: DM Sans, sans-serif;
+
+  --onboard-modal-border-radius: var(--mui-shape-borderRadius);
+  --onboard-border-radius-1: var(--mui-shape-borderRadius);
+  --onboard-border-radius-2: var(--mui-shape-borderRadius);
+  --onboard-border-radius-3: var(--mui-shape-borderRadius);
+
+  /* Z-index */
+  --onboard-modal-z-index: 1301;
+  --onboard-account-select-modal-z-index: 1301;
+}
+
+#walletconnect-qrcode-modal {
+  padding: 20px !important;
+}
+
+#walletconnect-wrapper {
+  color: #162d45;
+}
+
+#walletconnect-wrapper .walletconnect-modal__footer {
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+/* Keystone modal */
+#kv_sdk_container + .ReactModalPortal > div {
+  z-index: 1301 !important;
+}

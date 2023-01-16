@@ -1,0 +1,4 @@
+.percentage {
+  border-radius: var(--mui-shape-borderRadius);
+  padding: 0px 8px;
+}

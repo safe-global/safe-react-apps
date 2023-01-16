@@ -1,0 +1,28 @@
+.singleTile {
+  position: absolute;
+  top: 0px;
+  right: 80px;
+  color: var(--mui-palette-secondary-main);
+}
+
+.doubleTile {
+  position: absolute;
+  bottom: 15px;
+  right: 0px;
+  color: var(--mui-palette-secondary-main);
+}
+
+.badge :global .MuiBadge-badge {
+  right: 4px;
+  bottom: 5px;
+  height: 6px;
+  min-width: 6px;
+}
+
+.amountDisplay {
+  line-height: 2em;
+  font-weight: 700;
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}

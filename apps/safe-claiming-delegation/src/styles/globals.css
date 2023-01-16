@@ -1,0 +1,84 @@
+@import url(./onboard.css);
+
+@font-face {
+  font-family: 'DM Sans';
+  font-display: swap;
+  font-weight: 400;
+  src: url('/fonts/dm-sans-v11-latin-ext-regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  font-display: swap;
+  font-weight: bold;
+  src: url('/fonts/dm-sans-v11-latin-ext-700.woff2') format('woff2');
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: DM Sans, sans-serif;
+}
+
+body {
+  background-color: var(--mui-palette-background-main);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 5px auto Highlight;
+  outline: 5px auto -webkit-focus-ring-color;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --header-height: 52px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.illustration-main-fill {
+  fill: var(--mui-palette-primary-main);
+}
+
+.illustration-light-fill {
+  fill: var(--mui-palette-border-main);
+}
+
+.illustration-background-fill {
+  fill: var(--mui-palette-logo-background);
+}
+
+/* Note: a fallback `stroke` property must be on the svg to work */
+.illustration-main-stroke {
+  stroke: var(--mui-palette-primary-main);
+}
+
+.illustration-light-stroke {
+  stroke: var(--mui-palette-border-main);
+}
+
+.illustration-background-stroke {
+  stroke: var(--mui-palette-logo-background);
+}

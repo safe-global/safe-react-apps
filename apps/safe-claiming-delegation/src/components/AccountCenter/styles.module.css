@@ -1,0 +1,41 @@
+.dropdown {
+  height: 100%;
+  border-left: 1px solid var(--mui-palette-border-light);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: stretch;
+  padding-left: 16px;
+}
+
+.buttonContainer {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 8px;
+}
+
+.popoverContainer {
+  padding: 16px;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid var(--mui-palette-border-light);
+}
+
+.rowContainer {
+  align-self: stretch;
+  margin-left: -16px;
+  margin-right: -16px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--mui-palette-border-light);
+  padding: 4px 16px;
+  margin-top: -2px;
+}

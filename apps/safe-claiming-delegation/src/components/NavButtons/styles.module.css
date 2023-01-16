@@ -1,0 +1,14 @@
+.container {
+  flex-grow: 1;
+  display: flex;
+}
+
+.button {
+  height: 42px;
+  width: 152px;
+}
+
+.next {
+  margin-left: auto;
+  align-self: flex-end;
+}
