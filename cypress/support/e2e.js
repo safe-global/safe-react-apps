@@ -5,6 +5,8 @@ import './commands'
 export const INFO_MODAL_KEY = 'SAFE_v2__SafeApps__infoModal'
 export const BROWSER_PERMISSIONS_KEY = 'SAFE_v2__SafeApps__browserPermissions'
 
+const chains = [1, 5, 10, 56, 100, 137, 42161, 43114, 73799, 1313161554]
+
 let warningCheckedCustomApps = []
 const drainSafeUrl = Cypress.env('DRAIN_SAFE_URL')
 
@@ -17,14 +19,16 @@ Cypress.Commands.add('visitSafeApp', (visitUrl, appUrl) => {
     window.localStorage.setItem(
       INFO_MODAL_KEY,
       JSON.stringify({
-        1: {
-          consentsAccepted: true,
-          warningCheckedCustomApps,
-        },
-        5: {
-          consentsAccepted: true,
-          warningCheckedCustomApps,
-        },
+        ...chains.reduce(
+          (acc, chainId) => ({
+            ...acc,
+            [`${chainId}`]: {
+              consentsAccepted: true,
+              warningCheckedCustomApps,
+            },
+          }),
+          {},
+        ),
       }),
     )
 

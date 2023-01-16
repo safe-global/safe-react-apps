@@ -12,7 +12,7 @@ export default defineConfig({
   video: true,
   retries: {
     runMode: 2,
-    openMode: 0,
+    openMode: 2,
   },
   env: {
     SAFE_APPS_BASE_URL: process.env.CYPRESS_SAFE_APPS_BASE_URL,
