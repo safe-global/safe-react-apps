@@ -1,15 +1,12 @@
-import { lazy } from 'react'
-
 import { createStepperContext } from '@/services/StepperFactory'
+import { SelectDelegate } from '@/components/Delegation/steps/SelectDelegate'
+import { ReviewDelegate } from '@/components/Delegation/steps/ReviewDelegate'
+import { SuccessfulDelegation } from '@/components/Delegation/steps/SuccessfulDelegation'
 import type { FileDelegate } from '@/hooks/useDelegatesFile'
 import type { Delegate } from '@/hooks/useDelegate'
 import type { ContractDelegate } from '@/hooks/useContractDelegate'
 
-const steps = [
-  lazy(() => import('@/components/Delegation/steps/SelectDelegate')),
-  lazy(() => import('@/components/Delegation/steps/ReviewDelegate')),
-  lazy(() => import('@/components/Delegation/steps/SuccessfulDelegation')),
-]
+const steps = [<SelectDelegate />, <ReviewDelegate />, <SuccessfulDelegation />]
 
 type DelegationStepperState = {
   safeGuardian?: FileDelegate

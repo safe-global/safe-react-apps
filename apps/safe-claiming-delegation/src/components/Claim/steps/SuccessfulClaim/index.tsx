@@ -1,12 +1,12 @@
 import { Grid, Typography, Button } from '@mui/material'
 import Image from 'next/image'
-import type { Theme } from '@mui/material'
+import type { Theme } from '@mui/material/styles'
 import type { ReactElement } from 'react'
 
 import { useClaimStepper } from '@/components/Claim'
 import { useIsDarkMode } from '@/hooks/useIsDarkMode'
 
-const SuccessfulClaim = (): ReactElement => {
+export const SuccessfulClaim = (): ReactElement => {
   const { onNext, stepperState } = useClaimStepper()
 
   const isDarkMode = useIsDarkMode()
@@ -43,5 +43,3 @@ const SuccessfulClaim = (): ReactElement => {
     </Grid>
   )
 }
-
-export default SuccessfulClaim

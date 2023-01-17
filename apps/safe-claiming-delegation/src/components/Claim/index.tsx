@@ -1,11 +1,8 @@
-import { lazy } from 'react'
-
 import { createStepperContext } from '@/services/StepperFactory'
+import { ClaimOverview } from '@/components/Claim/steps/ClaimOverview'
+import { SuccessfulClaim } from '@/components/Claim/steps/SuccessfulClaim'
 
-const steps = [
-  lazy(() => import('@/components/Claim/steps/ClaimOverview')),
-  lazy(() => import('@/components/Claim/steps/SuccessfulClaim')),
-]
+const steps = [<ClaimOverview />, <SuccessfulClaim />]
 
 const ClaimContext = createStepperContext({
   steps,

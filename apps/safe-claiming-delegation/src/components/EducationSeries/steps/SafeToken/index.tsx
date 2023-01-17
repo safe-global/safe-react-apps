@@ -34,7 +34,7 @@ const InfoAccordion = ({ summaryText, details }: { summaryText: string; details:
   )
 }
 
-const SafeToken = (): ReactElement => {
+export const SafeToken = (): ReactElement => {
   const { onBack, onNext } = useEducationSeriesStepper()
 
   return (
@@ -87,5 +87,3 @@ const SafeToken = (): ReactElement => {
     </Grid>
   )
 }
-
-export default SafeToken

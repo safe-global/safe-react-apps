@@ -23,7 +23,7 @@ const Point = ({ children }: { children: ReactNode }): ReactElement => {
   )
 }
 
-const SafeDao = (): ReactElement => {
+export const SafeDao = (): ReactElement => {
   const { onBack, onNext } = useEducationSeriesStepper()
 
   return (
@@ -76,5 +76,3 @@ const SafeDao = (): ReactElement => {
     </Grid>
   )
 }
-
-export default SafeDao

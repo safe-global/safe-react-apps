@@ -1,5 +1,4 @@
 import { Box, Typography } from '@mui/material'
-import { Suspense } from 'react'
 import type { ReactElement } from 'react'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -19,9 +18,7 @@ export const WalletInfo = ({
   return (
     <Box className={css.container}>
       <Box className={css.imageContainer}>
-        <Suspense>
-          <WalletIcon provider={wallet.label} />
-        </Suspense>
+        <WalletIcon provider={wallet.label} />
       </Box>
       <Box>
         <Typography variant="caption" component="div" className={css.walletDetails}>

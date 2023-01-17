@@ -5,7 +5,7 @@ import { StepHeader } from '@/components/StepHeader'
 import { NavButtons } from '@/components/NavButtons'
 import { useEducationSeriesStepper } from '@/components/EducationSeries'
 
-const Disclaimer = (): ReactElement => {
+export const Disclaimer = (): ReactElement => {
   const { onBack, onNext } = useEducationSeriesStepper()
 
   return (
@@ -45,5 +45,3 @@ const Disclaimer = (): ReactElement => {
     </Grid>
   )
 }
-
-export default Disclaimer

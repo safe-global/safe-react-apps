@@ -1,14 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
 import { useRouter } from 'next/router'
-import { createContext, Suspense, useContext, useState } from 'react'
-import type {
-  JSXElementConstructor,
-  LazyExoticComponent,
-  ReactElement,
-  Dispatch,
-  SetStateAction,
-} from 'react'
+import { createContext, useContext, useState } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 
 import { AppRoutes } from '@/config/routes'
 import { ProgressBar } from '@/components/ProgressBar'
@@ -17,7 +11,7 @@ export const createStepperContext = <StepperState extends Record<string, unknown
   steps,
   state,
 }: {
-  steps: LazyExoticComponent<() => ReactElement<unknown, string | JSXElementConstructor<unknown>>>[]
+  steps: JSX.Element[]
   state?: StepperState
 }) => {
   // Typed context
@@ -63,8 +57,6 @@ export const createStepperContext = <StepperState extends Record<string, unknown
 
     const progress = ((activeStep + 1) / steps.length) * 100
 
-    const Step = steps[activeStep]
-
     return (
       <Context.Provider
         value={{
@@ -77,10 +69,8 @@ export const createStepperContext = <StepperState extends Record<string, unknown
           progress,
         }}
       >
-        <Suspense fallback={null}>
-          <ProgressBar value={progress} />
-          <Step />
-        </Suspense>
+        <ProgressBar value={progress} />
+        {steps[activeStep]}
       </Context.Provider>
     )
   }

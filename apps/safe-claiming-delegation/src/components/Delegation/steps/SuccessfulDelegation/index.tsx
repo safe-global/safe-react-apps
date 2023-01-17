@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 
 import { useDelegationStepper } from '@/components/Delegation'
 
-const SuccessfulDelegation = (): ReactElement => {
+export const SuccessfulDelegation = (): ReactElement => {
   const { onNext } = useDelegationStepper()
 
   return (
@@ -23,5 +23,3 @@ const SuccessfulDelegation = (): ReactElement => {
     </Grid>
   )
 }
-
-export default SuccessfulDelegation

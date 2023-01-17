@@ -1,3 +1,9 @@
+import type { NextPage } from 'next'
+
 import { Delegation } from '@/components/Delegation'
 
-export default Delegation
+const DelegatePage: NextPage = () => {
+  return <Delegation />
+}
+
+export default DelegatePage

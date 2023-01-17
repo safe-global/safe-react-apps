@@ -13,7 +13,7 @@ import css from './styles.module.css'
 const DISTRIBUTION_PROPOSAL_URL =
   'https://forum.gnosis-safe.io/t/safe-voting-power-and-circulating-supply/558'
 
-const Distribution = (): ReactElement => {
+export const Distribution = (): ReactElement => {
   const { onBack, onNext } = useEducationSeriesStepper()
 
   return (
@@ -150,5 +150,3 @@ const Distribution = (): ReactElement => {
     </Grid>
   )
 }
-
-export default Distribution

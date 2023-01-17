@@ -9,7 +9,7 @@ import { useEducationSeriesStepper } from '@/components/EducationSeries'
 
 import css from './styles.module.css'
 
-const SafeInfo = (): ReactElement => {
+export const SafeInfo = (): ReactElement => {
   const { onNext } = useEducationSeriesStepper()
 
   return (
@@ -66,5 +66,3 @@ const SafeInfo = (): ReactElement => {
     </Grid>
   )
 }
-
-export default SafeInfo

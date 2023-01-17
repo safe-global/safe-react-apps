@@ -15,7 +15,7 @@ export const enum DelegateType {
   SAFE_GUARDIAN = 'SAFE_GUARDIAN',
 }
 
-const SelectDelegate = (): ReactElement => {
+export const SelectDelegate = (): ReactElement => {
   const [delegateType, setDelegateType] = useState<DelegateType>()
 
   // Initialize stepper state with contract delegate if it exists
@@ -61,5 +61,3 @@ const SelectDelegate = (): ReactElement => {
     </Grid>
   )
 }
-
-export default SelectDelegate

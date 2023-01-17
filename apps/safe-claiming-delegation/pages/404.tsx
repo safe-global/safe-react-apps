@@ -1,15 +1,10 @@
-import { useLayoutEffect } from 'react'
-import { useRouter } from 'next/router'
+import type { NextPage } from 'next'
+
 import { AppRoutes } from '@/config/routes'
+import { Redirect } from '@/components/Redirect'
 
-const _404 = (): null => {
-  const router = useRouter()
-
-  useLayoutEffect(() => {
-    router.replace(AppRoutes.index)
-  }, [router])
-
-  return null
+const My404Page: NextPage = () => {
+  return <Redirect url={AppRoutes.index} replace />
 }
 
-export default _404
+export default My404Page

@@ -1,3 +1,9 @@
+import type { NextPage } from 'next'
+
 import { EducationSeries } from '@/components/EducationSeries'
 
-export default EducationSeries
+const SafeDaoPage: NextPage = () => {
+  return <EducationSeries />
+}
+
+export default SafeDaoPage

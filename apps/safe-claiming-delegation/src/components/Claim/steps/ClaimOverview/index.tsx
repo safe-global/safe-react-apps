@@ -34,7 +34,7 @@ const validateAmount = (amount: string, maxAmount: string) => {
   return mustBeFloat(amount) || minMaxValue(0, maxAmount, amount) || maxDecimals(amount, 18)
 }
 
-const ClaimOverview = (): ReactElement => {
+export const ClaimOverview = (): ReactElement => {
   const { sdk, safe } = useSafeAppsSDK()
   const isWrongChain = useIsWrongChain()
   const { onNext, setStepperState } = useClaimStepper()
@@ -215,5 +215,3 @@ const ClaimOverview = (): ReactElement => {
     </Grid>
   )
 }
-
-export default ClaimOverview

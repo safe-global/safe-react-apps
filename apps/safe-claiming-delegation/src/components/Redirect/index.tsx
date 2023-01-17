@@ -2,11 +2,21 @@ import { useRouter } from 'next/router'
 import { useLayoutEffect } from 'react'
 import type { UrlObject } from 'url'
 
-export const Redirect = ({ url }: { url: string | UrlObject }): null => {
+export const Redirect = ({
+  url,
+  replace,
+}: {
+  url: string | UrlObject
+  replace?: boolean
+}): null => {
   const router = useRouter()
 
   useLayoutEffect(() => {
-    router.push(url)
+    if (replace) {
+      router.replace(url)
+    } else {
+      router.push(url)
+    }
   }, [router, url])
 
   return null

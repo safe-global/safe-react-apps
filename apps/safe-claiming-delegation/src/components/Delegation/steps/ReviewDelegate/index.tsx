@@ -12,7 +12,7 @@ import { setDelegate } from '@/services/delegate-registry'
 import { invalidateContractDelegateCache } from '@/hooks/useContractDelegate'
 import { useIsWrongChain } from '@/hooks/useIsWrongChain'
 
-const ReviewDelegate = (): ReactElement => {
+export const ReviewDelegate = (): ReactElement => {
   const web3 = useWeb3()
   const isWrongChain = useIsWrongChain()
   const { stepperState, onBack, onNext } = useDelegationStepper()
@@ -62,5 +62,3 @@ const ReviewDelegate = (): ReactElement => {
     </Grid>
   )
 }
-
-export default ReviewDelegate
