@@ -2,6 +2,7 @@
   "name": "safe-claiming-delegation",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/safe-claiming-delegation",
   "scripts": {
     "build": "next build",
     "start": "next dev",
