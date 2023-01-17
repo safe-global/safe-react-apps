@@ -1,6 +1,6 @@
 {
-  "root": "apps/safe-delegation-claiming/",
-  "sourceRoot": "apps/safe-delegation-claiming/src/",
+  "root": "apps/safe-claiming-delegation/",
+  "sourceRoot": "apps/safe-claiming-delegation/src/",
   "projectType": "application",
   "tags": ["scope:applications"],
   "targets": {
