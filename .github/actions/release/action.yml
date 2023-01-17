@@ -33,6 +33,12 @@ inputs:
   react-app-mmi-environment:
     description: MMI environment
     required: true
+  next-public-wc-bridge:
+    description: WalletConnect bridge URL
+    required: true
+  next-public-infura-token:
+    description: Infura RPC token
+    required: true
 
 runs:
   using: composite
@@ -63,6 +69,8 @@ runs:
         REACT_APP_MMI_BACKEND_BASE_URL: ${{ inputs.react-app-mmi-backend-base-url }}
         REACT_APP_MMI_ENVIRONMENT: ${{ inputs.react-app-mmi-environment }}
         REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ inputs.react-app-walletconnect-project-id }}
+        NEXT_PUBLIC_WC_BRIDGE: ${{ inputs.next-public-wc-bridge }}
+        NEXT_PUBLIC_INFURA_TOKEN: ${{ inputs.next-public-infura-token }}
 
     - name: Push changes
       uses: ad-m/github-push-action@8407731efefc0d8f72af254c74276b7a90be36e1
