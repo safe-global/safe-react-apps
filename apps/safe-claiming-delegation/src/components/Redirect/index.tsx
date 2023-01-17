@@ -17,7 +17,7 @@ export const Redirect = ({
     } else {
       router.push(url)
     }
-  }, [router, url])
+  }, [replace, router, url])
 
   return null
 }

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { formatEther } from 'ethers/lib/utils'
 import type { ReactElement } from 'react'
 
-import { EducationLink } from '@/components/EducationLink'
+import { OverviewLinks } from '@/components/OverviewLinks'
 import { useDelegate } from '@/hooks/useDelegate'
 import { SelectedDelegate } from '@/components/SelectedDelegate'
 import { AppRoutes } from '@/config/routes'
@@ -37,8 +37,6 @@ export const Intro = (): ReactElement => {
 
   return (
     <Grid container flexDirection="column" alignItems="center" pt={2} px={1} pb={6}>
-      <EducationLink />
-
       <Image src="/images/token.svg" alt="Safe token logo" width={84} height={84} />
 
       <Box mt={4} display="flex" flexDirection="column" alignItems="center">
@@ -72,13 +70,17 @@ export const Intro = (): ReactElement => {
         </Button>
       )}
 
-      <Grid item px={5} mt={6}>
+      <Grid item px={5} mt={6} mb={4}>
         <SelectedDelegate
           delegate={delegate || undefined}
           onClick={onDelegate}
           disabled={!canDelegate}
           hint
         />
+      </Grid>
+
+      <Grid item xs={12}>
+        <OverviewLinks />
       </Grid>
     </Grid>
   )

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/router'
 import { createContext, useContext, useState } from 'react'
-import type { Dispatch, SetStateAction } from 'react'
+import type { JSXElementConstructor, ReactElement, Dispatch, SetStateAction } from 'react'
 
 import { AppRoutes } from '@/config/routes'
 import { ProgressBar } from '@/components/ProgressBar'
@@ -11,7 +11,7 @@ export const createStepperContext = <StepperState extends Record<string, unknown
   steps,
   state,
 }: {
-  steps: JSX.Element[]
+  steps: (() => ReactElement<unknown, string | JSXElementConstructor<unknown>>)[]
   state?: StepperState
 }) => {
   // Typed context
@@ -57,6 +57,8 @@ export const createStepperContext = <StepperState extends Record<string, unknown
 
     const progress = ((activeStep + 1) / steps.length) * 100
 
+    const Step = steps[activeStep]
+
     return (
       <Context.Provider
         value={{
@@ -70,7 +72,7 @@ export const createStepperContext = <StepperState extends Record<string, unknown
         }}
       >
         <ProgressBar value={progress} />
-        {steps[activeStep]}
+        <Step />
       </Context.Provider>
     )
   }

@@ -21,9 +21,6 @@ export const SafeInfo = (): ReactElement => {
       <Typography mb={3}>
         Safe is critical infrastructure for Web3. It is a programmable wallet that enables secure
         management of digital assets, data and identity.
-        <br />
-        <br />
-        With our token, Safe is now a community-driven ownership platform.
       </Typography>
 
       <Box display="flex" mb={8} gap={5}>
@@ -53,7 +50,7 @@ export const SafeInfo = (): ReactElement => {
       </Box>
 
       <Typography variant="h3" fontWeight={700} mb={2}>
-        Why did we launch a token?
+        Why do we have a token?
       </Typography>
 
       <Typography mb={5}>

@@ -1,0 +1,40 @@
+.card {
+  background-color: var(--mui-palette-info-background);
+  width: 265px;
+  height: 100%;
+  padding: 24px;
+  display: grid;
+  justify-content: space-between;
+  border-radius: var(--mui-shape-borderRadius);
+  cursor: pointer;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--mui-palette-text-secondary);
+  margin-bottom: 8px;
+}
+
+/* MuiLink */
+
+.link {
+  margin: 0;
+  color: var(--mui-palette-primary-main);
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+  text-decoration-color: currentcolor;
+  text-decoration-color: rgba(var(--mui-palette-primary-mainChannel) / 0.4);
+  font-weight: 700;
+}
+
+.link:hover {
+  color: var(--mui-palette-primary-light);
+  text-decoration-color: currentcolor;
+}

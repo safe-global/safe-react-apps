@@ -4,7 +4,7 @@ import type { CSSProperties, ReactElement } from 'react'
 
 import LinkIcon from '@/public/images/link.svg'
 
-const style: CSSProperties = {
+export const externalLinkIconStyle: CSSProperties = {
   marginLeft: '4px',
 }
 
@@ -18,7 +18,7 @@ export const ExternalLink = ({ children, ...props }: LinkProps): ReactElement =>
       {...props}
     >
       {children}
-      <LinkIcon style={style} />
+      <LinkIcon style={externalLinkIconStyle} />
     </Link>
   )
 }

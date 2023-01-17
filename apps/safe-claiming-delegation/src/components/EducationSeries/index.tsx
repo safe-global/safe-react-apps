@@ -5,7 +5,7 @@ import { SafeDao } from '@/components/EducationSeries/steps/SafeDao'
 import { SafeInfo } from '@/components/EducationSeries/steps/SafeInfo'
 import { SafeToken } from '@/components/EducationSeries/steps/SafeToken'
 
-const steps = [<SafeInfo />, <Distribution />, <SafeToken />, <SafeDao />, <Disclaimer />]
+const steps = [SafeInfo, Distribution, SafeToken, SafeDao, Disclaimer]
 
 const EducationSeriesContext = createStepperContext({ steps })
 

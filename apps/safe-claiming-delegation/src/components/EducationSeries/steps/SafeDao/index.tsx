@@ -6,13 +6,9 @@ import { StepHeader } from '@/components/StepHeader'
 import { ExternalLink } from '@/components/ExternalLink'
 import { NavButtons } from '@/components/NavButtons'
 import { useEducationSeriesStepper } from '@/components/EducationSeries'
+import { DISCORD_URL, FORUM_URL, GOVERNANCE_URL, SNAPSHOT_URL } from '@/config/constants'
 
 import css from './styles.module.css'
-
-const FORUM_URL = 'https://forum.safe.global'
-const GOVERNANCE_URL = 'https://forum.gnosis-safe.io/t/how-to-safedao-governance-process/846'
-const SNAPSHOT_URL = 'https://snapshot.org/#/safe.eth'
-const DISCORD_URL = 'https://chat.safe.global/'
 
 const Point = ({ children }: { children: ReactNode }): ReactElement => {
   return (
@@ -50,7 +46,8 @@ export const SafeDao = (): ReactElement => {
 
         <Point>
           Propose improvements - read our{' '}
-          <ExternalLink href={GOVERNANCE_URL}>governance process</ExternalLink> and post an SEP.
+          <ExternalLink href={GOVERNANCE_URL}>governance process</ExternalLink> and post an
+          &quot;SEP&quot;.
         </Point>
 
         <Point>

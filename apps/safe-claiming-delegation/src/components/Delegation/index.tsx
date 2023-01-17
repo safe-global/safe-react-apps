@@ -6,7 +6,7 @@ import type { FileDelegate } from '@/hooks/useDelegatesFile'
 import type { Delegate } from '@/hooks/useDelegate'
 import type { ContractDelegate } from '@/hooks/useContractDelegate'
 
-const steps = [<SelectDelegate />, <ReviewDelegate />, <SuccessfulDelegation />]
+const steps = [SelectDelegate, ReviewDelegate, SuccessfulDelegation]
 
 type DelegationStepperState = {
   safeGuardian?: FileDelegate

@@ -5,7 +5,7 @@ import type { ReactElement } from 'react'
 
 import { useOnboard } from '@/hooks/useOnboard'
 import { KeyholeIcon } from '@/components/KeyholeIcon'
-import { EducationLink } from '@/components/EducationLink'
+import { OverviewLinks } from '@/components/OverviewLinks'
 import { DEFAULT_CHAIN_ID } from '@/config/constants'
 import { getConnectedWallet } from '@/hooks/useWallet'
 import { isWrongChain } from '@/hooks/useIsWrongChain'
@@ -33,8 +33,6 @@ export const ConnectWallet = (): ReactElement => {
 
   return (
     <Grid container flexDirection="column" alignItems="center" pt={2} px={1} pb={6}>
-      <EducationLink />
-
       <Image src="/images/safe-logo.svg" alt="SafeDAO logo" width={125} height={110} />
 
       <Typography variant="h1" m={5} mb={6} textAlign="center">
@@ -49,10 +47,14 @@ export const ConnectWallet = (): ReactElement => {
         Connect your wallet to view your SAFE balance and delegate voting power
       </Typography>
 
-      <Grid item xs={4}>
+      <Grid item xs={4} mb={4}>
         <Button variant="contained" color="primary" size="stretched" onClick={onClick}>
           Connect wallet
         </Button>
+      </Grid>
+
+      <Grid item xs={12}>
+        <OverviewLinks />
       </Grid>
     </Grid>
   )

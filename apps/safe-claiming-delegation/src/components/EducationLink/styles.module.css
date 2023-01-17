@@ -1,8 +1,0 @@
-.educationSeriesLink {
-  align-self: flex-end;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: var(--mui-palette-info-background);
-  border-radius: var(--mui-shape-borderRadius);
-}
