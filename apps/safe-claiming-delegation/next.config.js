@@ -5,6 +5,9 @@ const nextConfig = {
   eslint: {
     dirs: ['pages', 'scripts', 'src'],
   },
+  images: {
+    unoptimized: true,
+  },
   experimental: {
     modularizeImports: {
       '@mui/material': {
