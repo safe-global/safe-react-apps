@@ -5,6 +5,7 @@ const nextConfig = {
   eslint: {
     dirs: ['pages', 'scripts', 'src'],
   },
+  assetPrefix: './',
   images: {
     unoptimized: true,
   },
