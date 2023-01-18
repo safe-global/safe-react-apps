@@ -1,6 +1,5 @@
 // General
-export const IS_PRODUCTION =
-  process.env.NEXT_PUBLIC_IS_PRODUCTION ?? process.env.NODE_ENV === 'production'
+const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION ?? process.env.NODE_ENV === 'production'
 
 export const LS_NAMESPACE = 'SAFE__'
 
