@@ -34,10 +34,10 @@ export const useAllocationTypes = (): {
 } => {
   const { data: allocation } = useSafeTokenAllocation()
 
+  const validVestigData = allocation?.vestingData?.filter(({ isExpired }) => !isExpired)
+
   // Get vesting types
-  const { userVesting, ecosystemVesting, investorVesting } = getVestingTypes(
-    allocation?.vestingData || [],
-  )
+  const { userVesting, ecosystemVesting, investorVesting } = getVestingTypes(validVestigData || [])
 
   // Calculate claimable vs. vested amounts for each vesting type
   const [userClaimable, userInVesting] = useAmounts(userVesting)
