@@ -1,7 +1,9 @@
-// General
-const IS_PRODUCTION =
-  process.env.NEXT_PUBLIC_IS_PRODUCTION !== 'false' || process.env.NODE_ENV === 'production'
+// Ennvironment
+const IS_PULL_REQUEST = process.env.NEXT_PUBLIC_IS_PRODUCTION === 'false'
 
+const IS_PRODUCTION = IS_PULL_REQUEST ? false : process.env.NODE_ENV === 'production'
+
+// General
 export const LS_NAMESPACE = 'SAFE__'
 
 export const INFURA_TOKEN = process.env.NEXT_PUBLIC_INFURA_TOKEN || ''

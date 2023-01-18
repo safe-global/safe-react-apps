@@ -7,13 +7,8 @@ const nextConfig = {
   eslint: {
     dirs: ['pages', 'scripts', 'src'],
   },
-  // Served from folder on Safe Apps domain
-  // Note: may cause issues as DApp requiring dynamic basePath in runtime
-  basePath:
-    // Note: duplicate of `constants.ts.IS_PRODUCTION`, but cannot import TS files without workaround
-    process.env.NEXT_PUBLIC_IS_PRODUCTION !== 'false' || process.env.NODE_ENV === 'production'
-      ? packageJson.homepage
-      : undefined,
+  // Project is served from Safe Apps folder but `basePath` causes issues with local development
+  basePath: process.env.NODE_ENV === 'production' ? packageJson.homepage : undefined,
   assetPrefix: './',
   // `Image` not supported in static export
   images: {
