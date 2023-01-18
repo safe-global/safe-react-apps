@@ -1,6 +1,7 @@
 import NextLink from 'next/link'
 import { SvgIcon, Grid, Typography, Paper, Box, Link } from '@mui/material'
-import { ReactElement, useRef } from 'react'
+import { useRef } from 'react'
+import type { ReactElement, SyntheticEvent } from 'react'
 
 import Hat from '@/public/images/hat.svg'
 import { AppRoutes } from '@/config/routes'
@@ -12,8 +13,10 @@ import css from './styles.module.css'
 const SafeDaoCard = () => {
   const linkRef = useRef<HTMLAnchorElement>(null)
 
-  const onClick = () => {
-    linkRef.current?.click()
+  const onClick = ({ target }: SyntheticEvent) => {
+    if (linkRef.current && !linkRef.current.contains(target as Node)) {
+      linkRef.current.click()
+    }
   }
 
   return (
@@ -45,8 +48,10 @@ const ExternalLinkCard = ({
 }): ReactElement => {
   const linkRef = useRef<HTMLAnchorElement>(null)
 
-  const onClick = () => {
-    linkRef.current?.click()
+  const onClick = ({ target }: SyntheticEvent) => {
+    if (linkRef.current && !linkRef.current.contains(target as Node)) {
+      linkRef.current.click()
+    }
   }
 
   return (
