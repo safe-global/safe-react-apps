@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import { SvgIcon, Grid, Typography, Paper, Box } from '@mui/material'
+import NextLink from 'next/link'
+import { SvgIcon, Grid, Typography, Paper, Box, Link } from '@mui/material'
 import { ReactElement, useRef } from 'react'
 
 import Hat from '@/public/images/hat.svg'
@@ -26,9 +26,9 @@ const SafeDaoCard = () => {
         <Typography variant="h3" fontWeight={700}>
           What is SafeDAO?
         </Typography>
-        <Link href={AppRoutes.safedao} ref={linkRef}>
-          Learn more
-        </Link>
+        <NextLink href={AppRoutes.safedao} ref={linkRef}>
+          <Link>Learn more</Link>
+        </NextLink>
       </Box>
     </Paper>
   )

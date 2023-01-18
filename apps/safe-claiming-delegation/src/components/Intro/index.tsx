@@ -35,7 +35,7 @@ export const Intro = (): ReactElement => {
   }
 
   return (
-    <Grid container flexDirection="column" alignItems="center" pt={2} px={1} pb={6}>
+    <Grid container flexDirection="column" alignItems="center" px={1} py={6}>
       <img src="images/token.svg" alt="Safe token logo" width={84} height={84} />
 
       <Box mt={4} display="flex" flexDirection="column" alignItems="center">

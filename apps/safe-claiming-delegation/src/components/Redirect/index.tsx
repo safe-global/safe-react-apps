@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router'
-import { useLayoutEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import type { UrlObject } from 'url'
+
+const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
 
 export const Redirect = ({
   url,
@@ -11,7 +13,7 @@ export const Redirect = ({
 }): null => {
   const router = useRouter()
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (replace) {
       router.replace(url)
     } else {

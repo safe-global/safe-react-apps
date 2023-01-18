@@ -31,7 +31,7 @@ export const ConnectWallet = (): ReactElement => {
   }
 
   return (
-    <Grid container flexDirection="column" alignItems="center" pt={2} px={1} pb={6}>
+    <Grid container flexDirection="column" alignItems="center" px={1} py={6}>
       <img src="images/safe-logo.svg" alt="SafeDAO logo" width={125} height={110} />
 
       <Typography variant="h1" m={5} mb={6} textAlign="center">
