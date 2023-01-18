@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { parsePrefixedAddress, sameAddress } from '@/utils/addresses'
 import { useChains } from '@/hooks/useChains'
 import { useWeb3 } from '@/hooks/useWeb3'
+import { useWallet } from './useWallet'
 
 export const useEnsResolution = (
   str: string,
@@ -16,6 +17,7 @@ export const useEnsResolution = (
   const [loading, setLoading] = useState<boolean>(false)
 
   const web3 = useWeb3()
+  const wallet = useWallet()
   const { safe } = useSafeAppsSDK()
   const { data: chains } = useChains()
 
@@ -46,8 +48,11 @@ export const useEnsResolution = (
     // Valid address
     if (isAddress(address)) {
       const checksummedAddress = getAddress(address)
+
       const error = sameAddress(address, safe.safeAddress)
         ? 'You cannot delegate to your own Safe'
+        : sameAddress(address, wallet?.address || '')
+        ? 'You cannot delegate to your own wallet'
         : undefined
 
       isMounted && setResult(checksummedAddress)
@@ -93,6 +98,13 @@ export const useEnsResolution = (
         return
       }
 
+      // Attempted to delegate to own wallet
+      if (sameAddress(resolvedAddress, wallet?.address || '')) {
+        isMounted && setError('You cannot delegate to your own wallet')
+        isMounted && setLoading(false)
+        return
+      }
+
       // Resolve ENS name
       isMounted && setResult(resolvedAddress)
       isMounted && setLoading(false)
@@ -110,7 +122,7 @@ export const useEnsResolution = (
       clearTimeout(ensTimeout)
       isMounted = false
     }
-  }, [debounce, str, web3, shortName, safe.safeAddress])
+  }, [debounce, str, web3, shortName, safe.safeAddress, wallet?.address])
 
   return [result, error, loading]
 }

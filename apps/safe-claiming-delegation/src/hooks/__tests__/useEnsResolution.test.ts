@@ -6,6 +6,7 @@ import * as SafeAppsSdk from '@gnosis.pm/safe-apps-react-sdk'
 import { renderHook } from '@/tests/test-utils'
 import * as useWeb3 from '@/hooks/useWeb3'
 import * as useChains from '@/hooks/useChains'
+import * as useWallet from '@/hooks/useWallet'
 import { useEnsResolution } from '@/hooks/useEnsResolution'
 import type { ChainListResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import type { UseQueryResult } from '@tanstack/react-query'
@@ -28,6 +29,13 @@ jest.mock('@/hooks/useChains', () => {
   return {
     __esModule: true,
     ...jest.requireActual('@/hooks/useChains'),
+  }
+})
+
+jest.mock('@/hooks/useWallet', () => {
+  return {
+    __esModule: true,
+    ...jest.requireActual('@/hooks/useWallet'),
   }
 })
 
@@ -370,7 +378,7 @@ describe('useEnsResolution()', () => {
   })
 
   it('should set error if resolved address is the same as the current Safe address', async () => {
-    const resolvedAddress = '0x2000000000000000000000000000000000000000'
+    const resolvedAddress = '0x1230000000000000000000000000000000000000'
 
     jest.spyOn(SafeAppsSdk, 'useSafeAppsSDK').mockImplementation(
       () =>
@@ -408,8 +416,44 @@ describe('useEnsResolution()', () => {
     expect(result.current[2]).toBeFalsy()
   })
 
+  it('should set error if resolved address is the same as the current wallet address', async () => {
+    const resolvedAddress = '0x2340000000000000000000000000000000000000'
+
+    jest.spyOn(useWallet, 'useWallet').mockImplementation(
+      () =>
+        ({
+          address: resolvedAddress,
+        } as ReturnType<typeof useWallet.useWallet>),
+    )
+
+    web3Provider.resolveName = jest.fn(() => Promise.resolve(resolvedAddress))
+    jest.spyOn(useWeb3, 'useWeb3').mockImplementation(() => web3Provider)
+
+    jest.useFakeTimers()
+
+    const { result } = renderHook(() => useEnsResolution('test.eth'))
+
+    expect(result.current[0]).toBeUndefined()
+    expect(result.current[1]).toBeUndefined()
+    expect(result.current[2]).toBeFalsy()
+    expect(web3Provider.resolveName).not.toHaveBeenCalled()
+
+    act(() => {
+      jest.advanceTimersByTime(301)
+    })
+
+    await waitFor(() => {
+      expect(result.current[2]).toBeFalsy()
+    })
+
+    expect(web3Provider.resolveName).toHaveBeenCalled()
+    expect(result.current[0]).toBeUndefined()
+    expect(result.current[1]).toEqual('You cannot delegate to your own wallet')
+    expect(result.current[2]).toBeFalsy()
+  })
+
   it('should set error if given address is the same as the current Safe address', async () => {
-    const resolvedAddress = '0x2000000000000000000000000000000000000000'
+    const resolvedAddress = '0x3450000000000000000000000000000000000000'
 
     jest.spyOn(SafeAppsSdk, 'useSafeAppsSDK').mockImplementation(
       () =>
@@ -430,6 +474,28 @@ describe('useEnsResolution()', () => {
     expect(web3Provider.resolveName).not.toHaveBeenCalled()
     expect(result.current[0]).toEqual(resolvedAddress)
     expect(result.current[1]).toEqual('You cannot delegate to your own Safe')
+    expect(result.current[2]).toBeFalsy()
+  })
+
+  it('should set error if given address is the same as the current wallet address', async () => {
+    const resolvedAddress = '0x4560000000000000000000000000000000000000'
+
+    jest.spyOn(useWallet, 'useWallet').mockImplementation(
+      () =>
+        ({
+          address: resolvedAddress,
+        } as ReturnType<typeof useWallet.useWallet>),
+    )
+
+    jest.spyOn(useWeb3, 'useWeb3').mockImplementation(() => web3Provider)
+
+    jest.useFakeTimers()
+
+    const { result } = renderHook(() => useEnsResolution(resolvedAddress))
+
+    expect(web3Provider.resolveName).not.toHaveBeenCalled()
+    expect(result.current[0]).toEqual(resolvedAddress)
+    expect(result.current[1]).toEqual('You cannot delegate to your own wallet')
     expect(result.current[2]).toBeFalsy()
   })
 
