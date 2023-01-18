@@ -9,6 +9,7 @@ import { DEFAULT_CHAIN_ID } from '@/config/constants'
 import { getConnectedWallet } from '@/hooks/useWallet'
 import { isWrongChain } from '@/hooks/useIsWrongChain'
 import type { ConnectedWallet } from '@/hooks/useWallet'
+import SafeLogo from '@/public/images/safe-logo.svg'
 
 export const ConnectWallet = (): ReactElement => {
   const onboard = useOnboard()
@@ -32,7 +33,7 @@ export const ConnectWallet = (): ReactElement => {
 
   return (
     <Grid container flexDirection="column" alignItems="center" px={1} py={6}>
-      <img src="images/safe-logo.svg" alt="SafeDAO logo" width={125} height={110} />
+      <SafeLogo alt="SafeDAO logo" width={125} height={110} />
 
       <Typography variant="h1" m={5} mb={6} textAlign="center">
         Welcome to the next generation of digital ownership

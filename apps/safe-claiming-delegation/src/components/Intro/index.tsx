@@ -11,6 +11,7 @@ import { useTotalVotingPower } from '@/hooks/useTotalVotingPower'
 import { TotalVotingPower } from '@/components/TotalVotingPower'
 import { formatAmount } from '@/utils/formatters'
 import { useAllocationTypes } from '@/hooks/useAllocationTypes'
+import SafeToken from '@/public/images/token.svg'
 
 import css from './styles.module.css'
 
@@ -36,7 +37,7 @@ export const Intro = (): ReactElement => {
 
   return (
     <Grid container flexDirection="column" alignItems="center" px={1} py={6}>
-      <img src="images/token.svg" alt="Safe token logo" width={84} height={84} />
+      <SafeToken alt="Safe token logo" width={84} height={84} />
 
       <Box mt={4} display="flex" flexDirection="column" alignItems="center">
         <TotalVotingPower />

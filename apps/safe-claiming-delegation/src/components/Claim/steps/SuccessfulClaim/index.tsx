@@ -4,6 +4,7 @@ import type { ReactElement } from 'react'
 
 import { useClaimStepper } from '@/components/Claim'
 import { useIsDarkMode } from '@/hooks/useIsDarkMode'
+import SafeLogo from '@/public/images/safe-logo.svg'
 
 export const SuccessfulClaim = (): ReactElement => {
   const { onNext, stepperState } = useClaimStepper()
@@ -24,7 +25,7 @@ export const SuccessfulClaim = (): ReactElement => {
       pb={22}
       sx={{ backgroundColor }}
     >
-      <img src="images/safe-logo.svg" alt="SafeDAO logo" width={125} height={110} />
+      <SafeLogo alt="SafeDAO logo" width={125} height={110} />
 
       <Typography variant="h1" mt={6} mb={2} color={textColor}>
         Congrats!

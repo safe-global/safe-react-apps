@@ -26,8 +26,8 @@ const SafeDaoCard = () => {
         <Typography variant="h3" fontWeight={700}>
           What is SafeDAO?
         </Typography>
-        <NextLink href={AppRoutes.safedao} ref={linkRef}>
-          <Link>Learn more</Link>
+        <NextLink href={AppRoutes.safedao} passHref>
+          <Link ref={linkRef}>Learn more</Link>
         </NextLink>
       </Box>
     </Paper>
