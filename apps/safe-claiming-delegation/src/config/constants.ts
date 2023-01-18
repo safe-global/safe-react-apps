@@ -2,6 +2,10 @@
 const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_IS_PRODUCTION === 'false' || process.env.NODE_ENV === 'production'
 
+console.log('NEXT_PUBLIC_IS_PRODUCTION', process.env.NEXT_PUBLIC_IS_PRODUCTION)
+console.log('NODE_ENV', process.env.NODE_ENV)
+console.log('IS_PRODUCTION', IS_PRODUCTION)
+
 export const LS_NAMESPACE = 'SAFE__'
 
 export const INFURA_TOKEN = process.env.NEXT_PUBLIC_INFURA_TOKEN || ''
