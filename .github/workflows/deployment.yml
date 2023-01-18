@@ -36,6 +36,7 @@ jobs:
 
       - name: Test, Build, Deploy PR
         run: |
+          echo "next-public-is-production=false" >> $GITHUB_ENV
           npx nx affected --target=test
           npx nx affected --target=build 
           npx nx affected --target=deploy:pr
@@ -50,7 +51,7 @@ jobs:
           REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLETCONNECT_PROJECT_ID_DEVSTAGING }}
           NEXT_PUBLIC_WC_BRIDGE: ${{ secrets.NEXT_PUBLIC_WC_BRIDGE }}
           NEXT_PUBLIC_INFURA_TOKEN: ${{ secrets.REACT_APP_SAFE_CLAIMING_DELEGATION_RPC_TOKEN }}
-          NEXT_PUBLIC_IS_PRODUCTION: false
+          NEXT_PUBLIC_IS_PRODUCTION: ${{ env.next-public-is-production }}
 
       - name: 'PRaul: Comment PR with app URLs'
         if: success() && github.event.number
