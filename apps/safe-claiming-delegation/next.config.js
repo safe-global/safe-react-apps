@@ -9,7 +9,11 @@ const nextConfig = {
   },
   // Served from folder on Safe Apps domain
   // Note: may cause issues as DApp requiring dynamic basePath in runtime
-  basePath: packageJson.homepage,
+  basePath:
+    // Note: duplicate of `constants.ts.IS_PRODUCTION`, but cannot import TS files without workaround
+    process.env.NEXT_PUBLIC_IS_PRODUCTION !== 'false' || process.env.NODE_ENV === 'production'
+      ? packageJson.homepage
+      : undefined,
   assetPrefix: './',
   // `Image` not supported in static export
   images: {
