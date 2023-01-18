@@ -18,6 +18,11 @@ export default class MyDocument extends Document {
         <Head>
           <meta name="emotion-insertion-point" content="" />
           {(this.props as any).emotionStyleTags}
+          {/* We can't define this as `@font-face` due to dynamic `basePath` */}
+          <link
+            href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap"
+            rel="stylesheet"
+          />
           <Favicons />
         </Head>
         <body>

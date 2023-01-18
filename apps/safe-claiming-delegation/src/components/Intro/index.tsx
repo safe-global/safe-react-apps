@@ -11,12 +11,14 @@ import { useTotalVotingPower } from '@/hooks/useTotalVotingPower'
 import { TotalVotingPower } from '@/components/TotalVotingPower'
 import { formatAmount } from '@/utils/formatters'
 import { useAllocationTypes } from '@/hooks/useAllocationTypes'
+import { useIsWrongChain } from '@/hooks/useIsWrongChain'
 import SafeToken from '@/public/images/token.svg'
 
 import css from './styles.module.css'
 
 export const Intro = (): ReactElement => {
   const router = useRouter()
+  const isWrongChain = useIsWrongChain()
 
   const delegate = useDelegate()
 
@@ -25,7 +27,8 @@ export const Intro = (): ReactElement => {
 
   const hasAllocation = Number(total.allocation) > 0
   const isClaimable = Number(total.claimable) > 0
-  const canDelegate = votingPower > 0
+
+  const canDelegate = votingPower > 0 && !isWrongChain
 
   const onClaim = () => {
     router.push(AppRoutes.claim)
@@ -74,7 +77,7 @@ export const Intro = (): ReactElement => {
         <SelectedDelegate
           delegate={delegate || undefined}
           onClick={onDelegate}
-          disabled={!canDelegate}
+          disabled={canDelegate}
           hint
         />
       </Grid>
