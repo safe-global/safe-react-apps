@@ -19,6 +19,8 @@ jobs:
     name: Pull Request
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
+    env:
+      NEXT_PUBLIC_IS_PRODUCTION: false
     steps:
       - uses: actions/checkout@v2
         with:
@@ -50,7 +52,7 @@ jobs:
           REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ secrets.REACT_APP_WALLETCONNECT_PROJECT_ID_DEVSTAGING }}
           NEXT_PUBLIC_WC_BRIDGE: ${{ secrets.NEXT_PUBLIC_WC_BRIDGE }}
           NEXT_PUBLIC_INFURA_TOKEN: ${{ secrets.REACT_APP_SAFE_CLAIMING_DELEGATION_RPC_TOKEN }}
-          NEXT_PUBLIC_IS_PRODUCTION: 'false'
+          NEXT_PUBLIC_IS_PRODUCTION: ${{ env.NEXT_PUBLIC_IS_PRODUCTION }}
 
       - name: 'PRaul: Comment PR with app URLs'
         if: success() && github.event.number
