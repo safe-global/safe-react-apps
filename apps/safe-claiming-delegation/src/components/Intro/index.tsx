@@ -77,7 +77,7 @@ export const Intro = (): ReactElement => {
         <SelectedDelegate
           delegate={delegate || undefined}
           onClick={onDelegate}
-          disabled={canDelegate}
+          disabled={!canDelegate}
           hint
         />
       </Grid>

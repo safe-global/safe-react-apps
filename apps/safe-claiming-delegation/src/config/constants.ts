@@ -1,6 +1,7 @@
-const IS_PRODUCTION = process.env.NODE_ENV === 'production'
-
 // General
+export const IS_PRODUCTION =
+  process.env.NEXT_PUBLIC_IS_PRODUCTION ?? process.env.NODE_ENV === 'production'
+
 export const LS_NAMESPACE = 'SAFE__'
 
 export const INFURA_TOKEN = process.env.NEXT_PUBLIC_INFURA_TOKEN || ''
@@ -8,11 +9,10 @@ export const INFURA_TOKEN = process.env.NEXT_PUBLIC_INFURA_TOKEN || ''
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 // Links
-
 export const FORUM_URL = 'https://forum.safe.global'
 export const GOVERNANCE_URL = 'https://forum.gnosis-safe.io/t/how-to-safedao-governance-process/846'
 export const SNAPSHOT_URL = 'https://snapshot.org/#/safe.eth'
-export const DISCORD_URL = 'https://chat.safe.global/'
+export const DISCORD_URL = 'https://chat.safe.global'
 
 // Chains
 export const Chains = {
