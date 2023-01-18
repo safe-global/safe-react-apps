@@ -1,13 +1,13 @@
 {
   "name": "safe-claiming-app",
-  "version": "0.3.1",
+  "version": "0.4.1",
   "private": true,
   "homepage": "/safe-claiming-app",
   "dependencies": {
     "@craco/craco": "^6.4.3",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@gnosis.pm/safe-apps-provider": "^0.14.0",
+    "@gnosis.pm/safe-apps-provider": "^0.15.1",
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.12",
     "bezier-easing": "^2.1.0",

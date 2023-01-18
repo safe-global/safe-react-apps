@@ -1,6 +1,5 @@
-describe('Testing Tx-builder safe app', () => {
-  // TODO use an ENV parameter for appUrl so we can configure different environments or PRs
-  const appUrl = `${Cypress.env('SAFE_APPS_BASE_URL')}/tx-builder/`
+describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => {
+  const appUrl = Cypress.env('TX_BUILDER_URL')
   const iframeSelector = `iframe[id="iframe-${appUrl}"]`
   const visitUrl = `/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
     'TESTING_SAFE_ADDRESS',
@@ -11,21 +10,22 @@ describe('Testing Tx-builder safe app', () => {
   })
 
   beforeEach(() => {
-    // Navigate to Safe App in TESTING SAFE
-    cy.visit(visitUrl)
+    cy.visitSafeApp(visitUrl, appUrl)
 
-    // Accept cookies & disclaimer
-    cy.acceptCookiesAndSecurityFeedbackModal()
     cy.frameLoaded(iframeSelector)
+
+    cy.findByRole('button', { name: /accept selection/i }).click()
   })
 
   it('should allow to create and send a simple batch', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/enter address or ens name/i)
-        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
+        .type('0x51A099ac1BF46D471110AA8974024Bfe518Fd6C4')
+      getBody().find('[name="contractMethodIndex"]').parent().click()
+      getBody().findByRole('option', { name: 'testAddressValue' }).click()
       getBody()
-        .findByLabelText(/paramAddress/i)
+        .findByLabelText('newValue (address)')
         .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
       getBody()
         .findByText(/add transaction/i)
@@ -37,27 +37,33 @@ describe('Testing Tx-builder safe app', () => {
         .findByText(/send batch/i)
         .click()
     })
-    cy.findByText(/transaction builder/i).should('be.visible')
-    cy.findByText(/contract interaction/i).click()
-    cy.findByText(/paramAddress/i).should('be.visible')
-    cy.findAllByText('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6').should('have.length', 2)
+    cy.findByRole('heading', { name: /transaction builder transaction builder görli/i }).should(
+      'be.visible',
+    )
+    cy.findByRole('button', { name: /transaction details/i }).click()
+    cy.findByRole('region').should('exist')
+    cy.findByText('test Address Value').should('exist')
+    cy.findByText('newValue(address):').should('exist')
+    cy.findAllByText('0x49d4...26A6').should('have.length', 2)
   })
 
   it('should allow to create and send a complex batch', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/enter address or ens name/i)
-        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
-      getBody()
-        .findByLabelText(/paramAddress/i)
-        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
+        .type('0x51A099ac1BF46D471110AA8974024Bfe518Fd6C4')
+      getBody().find('[name="contractMethodIndex"]').parent().click()
+      getBody().findByRole('option', { name: 'testBooleanValue' }).click()
       getBody()
         .findByText(/add transaction/i)
         .click()
-      getBody().find('#contract-method-selector').click()
-      getBody().find('li[role="option"]').contains('testBool').click()
-      getBody().find('#contract-field-paramBool').click()
-      getBody().find('ul[role="listbox"]').contains('False').click()
+      getBody().find('[name="contractMethodIndex"]').parent().click()
+      getBody().findByRole('option', { name: 'testBooleanValue' }).click()
+      getBody()
+        .findByText(/add transaction/i)
+        .click()
+      getBody().find('[name="contractMethodIndex"]').parent().click()
+      getBody().findByRole('option', { name: 'testBooleanValue' }).click()
       getBody()
         .findByText(/add transaction/i)
         .click()
@@ -68,23 +74,23 @@ describe('Testing Tx-builder safe app', () => {
         .findByText(/send batch/i)
         .click()
     })
-    cy.findByText(/transaction builder/i).should('be.visible')
-    cy.findByText(/testAddress/i).should('be.visible')
-    cy.findByText(/TestBool/i)
-      .should('be.visible')
-      .click()
-    cy.findByText(/False/i).should('be.visible')
-    cy.findAllByText('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6').should('have.length', 3)
+    cy.findByRole('button', { name: 'Action 1 testBooleanValue' }).click()
+    cy.findByRole('button', { name: 'Action 2 testBooleanValue' }).click()
+    cy.findByRole('button', { name: 'Action 3 testBooleanValue' }).click()
+    cy.findAllByText('newValue(bool):').should('have.length', 3)
+    cy.findAllByText('True').should('have.length', 3)
   })
 
   it('should allow to create and send a batch to an ENS name', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/enter address or ens name/i)
-        .type('jago-test.eth')
+        .type('goerli-safe-test.eth')
+      getBody().findByRole('button', { name: 'Use Implementation ABI' }).click()
       getBody()
-        .findByLabelText(/ETH value/i)
-        .type('0')
+        .findByLabelText('owner (address)')
+        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
+      getBody().findByLabelText('_threshold (uint256) *').type('1')
       getBody()
         .findByText(/add transaction/i)
         .click()
@@ -95,8 +101,12 @@ describe('Testing Tx-builder safe app', () => {
         .findByText(/send batch/i)
         .click()
     })
-    cy.findByText(/transaction builder/i).should('be.visible')
-    cy.findAllByText('0xc6b82bA149CFA113f8f48d5E3b1F78e933e16DfD').should('be.visible')
+    cy.findByRole('button', { name: /transaction details/i }).click()
+    cy.findByRole('region').should('exist')
+    cy.findByText(/add owner with threshold/i).should('exist')
+    cy.findByText('owner(address):').should('exist')
+    cy.findAllByText('0x49d4...26A6').should('have.length', 2)
+    cy.findByText('_threshold(uint256):').should('exist')
   })
 
   it('should allow to a create and send a batch from an ABI', () => {
@@ -107,12 +117,10 @@ describe('Testing Tx-builder safe app', () => {
           '[{{}"inputs":[{{}"internalType":"address","name":"_singleton","type":"address"{}}],"stateMutability":"nonpayable","type":"constructor"{}},{{}"stateMutability":"payable","type":"fallback"{}}]',
         )
       getBody()
-        .findByLabelText(/enter address or ens name/i)
-        .type('0x3bc83f41490BfD25bBB44eBCAc3761DFF4Ae50DA')
+        .findByLabelText(/to address/i)
+        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
       getBody()
-        .findByText(/Keep Proxy ABI/i).click()
-      getBody()
-        .findByLabelText(/ETH value/i)
+        .findByLabelText(/gor value */i)
         .type('0')
       getBody()
         .findByText(/add transaction/i)
@@ -124,20 +132,24 @@ describe('Testing Tx-builder safe app', () => {
         .findByText(/send batch/i)
         .click()
     })
-    cy.findByText(/transaction builder/i).should('be.visible')
-    cy.findAllByText('0x3bc83f41490BfD25bBB44eBCAc3761DFF4Ae50DA').should('be.visible')
+    cy.findByRole('heading', { name: /transaction builder transaction builder görli/i }).should(
+      'be.visible',
+    )
+    cy.findByText('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6').should('be.visible')
   })
 
   it('should allow to create and send a batch using custom data', () => {
     cy.enter(iframeSelector).then(getBody => {
-      getBody().find('input[type="checkbox"]').click()
+      getBody().find('.MuiSwitch-root').click()
       getBody()
         .findByLabelText(/enter address or ens name/i)
         .type('0xc6b82bA149CFA113f8f48d5E3b1F78e933e16DfD')
       getBody()
-        .findByLabelText(/ETH value/i)
+        .findByLabelText(/gor value */i)
         .type('0')
-      getBody().findByLabelText(/Data/i).type('0x')
+      getBody()
+        .findByLabelText(/data */i)
+        .type('0x')
       getBody()
         .findByText(/add transaction/i)
         .click()
@@ -148,7 +160,10 @@ describe('Testing Tx-builder safe app', () => {
         .findByText(/send batch/i)
         .click()
     })
-    cy.findByText(/transaction builder/i).should('be.visible')
+    cy.findByRole('heading', { name: /transaction builder transaction builder görli/i }).should(
+      'be.visible',
+    )
+    cy.findByText('0xc6b82bA149CFA113f8f48d5E3b1F78e933e16DfD').should('be.visible')
   })
 
   it('should not allow to create a batch given invalid address', () => {
@@ -219,7 +234,7 @@ describe('Testing Tx-builder safe app', () => {
         .findByLabelText(/enter address or ens name/i)
         .type('0xc6b82bA149CFA113f8f48d5E3b1F78e933e16DfD')
       getBody()
-        .findByLabelText(/ETH value/i)
+        .findByLabelText(/gor value */i)
         .type('0')
       getBody()
         .findByText(/add transaction/i)
@@ -239,11 +254,12 @@ describe('Testing Tx-builder safe app', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findByLabelText(/enter address or ens name/i)
-        .type('rin:0x91dB860c37E83dab0A4A005E209577E64c61EEfA')
+        .type('gor:0xE96C43C54B08eC528e9e815fC3D02Ea94A320505')
       getBody()
-        .findByText(/Keep Proxy ABI/i).click()
+        .findByText(/Keep Proxy ABI/i)
+        .click()
       getBody()
-        .findByLabelText(/ETH value/i)
+        .findByLabelText(/gor value */i)
         .type('100')
       getBody()
         .findByText(/add transaction/i)
@@ -254,7 +270,6 @@ describe('Testing Tx-builder safe app', () => {
       getBody()
         .findByText(/Simulate/i)
         .click()
-      getBody().findByText('fallback').should('be.visible')
       getBody().findByText('Failed').should('be.visible')
     })
   })

@@ -7,14 +7,13 @@ describe('Safe Apps List', () => {
 
   safeAppsList.forEach(safeApp => {
     it(safeApp.name, () => {
-      cy.visit(
+      cy.visitSafeApp(
         `/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env('TESTING_SAFE_ADDRESS')}/apps?appUrl=${
           safeApp.url
         }`,
+        safeApp.url,
       )
       const iframeSelector = `iframe[id="iframe-${safeApp.url}"]`
-
-      cy.acceptCookiesAndSecurityFeedbackModal()
       cy.frameLoaded(iframeSelector)
       cy.iframe(iframeSelector).get('#root,#app,.app,main,#__next,app-root,#___gatsby')
     })

@@ -16,12 +16,10 @@ import { ScrollContextProvider } from "./components/helpers/ScrollContext"
 import { UnexpectedError } from "./components/helpers/UnexpectedError"
 import { UnsupportedNetwork } from "./components/helpers/UnsupportedNetwork"
 import { Chains } from "./config/constants"
-import { useAirdropFile } from "./hooks/useAirdropFile"
 import { useDelegate } from "./hooks/useDelegate"
 import { useDelegatesFile, DelegateEntry } from "./hooks/useDelegatesFile"
-import { useFetchVestingStatus } from "./hooks/useFetchVestingStatus"
 import { useIsTokenPaused } from "./hooks/useIsTokenPaused"
-import { VestingClaim } from "./types/vestings"
+import useSafeTokenAllocation, { Vesting } from "./hooks/useSafeTokenAllocation"
 import { sameAddress } from "./utils/addresses"
 
 const Container = styled("div")`
@@ -78,9 +76,7 @@ const steps = [
 ]
 
 export type AppState = {
-  ecosystemClaim: VestingClaim | null
-  userClaim: VestingClaim | null
-  investorClaim: VestingClaim | null
+  vestingData: Vesting[]
   isTokenPaused: boolean
   delegateAddressFromContract?: string
   delegateData: DelegateEntry[]
@@ -89,9 +85,7 @@ export type AppState = {
 }
 
 const initialState: AppState = {
-  ecosystemClaim: null,
-  userClaim: null,
-  investorClaim: null,
+  vestingData: [],
   isTokenPaused: true,
   delegateData: [],
 }
@@ -102,50 +96,19 @@ const App = (): ReactElement => {
 
   const { safe } = useSafeAppsSDK()
 
+  const [safeTokenAllocation, allocationError, isVestingLoading] =
+    useSafeTokenAllocation()
+
+  const validVestingData = useMemo(
+    () =>
+      safeTokenAllocation?.vestingData.filter((vesting) => !vesting.isExpired),
+    [safeTokenAllocation?.vestingData]
+  )
+
   const [delegates, , delegatesFileError] = useDelegatesFile()
-
-  const [vestings, isVestingLoading, vestingFileError] = useAirdropFile()
-  const [userVesting, ecosystemVesting, investorVesting] = vestings
-
-  const [userVestingStatus, userVestingStatusError] = useFetchVestingStatus(
-    userVesting?.vestingId,
-    userVesting?.contract
-  )
-
-  const [ecosystemVestingStatus, ecosystemVestingStatusError] =
-    useFetchVestingStatus(
-      ecosystemVesting?.vestingId,
-      ecosystemVesting?.contract
-    )
-
-  const [investorVestingStatus, investorVestingStatusError] =
-    useFetchVestingStatus(investorVesting?.vestingId, investorVesting?.contract)
-
-  const userClaim: VestingClaim | null = useMemo(
-    () =>
-      userVesting && userVestingStatus
-        ? { ...userVesting, ...userVestingStatus }
-        : null,
-    [userVestingStatus, userVesting]
-  )
-  const ecosystemClaim: VestingClaim | null = useMemo(
-    () =>
-      ecosystemVesting && ecosystemVestingStatus
-        ? { ...ecosystemVesting, ...ecosystemVestingStatus }
-        : null,
-    [ecosystemVestingStatus, ecosystemVesting]
-  )
-
-  const investorClaim: VestingClaim | null = useMemo(
-    () =>
-      investorVesting && investorVestingStatus
-        ? { ...investorVesting, ...investorVestingStatus }
-        : null,
-    [investorVestingStatus, investorVesting]
-  )
-  const isTokenPaused = useIsTokenPaused()
-
   const delegateAddressFromContract = useDelegate()
+
+  const isTokenPaused = useIsTokenPaused()
 
   const currentDelegate = useMemo(() => {
     if (appState.delegate) {
@@ -165,18 +128,14 @@ const App = (): ReactElement => {
   useEffect(() => {
     setAppState((prev) => ({
       ...prev,
-      userClaim,
-      ecosystemClaim,
-      investorClaim,
+      vestingData: validVestingData ?? prev.vestingData,
       delegate: currentDelegate,
       isTokenPaused,
       delegateAddressFromContract,
       delegateData: delegates,
     }))
   }, [
-    userClaim,
-    ecosystemClaim,
-    investorClaim,
+    validVestingData,
     isTokenPaused,
     delegates,
     currentDelegate,
@@ -194,14 +153,13 @@ const App = (): ReactElement => {
 
   useEffect(() => {
     if (
-      userVesting === null &&
-      ecosystemVesting === null &&
-      investorVesting === null &&
+      validVestingData &&
+      validVestingData.length === 0 &&
       !isVestingLoading
     ) {
       setActiveStep(NO_AIRDROP_STEP)
     }
-  }, [userVesting, ecosystemVesting, investorVesting, isVestingLoading])
+  }, [isVestingLoading, validVestingData])
 
   const handleBack = () => {
     if (activeStep === SUCCESS_STEP) {
@@ -220,12 +178,7 @@ const App = (): ReactElement => {
 
   const hasNoAirdrop = activeStep === NO_AIRDROP_STEP
 
-  const fatalError =
-    vestingFileError ||
-    delegatesFileError ||
-    userVestingStatusError ||
-    ecosystemVestingStatusError ||
-    investorVestingStatusError
+  const fatalError = delegatesFileError || allocationError
 
   const progress =
     hasNoAirdrop || fatalError ? 0 : activeStep / (steps.length - 2)
@@ -255,8 +208,7 @@ const App = (): ReactElement => {
             <UnsupportedNetwork />
           ) : (
             <div>
-              {typeof userVesting === "undefined" ||
-              typeof ecosystemVesting === "undefined" ? (
+              {isVestingLoading ? (
                 <Loading />
               ) : (
                 <>

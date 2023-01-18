@@ -8,7 +8,7 @@ export const sendSlackMessage = async results => {
         return
       }
 
-      if (!results.runs[0].spec.name.includes('safe-apps-check.spec.js')) {
+      if (!results.runs[0].spec.name.includes('safe-apps-check.spec.cy.js')) {
         return
       }
 
@@ -37,7 +37,7 @@ const buildSlackMessage = results => {
     fields: [
       {
         type: 'mrkdwn',
-        text: `*Domain:*\n${process.env.CYPRESS_BASE_URL}`,
+        text: `*Domain:*\n${process.env.CYPRESS_WEB_BASE_URL}`,
       },
       {
         type: 'mrkdwn',
@@ -58,7 +58,7 @@ const buildSlackMessage = results => {
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: `*Safe URL:*\n${process.env.CYPRESS_BASE_URL}/${process.env.CYPRESS_NETWORK_PREFIX}:${process.env.CYPRESS_TESTING_SAFE_ADDRESS}/apps`,
+      text: `*Safe URL:*\n${process.env.CYPRESS_WEB_BASE_URL}/${process.env.CYPRESS_NETWORK_PREFIX}:${process.env.CYPRESS_TESTING_SAFE_ADDRESS}/apps`,
     },
   }
 

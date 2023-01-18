@@ -1,4 +1,5 @@
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
+import { OpenInNewRounded } from "@mui/icons-material"
 import {
   Box,
   Button,
@@ -8,24 +9,28 @@ import {
   Link,
   Skeleton,
   Card,
+  styled,
 } from "@mui/material"
 import { BigNumber, ethers } from "ethers"
 import { useMemo } from "react"
 import { ReactComponent as SafeIcon } from "src/assets/images/safe-token.svg"
 import { SelectedDelegate } from "src/components/steps/Claim/SelectedDelegate"
-import { CLAIMING_APP_URL, WEB_APP_URL } from "src/config/constants"
-import { useAirdropFile } from "src/hooks/useAirdropFile"
+import {
+  CLAIMING_APP_URL,
+  DISCORD_URL,
+  FORUM_URL,
+  WEB_APP_URL,
+} from "src/config/constants"
 import { useDelegate } from "src/hooks/useDelegate"
 import { useDelegatesFile } from "src/hooks/useDelegatesFile"
-import { useFetchVestingStatus } from "src/hooks/useFetchVestingStatus"
-import { useTokenBalance } from "src/hooks/useTokenBalance"
+import useSafeTokenAllocation from "src/hooks/useSafeTokenAllocation"
 import { sameAddress } from "src/utils/addresses"
 import { formatAmount } from "src/utils/format"
 import { SpaceContent } from "src/widgets/styles"
 
 const Title = (props: TypographyProps) => (
   <Typography
-    color="primary.main"
+    color="text.primary"
     style={{ fontSize: "20px", fontWeight: "bold", textAlign: "center" }}
   >
     {props.children}
@@ -41,6 +46,35 @@ const Subtitle = (props: TypographyProps) => (
     {props.children}
   </Typography>
 )
+
+const StyledExternalLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  gap: 4px;
+  text-decoration: none;
+`
+
+const ExternalLink = ({ url, label }: { url: string; label: string }) => {
+  return (
+    <StyledExternalLink
+      href={url}
+      rel="noreferrer noopener"
+      target="_blank"
+      variant="subtitle1"
+      textAlign="center"
+      fontSize="small"
+    >
+      {label}
+      <OpenInNewRounded
+        sx={{ width: "0.75em", height: "0.75em" }}
+        fontSize="small"
+      />
+    </StyledExternalLink>
+  )
+}
+
+const WIDGET_WIDTH = "300px"
 
 const StyledButton = (props: ButtonProps) => (
   <Button
@@ -60,15 +94,7 @@ const WIDGET_HEIGHT = 300
 const ClaimingWidget = () => {
   const [delegates] = useDelegatesFile()
   const delegateAddressFromContract = useDelegate()
-  const [balance, , balanceLoading] = useTokenBalance()
   const { safe } = useSafeAppsSDK()
-
-  const [vestings] = useAirdropFile()
-  const [userVesting, ecosystemVesting, investorVesting] = vestings
-
-  const totalAllocation = BigNumber.from(userVesting?.amount || 0)
-    .add(ecosystemVesting?.amount || 0)
-    .add(investorVesting?.amount || 0)
 
   const currentDelegate = useMemo(() => {
     if (delegateAddressFromContract) {
@@ -81,31 +107,17 @@ const ClaimingWidget = () => {
     }
   }, [delegateAddressFromContract, delegates])
 
-  const [userVestingStatus, , userVestingLoading] = useFetchVestingStatus(
-    userVesting?.vestingId,
-    userVesting?.contract
+  const [safeTokenAllocation, , loading] = useSafeTokenAllocation()
+  const { vestingData, votingPower } = safeTokenAllocation ?? {}
+
+  const totalClaimed = vestingData?.reduce(
+    (prev, current) => prev.add(current.amountClaimed),
+    BigNumber.from(0)
   )
 
-  const [ecosystemVestingStatus, , ecosystemVestingLoading] =
-    useFetchVestingStatus(
-      ecosystemVesting?.vestingId,
-      ecosystemVesting?.contract
-    )
-
-  const [investorVestingStatus, , investorVestingLoading] =
-    useFetchVestingStatus(investorVesting?.vestingId, investorVesting?.contract)
-
-  const totalClaimed = BigNumber.from(userVestingStatus?.amountClaimed || 0)
-    .add(ecosystemVestingStatus?.amountClaimed || 0)
-    .add(investorVestingStatus?.amountClaimed || 0)
-
-  const votingPower = totalAllocation.add(balance || 0).sub(totalClaimed)
-
-  const unredeemedAllocations =
-    (!userVestingStatus?.isRedeemed &&
-      BigNumber.from(userVesting?.amount || 0).gt(0)) ||
-    (!ecosystemVestingStatus?.isRedeemed &&
-      BigNumber.from(ecosystemVesting?.amount || 0).gt(0))
+  const unredeemedAllocations = vestingData?.some(
+    (vesting) => !vesting.isRedeemed
+  )
 
   const currentChainPrefix = safe.chainId === 1 ? "eth" : "gor"
   const claimingSafeAppUrl = `${WEB_APP_URL}/apps?safe=${currentChainPrefix}:${safe.safeAddress}&appUrl=${CLAIMING_APP_URL}`
@@ -113,14 +125,14 @@ const ClaimingWidget = () => {
   const ctaWidget = (
     <>
       <div>
-        <Title>Become the part of Safe's future!</Title>
+        <Title>Become part of Safe's future</Title>
         <br />
         <Subtitle>
-          You will be able to buy $SAFE once the token transferability is
-          enabled.
+          Help us unlock ownership for everyone by joining the discussions on
+          the <ExternalLink url={FORUM_URL} label="SafeDAO Forum" /> and our{" "}
+          <ExternalLink url={DISCORD_URL} label="Discord" />.
         </Subtitle>
       </div>
-      <StyledButton disabled>Buy Tokens</StyledButton>
     </>
   )
 
@@ -128,20 +140,29 @@ const ClaimingWidget = () => {
     <>
       <div>
         <Title>Your voting power</Title>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          gap={1}
-          mb={1}
+        <Button
+          href={claimingSafeAppUrl}
+          target="_blank"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            marginBottom: "8px",
+            "&:hover": { backgroundColor: "secondary.light" },
+          }}
         >
           <SafeIcon />
           <Typography variant="h5" color="text.primary">
-            {formatAmount(Number(ethers.utils.formatEther(votingPower)), 2)}{" "}
+            {votingPower ? (
+              formatAmount(Number(ethers.utils.formatEther(votingPower)), 2)
+            ) : (
+              <Skeleton />
+            )}{" "}
           </Typography>
-        </Box>
+        </Button>
       </div>
-      {totalClaimed.gt(0) ? (
+      {totalClaimed?.gt(0) ? (
         <>
           <Subtitle>
             You've already claimed{" "}
@@ -157,7 +178,17 @@ const ClaimingWidget = () => {
               >
                 Delegated to
               </Typography>
-              <SelectedDelegate delegate={currentDelegate} onClick={() => {}} />
+              <Link
+                href={claimingSafeAppUrl}
+                rel="noopener noreferrer"
+                target="_blank"
+                underline="none"
+              >
+                <SelectedDelegate
+                  delegate={currentDelegate}
+                  onClick={() => {}}
+                />
+              </Link>
             </Box>
           )}
         </>
@@ -165,8 +196,9 @@ const ClaimingWidget = () => {
         <>
           {unredeemedAllocations && (
             <Subtitle>
-              You have unredeemed tokens. Redeem them by 27th Dec or they will
-              be transfered back into the treasury.
+              You have unredeemed tokens. Claim any amount before the 27th of
+              December or the tokens will be transferred back into the SafeDAO
+              treasury.
             </Subtitle>
           )}
           <Link
@@ -184,23 +216,24 @@ const ClaimingWidget = () => {
     </>
   )
 
-  const onChainRequestsLoading =
-    userVestingLoading ||
-    ecosystemVestingLoading ||
-    investorVestingLoading ||
-    balanceLoading
-  if (onChainRequestsLoading) {
+  if (loading) {
     return (
-      <Box height={`${WIDGET_HEIGHT}px`}>
+      <Box
+        height={`${WIDGET_HEIGHT}px`}
+        sx={{
+          minWidth: WIDGET_WIDTH,
+          maxWidth: WIDGET_WIDTH,
+        }}
+      >
         <Skeleton variant="rounded" width="100%" height="100%" />
       </Box>
     )
   }
 
   return (
-    <Card sx={{ borderRadius: "4px" }}>
+    <Card elevation={0} sx={{ minWidth: WIDGET_WIDTH, maxWidth: WIDGET_WIDTH }}>
       <SpaceContent sx={{ alignItems: "center" }}>
-        {votingPower.eq(0) ? ctaWidget : votingPowerWidget}
+        {votingPower && votingPower.eq(0) ? ctaWidget : votingPowerWidget}
       </SpaceContent>
     </Card>
   )

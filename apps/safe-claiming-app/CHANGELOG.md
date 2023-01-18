@@ -2,6 +2,32 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.1](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.4.0...safe-claiming-app-0.4.1) (2022-12-15)
+
+
+### Bug Fixes
+
+* **safe-claiming-app:** loading state of unredeemed tokens ([#622](https://github.com/safe-global/safe-react-apps/issues/622)) ([ba97a3c](https://github.com/safe-global/safe-react-apps/commit/ba97a3c0cdce1e7a83d9a1f0b7d67e5d0796df74))
+
+
+
+# [0.4.0](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.3.1...safe-claiming-app-0.4.0) (2022-12-14)
+
+
+### Bug Fixes
+
+* modify claiming widget copy ([#613](https://github.com/safe-global/safe-react-apps/issues/613)) ([da41a93](https://github.com/safe-global/safe-react-apps/commit/da41a935fa50545e1079701340bc97fdbdfb6ac7))
+* **safe-claiming-app:** correct title color ([#612](https://github.com/safe-global/safe-react-apps/issues/612)) ([c964728](https://github.com/safe-global/safe-react-apps/commit/c964728ae1e8fce0694ff7f0833e42acbb9b59b1))
+* **safe-claiming-app:** no airdrop logo color in darkmode ([#618](https://github.com/safe-global/safe-react-apps/issues/618)) ([6c30e92](https://github.com/safe-global/safe-react-apps/commit/6c30e92502ffad5eb13f05ae437592cfcb25c9cb))
+
+
+### Features
+
+* **safe-claiming-app:** Claiming app change formula ([#616](https://github.com/safe-global/safe-react-apps/issues/616)) ([a08e56a](https://github.com/safe-global/safe-react-apps/commit/a08e56adaf5677e48a9bdb6ee6487728c9ce70ef))
+* **safe-claiming-app:** Claiming app widgets ([#586](https://github.com/safe-global/safe-react-apps/issues/586)) ([4cc5205](https://github.com/safe-global/safe-react-apps/commit/4cc5205c1f1290bf6fd561f29bf4820a18014229)), closes [#582](https://github.com/safe-global/safe-react-apps/issues/582) [#588](https://github.com/safe-global/safe-react-apps/issues/588) [#589](https://github.com/safe-global/safe-react-apps/issues/589) [#593](https://github.com/safe-global/safe-react-apps/issues/593) [#602](https://github.com/safe-global/safe-react-apps/issues/602)
+
+
+
 ## [0.3.1](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.3.0...safe-claiming-app-0.3.1) (2022-12-02)
 
 
