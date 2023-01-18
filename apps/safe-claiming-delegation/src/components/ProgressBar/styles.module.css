@@ -3,3 +3,9 @@
   border-top-left-radius: var(--mui-shape-borderRadius);
   border-top-right-radius: var(--mui-shape-borderRadius);
 }
+
+@media (max-width: 600px) {
+  .progressBar {
+    border-radius: 0;
+  }
+}

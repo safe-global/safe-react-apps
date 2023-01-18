@@ -17,7 +17,7 @@ export const PageLayout = ({ children }: { children: ReactNode }): ReactElement 
 
       <Header />
 
-      <Box pt={6} component="main">
+      <Box pt={{ sm: 6, xs: undefined }} component="main">
         <Paper className={css.container}>
           <BottomCircle />
 

@@ -123,7 +123,7 @@ const ScrollProvidedList = () => {
       </Grid>
 
       {expandedDelegate ? (
-        <Grid item xs>
+        <Grid item xs={12}>
           <ExpandedDelegateCard
             delegate={expandedDelegate}
             onClick={() => onSelect(expandedDelegate)}

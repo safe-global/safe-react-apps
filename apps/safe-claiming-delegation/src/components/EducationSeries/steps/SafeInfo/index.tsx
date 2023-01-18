@@ -23,31 +23,35 @@ export const SafeInfo = (): ReactElement => {
         management of digital assets, data and identity.
       </Typography>
 
-      <Box display="flex" mb={8} gap={5}>
-        <Box className={css.info}>
-          <Typography color="text.secondary" mb={1}>
-            Total Safes created
-          </Typography>
-          <Box display="inline-flex" gap={1} alignItems="center">
-            <LockIcon />
-            <Typography variant="h3" fontWeight={700} ml={1}>
-              &gt;1,000,000
+      <Grid container mb={6} spacing={5}>
+        <Grid item xs={12} sm={6}>
+          <Box className={css.info}>
+            <Typography color="text.secondary" mb={1}>
+              Total Safes created
             </Typography>
+            <Box display="inline-flex" gap={1} alignItems="center">
+              <LockIcon />
+              <Typography variant="h3" fontWeight={700} ml={1}>
+                &gt;1,000,000
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        </Grid>
 
-        <Box className={css.info}>
-          <Typography color="text.secondary" mb={1}>
-            Total value protected
-          </Typography>
-          <Box display="inline-flex" gap={1} alignItems="center">
-            <AssetsIcon />
-            <Typography variant="h3" fontWeight={700}>
-              $41B
+        <Grid item xs={12} sm={6}>
+          <Box className={css.info}>
+            <Typography color="text.secondary" mb={1}>
+              Total value protected
             </Typography>
+            <Box display="inline-flex" gap={1} alignItems="center">
+              <AssetsIcon />
+              <Typography variant="h3" fontWeight={700}>
+                $41B
+              </Typography>
+            </Box>
           </Box>
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
 
       <Typography variant="h3" fontWeight={700} mb={2}>
         Why do we have a token?

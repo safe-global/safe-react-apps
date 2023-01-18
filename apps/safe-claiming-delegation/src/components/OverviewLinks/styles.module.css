@@ -1,9 +1,9 @@
 .card {
   background-color: var(--mui-palette-info-background);
-  width: 265px;
   height: 100%;
   padding: 24px;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   justify-content: space-between;
   border-radius: var(--mui-shape-borderRadius);
   cursor: pointer;
@@ -20,4 +20,11 @@
   text-transform: uppercase;
   color: var(--mui-palette-text-secondary);
   margin-bottom: 8px;
+}
+
+@media (max-width: 600px) {
+  .header,
+  .card {
+    width: 100%;
+  }
 }

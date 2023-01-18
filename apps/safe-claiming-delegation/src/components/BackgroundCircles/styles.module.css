@@ -17,3 +17,9 @@
   right: -100px;
   bottom: -100px;
 }
+
+@media (max-width: 600px) {
+  .circle {
+    display: none;
+  }
+}

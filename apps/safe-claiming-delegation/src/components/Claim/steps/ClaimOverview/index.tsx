@@ -120,8 +120,8 @@ export const ClaimOverview = (): ReactElement => {
         <StepHeader title="Your SAFE allocation:" />
       </Grid>
 
-      <Grid item container xs={12} flexWrap="nowrap" gap={3} mb={1}>
-        <Grid item xs={6}>
+      <Grid item container xs={12} mb={1} spacing={3}>
+        <Grid item xs={12} sm={6}>
           <ClaimCard
             variant="claimable"
             isGuardian={!!ecosystemVesting}
@@ -129,7 +129,7 @@ export const ClaimOverview = (): ReactElement => {
             ecosystemAmount={ecosystem.claimable}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
           <ClaimCard
             variant="vesting"
             isGuardian={!!ecosystemVesting}

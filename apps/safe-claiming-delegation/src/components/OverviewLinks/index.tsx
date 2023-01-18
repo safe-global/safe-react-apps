@@ -22,7 +22,7 @@ const SafeDaoCard = () => {
         <Typography className={css.title}>About</Typography>
         <SvgIcon component={Hat} inheritViewBox color="info" />
       </div>
-      <Box sx={{ alignSelf: 'flex-end' }}>
+      <Box>
         <Typography variant="h3" fontWeight={700}>
           What is SafeDAO?
         </Typography>
@@ -61,15 +61,15 @@ const ExternalLinkCard = ({
 
 export const OverviewLinks = (): ReactElement => {
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={6}>
+    <Grid container spacing={2} px={6}>
+      <Grid item xs={12} sm={6}>
         <SafeDaoCard />
       </Grid>
-      <Grid item container xs={6} spacing={1} flexDirection="column">
-        <Grid item xs>
+      <Grid item xs container>
+        <Grid item xs={12} pb={{ sm: 1, xs: 2 }}>
           <ExternalLinkCard href={FORUM_URL} header="Discuss" title="SafeDAO forum" />
         </Grid>
-        <Grid item xs>
+        <Grid item xs={12}>
           <ExternalLinkCard href={SNAPSHOT_URL} header="Vote" title="Snapshot" />
         </Grid>
       </Grid>
