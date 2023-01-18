@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { Grid, Typography, Button } from '@mui/material'
 import { hexValue } from 'ethers/lib/utils'
 import type { ReactElement } from 'react'
@@ -33,7 +32,7 @@ export const ConnectWallet = (): ReactElement => {
 
   return (
     <Grid container flexDirection="column" alignItems="center" pt={2} px={1} pb={6}>
-      <Image src="/images/safe-logo.svg" alt="SafeDAO logo" width={125} height={110} />
+      <img src="./images/safe-logo.svg" alt="SafeDAO logo" width={125} height={110} />
 
       <Typography variant="h1" m={5} mb={6} textAlign="center">
         Welcome to the next generation of digital ownership

@@ -1,22 +1,35 @@
-import { SvgIcon, Grid, Typography, Paper, Box } from '@mui/material'
-import NextLink from 'next/link'
-import type { ReactElement } from 'react'
+import { SvgIcon, Grid, Typography, Paper, Box, Link } from '@mui/material'
+import { ReactElement, useRef } from 'react'
 
 import Hat from '@/public/images/hat.svg'
 import { AppRoutes } from '@/config/routes'
 import { FORUM_URL, SNAPSHOT_URL } from '@/config/constants'
-import LinkIcon from '@/public/images/link.svg'
-import { externalLinkIconStyle } from '@/components/ExternalLink'
+import { ExternalLink } from '@/components/ExternalLink'
 
 import css from './styles.module.css'
 
-// We can't nest anchor tags so this mirrors the MuiLink instead
-const LinkTitle = ({ children, external }: { children: string; external?: boolean }) => {
+const SafeDaoCard = () => {
+  const linkRef = useRef<HTMLAnchorElement>(null)
+
+  const onClick = () => {
+    linkRef.current?.click()
+  }
+
   return (
-    <Typography className={css.link}>
-      {children}
-      {external && <LinkIcon style={externalLinkIconStyle} />}
-    </Typography>
+    <Paper className={css.card} onClick={onClick}>
+      <div className={css.header}>
+        <Typography className={css.title}>About</Typography>
+        <SvgIcon component={Hat} inheritViewBox color="info" />
+      </div>
+      <Box sx={{ alignSelf: 'flex-end' }}>
+        <Typography variant="h3" fontWeight={700}>
+          What is SafeDAO?
+        </Typography>
+        <Link href={AppRoutes.safedao} ref={linkRef}>
+          Learn more
+        </Link>
+      </Box>
+    </Paper>
   )
 }
 
@@ -29,13 +42,19 @@ const ExternalLinkCard = ({
   title: string
   href: string
 }): ReactElement => {
+  const linkRef = useRef<HTMLAnchorElement>(null)
+
+  const onClick = () => {
+    linkRef.current?.click()
+  }
+
   return (
-    <a href={href} rel="noopener noreferrer" target="_blank">
-      <Paper className={css.card}>
-        <Typography className={css.title}>{header}</Typography>
-        <LinkTitle external>{title}</LinkTitle>
-      </Paper>
-    </a>
+    <Paper className={css.card} onClick={onClick}>
+      <Typography className={css.title}>{header}</Typography>
+      <ExternalLink href={href} ref={linkRef}>
+        {title}
+      </ExternalLink>
+    </Paper>
   )
 }
 
@@ -43,22 +62,7 @@ export const OverviewLinks = (): ReactElement => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={6}>
-        <NextLink href={AppRoutes.safedao} passHref>
-          <a href={AppRoutes.safedao}>
-            <Paper className={css.card}>
-              <div className={css.header}>
-                <Typography className={css.title}>About</Typography>
-                <SvgIcon component={Hat} inheritViewBox color="info" />
-              </div>
-              <Box sx={{ alignSelf: 'flex-end' }}>
-                <Typography variant="h3" fontWeight={700}>
-                  What is SafeDAO?
-                </Typography>
-                <LinkTitle>Learn more</LinkTitle>
-              </Box>
-            </Paper>
-          </a>
-        </NextLink>
+        <SafeDaoCard />
       </Grid>
       <Grid item container xs={6} spacing={1} flexDirection="column">
         <Grid item xs>

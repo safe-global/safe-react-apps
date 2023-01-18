@@ -1,5 +1,4 @@
 import { Grid, Typography, Box, Button } from '@mui/material'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { formatEther } from 'ethers/lib/utils'
 import type { ReactElement } from 'react'
@@ -37,7 +36,7 @@ export const Intro = (): ReactElement => {
 
   return (
     <Grid container flexDirection="column" alignItems="center" pt={2} px={1} pb={6}>
-      <Image src="/images/token.svg" alt="Safe token logo" width={84} height={84} />
+      <img src="./images/token.svg" alt="Safe token logo" width={84} height={84} />
 
       <Box mt={4} display="flex" flexDirection="column" alignItems="center">
         <TotalVotingPower />

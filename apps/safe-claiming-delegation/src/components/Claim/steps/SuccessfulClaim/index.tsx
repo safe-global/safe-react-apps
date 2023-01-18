@@ -1,5 +1,4 @@
 import { Grid, Typography, Button } from '@mui/material'
-import Image from 'next/image'
 import type { Theme } from '@mui/material/styles'
 import type { ReactElement } from 'react'
 
@@ -25,7 +24,7 @@ export const SuccessfulClaim = (): ReactElement => {
       pb={22}
       sx={{ backgroundColor }}
     >
-      <Image src="/images/safe-logo.svg" alt="SafeDAO logo" width={125} height={110} />
+      <img src="./images/safe-logo.svg" alt="SafeDAO logo" width={125} height={110} />
 
       <Typography variant="h1" mt={6} mb={2} color={textColor}>
         Congrats!

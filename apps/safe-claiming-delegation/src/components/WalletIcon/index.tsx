@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { Skeleton } from '@mui/material'
 import metamaskIcon from '@web3-onboard/injected-wallets/dist/icons/metamask'
 import coinbaseIcon from '@web3-onboard/coinbase/dist/icon'
@@ -29,7 +28,7 @@ export const WalletIcon = ({ provider }: { provider: string }) => {
   const icon = WALLET_ICONS[provider.toUpperCase() as keyof typeof WALLET_ICONS]
 
   return icon ? (
-    <Image
+    <img
       width={30}
       height={30}
       src={`data:image/svg+xml;utf8,${encodeURIComponent(icon)}`}

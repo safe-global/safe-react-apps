@@ -1,5 +1,4 @@
 import { Grid, Typography, Button } from '@mui/material'
-import Image from 'next/image'
 import type { ReactElement } from 'react'
 
 import { useDelegationStepper } from '@/components/Delegation'
@@ -9,7 +8,7 @@ export const SuccessfulDelegation = (): ReactElement => {
 
   return (
     <Grid container flexDirection="column" alignItems="center" pt={16} px={1} pb={22}>
-      <Image src="/images/safe-logo.svg" alt="SafeDAO logo" width={125} height={110} />
+      <img src="./images/safe-logo.svg" alt="SafeDAO logo" width={125} height={110} />
 
       <Typography variant="h1" mt={6} mb={2}>
         Transaction has been created

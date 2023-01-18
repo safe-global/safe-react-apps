@@ -1,3 +1,5 @@
+const packageJson = require('./package.json')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -5,7 +7,11 @@ const nextConfig = {
   eslint: {
     dirs: ['pages', 'scripts', 'src'],
   },
+  // Served from folder on Safe Apps domain
+  // Note: may cause issues as DApp requiring dynamic basePath in runtime
+  basePath: packageJson.homepage,
   assetPrefix: './',
+  // `Image` not supported in static export
   images: {
     unoptimized: true,
   },
@@ -22,6 +28,7 @@ const nextConfig = {
       },
     },
   },
+  // Safe cannot access manifest.json otherwise
   headers: async () => {
     return [
       {
