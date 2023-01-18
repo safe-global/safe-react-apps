@@ -1,4 +1,5 @@
-import { SvgIcon, Grid, Typography, Paper, Box, Link } from '@mui/material'
+import Link from 'next/link'
+import { SvgIcon, Grid, Typography, Paper, Box } from '@mui/material'
 import { ReactElement, useRef } from 'react'
 
 import Hat from '@/public/images/hat.svg'

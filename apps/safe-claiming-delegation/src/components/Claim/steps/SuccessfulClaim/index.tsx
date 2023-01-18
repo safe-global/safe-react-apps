@@ -24,7 +24,7 @@ export const SuccessfulClaim = (): ReactElement => {
       pb={22}
       sx={{ backgroundColor }}
     >
-      <img src="./images/safe-logo.svg" alt="SafeDAO logo" width={125} height={110} />
+      <img src="images/safe-logo.svg" alt="SafeDAO logo" width={125} height={110} />
 
       <Typography variant="h1" mt={6} mb={2} color={textColor}>
         Congrats!
