@@ -122,9 +122,13 @@ const fetchTokenBalance = async (
   }
 }
 
-const computeVotingPower = (allocationData: Vesting[], balance: string) => {
-  const tokensInVesting = allocationData.reduce(
-    (acc, data) => (data.isExpired ? acc : acc.add(data.amount).sub(data.amountClaimed)),
+const getValidVestingAllocation = (allocationData: Vesting[]) => {
+  return allocationData.filter(({ isExpired, isRedeemed }) => !isExpired || isRedeemed)
+}
+
+const computeVotingPower = (validVestingData: Vesting[], balance: string) => {
+  const tokensInVesting = validVestingData.reduce(
+    (acc, data) => acc.add(data.amount).sub(data.amountClaimed),
     BigNumber.from(0),
   )
 
@@ -146,13 +150,15 @@ export const _getSafeTokenAllocation = async (web3?: JsonRpcProvider) => {
     return Promise.all(allocations.map(allocation => completeAllocation(allocation, web3)))
   })
 
+  const validVestingData = getValidVestingAllocation(vestingData)
+
   const balance = await fetchTokenBalance(chainId, address, web3)
 
-  const votingPower = computeVotingPower(vestingData, balance)
+  const votingPower = computeVotingPower(validVestingData, balance)
 
   return {
     votingPower,
-    vestingData,
+    vestingData: validVestingData,
   }
 }
 

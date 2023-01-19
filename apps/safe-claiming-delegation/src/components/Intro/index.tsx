@@ -10,7 +10,7 @@ import { AppRoutes } from '@/config/routes'
 import { useTotalVotingPower } from '@/hooks/useTotalVotingPower'
 import { TotalVotingPower } from '@/components/TotalVotingPower'
 import { formatAmount } from '@/utils/formatters'
-import { useAllocationTypes } from '@/hooks/useAllocationTypes'
+import { useTaggedAllocations } from '@/hooks/useTaggedAllocations'
 import { useIsWrongChain } from '@/hooks/useIsWrongChain'
 import SafeToken from '@/public/images/token.svg'
 
@@ -23,7 +23,7 @@ export const Intro = (): ReactElement => {
   const delegate = useDelegate()
 
   const votingPower = useTotalVotingPower()
-  const { total } = useAllocationTypes()
+  const { total } = useTaggedAllocations()
 
   const hasAllocation = Number(total.allocation) > 0
   const isClaimable = Number(total.claimable) > 0

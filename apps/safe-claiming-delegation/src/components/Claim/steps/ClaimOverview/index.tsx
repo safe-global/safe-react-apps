@@ -25,7 +25,7 @@ import { useClaimStepper } from '@/components/Claim'
 import { StepHeader } from '@/components/StepHeader'
 import { createClaimTxs } from '@/utils/claim'
 import { useIsTokenPaused } from '@/hooks/useIsTokenPaused'
-import { useAllocationTypes } from '@/hooks/useAllocationTypes'
+import { useTaggedAllocations } from '@/hooks/useTaggedAllocations'
 import { useIsWrongChain } from '@/hooks/useIsWrongChain'
 
 import css from './styles.module.css'
@@ -53,7 +53,7 @@ export const ClaimOverview = (): ReactElement => {
 
   const { ecosystemVesting, investorVesting } = getVestingTypes(allocation?.vestingData || [])
 
-  const { user, ecosystem, investor, total } = useAllocationTypes()
+  const { user, ecosystem, investor, total } = useTaggedAllocations()
   const totalClaimableAmountInEth = formatEther(total.claimable)
 
   // Flags
