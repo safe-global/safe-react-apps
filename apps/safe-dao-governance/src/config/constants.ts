@@ -16,6 +16,14 @@ export const GOVERNANCE_URL = 'https://forum.gnosis-safe.io/t/how-to-safedao-gov
 export const SNAPSHOT_URL = 'https://snapshot.org/#/safe.eth'
 export const DISCORD_URL = 'https://chat.safe.global'
 
+// TODO: Update when deployments are ready
+export const DEPLOYMENT_URL =
+  'https://pr646--safereactapps.review-react-hr.5afe.dev/safe-dao-governance'
+
+export const SAFE_URL = IS_PRODUCTION
+  ? 'https://app.safe.global'
+  : 'https://safe-web-core.staging.5afe.dev'
+
 // Chains
 export const Chains = {
   MAINNET: 1,
@@ -23,6 +31,11 @@ export const Chains = {
 }
 
 export const DEFAULT_CHAIN_ID = IS_PRODUCTION ? Chains.MAINNET : Chains.GOERLI
+
+export const CHAIN_SHORT_NAME = {
+  [Chains.MAINNET]: 'eth',
+  [Chains.GOERLI]: 'gor',
+}
 
 // Delegation
 export const CHAIN_DELEGATE_ID: Record<typeof Chains[keyof typeof Chains], string> = {

@@ -84,7 +84,7 @@ export const ClaimCard = ({
               <Typography>
                 {isGuardian ? (
                   <>
-                    This includes a Safe Guardian allocation of
+                    This includes a Safe Guardian allocation of{' '}
                     <strong>{formatAmount(ecosystemAmountInEth, 2)} SAFE</strong>
                   </>
                 ) : (

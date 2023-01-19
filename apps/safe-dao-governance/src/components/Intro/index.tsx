@@ -13,12 +13,30 @@ import { formatAmount } from '@/utils/formatters'
 import { useTaggedAllocations } from '@/hooks/useTaggedAllocations'
 import { useIsWrongChain } from '@/hooks/useIsWrongChain'
 import SafeToken from '@/public/images/token.svg'
+import { useIsSafeApp } from '@/hooks/useIsSafeApp'
+import { CHAIN_SHORT_NAME, SAFE_URL, DEPLOYMENT_URL } from '@/config/constants'
+import { useWallet } from '@/hooks/useWallet'
+import type { ConnectedWallet } from '@/hooks/useWallet'
 
 import css from './styles.module.css'
+
+const getSafeAppUrl = (wallet: ConnectedWallet): string => {
+  // `wallet` will exist as we are not in a Safe app
+  const shortName = CHAIN_SHORT_NAME[Number(wallet?.chainId)]
+
+  const url = new URL(`${SAFE_URL}/apps`)
+
+  url.searchParams.append('safe', `${shortName}:${wallet?.address}`)
+  url.searchParams.append('appUrl', `${DEPLOYMENT_URL}/${AppRoutes.claim}`)
+
+  return url.toString()
+}
 
 export const Intro = (): ReactElement => {
   const router = useRouter()
   const isWrongChain = useIsWrongChain()
+  const isSafeApp = useIsSafeApp()
+  const wallet = useWallet()
 
   const delegate = useDelegate()
 
@@ -30,8 +48,12 @@ export const Intro = (): ReactElement => {
 
   const canDelegate = votingPower > 0 && !isWrongChain
 
-  const onClaim = () => {
-    router.push(AppRoutes.claim)
+  const onClaim = async () => {
+    if (isSafeApp) {
+      router.push(AppRoutes.claim)
+    } else if (wallet) {
+      window.open(getSafeAppUrl(wallet), '_blank')?.focus()
+    }
   }
 
   const onDelegate = () => {
@@ -68,7 +90,7 @@ export const Intro = (): ReactElement => {
       )}
 
       {isClaimable && (
-        <Button variant="contained" size="stretched" onClick={onClaim}>
+        <Button variant="contained" size="stretched" onClick={onClaim} disabled={isWrongChain}>
           Claim tokens
         </Button>
       )}
