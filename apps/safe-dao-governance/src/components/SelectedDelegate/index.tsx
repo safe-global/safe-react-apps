@@ -4,6 +4,7 @@ import type { ReactElement } from 'react'
 import { DelegateAvatar } from '@/components/DelegateAvatar'
 import Avatar from '@/public/images/avatar.svg'
 import { InfoAlert } from '@/components/InfoAlert'
+import { shortenAddress } from '@/utils/addresses'
 import type { Delegate } from '@/hooks/useDelegate'
 
 export const SelectedDelegate = ({
@@ -29,7 +30,7 @@ export const SelectedDelegate = ({
             delegate
               ? 'name' in delegate
                 ? delegate.name
-                : delegate.address
+                : shortenAddress(delegate.address)
               : 'No delegate chosen'
           }
           titleTypographyProps={{

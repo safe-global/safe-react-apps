@@ -11,6 +11,7 @@ import Onboard from '@web3-onboard/core'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import manifestJson from '@/public/manifest.json'
+import packageJson from '../../package.json'
 import { getRpcServiceUrl } from '@/utils/web3'
 import { TREZOR_APP_URL, TREZOR_EMAIL, WC_BRIDGE } from '@/config/constants'
 
@@ -79,7 +80,8 @@ export const createOnboard = (chainConfigs: ChainInfo[]) => {
     },
     appMetadata: {
       name: manifestJson.name,
-      icon: '/images/app-logo.svg',
+      // TODO: Remove when migrated to own repo
+      icon: `/${packageJson.homepage}/images/app-logo.svg`,
       description: `Please select a wallet to connect to ${manifestJson.name}`,
       recommendedInjectedWallets: getRecommendedInjectedWallets(),
     },
