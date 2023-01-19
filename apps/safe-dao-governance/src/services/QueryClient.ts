@@ -7,5 +7,5 @@ export const getQueryClient = () => {
 }
 
 export const invalidateCache = (queryKey: string) => {
-  _queryClient.invalidateQueries({ queryKey: [queryKey], exact: true })
+  _queryClient.invalidateQueries({ queryKey: [queryKey] })
 }
