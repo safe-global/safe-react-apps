@@ -81,7 +81,7 @@ export const createOnboard = (chainConfigs: ChainInfo[]) => {
     appMetadata: {
       name: manifestJson.name,
       // TODO: Remove when migrated to own repo
-      icon: `/${packageJson.homepage}/images/app-logo.svg`,
+      icon: `${packageJson.homepage}/images/app-logo.svg`,
       description: `Please select a wallet to connect to ${manifestJson.name}`,
       recommendedInjectedWallets: getRecommendedInjectedWallets(),
     },
