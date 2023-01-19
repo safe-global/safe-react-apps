@@ -1,0 +1,12 @@
+{
+  "short_name": "safe-dao-governance",
+  "name": "Safe {DAO} Governance",
+  "description": "Participate in Safe {DAO} governance",
+  "icons": [
+    {
+      "src": "app-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

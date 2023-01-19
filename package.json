@@ -17,7 +17,7 @@
     "start:tx-builder": "yarn workspace tx-builder start",
     "start:wallet-connect": "yarn workspace wallet-connect start",
     "start:mmi": "yarn workspace mmi start",
-    "start:safe-claiming-delegation": "yarn workspace safe-claiming-delegation start",
+    "start:safe-dao-governance": "yarn workspace safe-dao-governance start",
     "prepare": "husky install",
     "e2e": "npx cypress open"
   },

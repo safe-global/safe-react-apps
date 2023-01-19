@@ -51,7 +51,7 @@ export const Distribution = (): ReactElement => {
             </Typography>
           </Box>
           <Typography>
-            40% SafeDAO Treasury
+            40% Safe {`{DAO}`} Treasury
             <br />
             15% GnosisDAO Treasury
             <br />

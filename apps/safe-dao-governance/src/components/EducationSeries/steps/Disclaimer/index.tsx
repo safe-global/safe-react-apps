@@ -16,7 +16,7 @@ export const Disclaimer = (): ReactElement => {
 
       <Typography mb={3}>
         This App is for our community to encourage Safe ecosystem contributors and users to unlock
-        SafeDAO governance.
+        Safe {`{DAO}`} governance.
         <br />
         <br />
         THIS APP IS PROVIDED “AS IS” AND “AS AVAILABLE,” AT YOUR OWN RISK, AND WITHOUT WARRANTIES OF
@@ -27,8 +27,8 @@ export const Disclaimer = (): ReactElement => {
         By accessing this app, you represent and warrant
         <br />- that you are of legal age and that you will comply with any laws applicable to you
         and not engage in any illegal activities;
-        <br />- that you are claiming Safe tokens to participate in the SafeDAO governance process
-        and that they do not represent consideration for past or future services;
+        <br />- that you are claiming Safe tokens to participate in the Safe {`{DAO}`} governance
+        process and that they do not represent consideration for past or future services;
         <br />- that you, the country you are a resident of and your wallet address is not on any
         sanctions lists maintained by the United Nations, Switzerland, the EU, UK or the US;
         <br />- that you are responsible for any tax obligations arising out of the interaction with

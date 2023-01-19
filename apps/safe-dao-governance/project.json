@@ -1,6 +1,6 @@
 {
-  "root": "apps/safe-claiming-delegation/",
-  "sourceRoot": "apps/safe-claiming-delegation/src/",
+  "root": "apps/safe-dao-governance/",
+  "sourceRoot": "apps/safe-dao-governance/src/",
   "projectType": "application",
   "tags": ["scope:applications"],
   "targets": {

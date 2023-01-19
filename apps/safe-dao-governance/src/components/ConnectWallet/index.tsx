@@ -33,7 +33,7 @@ export const ConnectWallet = (): ReactElement => {
 
   return (
     <Grid container flexDirection="column" alignItems="center" px={1} py={6}>
-      <SafeLogo alt="SafeDAO logo" width={125} height={110} />
+      <SafeLogo alt="Safe {DAO} logo" width={125} height={110} />
 
       <Typography variant="h1" m={5} mb={6} textAlign="center">
         Welcome to the next generation of digital ownership

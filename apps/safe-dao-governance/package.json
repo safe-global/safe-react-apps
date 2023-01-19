@@ -1,8 +1,8 @@
 {
-  "name": "safe-claiming-delegation",
+  "name": "safe-dao-governance",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/safe-claiming-delegation",
+  "homepage": "/safe-dao-governance",
   "scripts": {
     "build": "next build && next export -o build/",
     "start": "next dev",

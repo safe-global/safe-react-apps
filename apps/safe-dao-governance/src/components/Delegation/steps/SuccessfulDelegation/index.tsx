@@ -9,7 +9,7 @@ export const SuccessfulDelegation = (): ReactElement => {
 
   return (
     <Grid container flexDirection="column" alignItems="center" pt={16} px={1} pb={22}>
-      <SafeLogo alt="SafeDAO logo" width={125} height={110} />
+      <SafeLogo alt="Safe {DAO} logo" width={125} height={110} />
 
       <Typography variant="h1" mt={6} mb={2}>
         Transaction has been created

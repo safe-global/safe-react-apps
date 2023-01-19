@@ -25,7 +25,7 @@ export const SuccessfulClaim = (): ReactElement => {
       pb={22}
       sx={{ backgroundColor }}
     >
-      <SafeLogo alt="SafeDAO logo" width={125} height={110} />
+      <SafeLogo alt="Safe {DAO} logo" width={125} height={110} />
 
       <Typography variant="h1" mt={6} mb={2} color={textColor}>
         Congrats!
