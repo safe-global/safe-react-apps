@@ -1,7 +1,7 @@
 {
   "short_name": "safe-dao-governance",
   "name": "Safe {DAO} Governance",
-  "description": "Participate in Safe {DAO} governance",
+  "description": "The portal to Safe {DAO} governance, voting power delegation and allocation claiming.",
   "icons": [
     {
       "src": "app-logo.svg",
