@@ -1,6 +1,6 @@
 {
   "name": "WalletConnect",
-  "description": "Allows your Gnosis Safe Multisig to connect to dapps via WalletConnect.",
+  "description": "Allows your Safe to connect to dapps via WalletConnect.",
   "iconPath": "wallet-connect.svg",
   "icons": [
     {
