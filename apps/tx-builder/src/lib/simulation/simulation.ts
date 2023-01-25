@@ -17,6 +17,8 @@ const TENDERLY_ORG_NAME = process.env.REACT_APP_TENDERLY_ORG_NAME || ''
 const NON_SUPPORTED_CHAINS = [
   // Energy web chain
   '246',
+  // Celo
+  '42220',
   // Volta
   '73799',
   // Aurora
