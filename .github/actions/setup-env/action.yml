@@ -21,7 +21,7 @@ runs:
   using: 'composite'
   steps:
     - name: Node.js setup
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
@@ -33,7 +33,7 @@ runs:
         sudo apt-get update
         sudo apt-get -y install python3-pip python3-dev
         pip install awscli --upgrade --user
-    - name: Project dependencies setup, node version ${{ matrix.node-version }}
+    - name: Project dependencies setup, node version ${{ inputs.node-version }}
       shell: bash
       run: yarn install --frozen-lockfile
 
