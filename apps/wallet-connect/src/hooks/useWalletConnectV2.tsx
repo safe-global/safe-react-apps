@@ -20,6 +20,7 @@ export const safeAllowedMethods: string[] = [
   'eth_sign',
   'personal_sign',
   'eth_signTypedData',
+  'safe_setSettings',
 ]
 
 // accountsChanged or chainChanged events are not allowed for Safe Wallets
