@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { SafeAppData } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { CoreTypes } from '@walletconnect/types'
 import { IClientMeta } from '@walletconnect/legacy-types'
 
