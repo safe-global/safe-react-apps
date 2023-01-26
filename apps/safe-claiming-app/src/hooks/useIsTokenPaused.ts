@@ -1,4 +1,4 @@
-import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
+import { useSafeAppsSDK } from "@safe-global/safe-apps-react-sdk"
 import { useEffect, useState } from "react"
 import { CHAIN_CONSTANTS } from "src/config/constants"
 import { SafeToken__factory } from "src/types/contracts/factories/SafeToken__factory"

@@ -4,7 +4,7 @@ import {
   SafeAppData,
   SafeAppsResponse,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 type UseAppsResponse = {
   findSafeApp: (safeAppUrl: string) => SafeAppData | undefined

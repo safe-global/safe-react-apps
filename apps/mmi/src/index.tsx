@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import SafeProvider from '@gnosis.pm/safe-apps-react-sdk'
+import SafeProvider from '@safe-global/safe-apps-react-sdk'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import App from './App'
 import theme from './theme'

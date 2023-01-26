@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
-import { TokenBalance } from '@gnosis.pm/safe-apps-sdk'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
+import { TokenBalance } from '@safe-global/safe-apps-sdk'
 import { NATIVE_TOKEN } from '../utils/sdk-helpers'
 
 export type BalancesType = {

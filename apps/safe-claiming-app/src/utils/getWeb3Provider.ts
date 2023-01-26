@@ -1,5 +1,5 @@
-import SafeAppsSDK, { SafeInfo } from "@gnosis.pm/safe-apps-sdk"
-import { SafeAppProvider } from "@gnosis.pm/safe-apps-provider"
+import SafeAppsSDK, { SafeInfo } from "@safe-global/safe-apps-sdk"
+import { SafeAppProvider } from "@safe-global/safe-apps-provider"
 import { ethers } from "ethers"
 
 export const getWeb3Provider = (

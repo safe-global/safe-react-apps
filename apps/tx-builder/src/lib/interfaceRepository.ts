@@ -1,4 +1,4 @@
-import { ChainInfo } from '@gnosis.pm/safe-apps-sdk'
+import { ChainInfo } from '@safe-global/safe-apps-sdk'
 import { ContractInterface } from '../typings/models'
 import getAbi from './getAbi'
 

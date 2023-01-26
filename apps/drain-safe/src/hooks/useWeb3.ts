@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Web3 from 'web3'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
-import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
+import { SafeAppProvider } from '@safe-global/safe-apps-provider'
 
 function useWeb3() {
   const [web3, setWeb3] = useState<Web3 | undefined>()
