@@ -3225,6 +3225,15 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.1.1.tgz#782fa5da44c4f38ae9fd38e9184b54e451936118"
   integrity sha512-BUyKJGdDWqvWC5GEhyOiUrGNi9iJUr4CU0O2WxJL6QJhHeeA/NVBalH+FeK0r/x/W0rPymXt5s78TDS7d6lCwg==
 
+"@safe-global/safe-react-components@^2.0.0-beta.0":
+  version "2.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-react-components/-/safe-react-components-2.0.0-beta.0.tgz#dd059b15f1469ee5a891464ab931fef543156ae8"
+  integrity sha512-n6c5qGoJz+VczPbhio4W9sOvpm+Pf/QQdwxUJp7d7Vfj24Clxq7fAN1v6xopxISlwh0M/MX7HazgzSXZ1CSCaQ==
+  dependencies:
+    ethereum-blockies-base64 "^1.0.2"
+    ethers "^5.7.2"
+    react-media "^1.10.0"
+
 "@scure/base@~1.1.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.1.tgz#ebb651ee52ff84f420097055f4bf46cfba403938"

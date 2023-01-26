@@ -112,7 +112,7 @@ function App() {
             <StyledCard>
               <StyledContainer container alignItems="center" justifyContent="center" spacing={3}>
                 <Grid item>
-                  <StyledLogo src="./mmi.svg" alt="safe-app-logo" />
+                  <StyledLogo src="/mmi/mmi.svg" alt="safe-app-logo" />
                 </Grid>
                 <Grid
                   container
