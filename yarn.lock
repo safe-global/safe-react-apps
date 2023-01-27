@@ -1744,29 +1744,6 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
 
-"@gnosis.pm/safe-apps-provider@0.15.1", "@gnosis.pm/safe-apps-provider@^0.15.1":
-  version "0.15.1"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-provider/-/safe-apps-provider-0.15.1.tgz#1d070a7de87311190d09bb8e467137428c475d63"
-  integrity sha512-jVU0jpXf30HFdLHSHkmscIm04BYSwfoddjcHI4uPolP+u4F+tHRgfah1xo4XNRSCDqs4GTq38d7YAipGTj0CLA==
-  dependencies:
-    "@gnosis.pm/safe-apps-sdk" "7.8.0"
-    events "^3.3.0"
-
-"@gnosis.pm/safe-apps-react-sdk@^4.6.2":
-  version "4.6.2"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-react-sdk/-/safe-apps-react-sdk-4.6.2.tgz#205908311c685b378338f82da261f06f10336532"
-  integrity sha512-93r9aDw9HzxC/xMmvnW4j5XswKxaAAFizCCZhA+xfQ6EBxH0nnBUmDq3kbxAWofvNgUKaSVgY/iHMvwkDBrllQ==
-  dependencies:
-    "@gnosis.pm/safe-apps-sdk" "7.8.0"
-
-"@gnosis.pm/safe-apps-sdk@7.8.0", "@gnosis.pm/safe-apps-sdk@^7.8.0":
-  version "7.8.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-7.8.0.tgz#295ab9d563b94208e3042495cdba787fa035c71e"
-  integrity sha512-kO8fJi1ebiKN9qH1NdDToVBuDQQ0U9NkL467U+84LtNTx5PzUJIu6O7tb4nZD24e/OItinf5W8GDWhhfZeiqOA==
-  dependencies:
-    "@gnosis.pm/safe-react-gateway-sdk" "^3.1.3"
-    ethers "^5.6.8"
-
 "@gnosis.pm/safe-deployments@^1.19.0":
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-deployments/-/safe-deployments-1.19.0.tgz#f4ba8cf92cd6fdff4241ac50e410b4a6ff89babe"
@@ -1797,13 +1774,6 @@
   dependencies:
     react-media "^1.10.0"
     web3-utils "^1.6.0"
-
-"@gnosis.pm/safe-react-gateway-sdk@^3.1.3":
-  version "3.4.5"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-gateway-sdk/-/safe-react-gateway-sdk-3.4.5.tgz#bd59ca973721991f54a2df6b05baeb884434208f"
-  integrity sha512-b8ZaYaQ1apS/4R9sEEUCtrg0AwTf8tfqS0Jp6JAopLxHdX0NItCvs5/Y1+rjDodv2l+I/Zf9vJJyUDC0XABfMA==
-  dependencies:
-    cross-fetch "^3.1.5"
 
 "@hookform/devtools@^4.2.3":
   version "4.2.3"
@@ -2770,7 +2740,30 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.1.1.tgz#782fa5da44c4f38ae9fd38e9184b54e451936118"
   integrity sha512-BUyKJGdDWqvWC5GEhyOiUrGNi9iJUr4CU0O2WxJL6QJhHeeA/NVBalH+FeK0r/x/W0rPymXt5s78TDS7d6lCwg==
 
-"@safe-global/safe-gateway-typescript-sdk@^3.5.2":
+"@safe-global/safe-apps-provider@0.15.2", "@safe-global/safe-apps-provider@^0.15.2":
+  version "0.15.2"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-apps-provider/-/safe-apps-provider-0.15.2.tgz#fa5c30140134e72bb969da76b80a16c545323e3a"
+  integrity sha512-BaoGAuY7h6jLBL7P+M6b7hd+1QfTv8uMyNF3udhiNUwA0XwfzH2ePQB13IEV3Mn7wdcIMEEUDS5kHbtAsj60qQ==
+  dependencies:
+    "@safe-global/safe-apps-sdk" "7.9.0"
+    events "^3.3.0"
+
+"@safe-global/safe-apps-react-sdk@^4.6.2":
+  version "4.6.3"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-apps-react-sdk/-/safe-apps-react-sdk-4.6.3.tgz#e7627a60a4d45b7046c0aaf5f6cffb9caf86bb3b"
+  integrity sha512-mbTAICXyygHSmpxZYh7o3EJFewZ4rxgR6SPZ1/Ls2WwdV+viPrCpzUG66Iz9h0n0TtGKFlhzx800VkcAwBva7Q==
+  dependencies:
+    "@safe-global/safe-apps-sdk" "7.9.0"
+
+"@safe-global/safe-apps-sdk@7.9.0", "@safe-global/safe-apps-sdk@^7.9.0":
+  version "7.9.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-apps-sdk/-/safe-apps-sdk-7.9.0.tgz#0c79a7760470bfdaf4cce9aa5bceef56898c7037"
+  integrity sha512-S2EI+JL8ocSgE3uGNaDZCzKmwfhtxXZFDUP76vN0FeaY35itFMyi8F0Vhxu0XnZm3yLzJE3tp5px6GhuQFLU6w==
+  dependencies:
+    "@safe-global/safe-gateway-typescript-sdk" "^3.5.3"
+    ethers "^5.7.2"
+
+"@safe-global/safe-gateway-typescript-sdk@^3.5.2", "@safe-global/safe-gateway-typescript-sdk@^3.5.3":
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.7.0.tgz#2af52f1bc73759b1b6a549fed598781c8c5fce72"
   integrity sha512-3BvlUgp0oZ1Zkn7nG3wY1jvCEE4t530BjKcaa3r0qsf0whf/ez/0gmQwk7DTOGmVmvOfjj6HHikxnrUCCX+/3Q==
@@ -6095,9 +6088,9 @@ core-js-compat@^3.20.2, core-js-compat@^3.21.0:
     semver "7.0.0"
 
 core-js-pure@^3.8.1:
-  version "3.22.8"
-  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.22.8.tgz#f2157793b58719196ccf9673cc14f3683adc0957"
-  integrity sha512-bOxbZIy9S5n4OVH63XaLVXZ49QKicjowDx/UELyJ68vxfCRpYsbyh/WNZNfEfAk+ekA8vSjt+gCDpvh672bc3w==
+  version "3.27.2"
+  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.27.2.tgz#47e9cc96c639eefc910da03c3ece26c5067c7553"
+  integrity sha512-Cf2jqAbXgWH3VVzjyaaFkY1EBazxugUepGymDoeteyYr9ByX51kD2jdHZlsEF/xnJMyN3Prua7mQuzwMg6Zc9A==
 
 core-js@^3.19.2:
   version "3.21.1"
@@ -7727,7 +7720,7 @@ ethereumjs-util@^7.0.10, ethereumjs-util@^7.1.0, ethereumjs-util@^7.1.1, ethereu
     ethereum-cryptography "^0.1.3"
     rlp "^2.2.4"
 
-ethers@^5.5.3, ethers@^5.6.2, ethers@^5.6.8, ethers@^5.6.9, ethers@^5.7.2:
+ethers@^5.5.3, ethers@^5.6.2, ethers@^5.6.9, ethers@^5.7.2:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==

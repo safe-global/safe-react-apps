@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import { useTransactions } from './transactionsContext'
 import StorageManager from '../lib/storage'
 import { Batch, BatchFile, BatchTransaction, ProposedTransaction } from '../typings/models'
-import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk'
+import { ChainInfo, SafeInfo } from '@safe-global/safe-apps-sdk'
 import { encodeToHexData } from '../utils'
 import { toChecksumAddress } from 'web3-utils'
 import { addChecksum, validateChecksum } from '../lib/checksum'

@@ -1,6 +1,6 @@
 import web3Utils, { AbiItem } from 'web3-utils'
 import abiCoder, { AbiCoder } from 'web3-eth-abi'
-import { BaseTransaction, TokenBalance, TokenType } from '@gnosis.pm/safe-apps-sdk'
+import { BaseTransaction, TokenBalance, TokenType } from '@safe-global/safe-apps-sdk'
 import erc20 from '../abis/erc20'
 
 export const NATIVE_TOKEN = TokenType['NATIVE_TOKEN']

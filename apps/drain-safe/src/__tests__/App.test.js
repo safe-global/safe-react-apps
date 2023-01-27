@@ -1,11 +1,11 @@
 import { screen, waitFor, fireEvent } from '@testing-library/react'
 import { within } from '@testing-library/dom'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 import { mockTxsRequest, mockInitialBalances, renderWithProviders } from '../utils/test-helpers'
 import App from '../components/App'
 
-jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
-  const originalModule = jest.requireActual('@gnosis.pm/safe-apps-react-sdk')
+jest.mock('@safe-global/safe-apps-react-sdk', () => {
+  const originalModule = jest.requireActual('@safe-global/safe-apps-react-sdk')
   const sdk = {
     sdk: {
       txs: { send: jest.fn().mockResolvedValue({ safeTxHash: 'safeTxHash' }) },

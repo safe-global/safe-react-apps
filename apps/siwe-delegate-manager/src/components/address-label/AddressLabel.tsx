@@ -4,7 +4,7 @@ import IconButton from '@material-ui/core/IconButton'
 import styled from 'styled-components'
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined'
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'
-import { ChainInfo } from '@gnosis.pm/safe-apps-sdk'
+import { ChainInfo } from '@safe-global/safe-apps-sdk'
 
 import useMemoizedAddressLabel from 'src/hooks/useMemoizedAddressLabel'
 import { useSafeWallet } from 'src/store/safeWalletContext'

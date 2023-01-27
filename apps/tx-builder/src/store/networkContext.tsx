@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import SafeAppsSDK, { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk'
+import SafeAppsSDK, { ChainInfo, SafeInfo } from '@safe-global/safe-apps-sdk'
 import Web3 from 'web3'
 import InterfaceRepository, { InterfaceRepo } from '../lib/interfaceRepository'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
-import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
+import { SafeAppProvider } from '@safe-global/safe-apps-provider'
 
 type NetworkContextProps = {
   sdk: SafeAppsSDK

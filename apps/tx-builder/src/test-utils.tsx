@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 import { ThemeProvider } from 'styled-components'
 import { render, RenderResult } from '@testing-library/react'
 import { theme } from '@gnosis.pm/safe-react-components'
-import { SafeProvider } from '@gnosis.pm/safe-apps-react-sdk'
+import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
 import { BrowserRouter } from 'react-router-dom'
 import StoreProvider from './store'
 

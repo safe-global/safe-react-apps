@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Web3 from 'web3'
-import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
+import { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { TenderlySimulatePayload, TenderlySimulation, StateObject } from './types'
 import { encodeMultiSendCall, getMultiSendCallOnlyAddress } from './multisend'
 

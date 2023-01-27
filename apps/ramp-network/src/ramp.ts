@@ -1,4 +1,4 @@
-import { ChainInfo } from '@gnosis.pm/safe-apps-sdk'
+import { ChainInfo } from '@safe-global/safe-apps-sdk'
 import { RampInstantEvent, RampInstantSDK } from '@ramp-network/ramp-instant-sdk'
 
 const RINKEBY_STAGING_URL = 'https://ri-widget-staging.firebaseapp.com/'

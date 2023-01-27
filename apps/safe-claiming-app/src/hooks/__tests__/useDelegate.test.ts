@@ -15,8 +15,8 @@ const mockWeb3Provider = {
   _isProvider: true,
   call: jest.fn(() => Promise.reject("call")),
 }
-jest.mock("@gnosis.pm/safe-apps-react-sdk", () => {
-  const originalModule = jest.requireActual("@gnosis.pm/safe-apps-react-sdk")
+jest.mock("@safe-global/safe-apps-react-sdk", () => {
+  const originalModule = jest.requireActual("@safe-global/safe-apps-react-sdk")
   return {
     __esModule: true,
     // We require some of the enums/types from the original module
@@ -40,7 +40,7 @@ describe("useDelegate()", () => {
 
   afterAll(() => {
     jest.unmock("src/utils/getWeb3Provider")
-    jest.unmock("@gnosis.pm/safe-apps-react-sdk")
+    jest.unmock("@safe-global/safe-apps-react-sdk")
   })
 
   it("ignore the ZERO_ADDRESS as delegate", async () => {
