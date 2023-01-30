@@ -10,7 +10,7 @@ import '@safe-global/safe-react-components/dist/fonts.css'
 
 ReactDOM.render(
   <React.StrictMode>
-    <SafeThemeProvider mode="dark">
+    <SafeThemeProvider mode="light">
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
           <CssBaseline />
