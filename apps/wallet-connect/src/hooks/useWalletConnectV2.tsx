@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import SignClient from '@walletconnect/sign-client'
 import { SignClientTypes, SessionTypes, CoreTypes } from '@walletconnect/types'
-import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
-import { ChainInfo } from '@gnosis.pm/safe-apps-sdk'
+import { SafeAppProvider } from '@safe-global/safe-apps-provider'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
+import { ChainInfo } from '@safe-global/safe-apps-sdk'
 import { ethers } from 'ethers'
 
 import {

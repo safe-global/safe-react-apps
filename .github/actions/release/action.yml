@@ -39,7 +39,7 @@ runs:
   steps:
     - name: Setup git user to "🦉🤖 Safe Bot"
       shell: bash
-      run: git config user.email "-" && git config user.name "🦉🤖 Safe Bot"
+      run: git config user.email "-" && git config user.name "🦉🤖 Safe Bot[bot]"
 
       # Script to upload release files and notify production deployments
     - name: 'Upload build files to S3 and call the hook to notify '

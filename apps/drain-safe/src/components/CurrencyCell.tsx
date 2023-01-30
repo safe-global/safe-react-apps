@@ -1,4 +1,4 @@
-import { TokenBalance } from '@gnosis.pm/safe-apps-sdk'
+import { TokenBalance } from '@safe-global/safe-apps-sdk'
 import { Icon, Tooltip } from '@gnosis.pm/safe-react-components'
 import BigNumber from 'bignumber.js'
 import { useEffect, useState } from 'react'
@@ -7,7 +7,7 @@ import web3Utils from 'web3-utils'
 import { formatCurrencyValue } from '../utils/formatters'
 import { tokenToTx } from '../utils/sdk-helpers'
 import Flex from './Flex'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 function CurrencyCell({
   item,

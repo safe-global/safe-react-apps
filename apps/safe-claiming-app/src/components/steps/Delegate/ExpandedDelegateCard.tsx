@@ -12,7 +12,7 @@ import { DelegateEntry } from "src/hooks/useDelegatesFile"
 import { getExplorerURL, shortenAddress } from "src/utils/format"
 import { DelegateAvatar } from "./DelegateAvatar"
 import { ReactComponent as ExternalLink } from "src/assets/images/external_link.svg"
-import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
+import { useSafeAppsSDK } from "@safe-global/safe-apps-react-sdk"
 
 export const ExpandedDelegateCard = ({
   onClick,

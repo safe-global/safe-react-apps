@@ -1,12 +1,12 @@
 # Safe Apps
 
-[![Logo](https://raw.githubusercontent.com/safe-global/safe-react-apps/main/assets/logo.png)](https://gnosis-safe.io/)
+[![Logo](https://raw.githubusercontent.com/safe-global/safe-react-apps/main/assets/logo.png)](https://safe.global/)
 
 ![license](https://img.shields.io/github/license/safe-global/safe-react-apps)
-![build](https://img.shields.io/github/workflow/status/safe-global/safe-react-apps/Deploy%20safe%20apps/main)
-![tests](https://img.shields.io/github/workflow/status/safe-global/safe-react-apps/Test/main?label=tests)
+![build](https://img.shields.io/github/actions/workflow/status/safe-global/safe-react-apps/deployment.yml?branch=main)
+![tests](https://img.shields.io/github/actions/workflow/status/safe-global/safe-react-apps/safe-apps-e2e.yml?branch=main)
 
-This project contains apps developed by Gnosis to be consumed by Gnosis Safe.
+This project contains apps developed by Gnosis to be consumed by the Safe.
 
 ## Install
 
@@ -42,7 +42,7 @@ yarn start:wallet-connect
 
 ## Contracts
 
-This project contains some test contracts to check all solidity types in the tx-builder Safe App.
+This project contains some test contracts to check all solidity types in the `tx-builder` Safe App.
 
 You can deploy your own tests contracts using the following command:
 

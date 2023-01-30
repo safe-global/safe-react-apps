@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Web3 from 'web3'
-import { BaseTransaction } from '@gnosis.pm/safe-apps-sdk'
+import { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { TenderlySimulatePayload, TenderlySimulation, StateObject } from './types'
 import { encodeMultiSendCall, getMultiSendCallOnlyAddress } from './multisend'
 
@@ -17,6 +17,8 @@ const TENDERLY_ORG_NAME = process.env.REACT_APP_TENDERLY_ORG_NAME || ''
 const NON_SUPPORTED_CHAINS = [
   // Energy web chain
   '246',
+  // Celo
+  '42220',
   // Volta
   '73799',
   // Aurora

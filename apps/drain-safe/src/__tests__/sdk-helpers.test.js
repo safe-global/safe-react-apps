@@ -31,7 +31,7 @@ describe('Safe SDK helpers', () => {
           symbol: 'DAI',
           name: 'Dai',
           logoUri:
-            'https://gnosis-safe-token-logos.s3.amazonaws.com/0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa.png',
+            'https://safe-transaction-assets.staging.5afe.dev/0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa.png',
         },
         tokenInfo: {
           type: 'ERC20',

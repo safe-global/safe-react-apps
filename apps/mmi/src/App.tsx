@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 import { hashMessage } from 'ethers/lib/utils'
 import { Grid, Container, Button, Typography, Card, styled } from '@mui/material'
 import AppBar from './components/AppBar'

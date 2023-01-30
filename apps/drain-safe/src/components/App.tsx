@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { Title, Text } from '@gnosis.pm/safe-react-components'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 import web3Utils from 'web3-utils'
 import { BigNumber } from 'bignumber.js'
 

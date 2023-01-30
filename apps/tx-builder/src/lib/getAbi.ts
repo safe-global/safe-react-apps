@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ChainInfo } from '@gnosis.pm/safe-apps-sdk'
+import { ChainInfo } from '@safe-global/safe-apps-sdk'
 
 enum PROVIDER {
   SOURCIFY = 1,
