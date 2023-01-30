@@ -2,8 +2,8 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { ethers } from 'ethers'
 import WalletConnect from '@walletconnect/client'
 import { IClientMeta, IWalletConnectSession } from '@walletconnect/legacy-types'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
-import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
+import { SafeAppProvider } from '@safe-global/safe-apps-provider'
 
 import {
   NEW_SESSION_ACTION,

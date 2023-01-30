@@ -1,4 +1,4 @@
-import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
+import { useSafeAppsSDK } from "@safe-global/safe-apps-react-sdk"
 import { BigNumber, ethers } from "ethers"
 import { useMemo } from "react"
 import { CHAIN_CONSTANTS } from "src/config/constants"

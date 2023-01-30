@@ -39,7 +39,7 @@ const version2URI =
 const invalidConnectionErrorLabel =
   'Connection refused: Incompatible chain detected. Make sure the Dapp uses Goerli to interact with this Safe.'
 
-jest.mock('@gnosis.pm/safe-react-gateway-sdk', () => {
+jest.mock('@safe-global/safe-gateway-typescript-sdk', () => {
   return {
     getSafeApps: () => Promise.resolve(mockSafeAppsListResponse),
   }
@@ -49,8 +49,8 @@ jest.mock('./utils/analytics', () => ({
   trackSafeAppEvent: jest.fn(),
 }))
 
-jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
-  const originalModule = jest.requireActual('@gnosis.pm/safe-apps-react-sdk')
+jest.mock('@safe-global/safe-apps-react-sdk', () => {
+  const originalModule = jest.requireActual('@safe-global/safe-apps-react-sdk')
   return {
     ...originalModule,
     useSafeAppsSDK: () => ({

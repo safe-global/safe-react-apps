@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
-import SafeAppsSDK, { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk'
-import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
+import SafeAppsSDK, { ChainInfo, SafeInfo } from '@safe-global/safe-apps-sdk'
+import { SafeAppProvider } from '@safe-global/safe-apps-provider'
 import { ethers } from 'ethers'
 
 type safeWalletContextValue = {

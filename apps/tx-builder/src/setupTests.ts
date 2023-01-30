@@ -3,7 +3,7 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect'
-import { ChainInfo, SafeInfo } from '@gnosis.pm/safe-apps-sdk'
+import { ChainInfo, SafeInfo } from '@safe-global/safe-apps-sdk'
 import { configure } from '@testing-library/react'
 
 configure({ testIdAttribute: 'id' })
@@ -44,8 +44,8 @@ const SDK_MOCK = {
   eth: {},
 }
 
-jest.mock('@gnosis.pm/safe-apps-react-sdk', () => {
-  const originalModule = jest.requireActual('@gnosis.pm/safe-apps-react-sdk')
+jest.mock('@safe-global/safe-apps-react-sdk', () => {
+  const originalModule = jest.requireActual('@safe-global/safe-apps-react-sdk')
   return {
     ...originalModule,
     useSafeAppsSDK: () => ({

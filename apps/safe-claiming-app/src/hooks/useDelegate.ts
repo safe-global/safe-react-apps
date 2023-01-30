@@ -1,4 +1,4 @@
-import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
+import { useSafeAppsSDK } from "@safe-global/safe-apps-react-sdk"
 import { Contract, ethers } from "ethers"
 import {
   CHAIN_CONSTANTS,

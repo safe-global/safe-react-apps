@@ -1,5 +1,5 @@
 import { Provider } from "@ethersproject/providers"
-import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk"
+import { useSafeAppsSDK } from "@safe-global/safe-apps-react-sdk"
 import { isPast } from "date-fns"
 import { BigNumber } from "ethers"
 import { defaultAbiCoder, Interface } from "ethers/lib/utils"

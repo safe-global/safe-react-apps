@@ -1,9 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import SafeProvider from '@gnosis.pm/safe-apps-react-sdk'
+import SafeProvider from '@safe-global/safe-apps-react-sdk'
 import { CssBaseline, Theme, ThemeProvider } from '@mui/material'
 import { SafeThemeProvider } from '@safe-global/safe-react-components'
-
 import App from './App'
 
 import '@safe-global/safe-react-components/dist/fonts.css'

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 import { ThemeProvider } from 'styled-components'
 import { theme } from '@gnosis.pm/safe-react-components'
-import { SafeProvider } from '@gnosis.pm/safe-apps-react-sdk'
+import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
 
 import { SafeWalletProvider } from 'src/store/safeWalletContext'
 import { DelegateRegistryProvider } from 'src/store/delegateRegistryContext'

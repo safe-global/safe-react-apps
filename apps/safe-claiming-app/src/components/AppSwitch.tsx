@@ -7,7 +7,7 @@ import {
   ThemeProvider,
 } from "@mui/material"
 import Widget from "src/widgets/Widget"
-import SafeProvider from "@gnosis.pm/safe-apps-react-sdk"
+import SafeProvider from "@safe-global/safe-apps-react-sdk"
 
 export const AppSwitch = () => {
   const theme = useLightDarkTheme()

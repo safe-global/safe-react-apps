@@ -1,6 +1,6 @@
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
-import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 import styled from 'styled-components'
 
 import AddressLabel from 'src/components/address-label/AddressLabel'
