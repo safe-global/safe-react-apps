@@ -10,8 +10,6 @@ import { getRefreshToken } from './lib/http'
 import { authenticate, sign } from './lib/mmi'
 import { truncateEthAddress } from './lib/utils'
 
-import logo from './mmi.svg'
-
 const getConnectedOwner = (safeOwners: string[], accounts: string[]) =>
   safeOwners.find(owner => ethers.utils.getAddress(owner) === ethers.utils.getAddress(accounts[0]))
 
@@ -114,7 +112,7 @@ function App() {
             <StyledCard>
               <StyledContainer container alignItems="center" justifyContent="center" spacing={3}>
                 <Grid item>
-                  <StyledLogo src={logo} alt="safe-app-logo" />
+                  <StyledLogo src={`${process.env.PUBLIC_URL}/mmi.svg`} alt="safe-app-logo" />
                 </Grid>
                 <Grid
                   container
