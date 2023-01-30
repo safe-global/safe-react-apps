@@ -4,8 +4,8 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
+    "@safe-global/safe-apps-provider": "https://gitpkg.now.sh/safe-global/safe-apps-sdk/packages/safe-apps-provider?safe-settings-sync",
     "@gnosis.pm/safe-react-components": "^0.9.7",
-    "@safe-global/safe-apps-provider": "0.16.0",
     "@safe-global/safe-gateway-typescript-sdk": "^3.5.2",
     "@walletconnect/client": "^1.8.0",
     "@walletconnect/web3wallet": "^1.2.0",

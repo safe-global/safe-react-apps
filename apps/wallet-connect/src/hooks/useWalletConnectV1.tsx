@@ -65,6 +65,7 @@ const useWalletConnectV1 = (
       })
 
       wcConnector.on('call_request', async (error, payload) => {
+        console.log('Call request:', payload)
         if (error) {
           throw error
         }

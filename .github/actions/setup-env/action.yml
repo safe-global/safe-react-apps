@@ -33,6 +33,10 @@ runs:
         sudo apt-get update
         sudo apt-get -y install python3-pip python3-dev
         pip install awscli --upgrade --user
+    - name: Prepare install
+      run: yarn install --frozen-lockfile --update-checksums
+      shell: bash
+      continue-on-error: true
     - name: Project dependencies setup, node version ${{ inputs.node-version }}
       shell: bash
       run: yarn install --frozen-lockfile
