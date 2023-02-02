@@ -112,7 +112,7 @@ function App() {
             <StyledCard>
               <StyledContainer container alignItems="center" justifyContent="center" spacing={3}>
                 <Grid item>
-                  <StyledLogo src="./mmi.svg" alt="safe-app-logo" />
+                  <StyledLogo src={`${process.env.PUBLIC_URL}/mmi.svg`} alt="safe-app-logo" />
                 </Grid>
                 <Grid
                   container
@@ -180,7 +180,7 @@ function App() {
 
 const StyledMainContainer = styled(Container)`
   && {
-    height: 100vh;
+    height: 100%;
     max-width: 100%;
     display: flex;
     justify-content: center;

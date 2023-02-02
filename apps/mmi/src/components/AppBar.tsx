@@ -1,7 +1,6 @@
 import { Box } from '@material-ui/core'
 import { AppBar as MuiAppBar, Typography, styled } from '@mui/material'
-import { truncateEthAddress } from '../lib/utils'
-import Identicon from './Identicon'
+import { EthHashInfo } from '@safe-global/safe-react-components'
 
 const AppBar = ({ account }: { account: string }) => {
   return (
@@ -11,10 +10,7 @@ const AppBar = ({ account }: { account: string }) => {
       </Typography>
       {account && (
         <Box display="flex" alignItems="center">
-          <Identicon address={account} size={24} />
-          <Typography pr={4} pl={1} fontWeight={700}>
-            {truncateEthAddress(account)}
-          </Typography>
+          <EthHashInfo address={account} showCopyButton />
         </Box>
       )}
     </StyledAppBar>
@@ -25,12 +21,12 @@ const StyledAppBar = styled(MuiAppBar)`
   && {
     position: sticky;
     top: 0;
-    background: #fff;
+    background: ${({ theme }) => theme.palette.background.paper};
     height: 70px;
     align-items: center;
     justify-content: space-between;
     flex-direction: row;
-    border-bottom: 2px solid #e8e7e6;
+    border-bottom: 2px solid ${({ theme }) => theme.palette.background.paper};
     box-shadow: none;
   }
 `

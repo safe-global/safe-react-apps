@@ -16,14 +16,14 @@ type HelpProps = {
 
 const Help = ({ title, steps }: HelpProps): React.ReactElement => {
   return (
-    <StyledAccordion elevation={0}>
-      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <HelpOutlineOutlinedIcon sx={{ fontSize: '20px' }} />
+    <Accordion elevation={0}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <HelpOutlineOutlinedIcon color="border" sx={{ fontSize: '20px' }} />
         <Typography variant="body2" ml={2}>
           {title}
         </Typography>
-      </StyledAccordionSummary>
-      <StyledAccordionDetails>
+      </AccordionSummary>
+      <AccordionDetails>
         {steps.map((step, index) => (
           <Box key={index} display="flex" marginBottom={2} alignItems="flex-start">
             <StyledDot color="primary">
@@ -32,38 +32,10 @@ const Help = ({ title, steps }: HelpProps): React.ReactElement => {
             <Typography variant="body2">{step}</Typography>
           </Box>
         ))}
-      </StyledAccordionDetails>
-    </StyledAccordion>
+      </AccordionDetails>
+    </Accordion>
   )
 }
-
-const StyledAccordion = styled(Accordion)`
-  && {
-    border: 2px solid #e2e3e3;
-    .MuiButtonBase-root {
-      border: 0;
-    }
-  }
-`
-
-const StyledAccordionSummary = styled(AccordionSummary)`
-  && {
-    border: 2px solid #e2e3e3;
-  }
-`
-
-const StyledAccordionDetails = styled(AccordionDetails)`
-  && {
-    flex-direction: column;
-    border-top: 2px solid #e2e3e3;
-    &:first-child {
-      padding-top: 24px;
-    }
-    &:last-child {
-      padding-bottom: 8px;
-    }
-  }
-`
 
 const StyledDot = styled('div')`
   display: flex;
@@ -74,8 +46,8 @@ const StyledDot = styled('div')`
   width: 20px;
   height: 20px;
   margin-right: 16px;
-  background: #f0efee;
-  color: #566976;
+  background: ${({ theme }) => theme.palette.background.main};
+  color: ${({ theme }) => theme.palette.text.primary};
 `
 
 export default Help

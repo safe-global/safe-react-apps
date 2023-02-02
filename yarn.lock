@@ -2770,6 +2770,14 @@
   dependencies:
     cross-fetch "^3.1.5"
 
+"@safe-global/safe-react-components@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-react-components/-/safe-react-components-2.0.0.tgz#3c6cb6ff675b05d952c1e9f6817ee81c02bb94fa"
+  integrity sha512-R66sglcB1uNZJaAlIDxYyS9L6ZT5djIaOmZc2PwW1rpX8jPOo0QlRVGu62ByZsJ6fb0+ehrIZV9kiFVHSWOWJQ==
+  dependencies:
+    "@ethersproject/address" "^5.7.0"
+    ethereum-blockies-base64 "^1.0.2"
+
 "@scure/base@~1.1.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.1.tgz#ebb651ee52ff84f420097055f4bf46cfba403938"
