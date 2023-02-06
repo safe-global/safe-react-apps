@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [0.2.0](https://github.com/safe-global/safe-react-apps/compare/mmi-0.1.1...mmi-0.2.0) (2023-02-06)
+
+
+### Bug Fixes
+
+* **safe-claiming-app,mmi:** fixes embedding of DM Sans font ([273687f](https://github.com/safe-global/safe-react-apps/commit/273687f4a2f3333c55a0b89b4d5abec16155728f))
+
+
+### Features
+
+* **mmi:** Integrate safe-react-components ([#653](https://github.com/safe-global/safe-react-apps/issues/653)) ([0b7e53d](https://github.com/safe-global/safe-react-apps/commit/0b7e53db8f0e2c08834ade61eecec9076aba902b))
+
+
+
 ## [0.1.1](https://github.com/safe-global/safe-react-apps/compare/mmi-0.1.0...mmi-0.1.1) (2022-12-14)
 
 
