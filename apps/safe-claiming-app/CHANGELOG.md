@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.2](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.4.1...safe-claiming-app-0.4.2) (2023-02-06)
+
+
+### Bug Fixes
+
+* **safe-claiming-app,mmi:** fixes embedding of DM Sans font ([273687f](https://github.com/safe-global/safe-react-apps/commit/273687f4a2f3333c55a0b89b4d5abec16155728f))
+
+
+
 ## [0.4.1](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.4.0...safe-claiming-app-0.4.1) (2022-12-15)
 
 
