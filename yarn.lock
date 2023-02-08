@@ -4173,7 +4173,7 @@
   resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-1.8.0.tgz#3f5e85b2d6b149337f727ab8a71b8471d8d9a195"
   integrity sha512-Cn+3I0V0vT9ghMuzh1KzZvCkiAxTq+1TR2eSqw5E5AVWfmCtECFkVZBP6uUJZ8YjwLqXheI+rnjqPy7sVM4Fyg==
 
-"@walletconnect/utils@2.3.3", "@walletconnect/utils@^2.1.4", "@walletconnect/utils@^2.3.2", "@walletconnect/utils@^2.3.3":
+"@walletconnect/utils@2.3.3", "@walletconnect/utils@^2.1.4", "@walletconnect/utils@^2.3.2":
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-2.3.3.tgz#7775ae536cc1ac37e14211eb4fc6b07cbb75f9d9"
   integrity sha512-wS9ptLlT30c7m7zme3/y3cNjKXztZeKIulqBD1K/VxSxWEA4mK9mmXEACdmahjiX4EHZWtdHvEIu2rLDhkrrvQ==

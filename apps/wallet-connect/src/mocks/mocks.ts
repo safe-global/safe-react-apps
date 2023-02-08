@@ -192,8 +192,8 @@ export const mockInvalidChainTransactionRequest = {
 
 // active v2 sessions
 
-export const mockActiveSessions = [
-  {
+export const mockActiveSessions = {
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx: {
     relay: {
       protocol: 'irn',
     },
@@ -249,4 +249,4 @@ export const mockActiveSessions = [
       },
     },
   },
-]
+}

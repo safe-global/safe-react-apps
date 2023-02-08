@@ -8,7 +8,6 @@
     "@safe-global/safe-apps-provider": "0.15.2",
     "@safe-global/safe-gateway-typescript-sdk": "^3.5.2",
     "@walletconnect/client": "^1.8.0",
-    "@walletconnect/utils": "^2.3.3",
     "@walletconnect/web3wallet": "^1.1.1",
     "date-fns": "^2.29.3",
     "ethers": "^5.7.2",

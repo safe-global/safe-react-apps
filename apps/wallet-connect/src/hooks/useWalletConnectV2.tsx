@@ -6,7 +6,6 @@ import { ChainInfo } from '@safe-global/safe-apps-sdk'
 import { ethers } from 'ethers'
 import { Core } from '@walletconnect/core'
 import Web3WalletType, { Web3Wallet } from '@walletconnect/web3wallet'
-import { getSdkError } from '@walletconnect/utils'
 
 import {
   NEW_SESSION_ACTION,
@@ -33,6 +32,7 @@ const EVMBasedNamespaces = 'eip155'
 const UNSUPPORTED_CHAIN_ERROR_CODE = 5100
 const INVALID_METHOD_ERROR_CODE = 1001
 const USER_REJECTED_REQUEST_CODE = 4001
+const USER_DISCONNECTED_CODE = 6000
 
 const logger = isProduction ? undefined : 'debug'
 
@@ -192,10 +192,10 @@ const useWalletConnectV2 = (
 
           await web3wallet.rejectSession({
             id: proposal.id,
-            reason: getSdkError(
-              'UNSUPPORTED_CHAINS',
-              `No EVM-based (${EVMBasedNamespaces}) namespace present in the session proposal`,
-            ),
+            reason: {
+              code: UNSUPPORTED_CHAIN_ERROR_CODE,
+              message: `Unsupported chains. No EVM-based (${EVMBasedNamespaces}) namespace present in the session proposal`,
+            },
           })
           return
         }
@@ -208,10 +208,10 @@ const useWalletConnectV2 = (
           setError(errorMessage)
           await web3wallet.rejectSession({
             id: proposal.id,
-            reason: getSdkError(
-              'UNSUPPORTED_CHAINS',
-              `No ${chainInfo?.chainName} (${EVMBasedNamespaces}:${safe.chainId}) namespace present in the session proposal`,
-            ),
+            reason: {
+              code: UNSUPPORTED_CHAIN_ERROR_CODE,
+              message: `Unsupported chains. No ${chainInfo?.chainName} (${EVMBasedNamespaces}:${safe.chainId}) namespace present in the session proposal`,
+            },
           })
           return
         }
@@ -266,7 +266,10 @@ const useWalletConnectV2 = (
     if (wcSession && web3wallet) {
       await web3wallet.disconnectSession({
         topic: wcSession.topic,
-        reason: getSdkError('USER_DISCONNECTED', 'Safe Wallet Session ended by the user'),
+        reason: {
+          code: USER_DISCONNECTED_CODE,
+          message: 'User disconnected. Safe Wallet Session ended by the user',
+        },
       })
     }
   }, [web3wallet, wcSession])
