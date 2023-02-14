@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.1](https://github.com/safe-global/safe-react-apps/compare/siwe-delegate-manager-0.1.0...siwe-delegate-manager-0.1.1) (2023-02-06)
+
+
+
 # 0.1.0 (2022-11-18)
 
 

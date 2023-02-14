@@ -11,7 +11,6 @@ import {
 import { SignClientTypes } from '@walletconnect/types'
 
 import WalletconnectSafeApp from './App'
-import { safeAllowedEvents, safeAllowedMethods } from './hooks/useWalletConnectV2'
 import {
   mockActiveSessions,
   mockChainInfo,
@@ -87,33 +86,40 @@ jest.mock('@walletconnect/client', () => {
   }
 })
 
-const mockPairing = jest.fn()
 const mockWalletconnectEvent = jest.fn()
-const mockReject = jest.fn()
-const mockApprove = jest.fn()
-const mockRespond = jest.fn()
-const mockDisconnect = jest.fn()
-const mockGetAllSessions = jest.fn()
+const mockRespondSessionRequest = jest.fn()
+const mockGetActiveSessions = jest.fn()
+const mockRejectSession = jest.fn()
+const mockApproveSession = jest.fn()
+const mockDisconnectSession = jest.fn()
+const mockPairing = jest.fn()
+const mockEmitSessionEvent = jest.fn()
 
 // walletconnect version 2 mock
-jest.mock('@walletconnect/sign-client', () => {
+jest.mock('@walletconnect/web3wallet', () => {
   return {
-    init: () => ({
-      // default session:
-      session: { getAll: mockGetAllSessions },
-      on: mockWalletconnectEvent,
-      reject: mockReject,
-      approve: mockApprove,
-      respond: mockRespond,
-      // pair connection request
-      core: {
-        pairing: {
-          pair: mockPairing,
+    Web3Wallet: {
+      init: () => ({
+        on: mockWalletconnectEvent,
+        respondSessionRequest: mockRespondSessionRequest,
+        getActiveSessions: mockGetActiveSessions,
+        rejectSession: mockRejectSession,
+        approveSession: mockApproveSession,
+        disconnectSession: mockDisconnectSession,
+        emitSessionEvent: mockEmitSessionEvent,
+        core: {
+          pairing: {
+            pair: mockPairing,
+          },
         },
-      },
-      // disconnect
-      disconnect: mockDisconnect,
-    }),
+      }),
+    },
+  }
+})
+
+jest.mock('@walletconnect/core', () => {
+  return {
+    Core: function () {},
   }
 })
 
@@ -148,13 +154,13 @@ describe('Walletconnect unit tests', () => {
   beforeEach(() => {
     mockPairing.mockClear()
     mockWalletconnectEvent.mockClear()
-    mockReject.mockClear()
-    mockApprove.mockClear()
-    mockRespond.mockClear()
-    mockDisconnect.mockClear()
+    mockRespondSessionRequest.mockClear()
+    mockRejectSession.mockClear()
+    mockApproveSession.mockClear()
+    mockDisconnectSession.mockClear()
+    mockGetActiveSessions.mockClear()
+    mockGetActiveSessions.mockImplementation(() => ({}))
     mockQRcodeStub.mockClear()
-    mockGetAllSessions.mockClear()
-    mockGetAllSessions.mockImplementation(() => [])
     mockWeb3Stub.send.mockClear()
   })
 
@@ -351,10 +357,8 @@ describe('Walletconnect unit tests', () => {
           }
         })
 
-        mockApprove.mockImplementation(() => {
-          return {
-            acknowledged: () => Promise.resolve(mockV2SessionObj),
-          }
+        mockApproveSession.mockImplementation(() => {
+          return Promise.resolve(mockV2SessionObj)
         })
 
         renderWithProviders(<WalletconnectSafeApp />)
@@ -362,8 +366,8 @@ describe('Walletconnect unit tests', () => {
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-        expect(mockApprove).not.toBeCalled()
-        expect(mockReject).not.toBeCalled()
+        expect(mockApproveSession).not.toBeCalled()
+        expect(mockRejectSession).not.toBeCalled()
 
         // simulate a session proposal event
         act(() => {
@@ -374,7 +378,7 @@ describe('Walletconnect unit tests', () => {
         expect(dappNameNode).toBeInTheDocument()
 
         // no rejection is present in valid sessions
-        expect(mockReject).not.toBeCalled()
+        expect(mockRejectSession).not.toBeCalled()
 
         // No error label is present
         expect(screen.queryByText(invalidConnectionErrorLabel)).not.toBeInTheDocument()
@@ -382,15 +386,25 @@ describe('Walletconnect unit tests', () => {
         const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
 
         // approved session is sent
-        expect(mockApprove).toBeCalledWith({
+        expect(mockApproveSession).toBeCalledWith({
           id: mockSessionProposal.id,
           namespaces: {
             eip155: {
               accounts: safeAccount,
-              methods: safeAllowedMethods,
-              events: safeAllowedEvents,
+              methods: mockSessionProposal.params.requiredNamespaces.eip155.methods,
+              events: mockSessionProposal.params.requiredNamespaces.eip155.events,
             },
           },
+        })
+
+        // accountsChanged event is sent with the chain and the address of the safe
+        expect(mockEmitSessionEvent).toBeCalledWith({
+          topic: mockV2SessionObj.topic,
+          event: {
+            name: 'accountsChanged',
+            data: [mockSafeInfo.safeAddress],
+          },
+          chainId: `eip155:${mockSafeInfo.chainId}`,
         })
       })
 
@@ -405,10 +419,8 @@ describe('Walletconnect unit tests', () => {
           }
         })
 
-        mockApprove.mockImplementation(() => {
-          return {
-            acknowledged: () => Promise.resolve(mockV2SessionObj),
-          }
+        mockApproveSession.mockImplementation(() => {
+          return Promise.resolve(mockV2SessionObj)
         })
 
         renderWithProviders(<WalletconnectSafeApp />)
@@ -416,8 +428,8 @@ describe('Walletconnect unit tests', () => {
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-        expect(mockApprove).not.toBeCalled()
-        expect(mockReject).not.toBeCalled()
+        expect(mockApproveSession).not.toBeCalled()
+        expect(mockRejectSession).not.toBeCalled()
 
         // simulate an invalid EVM compatible session proposal event
         act(() => {
@@ -429,12 +441,13 @@ describe('Walletconnect unit tests', () => {
           expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
         )
 
-        expect(mockApprove).not.toBeCalled()
-        expect(mockReject).toBeCalledWith({
+        expect(mockApproveSession).not.toBeCalled()
+        expect(mockRejectSession).toBeCalledWith({
           id: mockInvalidEVMSessionProposal.id,
           reason: {
-            code: 1006,
-            message: 'No EVM-based (eip155) namespace present in the session proposal',
+            code: 5100,
+            message:
+              'Unsupported chains. No EVM-based (eip155) namespace present in the session proposal',
           },
         })
       })
@@ -450,10 +463,8 @@ describe('Walletconnect unit tests', () => {
           }
         })
 
-        mockApprove.mockImplementation(() => {
-          return {
-            acknowledged: () => Promise.resolve(mockV2SessionObj),
-          }
+        mockApproveSession.mockImplementation(() => {
+          return Promise.resolve(mockV2SessionObj)
         })
 
         renderWithProviders(<WalletconnectSafeApp />)
@@ -461,8 +472,8 @@ describe('Walletconnect unit tests', () => {
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-        expect(mockApprove).not.toBeCalled()
-        expect(mockReject).not.toBeCalled()
+        expect(mockApproveSession).not.toBeCalled()
+        expect(mockRejectSession).not.toBeCalled()
 
         // simulate an invalid session proposal event (no Safe chain is present)
         act(() => {
@@ -474,12 +485,13 @@ describe('Walletconnect unit tests', () => {
           expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
         )
 
-        expect(mockApprove).not.toBeCalled()
-        expect(mockReject).toBeCalledWith({
+        expect(mockApproveSession).not.toBeCalled()
+        expect(mockRejectSession).toBeCalledWith({
           id: mockInvalidEVMSessionProposal.id,
           reason: {
-            code: 1006,
-            message: 'No Goerli (eip155:5) namespace present in the session proposal',
+            code: 5100,
+            message:
+              'Unsupported chains. No Goerli (eip155:5) namespace present in the session proposal',
           },
         })
       })
@@ -488,7 +500,7 @@ describe('Walletconnect unit tests', () => {
     describe('transaction proposal', () => {
       it('acepts valid transactions', async () => {
         // configure autoconnection
-        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+        mockGetActiveSessions.mockImplementation(() => mockActiveSessions)
 
         // mock web3 send
         mockWeb3Stub.send.mockImplementation(() => Promise.resolve('0x'))
@@ -508,9 +520,9 @@ describe('Walletconnect unit tests', () => {
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-        expect(mockApprove).not.toBeCalled()
-        expect(mockReject).not.toBeCalled()
-        expect(mockRespond).not.toBeCalled()
+        expect(mockApproveSession).not.toBeCalled()
+        expect(mockRejectSession).not.toBeCalled()
+        expect(mockRespondSessionRequest).not.toBeCalled()
 
         act(() => {
           // simulate a valid transaction
@@ -524,7 +536,7 @@ describe('Walletconnect unit tests', () => {
 
         // responds to the Dapp with a valid transaction message
         await waitFor(() =>
-          expect(mockRespond).toBeCalledWith({
+          expect(mockRespondSessionRequest).toBeCalledWith({
             topic: mockValidTransactionRequest.topic,
             response: {
               id: mockValidTransactionRequest.id,
@@ -534,12 +546,12 @@ describe('Walletconnect unit tests', () => {
           }),
         )
 
-        expect(mockRespond).toBeCalledTimes(1)
+        expect(mockRespondSessionRequest).toBeCalledTimes(1)
       })
 
       it('rejects transactions from diffetent chains', async () => {
         // configure autoconnection
-        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+        mockGetActiveSessions.mockImplementation(() => mockActiveSessions)
 
         let fireTransactionProposalEvent = (
           proposal: SignClientTypes.EventArguments['session_request'],
@@ -556,9 +568,9 @@ describe('Walletconnect unit tests', () => {
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-        expect(mockApprove).not.toBeCalled()
-        expect(mockReject).not.toBeCalled()
-        expect(mockRespond).not.toBeCalled()
+        expect(mockApproveSession).not.toBeCalled()
+        expect(mockRejectSession).not.toBeCalled()
+        expect(mockRespondSessionRequest).not.toBeCalled()
 
         act(() => {
           // simulate an invalid transaction (from different chain Safe chain)
@@ -569,7 +581,7 @@ describe('Walletconnect unit tests', () => {
           'Transaction rejected: the connected Dapp is not set to the correct chain. Make sure the Dapp uses Goerli to interact with this Safe.'
 
         // respond with an transaction rejected error
-        expect(mockRespond).toBeCalledWith({
+        expect(mockRespondSessionRequest).toBeCalledWith({
           topic: mockInvalidChainTransactionRequest.topic,
           response: {
             id: mockInvalidChainTransactionRequest.id,
@@ -581,7 +593,7 @@ describe('Walletconnect unit tests', () => {
           },
         })
 
-        expect(mockRespond).toBeCalledTimes(1)
+        expect(mockRespondSessionRequest).toBeCalledTimes(1)
 
         // we show an error label in the IU
         await waitFor(() => expect(screen.getByText(errorMessageLabel)).toBeInTheDocument())
@@ -589,7 +601,7 @@ describe('Walletconnect unit tests', () => {
 
       it('shows an error if user manually rejects a transaction', async () => {
         // configure autoconnection
-        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+        mockGetActiveSessions.mockImplementation(() => mockActiveSessions)
 
         const errorMessageLabel = 'Transaction was rejected'
 
@@ -611,9 +623,9 @@ describe('Walletconnect unit tests', () => {
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-        expect(mockApprove).not.toBeCalled()
-        expect(mockReject).not.toBeCalled()
-        expect(mockRespond).not.toBeCalled()
+        expect(mockApproveSession).not.toBeCalled()
+        expect(mockRejectSession).not.toBeCalled()
+        expect(mockRespondSessionRequest).not.toBeCalled()
 
         act(() => {
           // simulate a valid transaction
@@ -627,7 +639,7 @@ describe('Walletconnect unit tests', () => {
 
         // responds to the Dapp with a valid transaction message
         await waitFor(() =>
-          expect(mockRespond).toBeCalledWith({
+          expect(mockRespondSessionRequest).toBeCalledWith({
             topic: mockValidTransactionRequest.topic,
             response: {
               id: mockValidTransactionRequest.id,
@@ -640,12 +652,12 @@ describe('Walletconnect unit tests', () => {
           }),
         )
 
-        expect(mockRespond).toBeCalledTimes(1)
+        expect(mockRespondSessionRequest).toBeCalledTimes(1)
       })
 
       it('shows an error if a invalid eth_signTransaction method is sent', async () => {
         // configure autoconnection
-        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+        mockGetActiveSessions.mockImplementation(() => mockActiveSessions)
 
         const errorMessageLabel = 'eth_signTransaction method is not implemented'
 
@@ -667,9 +679,9 @@ describe('Walletconnect unit tests', () => {
         // wait for loader to be removed
         await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'))
 
-        expect(mockApprove).not.toBeCalled()
-        expect(mockReject).not.toBeCalled()
-        expect(mockRespond).not.toBeCalled()
+        expect(mockApproveSession).not.toBeCalled()
+        expect(mockRejectSession).not.toBeCalled()
+        expect(mockRespondSessionRequest).not.toBeCalled()
 
         act(() => {
           // simulate a valid transaction
@@ -683,7 +695,7 @@ describe('Walletconnect unit tests', () => {
 
         // responds to the Dapp with a valid transaction message
         await waitFor(() =>
-          expect(mockRespond).toBeCalledWith({
+          expect(mockRespondSessionRequest).toBeCalledWith({
             topic: mockValidTransactionRequest.topic,
             response: {
               id: mockValidTransactionRequest.id,
@@ -696,14 +708,14 @@ describe('Walletconnect unit tests', () => {
           }),
         )
 
-        expect(mockRespond).toBeCalledTimes(1)
+        expect(mockRespondSessionRequest).toBeCalledTimes(1)
       })
     })
 
     describe('remove session', () => {
       it('remove session from the Safe App', async () => {
         // configure autoconnection
-        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+        mockGetActiveSessions.mockImplementation(() => mockActiveSessions)
 
         renderWithProviders(<WalletconnectSafeApp />)
 
@@ -720,13 +732,13 @@ describe('Walletconnect unit tests', () => {
           expect(screen.getByText(HELP_TITLE)).toBeInTheDocument()
           expect(screen.getByPlaceholderText(CONNECTION_INPUT_TEXT)).toBeInTheDocument()
 
-          expect(mockDisconnect).toBeCalled()
+          expect(mockDisconnectSession).toBeCalled()
         })
       })
 
       it('remove session from the connected DApp', async () => {
         // configure autoconnection
-        mockGetAllSessions.mockImplementation(() => mockActiveSessions)
+        mockGetActiveSessions.mockImplementation(() => mockActiveSessions)
 
         // we simulate a remove session event from the DApp
         let fireRemoveSessionEvent = () => {}

@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.13.3](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.13.2...tx-builder-1.13.3) (2023-02-06)
+
+
+### Bug Fixes
+
+* **tx-builder:** disable tx simulation in Celo ([#651](https://github.com/safe-global/safe-react-apps/issues/651)) ([d1e587d](https://github.com/safe-global/safe-react-apps/commit/d1e587dd88471b7556cdbbd1820a433a9e9957f7))
+
+
+
 ## [1.13.2](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.13.1...tx-builder-1.13.2) (2022-12-14)
 
 

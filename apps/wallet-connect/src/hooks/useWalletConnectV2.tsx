@@ -1,10 +1,11 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
-import SignClient from '@walletconnect/sign-client'
 import { SignClientTypes, SessionTypes, CoreTypes } from '@walletconnect/types'
 import { SafeAppProvider } from '@safe-global/safe-apps-provider'
 import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 import { ChainInfo } from '@safe-global/safe-apps-sdk'
 import { ethers } from 'ethers'
+import { Core } from '@walletconnect/core'
+import Web3WalletType, { Web3Wallet } from '@walletconnect/web3wallet'
 
 import {
   NEW_SESSION_ACTION,
@@ -14,27 +15,13 @@ import {
 } from '../utils/analytics'
 import { isProduction, SAFE_WALLET_METADATA, WALLETCONNECT_V2_PROJECT_ID } from '../constants'
 
-export const safeAllowedMethods: string[] = [
-  'eth_sendTransaction',
-  'eth_signTransaction', // not implemented for Safe wallets
-  'eth_sign',
-  'personal_sign',
-  'eth_signTypedData',
-  'safe_setSettings',
-]
-
-// accountsChanged or chainChanged events are not allowed for Safe Wallets
-export const safeAllowedEvents: string[] = ['accountsChanged', 'chainChanged']
-
 const EVMBasedNamespaces = 'eip155'
 
 // see https://docs.walletconnect.com/2.0/specs/sign/error-codes
 const UNSUPPORTED_CHAIN_ERROR_CODE = 5100
 const INVALID_METHOD_ERROR_CODE = 1001
-const USER_DISCONNECTED_CODE = 6000
 const USER_REJECTED_REQUEST_CODE = 4001
-// see https://docs.walletconnect.com/2.0/specs/sign/session-namespaces#example-proposal-namespaces-request
-const REJECT_SESSION_ERROR_CODE = 1006
+const USER_DISCONNECTED_CODE = 6000
 
 const logger = isProduction ? undefined : 'debug'
 
@@ -52,7 +39,8 @@ type useWalletConnectType = {
 const useWalletConnectV2 = (
   trackEvent: (action: string, version: WalletConnectVersion, meta?: CoreTypes.Metadata) => void,
 ): useWalletConnectType => {
-  const [signClient, setSignClient] = useState<SignClient>()
+  const [web3wallet, setWeb3wallet] = useState<Web3WalletType>()
+
   const [wcSession, setWcSession] = useState<SessionTypes.Struct>()
   const [isWallectConnectInitialized, setIsWallectConnectInitialized] = useState<boolean>(false)
   const [error, setError] = useState<string>()
@@ -77,16 +65,20 @@ const useWalletConnectV2 = (
     getChainInfo()
   }, [sdk.safe])
 
-  // Initializing the version 2 client, see https://docs.walletconnect.com/2.0/javascript/sign/wallet-usage#initializing-the-client
+  // Initializing v2, see https://docs.walletconnect.com/2.0/javascript/web3wallet/wallet-usage
   useEffect(() => {
     const initializeWalletConnectV2Client = async () => {
-      const signClient = await SignClient.init({
+      const core = new Core({
         projectId: WALLETCONNECT_V2_PROJECT_ID,
-        metadata: SAFE_WALLET_METADATA,
         logger,
       })
 
-      setSignClient(signClient)
+      const web3wallet = await Web3Wallet.init({
+        core,
+        metadata: SAFE_WALLET_METADATA,
+      })
+
+      setWeb3wallet(web3wallet)
     }
 
     try {
@@ -99,73 +91,58 @@ const useWalletConnectV2 = (
 
   // session_request needs a separate Effect because a valid wcSession should be present
   useEffect(() => {
-    if (isWallectConnectInitialized && signClient && wcSession) {
-      signClient.on(
-        'session_request',
-        async (request: SignClientTypes.EventArguments['session_request']) => {
-          const { topic, id } = request
-          const { method, params } = request.params.request
-          const transactionChainId = request.params.chainId
-          const isSafeChainId = transactionChainId === `${EVMBasedNamespaces}:${safe.chainId}`
+    if (isWallectConnectInitialized && web3wallet && wcSession) {
+      web3wallet.on('session_request', async event => {
+        const { topic, id } = event
+        const { request, chainId: transactionChainId } = event.params
+        const { method, params } = request
 
-          // we only accept transactions from the Safe chain
-          if (!isSafeChainId) {
-            const errorMessage = `Transaction rejected: the connected Dapp is not set to the correct chain. Make sure the Dapp uses ${chainInfo?.chainName} to interact with this Safe.`
-            setError(errorMessage)
-            await signClient.respond({
-              topic,
-              response: {
-                id,
-                jsonrpc: '2.0',
-                error: {
-                  code: UNSUPPORTED_CHAIN_ERROR_CODE,
-                  message: errorMessage,
-                },
-              },
-            })
-            return
-          }
+        const isSafeChainId = transactionChainId === `${EVMBasedNamespaces}:${safe.chainId}`
 
-          try {
-            setError(undefined)
-            const result = await web3Provider.send(method, params)
-            await signClient.respond({
-              topic,
-              response: {
-                id,
-                jsonrpc: '2.0',
-                result,
-              },
-            })
-            trackEvent(
-              TRANSACTION_CONFIRMED_ACTION,
-              WALLET_CONNECT_VERSION_2,
-              wcSession.peer.metadata,
-            )
-          } catch (error: any) {
-            setError(error?.message)
-            const isUserRejection = error?.message?.includes?.('Transaction was rejected')
-            const code = isUserRejection ? USER_REJECTED_REQUEST_CODE : INVALID_METHOD_ERROR_CODE
-            signClient.respond({
-              topic,
-              response: {
-                id,
-                jsonrpc: '2.0',
-                error: {
-                  code,
-                  message: error.message,
-                },
-              },
-            })
-          }
-        },
-      )
+        // we only accept transactions from the Safe chain
+        if (!isSafeChainId) {
+          const errorMessage = `Transaction rejected: the connected Dapp is not set to the correct chain. Make sure the Dapp uses ${chainInfo?.chainName} to interact with this Safe.`
+          setError(errorMessage)
+          await web3wallet.respondSessionRequest({
+            topic,
+            response: rejectResponse(id, UNSUPPORTED_CHAIN_ERROR_CODE, errorMessage),
+          })
+          return
+        }
+
+        try {
+          setError(undefined)
+          const result = await web3Provider.send(method, params)
+          await web3wallet.respondSessionRequest({
+            topic,
+            response: {
+              id,
+              jsonrpc: '2.0',
+              result,
+            },
+          })
+
+          trackEvent(
+            TRANSACTION_CONFIRMED_ACTION,
+            WALLET_CONNECT_VERSION_2,
+            wcSession.peer.metadata,
+          )
+        } catch (error: any) {
+          setError(error?.message)
+          const isUserRejection = error?.message?.includes?.('Transaction was rejected')
+          const code = isUserRejection ? USER_REJECTED_REQUEST_CODE : INVALID_METHOD_ERROR_CODE
+          await web3wallet.respondSessionRequest({
+            topic,
+            response: rejectResponse(id, code, error.message),
+          })
+        }
+      })
     }
   }, [
     chainInfo,
     wcSession,
     isWallectConnectInitialized,
-    signClient,
+    web3wallet,
     trackEvent,
     safe,
     web3Provider,
@@ -173,133 +150,132 @@ const useWalletConnectV2 = (
 
   // we set here the events & restore an active previous session
   useEffect(() => {
-    if (!isWallectConnectInitialized && signClient) {
-      // we try to find a compatible active sesssion
-      const activeSessions = signClient.session.getAll()
-      const compatibleSession = activeSessions.find(session =>
-        session.namespaces[EVMBasedNamespaces].accounts.includes(
-          `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`,
-        ),
-      )
+    if (!isWallectConnectInitialized && web3wallet) {
+      // we try to find a compatible active session
+      const activeSessions = web3wallet.getActiveSessions()
+      const compatibleSession = Object.keys(activeSessions)
+        .map(topic => activeSessions[topic])
+        .find(session =>
+          session.namespaces[EVMBasedNamespaces].accounts.includes(
+            `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`,
+          ),
+        )
 
       if (compatibleSession) {
         setWcSession(compatibleSession)
       }
 
       // events
-      signClient.on(
-        'session_proposal',
-        async (proposal: SignClientTypes.EventArguments['session_proposal']) => {
-          const { id, params } = proposal
-          const { requiredNamespaces } = params
-          const EIP155Namespace = requiredNamespaces[EVMBasedNamespaces]
+      web3wallet.on('session_proposal', async proposal => {
+        const { id, params } = proposal
+        const { requiredNamespaces } = params
+        const EIP155Namespace = requiredNamespaces[EVMBasedNamespaces]
 
-          // at least a EVM-based (eip155) namespace should be present
-          const isEIP155NamespacePresent = !!EIP155Namespace
+        // at least a EVM-based (eip155) namespace should be present
+        const isEIP155NamespacePresent = !!EIP155Namespace
 
-          const errorMessage = `Connection refused: Incompatible chain detected. Make sure the Dapp uses ${chainInfo?.chainName} to interact with this Safe.`
+        const errorMessage = `Connection refused: Incompatible chain detected. Make sure the Dapp uses ${chainInfo?.chainName} to interact with this Safe.`
 
-          if (!isEIP155NamespacePresent) {
-            setError(errorMessage)
-            await signClient.reject({
-              id,
-              reason: {
-                code: REJECT_SESSION_ERROR_CODE,
-                message: `No EVM-based (${EVMBasedNamespaces}) namespace present in the session proposal`,
+        if (!isEIP155NamespacePresent) {
+          setError(errorMessage)
+
+          await web3wallet.rejectSession({
+            id: proposal.id,
+            reason: {
+              code: UNSUPPORTED_CHAIN_ERROR_CODE,
+              message: `Unsupported chains. No EVM-based (${EVMBasedNamespaces}) namespace present in the session proposal`,
+            },
+          })
+          return
+        }
+
+        // chain Safe should be present
+        const isSafeChainIdPresent = EIP155Namespace.chains?.some(
+          chain => chain === `${EVMBasedNamespaces}:${safe.chainId}`,
+        )
+
+        if (!isSafeChainIdPresent) {
+          setError(errorMessage)
+          await web3wallet.rejectSession({
+            id: proposal.id,
+            reason: {
+              code: UNSUPPORTED_CHAIN_ERROR_CODE,
+              message: `Unsupported chains. No ${chainInfo?.chainName} (${EVMBasedNamespaces}:${safe.chainId}) namespace present in the session proposal`,
+            },
+          })
+          return
+        }
+
+        // As a workaround we lie to the Dapp, accepting all EVM accounts, methods & events
+        const safeAccount = EIP155Namespace.chains?.map(chain => `${chain}:${safe.safeAddress}`)
+
+        try {
+          const wcSession = await web3wallet.approveSession({
+            id,
+            namespaces: {
+              eip155: {
+                accounts: safeAccount || [
+                  `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`,
+                ],
+                methods: EIP155Namespace.methods,
+                events: EIP155Namespace.events,
               },
-            })
-            return
-          }
+            },
+          })
 
-          // chain Safe should be present
-          const isSafeChainIdPresent = EIP155Namespace.chains.some(
-            chain => chain === `${EVMBasedNamespaces}:${safe.chainId}`,
-          )
+          trackEvent(NEW_SESSION_ACTION, WALLET_CONNECT_VERSION_2, wcSession.peer.metadata)
 
-          if (!isSafeChainIdPresent) {
-            setError(errorMessage)
-            await signClient.reject({
-              id,
-              reason: {
-                code: REJECT_SESSION_ERROR_CODE,
-                message: `No ${chainInfo?.chainName} (${EVMBasedNamespaces}:${safe.chainId}) namespace present in the session proposal`,
-              },
-            })
-            return
-          }
+          // always emit a accountsChanged event to set the safe addres & chain
+          web3wallet.emitSessionEvent({
+            topic: wcSession.topic,
+            event: {
+              name: 'accountsChanged',
+              data: [safe.safeAddress],
+            },
+            chainId: `${EVMBasedNamespaces}:${safe.chainId}`,
+          })
 
-          // As a workaround we lie to the Dapp, accepting all EVM accounts, methods & events
-          const safeAccount = EIP155Namespace.chains.map(chain => `${chain}:${safe.safeAddress}`)
+          setWcSession(wcSession)
+          setError(undefined)
+        } catch (error) {
+          console.log('error: ', error)
+          setError(errorMessage)
+        }
+      })
 
-          try {
-            const { acknowledged } = await signClient.approve({
-              id,
-              namespaces: {
-                eip155: {
-                  accounts: safeAccount,
-                  methods: safeAllowedMethods,
-                  events: safeAllowedEvents,
-                },
-              },
-            })
-
-            const wcSession = await acknowledged()
-
-            trackEvent(NEW_SESSION_ACTION, WALLET_CONNECT_VERSION_2, wcSession.peer.metadata)
-
-            setWcSession(wcSession)
-            setError(undefined)
-          } catch (error) {
-            setError(errorMessage)
-          }
-        },
-      )
-
-      signClient.on('session_delete', (event: SignClientTypes.EventArguments['session_delete']) => {
+      web3wallet.on('session_delete', async () => {
         setWcSession(undefined)
         setError(undefined)
       })
 
-      signClient.on('session_event', (event: SignClientTypes.EventArguments['session_event']) => {
-        // Handle session events, such as "chainChanged", "accountsChanged", etc...
-
-        console.log('event: ', event)
-      })
-
-      signClient.on('session_ping', (event: SignClientTypes.EventArguments['session_ping']) => {
-        // React to session ping event
-
-        console.log('ping: ', event)
-      })
-
       setIsWallectConnectInitialized(true)
     }
-  }, [safe, signClient, isWallectConnectInitialized, chainInfo, trackEvent])
+  }, [safe, web3wallet, isWallectConnectInitialized, chainInfo, trackEvent])
 
   const wcConnect = useCallback<wcConnectType>(
     async (uri: string) => {
       const isValidWalletConnectUri = uri && uri.startsWith('wc')
 
-      if (isValidWalletConnectUri && signClient) {
-        await signClient.core.pairing.pair({ uri })
+      if (isValidWalletConnectUri && web3wallet) {
+        await web3wallet.core.pairing.pair({ uri })
       }
     },
-    [signClient],
+    [web3wallet],
   )
 
   const wcDisconnect = useCallback<wcDisconnectType>(async () => {
-    if (wcSession && signClient) {
-      setWcSession(undefined)
-      setError(undefined)
-      await signClient.disconnect({
+    if (wcSession && web3wallet) {
+      await web3wallet.disconnectSession({
         topic: wcSession.topic,
         reason: {
           code: USER_DISCONNECTED_CODE,
-          message: 'Safe Wallet Session ended by the user',
+          message: 'User disconnected. Safe Wallet Session ended by the user',
         },
       })
+      setWcSession(undefined)
+      setError(undefined)
     }
-  }, [signClient, wcSession])
+  }, [web3wallet, wcSession])
 
   const wcClientData = wcSession?.peer.metadata
 
@@ -307,3 +283,14 @@ const useWalletConnectV2 = (
 }
 
 export default useWalletConnectV2
+
+const rejectResponse = (id: number, code: number, message: string) => {
+  return {
+    id,
+    jsonrpc: '2.0',
+    error: {
+      code,
+      message,
+    },
+  }
+}
