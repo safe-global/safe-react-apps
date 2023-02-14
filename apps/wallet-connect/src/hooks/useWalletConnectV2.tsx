@@ -190,7 +190,7 @@ const useWalletConnectV2 = (
         }
 
         // chain Safe should be present
-        const isSafeChainIdPresent = EIP155Namespace.chains.some(
+        const isSafeChainIdPresent = EIP155Namespace.chains?.some(
           chain => chain === `${EVMBasedNamespaces}:${safe.chainId}`,
         )
 
@@ -207,14 +207,16 @@ const useWalletConnectV2 = (
         }
 
         // As a workaround we lie to the Dapp, accepting all EVM accounts, methods & events
-        const safeAccount = EIP155Namespace.chains.map(chain => `${chain}:${safe.safeAddress}`)
+        const safeAccount = EIP155Namespace.chains?.map(chain => `${chain}:${safe.safeAddress}`)
 
         try {
           const wcSession = await web3wallet.approveSession({
             id,
             namespaces: {
               eip155: {
-                accounts: safeAccount,
+                accounts: safeAccount || [
+                  `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`,
+                ],
                 methods: EIP155Namespace.methods,
                 events: EIP155Namespace.events,
               },
@@ -241,8 +243,6 @@ const useWalletConnectV2 = (
         }
       })
 
-      // TODO: waiting for session_delete event in the next release
-      // @ts-ignore
       web3wallet.on('session_delete', async () => {
         setWcSession(undefined)
         setError(undefined)
@@ -272,6 +272,8 @@ const useWalletConnectV2 = (
           message: 'User disconnected. Safe Wallet Session ended by the user',
         },
       })
+      setWcSession(undefined)
+      setError(undefined)
     }
   }, [web3wallet, wcSession])
 

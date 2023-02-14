@@ -57,6 +57,7 @@ export const mockSessionProposal = {
         events: ['chainChanged', 'accountsChanged'],
       },
     },
+    optionalNamespaces: {},
     relays: [
       {
         protocol: 'irn',
@@ -99,6 +100,7 @@ export const mockInvalidEVMSessionProposal = {
         events: [],
       },
     },
+    optionalNamespaces: {},
     relays: [
       {
         protocol: 'irn',
@@ -135,6 +137,7 @@ export const mockInvalidChainIdSessionProposal = {
         events: ['chainChanged', 'accountsChanged'],
       },
     },
+    optionalNamespaces: {},
     relays: [
       {
         protocol: 'irn',
