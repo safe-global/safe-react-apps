@@ -15,17 +15,6 @@ import {
 } from '../utils/analytics'
 import { isProduction, SAFE_WALLET_METADATA, WALLETCONNECT_V2_PROJECT_ID } from '../constants'
 
-export const safeAllowedMethods: string[] = [
-  'eth_sendTransaction',
-  'eth_signTransaction', // not implemented for Safe wallets
-  'eth_sign',
-  'personal_sign',
-  'eth_signTypedData',
-]
-
-// accountsChanged or chainChanged events are not allowed for Safe Wallets
-export const safeAllowedEvents: string[] = ['accountsChanged', 'chainChanged']
-
 const EVMBasedNamespaces = 'eip155'
 
 // see https://docs.walletconnect.com/2.0/specs/sign/error-codes
@@ -204,6 +193,7 @@ const useWalletConnectV2 = (
         const isSafeChainIdPresent = EIP155Namespace.chains.some(
           chain => chain === `${EVMBasedNamespaces}:${safe.chainId}`,
         )
+
         if (!isSafeChainIdPresent) {
           setError(errorMessage)
           await web3wallet.rejectSession({
@@ -225,17 +215,28 @@ const useWalletConnectV2 = (
             namespaces: {
               eip155: {
                 accounts: safeAccount,
-                methods: safeAllowedMethods,
-                events: safeAllowedEvents,
+                methods: EIP155Namespace.methods,
+                events: EIP155Namespace.events,
               },
             },
           })
 
           trackEvent(NEW_SESSION_ACTION, WALLET_CONNECT_VERSION_2, wcSession.peer.metadata)
 
+          // always emit a accountsChanged event to set the safe addres & chain
+          web3wallet.emitSessionEvent({
+            topic: wcSession.topic,
+            event: {
+              name: 'accountsChanged',
+              data: [safe.safeAddress],
+            },
+            chainId: `${EVMBasedNamespaces}:${safe.chainId}`,
+          })
+
           setWcSession(wcSession)
           setError(undefined)
         } catch (error) {
+          console.log('error: ', error)
           setError(errorMessage)
         }
       })

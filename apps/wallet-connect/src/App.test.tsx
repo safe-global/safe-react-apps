@@ -11,7 +11,6 @@ import {
 import { SignClientTypes } from '@walletconnect/types'
 
 import WalletconnectSafeApp from './App'
-import { safeAllowedEvents, safeAllowedMethods } from './hooks/useWalletConnectV2'
 import {
   mockActiveSessions,
   mockChainInfo,
@@ -94,6 +93,7 @@ const mockRejectSession = jest.fn()
 const mockApproveSession = jest.fn()
 const mockDisconnectSession = jest.fn()
 const mockPairing = jest.fn()
+const mockEmitSessionEvent = jest.fn()
 
 // walletconnect version 2 mock
 jest.mock('@walletconnect/web3wallet', () => {
@@ -106,6 +106,7 @@ jest.mock('@walletconnect/web3wallet', () => {
         rejectSession: mockRejectSession,
         approveSession: mockApproveSession,
         disconnectSession: mockDisconnectSession,
+        emitSessionEvent: mockEmitSessionEvent,
         core: {
           pairing: {
             pair: mockPairing,
@@ -390,10 +391,20 @@ describe('Walletconnect unit tests', () => {
           namespaces: {
             eip155: {
               accounts: safeAccount,
-              methods: safeAllowedMethods,
-              events: safeAllowedEvents,
+              methods: mockSessionProposal.params.requiredNamespaces.eip155.methods,
+              events: mockSessionProposal.params.requiredNamespaces.eip155.events,
             },
           },
+        })
+
+        // accountsChanged event is sent with the chain and the address of the safe
+        expect(mockEmitSessionEvent).toBeCalledWith({
+          topic: mockV2SessionObj.topic,
+          event: {
+            name: 'accountsChanged',
+            data: [mockSafeInfo.safeAddress],
+          },
+          chainId: `eip155:${mockSafeInfo.chainId}`,
         })
       })
 
