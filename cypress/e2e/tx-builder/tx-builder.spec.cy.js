@@ -44,7 +44,7 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
     cy.findByRole('region').should('exist')
     cy.findByText('test Address Value').should('exist')
     cy.findByText('newValue(address):').should('exist')
-    cy.findAllByText('0x49d4...26A6').should('have.length', 2)
+    cy.findAllByText('0x49d4...26A6').should('have.length', 1)
   })
 
   it('should allow to create and send a complex batch', () => {
@@ -105,7 +105,7 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
     cy.findByRole('region').should('exist')
     cy.findByText(/add owner with threshold/i).should('exist')
     cy.findByText('owner(address):').should('exist')
-    cy.findAllByText('0x49d4...26A6').should('have.length', 2)
+    cy.findAllByText('0x49d4...26A6').should('have.length', 1)
     cy.findByText('_threshold(uint256):').should('exist')
   })
 
