@@ -9,7 +9,7 @@
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.12",
-    "@safe-global/safe-apps-provider": "^0.15.2",
+    "@safe-global/safe-apps-provider": "^0.16.0",
     "bezier-easing": "^2.1.0",
     "ethers": "^5.7.2",
     "react-twitter-embed": "^4.0.4"
