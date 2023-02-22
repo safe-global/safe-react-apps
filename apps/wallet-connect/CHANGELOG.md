@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.10.0](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.9.1...wallet-connect-1.10.0) (2023-02-22)
+
+
+### Features
+
+* **wallet-connect:** Add new @walletconnect/web3wallet package ([#665](https://github.com/safe-global/safe-react-apps/issues/665)) ([438def3](https://github.com/safe-global/safe-react-apps/commit/438def39d8aa00a3fd9808b8a494d647723cfd26))
+
+
+
 ## [1.9.1](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.9.0...wallet-connect-1.9.1) (2023-02-06)
 
 
