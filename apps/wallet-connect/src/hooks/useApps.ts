@@ -44,9 +44,13 @@ export function useApps(): UseAppsResponse {
 
   const findSafeApp = useCallback(
     (url: string): SafeAppData | undefined => {
-      let { hostname } = new URL(url)
+      try {
+        const { hostname } = new URL(url)
 
-      return safeAppsList.find(safeApp => safeApp.url.includes(hostname))
+        return safeAppsList.find(safeApp => safeApp.url.includes(hostname))
+      } catch (error) {
+        console.error('Unable to find Safe App:', error)
+      }
     },
     [safeAppsList],
   )
