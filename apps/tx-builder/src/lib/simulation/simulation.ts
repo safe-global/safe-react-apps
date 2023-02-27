@@ -21,6 +21,8 @@ const NON_SUPPORTED_CHAINS = [
   '42220',
   // Volta
   '73799',
+  // Base Goerli
+  '84531',
   // Aurora
   '1313161554',
 ]
