@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.4.0](https://github.com/safe-global/safe-react-apps/compare/drain-safe-1.3.6...drain-safe-1.4.0) (2023-02-27)
+
+
+### Features
+
+* **wallet-connect:** EIP-1271 support ([8084cd3](https://github.com/safe-global/safe-react-apps/commit/8084cd36ca19fb740db740d3279774f6e3e1b890))
+
+
+
 ## [1.3.6](https://github.com/safe-global/safe-react-apps/compare/drain-safe-1.3.5...drain-safe-1.3.6) (2023-02-06)
 
 
