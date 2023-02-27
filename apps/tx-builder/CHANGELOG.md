@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.14.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.13.3...tx-builder-1.14.0) (2023-02-27)
+
+
+### Bug Fixes
+
+* **tx-builder:** disable simulation for Base Goerli ([#675](https://github.com/safe-global/safe-react-apps/issues/675)) ([6785463](https://github.com/safe-global/safe-react-apps/commit/67854630f3ddcb015add5f1fa89868eea59d08a0))
+
+
+### Features
+
+* **wallet-connect:** EIP-1271 support ([8084cd3](https://github.com/safe-global/safe-react-apps/commit/8084cd36ca19fb740db740d3279774f6e3e1b890))
+
+
+
 ## [1.13.3](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.13.2...tx-builder-1.13.3) (2023-02-06)
 
 
