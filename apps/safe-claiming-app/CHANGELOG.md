@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [0.5.0](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.4.2...safe-claiming-app-0.5.0) (2023-02-27)
+
+
+### Features
+
+* **wallet-connect:** EIP-1271 support ([8084cd3](https://github.com/safe-global/safe-react-apps/commit/8084cd36ca19fb740db740d3279774f6e3e1b890))
+
+
+
 ## [0.4.2](https://github.com/safe-global/safe-react-apps/compare/safe-claiming-app-0.4.1...safe-claiming-app-0.4.2) (2023-02-06)
 
 
