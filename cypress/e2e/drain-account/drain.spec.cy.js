@@ -1,9 +1,9 @@
 describe('Testing Drain Account safe app', { defaultCommandTimeout: 12000 }, () => {
   const appUrl = Cypress.env('DRAIN_SAFE_URL')
   const iframeSelector = `iframe[id="iframe-${appUrl}"]`
-  const visitUrl = `/${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
+  const visitUrl = `/apps?safe=${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
     'TESTING_SAFE_ADDRESS',
-  )}/apps?appUrl=${encodeURIComponent(appUrl)}`
+  )}&appUrl=${encodeURIComponent(appUrl)}`
 
   before(() => {
     cy.task('log', visitUrl)
