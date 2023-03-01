@@ -1,7 +1,7 @@
 describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => {
   const appUrl = Cypress.env('TX_BUILDER_URL')
   const iframeSelector = `iframe[id="iframe-${appUrl}"]`
-  const visitUrl = `/apps?safe=${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
+  const visitUrl = `/apps/open?safe=${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
     'TESTING_SAFE_ADDRESS',
   )}&appUrl=${encodeURIComponent(appUrl)}`
 

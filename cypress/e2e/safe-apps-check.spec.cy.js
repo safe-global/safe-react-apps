@@ -8,7 +8,7 @@ describe('Safe Apps List', () => {
   safeAppsList.forEach(safeApp => {
     it(safeApp.name, () => {
       cy.visitSafeApp(
-        `/apps?safe=${Cypress.env('NETWORK_PREFIX')}:${Cypress.env('TESTING_SAFE_ADDRESS')}&appUrl=${
+        `/apps/open?safe=${Cypress.env('NETWORK_PREFIX')}:${Cypress.env('TESTING_SAFE_ADDRESS')}&appUrl=${
           safeApp.url
         }`,
         safeApp.url,
