@@ -10,8 +10,15 @@ const chains = [1, 5, 10, 56, 100, 137, 42161, 43114, 73799, 1313161554]
 let warningCheckedCustomApps = []
 const drainSafeUrl = Cypress.env('DRAIN_SAFE_URL')
 
-if (drainSafeUrl) {
+// TODO: Remove this once all the safe apps are deployed on the same domain in each environment
+if (drainSafeUrl && drainSafeUrl.includes('safereactapps.review-react-hr.5afe.dev')) {
   warningCheckedCustomApps.push(new URL(drainSafeUrl).origin)
+} else {
+  warningCheckedCustomApps = [
+    'https://apps.gnosis-safe.io',
+    'https://safe-apps.dev.5afe.dev',
+    'https://apps-portal.safe.global',
+  ]
 }
 
 Cypress.Commands.add('visitSafeApp', (visitUrl, appUrl) => {
