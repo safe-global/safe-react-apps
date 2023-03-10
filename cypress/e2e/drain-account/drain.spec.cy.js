@@ -11,7 +11,7 @@ describe('Testing Drain Account safe app', { defaultCommandTimeout: 12000 }, () 
 
   beforeEach(() => {
     // Navigate to Safe App in TESTING SAFE
-    cy.visitSafeApp(visitUrl, appUrl)
+    cy.visitSafeApp(visitUrl)
 
     cy.frameLoaded(iframeSelector)
 

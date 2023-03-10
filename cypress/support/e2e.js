@@ -21,8 +21,9 @@ if (drainSafeUrl && drainSafeUrl.includes('safereactapps.review-react-hr.5afe.de
   ]
 }
 
-Cypress.Commands.add('visitSafeApp', (visitUrl, appUrl) => {
+Cypress.Commands.add('visitSafeApp', visitUrl => {
   cy.on('window:before:load', async window => {
+    // Avoid to show the disclaimer and unknown apps warning
     window.localStorage.setItem(
       INFO_MODAL_KEY,
       JSON.stringify({
@@ -39,30 +40,17 @@ Cypress.Commands.add('visitSafeApp', (visitUrl, appUrl) => {
       }),
     )
 
-    try {
-      const response = await fetch(`${appUrl}/manifest.json`)
-      const manifest = await response.json()
-      const { safe_apps_permissions } = manifest
-
-      if (safe_apps_permissions) {
-        window.localStorage.setItem(
-          BROWSER_PERMISSIONS_KEY,
-          JSON.stringify({
-            [new URL(appUrl).origin]: safe_apps_permissions.map(permission => ({
-              feature: permission,
-              status: 'granted',
-            })),
-          }),
-        )
-      }
-    } catch {
-      console.error(`Error retrieving manifest for ${appUrl}`)
-    }
-
     window.localStorage.setItem('SAFE_v2__lastWallet', JSON.stringify('E2E Wallet'))
   })
 
   cy.visit(visitUrl, { failOnStatusCode: false })
+
+  // Discard permissions if any
+  cy.findByText(/this app is requesting permission to use:/i).then($element => {
+    if ($element.length) {
+      cy.findByText(/continue/i).click({ force: true })
+    }
+  })
 
   cy.wait(500)
 })
