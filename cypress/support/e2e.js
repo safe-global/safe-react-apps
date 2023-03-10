@@ -21,7 +21,16 @@ if (drainSafeUrl && drainSafeUrl.includes('safereactapps.review-react-hr.5afe.de
   ]
 }
 
-Cypress.Commands.add('visitSafeApp', visitUrl => {
+Cypress.Commands.add('visitSafeApp', (visitUrl, appUrl) => {
+  if (appUrl) {
+    cy.intercept('GET', `${appUrl}/manifest.json`, {
+      name: 'App',
+      description: 'The App',
+      iconPath: 'logo.svg',
+      safe_apps_permissions: [],
+    })
+  }
+
   cy.on('window:before:load', async window => {
     // Avoid to show the disclaimer and unknown apps warning
     window.localStorage.setItem(
@@ -44,13 +53,6 @@ Cypress.Commands.add('visitSafeApp', visitUrl => {
   })
 
   cy.visit(visitUrl, { failOnStatusCode: false })
-
-  // Discard permissions if any
-  cy.findByText(/this app is requesting permission to use:/i).then($element => {
-    if ($element.length) {
-      cy.findByText(/continue/i).click({ force: true })
-    }
-  })
 
   cy.wait(500)
 })
