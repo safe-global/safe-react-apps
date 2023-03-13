@@ -16,11 +16,11 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-      - name: Checkout
-        uses: actions/checkout@v3
-
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
+
+      - name: Checkout
+        uses: actions/checkout@v3
 
       # - name: Checkout web-core
       #   uses: actions/checkout@v3
