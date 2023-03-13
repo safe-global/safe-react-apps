@@ -49,16 +49,20 @@ jobs:
       #   run: |
       #     yarn serve &
 
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+
       - name: Get Changed Apps
+        id: changedApps
         run: |
-          echo "AFFECTED_APPS=${{ npx nx print-affected --type=app --select=projects }} >> $GITHUB_ENV
-        if: github.ref != 'refs/heads/development'
+          output=$(npx nx print-affected --type=app --select=projects)
+          echo "::set-output name=changed::$output"
 
       - name: Set PR Safe Apps base URL
         run: |
           echo "SAFE_APPS_BASE_URL=https://pr${{ github.event.number }}--safereactapps.review-react-hr.5afe.dev" >> $GITHUB_ENV
           echo "BASE_URL=https://safe-web.dev.5afe.dev/app" >> $GITHUB_ENV
-        if: github.ref != 'refs/heads/development' && ${{ env.AFFECTED_APPS }} == ''
+        if: github.ref != 'refs/heads/development' && ${{ steps.changedApps.outputs.changed }} != ''
 
       - name: Set development Safe Apps base URL
         run: |
