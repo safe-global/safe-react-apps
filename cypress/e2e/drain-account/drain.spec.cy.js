@@ -11,7 +11,7 @@ describe('Testing Drain Account safe app', { defaultCommandTimeout: 12000 }, () 
 
   beforeEach(() => {
     // Navigate to Safe App in TESTING SAFE
-    cy.visitSafeApp(visitUrl, appUrl)
+    cy.visitSafeApp(visitUrl)
 
     cy.frameLoaded(iframeSelector)
 
@@ -25,8 +25,8 @@ describe('Testing Drain Account safe app', { defaultCommandTimeout: 12000 }, () 
         .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
       getBody().findAllByText('Transfer everything').click()
     })
-    cy.findByRole('button', { name: 'Action 1' })
-    cy.findByRole('button', { name: 'Action 2 transfer' })
+    cy.findByRole('button', { name: 'Action 1 transfer' })
+    cy.findByRole('button', { name: 'Action 2' })
     cy.findByRole('button', { name: 'Action 3 transfer' })
   })
 
@@ -68,7 +68,7 @@ describe('Testing Drain Account safe app', { defaultCommandTimeout: 12000 }, () 
         .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
       getBody().findAllByText('Transfer 2 assets').click()
     })
-    cy.findByRole('button', { name: 'Action 1 transfer' })
+    cy.findByRole('button', { name: 'Action 1' })
     cy.findByRole('button', { name: 'Action 2 transfer' })
   })
 })

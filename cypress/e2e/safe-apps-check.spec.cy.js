@@ -8,9 +8,9 @@ describe('Safe Apps List', () => {
   safeAppsList.forEach(safeApp => {
     it(safeApp.name, () => {
       cy.visitSafeApp(
-        `/apps/open?safe=${Cypress.env('NETWORK_PREFIX')}:${Cypress.env('TESTING_SAFE_ADDRESS')}&appUrl=${
-          safeApp.url
-        }`,
+        `/apps/open?safe=${Cypress.env('NETWORK_PREFIX')}:${Cypress.env(
+          'TESTING_SAFE_ADDRESS',
+        )}&appUrl=${safeApp.url}`,
         safeApp.url,
       )
       const iframeSelector = `iframe[id="iframe-${safeApp.url}"]`
