@@ -12,7 +12,6 @@
     "lint:fix": "yarn lint:check --fix",
     "start:drain-safe": "yarn workspace drain-safe start",
     "start:ramp-network": "yarn workspace ramp-network start",
-    "start:safe-claiming-app": "yarn workspace safe-claiming-app start",
     "start:siwe-delegate-manager": "yarn workspace siwe-delegate-manager start",
     "start:tx-builder": "yarn workspace tx-builder start",
     "start:wallet-connect": "yarn workspace wallet-connect start",

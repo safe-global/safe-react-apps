@@ -1,6 +1,0 @@
-contracts
-node_modules
-src/setupTests.ts
-public
-.eslintrc.js
-craco.config.ts
