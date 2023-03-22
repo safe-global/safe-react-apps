@@ -166,6 +166,100 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
     cy.findByText('0xc6b82bA149CFA113f8f48d5E3b1F78e933e16DfD').should('be.visible')
   })
 
+  it('should allow to cancel a created batch', () => {
+    cy.enter(iframeSelector).then(getBody => {
+      getBody()
+        .findByLabelText(/enter address or ens name/i)
+        .type('0x51A099ac1BF46D471110AA8974024Bfe518Fd6C4')
+      getBody().find('[name="contractMethodIndex"]').parent().click()
+      getBody().findByRole('option', { name: 'testAddressValue' }).click()
+      getBody()
+        .findByLabelText('newValue (address)')
+        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
+      getBody()
+        .findByText(/add transaction/i)
+        .click()
+      getBody()
+        .findByText(/create batch/i)
+        .click()
+      getBody()
+        .findByRole('button', { name: 'Cancel' }).click()
+      getBody()
+        .findByText(/Clear transaction list?/i)
+      getBody()
+        .findByRole('button', { name: /Yes, clear/i }).click()
+      getBody()
+        .findAllByText('choose a file').should('be.visible')
+    })
+  })
+
+  it('should allow to revert a cancel and continue with the flow', () => {
+    cy.enter(iframeSelector).then(getBody => {
+      getBody()
+        .findByLabelText(/enter address or ens name/i)
+        .type('0x51A099ac1BF46D471110AA8974024Bfe518Fd6C4')
+      getBody().find('[name="contractMethodIndex"]').parent().click()
+      getBody().findByRole('option', { name: 'testAddressValue' }).click()
+      getBody()
+        .findByLabelText('newValue (address)')
+        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
+      getBody()
+        .findByText(/add transaction/i)
+        .click()
+      getBody()
+        .findByText(/create batch/i)
+        .click()
+      getBody()
+        .findByRole('button', { name: 'Cancel' }).click()
+      getBody()
+        .findByText(/Clear transaction list?/i)
+      getBody()
+        .findByRole('button', { name: /Back/i }).click()
+      getBody()
+      .findByText(/Review and confirm/i).should('be.visible')
+    })
+  })
+
+  it('should allow to go back without removing data and add more transactions to the batch', () => {
+    cy.enter(iframeSelector).then(getBody => {
+      getBody()
+        .findByLabelText(/enter address or ens name/i)
+        .type('0x51A099ac1BF46D471110AA8974024Bfe518Fd6C4')
+      getBody().find('[name="contractMethodIndex"]').parent().click()
+      getBody().findByRole('option', { name: 'testAddressValue' }).click()
+      getBody()
+        .findByLabelText('newValue (address)')
+        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
+      getBody()
+        .findByText(/add transaction/i)
+        .click()
+      getBody()
+        .findByText(/create batch/i)
+        .click()
+      getBody()
+        .findByText(/Back to Transaction Creation/i).click()
+      getBody()
+        .findByLabelText(/enter address or ens name/i)
+        .type('0x51A099ac1BF46D471110AA8974024Bfe518Fd6C4')
+      getBody().find('[name="contractMethodIndex"]').parent().click()
+      getBody().findByRole('option', { name: 'testAddressValue' }).click()
+      getBody()
+        .findByLabelText('newValue (address)')
+        .type('0x49d4450977E2c95362C13D3a31a09311E0Ea26A6')
+      getBody()
+        .findByText(/add transaction/i)
+        .click()
+      getBody()
+        .findByText(/create batch/i)
+        .click()
+      getBody()
+        .findByText(/send batch/i)
+        .click()
+    })
+    cy.findByText('Action 1').should('be.visible')
+    cy.findByText('Action 2').should('be.visible')
+  })
+
   it('should not allow to create a batch given invalid address', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
@@ -201,11 +295,11 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
     })
   })
 
-  it('should allow to upload a batch, save it to the library, download it & remove it', () => {
+  it.only('should allow to upload a batch, save it to the library, download it & remove it', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findAllByText('choose a file')
-        .attachFile('test-batch.json', { subjectType: 'drag-n-drop' })
+        .attachFile('test-working-batch.json', { subjectType: 'drag-n-drop' })
       getBody().findAllByText('uploaded').wait(300)
       getBody().find('button[title="Save to Library"]').click()
       getBody()
@@ -226,6 +320,44 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
         .should('be.visible')
     })
     cy.readFile('cypress/downloads/E2E test.json').should('exist')
+  })
+
+  it('should notify when the uploaded batch is from a different chain', () => {
+    cy.enter(iframeSelector).then(getBody => {
+      getBody()
+        .findAllByText('choose a file')
+        .attachFile('test-mainnet-batch.json', { subjectType: 'drag-n-drop' })
+      getBody().findAllByText('Warning').should('be.visible')
+      getBody().findAllByText('This batch is from another Chain (1)!').should('be.visible')
+    })    
+  })
+
+  it('should show an error when a modified batch is uploaded', () => {
+    cy.enter(iframeSelector).then(getBody => {
+      getBody()
+        .findAllByText('choose a file')
+        .attachFile('test-modified-batch.json', { subjectType: 'drag-n-drop' })
+      getBody().findAllByText('This batch contains some changed properties since you saved or downloaded it')
+      getBody().findAllByText('choose a file').should('be.visible')
+    })    
+  })
+
+  it('should not allow to upload an invalid batch', () => {
+    cy.enter(iframeSelector).then(getBody => {
+      getBody()
+        .findAllByText('choose a file')
+        .attachFile('test-invalid-batch.json', { subjectType: 'drag-n-drop' })
+        .findAllByText('choose a file').should('be.visible')    
+    })    
+  })
+
+  it('should not allow to upload an empty batch', () => {
+    cy.enter(iframeSelector).then(getBody => {
+      getBody()
+        .findAllByText('choose a file')
+        .attachFile('test-empty-batch.json', { subjectType: 'drag-n-drop' })
+        .findAllByText('choose a file').should('be.visible')
+    })    
   })
 
   it('should simulate a valid batch as successful', () => {
