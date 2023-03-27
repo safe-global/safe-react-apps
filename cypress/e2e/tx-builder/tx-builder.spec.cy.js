@@ -295,7 +295,7 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
     })
   })
 
-  it.only('should allow to upload a batch, save it to the library, download it & remove it', () => {
+  it('should allow to upload a batch, save it to the library, download it & remove it', () => {
     cy.enter(iframeSelector).then(getBody => {
       getBody()
         .findAllByText('choose a file')
