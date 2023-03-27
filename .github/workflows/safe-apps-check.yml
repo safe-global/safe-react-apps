@@ -177,21 +177,3 @@ jobs:
           SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
-
-      - uses: cypress-io/github-action@v5
-        name: Volta
-        with:
-          browser: chrome
-          record: true
-          spec: cypress/e2e/safe-apps-check.spec.cy.js
-        env:
-          CI: 'true'
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          CYPRESS_WEB_BASE_URL: ${{ github.event.inputs.baseUrl || 'https://app.safe.global' }}
-          CYPRESS_CHAIN_ID: ${{ github.event.inputs.chainId || '73799' }}
-          CYPRESS_NETWORK_PREFIX: ${{ github.event.inputs.networkPrefix || 'vt' }}
-          CYPRESS_TESTING_SAFE_ADDRESS: ${{ github.event.inputs.safeAddress || '0x6eaD891f8a756edBf248A5546ff51E01609C0DaB' }}
-          CYPRESS_CLIENT_GATEWAY_BASE_URL: ${{ github.event.inputs.configServiceBaseUrl || 'https://safe-client.safe.global' }}
-          SLACK_WEBHOOK_URL: ${{  secrets.SLACK_WEBHOOK_URL }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
