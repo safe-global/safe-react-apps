@@ -167,9 +167,11 @@ const useWalletConnectV2 = (
 
       // events
       web3wallet.on('session_proposal', async proposal => {
+        console.log('New session proposal', proposal)
         const { id, params } = proposal
-        const { requiredNamespaces } = params
+        const { requiredNamespaces, optionalNamespaces } = params
         const EIP155Namespace = requiredNamespaces[EVMBasedNamespaces]
+        const optionalEIP155Namespace = optionalNamespaces[EVMBasedNamespaces]
 
         // at least a EVM-based (eip155) namespace should be present
         const isEIP155NamespacePresent = !!EIP155Namespace
@@ -217,7 +219,7 @@ const useWalletConnectV2 = (
                 accounts: safeAccount || [
                   `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`,
                 ],
-                methods: EIP155Namespace.methods,
+                methods: [...EIP155Namespace.methods, ...optionalEIP155Namespace.methods],
                 events: EIP155Namespace.events,
               },
             },
