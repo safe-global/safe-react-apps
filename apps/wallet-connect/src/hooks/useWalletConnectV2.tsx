@@ -219,7 +219,7 @@ const useWalletConnectV2 = (
                 accounts: safeAccount || [
                   `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`,
                 ],
-                methods: [...EIP155Namespace.methods, ...optionalEIP155Namespace.methods],
+                methods: [...EIP155Namespace.methods, ...(optionalEIP155Namespace?.methods || [])],
                 events: EIP155Namespace.events,
               },
             },
