@@ -13,8 +13,7 @@ import { useTransactionLibrary } from '../store'
 import ChecksumWarning from './ChecksumWarning'
 import ErrorAlert from './ErrorAlert'
 
-const HELP_ARTICLE_LINK =
-  'https://help.gnosis-safe.io/en/articles/4680071-create-a-batched-transaction-with-the-transaction-builder-safe-app'
+const HELP_ARTICLE_LINK = 'https://help.safe.global/en/articles/40841-transaction-builder'
 
 const goBackLabel: Record<string, string> = {
   [CREATE_BATCH_PATH]: 'Back to Transaction Creation',
