@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.15.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.14.0...tx-builder-1.15.0) (2023-05-11)
+
+
+### Bug Fixes
+
+* **tx-builder,wallet-connect:** update help centre link ([c724a85](https://github.com/safe-global/safe-react-apps/commit/c724a8566e81bc895c0fa42213ba6ef98992f9a6))
+
+
+### Features
+
+* **wallet-connect:** update safe-apps-sdk to enable synchronous off-chain signatures ([#657](https://github.com/safe-global/safe-react-apps/issues/657)) ([6b1562f](https://github.com/safe-global/safe-react-apps/commit/6b1562f59eeaff662c212ee0b71f7df602cf0185))
+
+
+
 # [1.14.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.13.3...tx-builder-1.14.0) (2023-02-27)
 
 
