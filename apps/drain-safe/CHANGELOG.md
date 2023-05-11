@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.5.0](https://github.com/safe-global/safe-react-apps/compare/drain-safe-1.4.0...drain-safe-1.5.0) (2023-05-11)
+
+
+### Features
+
+* **wallet-connect:** update safe-apps-sdk to enable synchronous off-chain signatures ([#657](https://github.com/safe-global/safe-react-apps/issues/657)) ([6b1562f](https://github.com/safe-global/safe-react-apps/commit/6b1562f59eeaff662c212ee0b71f7df602cf0185))
+
+
+
 # [1.4.0](https://github.com/safe-global/safe-react-apps/compare/drain-safe-1.3.6...drain-safe-1.4.0) (2023-02-27)
 
 
