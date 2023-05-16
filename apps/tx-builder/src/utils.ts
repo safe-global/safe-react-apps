@@ -282,3 +282,13 @@ export const evalTemplate = (templateUri: string, data: Record<string, string>):
   const TEMPLATE_REGEX = /\{\{([^}]+)\}\}/g
   return templateUri.replace(TEMPLATE_REGEX, (_: string, key: string) => data[key])
 }
+
+// const OLD_BASE_URL = 'https://gnosis-safe.io'
+const OLD_BASE_URL = 'http://localhost:3002'
+export const OLD_TX_BUILDER_URL = `${OLD_BASE_URL}/tx-builder`
+
+// const NEW_TX_BUILDER_URL = 'https://apps-portal.safe.global'
+const NEW_BASE_URL = 'http://localhost:3001'
+export const NEW_TX_BUILDER_URL = `${NEW_BASE_URL}/tx-builder`
+
+export const isOldDomain = window.location.origin === OLD_BASE_URL

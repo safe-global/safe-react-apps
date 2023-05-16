@@ -14,7 +14,6 @@
     "start:ramp-network": "yarn workspace ramp-network start",
     "start:siwe-delegate-manager": "yarn workspace siwe-delegate-manager start",
     "start:tx-builder": "yarn workspace tx-builder start",
-    "start:tx-builder-old": "yarn workspace tx-builder-old start",
     "start:wallet-connect": "yarn workspace wallet-connect start",
     "start:mmi": "yarn workspace mmi start",
     "prepare": "husky install",
