@@ -57,6 +57,7 @@ jobs:
             * [Drain Account App](${{ env.REVIEW_FEATURE_URL }}/drain-safe/)
             * [RAMP Network App](${{ env.REVIEW_FEATURE_URL }}/ramp-network/)
             * [Sign-In With Ethereum Delegate Manager App](${{ env.REVIEW_FEATURE_URL }}/siwe-delegate-manager/)
+            * [Tx Builder App Old](${{ env.REVIEW_FEATURE_URL }}/tx-builder-old/)
             * [Tx Builder App](${{ env.REVIEW_FEATURE_URL }}/tx-builder/)
             * [WalletConnect app](${{ env.REVIEW_FEATURE_URL }}/wallet-connect/)
             * [MMI App](${{ env.REVIEW_FEATURE_URL }}/mmi/)
