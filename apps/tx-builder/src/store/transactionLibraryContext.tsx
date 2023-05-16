@@ -214,7 +214,7 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 
   const importBatch: TransactionLibraryContextProps['importBatch'] = useCallback(
     async file => {
-      const batchFile = await initializeBatch(await StorageManager.importBatch(file))
+      const batchFile = await initializeBatch(await StorageManager.importFile(file))
 
       return batchFile
     },

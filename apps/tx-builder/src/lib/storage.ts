@@ -87,15 +87,38 @@ const downloadBatch = async (batchFile: BatchFile) => {
   trackSafeAppEvent('Download batch')
 }
 
-const importBatch = async (file: File): Promise<BatchFile> => {
+const isSingleBatchFile = (batchFile: any): batchFile is BatchFile => {
+  return batchFile.meta && batchFile.transactions
+}
+
+const importFile = async (file: File): Promise<BatchFile> => {
   return new Promise(resolve => {
     const reader = new FileReader()
     reader.readAsText(file)
     reader.onload = () => {
-      const batchFile: BatchFile = JSON.parse(reader.result as string)
-      resolve(batchFile)
+      const batchFile: BatchFile | { data: Record<string, BatchFile> } = JSON.parse(
+        reader.result as string,
+      )
 
-      trackSafeAppEvent('Import batch')
+      if (isSingleBatchFile(batchFile)) {
+        resolve(batchFile)
+
+        trackSafeAppEvent('Import batch')
+        return
+      }
+
+      const data = batchFile.data
+      importBatches(data)
+    }
+  })
+}
+
+const importBatches = async (data: Record<string, BatchFile>) => {
+  Object.entries(data).forEach(async ([batchId, batchFile]) => {
+    try {
+      await localforage.setItem(batchId, batchFile)
+    } catch (error) {
+      console.error(error)
     }
   })
 }
@@ -115,7 +138,7 @@ const StorageManager = {
   getBatch,
   getBatches,
   downloadBatch,
-  importBatch,
+  importFile,
 }
 
 export default StorageManager
