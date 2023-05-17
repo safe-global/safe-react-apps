@@ -2,7 +2,11 @@ import { Button, IconButton, Link, Paper, Typography } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { exportBatches } from '../../lib/batches'
 import { NEW_TX_BUILDER_URL, OLD_TX_BUILDER_URL, isOldDomain } from '../../utils'
+import { localItem } from '../../lib/local-storage/local'
+import { useState } from 'react'
 import css from './styles.module.css'
+
+const LS_KEY = 'rememberExportedBatches'
 
 const NewDomainBody = () => (
   <Typography variant="body1" className={css.description}>
@@ -26,16 +30,26 @@ const OldDomainBody = () => (
   </>
 )
 
-const Banner = () => (
-  <Paper className={css.wrapper}>
-    <div className={css.header}>
-      <Typography variant="h5">New Tx Builder domain</Typography>
-      <IconButton size="small">
-        <CloseIcon fontSize="medium" />
-      </IconButton>
-    </div>
-    {isOldDomain ? <OldDomainBody /> : <NewDomainBody />}
-  </Paper>
-)
+const Banner = () => {
+  const storedValue = localItem<boolean>(LS_KEY).get()
+  const [showBanner, setShowBanner] = useState<boolean>(storedValue ?? true)
+
+  const handleClose = () => {
+    setShowBanner(false)
+    localItem(LS_KEY).set(false)
+  }
+
+  return showBanner ? (
+    <Paper className={css.wrapper}>
+      <div className={css.header}>
+        <Typography variant="h5">New Tx Builder domain</Typography>
+        <IconButton size="small" onClick={handleClose}>
+          <CloseIcon fontSize="medium" />
+        </IconButton>
+      </div>
+      {isOldDomain ? <OldDomainBody /> : <NewDomainBody />}
+    </Paper>
+  ) : null
+}
 
 export default Banner
