@@ -286,7 +286,7 @@ export const evalTemplate = (templateUri: string, data: Record<string, string>):
 const OLD_BASE_URL = 'https://gnosis-safe.io'
 export const OLD_TX_BUILDER_URL = `${OLD_BASE_URL}/tx-builder`
 
-const NEW_BASE_URL = 'https://apps-portal.safe.global'
+const NEW_BASE_URL = 'https://pr698--safereactapps.review-react-hr.5afe.dev'
 export const NEW_TX_BUILDER_URL = `${NEW_BASE_URL}/tx-builder`
 
 export const isOldDomain = window.location.origin === OLD_BASE_URL
