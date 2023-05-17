@@ -25,6 +25,6 @@
 }
 
 .description {
-  text-align: justify;
+  text-align: justify !important;
   margin-bottom: 16px !important;
 }

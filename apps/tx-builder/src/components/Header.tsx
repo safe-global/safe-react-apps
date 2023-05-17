@@ -12,7 +12,6 @@ import {
 import { useTransactionLibrary } from '../store'
 import ChecksumWarning from './ChecksumWarning'
 import ErrorAlert from './ErrorAlert'
-import { isOldDomain } from '../utils'
 
 const HELP_ARTICLE_LINK = 'https://help.safe.global/en/articles/40841-transaction-builder'
 
@@ -52,8 +51,7 @@ const Header = () => {
         {showTitle ? (
           <>
             {/* Transaction Builder Title */}
-            {/* TODO: remove the logic in the title. For dev purposes only */}
-            <StyledTitle size="xl">Transaction Builder {isOldDomain && 'Old'}</StyledTitle>
+            <StyledTitle size="xl">Transaction Builder</StyledTitle>
             <Tooltip
               placement="top"
               title="Help Article"

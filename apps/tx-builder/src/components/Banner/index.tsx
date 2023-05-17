@@ -13,11 +13,11 @@ const LS_KEY = 'rememberExportedBatches'
 const NewDomainBody = ({ onClose }: { onClose: () => void }) => (
   <>
     <Text size="xl" className={css.description}>
-      Please migrate your transaction batches from the{' '}
+      Please make sure to migrate all transaction batches from the{' '}
       <Link href={OLD_TX_BUILDER_URL} size="xl">
-        old Transaction Builder app
+        old Transaction Builder
       </Link>{' '}
-      until <b>1 September</b>.
+      before <b>1st September</b>.
     </Text>
     <Button size="md" onClick={onClose}>
       Got it
@@ -28,14 +28,12 @@ const NewDomainBody = ({ onClose }: { onClose: () => void }) => (
 const OldDomainBody = () => (
   <>
     <Text size="xl" className={css.description}>
-      Please export your transaction batches until 1 September so you can import them in the new Tx
-      Builder app domain.
-    </Text>
-    <Text size="xl" className={css.description}>
-      Back to the{' '}
+      Please make sure to export all transaction batches before 1st September in order to import
+      them in the{' '}
       <Link href={NEW_TX_BUILDER_URL} size="xl">
-        new domain
+        new Transaction Builder
       </Link>
+      .
     </Text>
     <Button size="md" onClick={exportBatches} style={{ width: '210px' }}>
       Export batches
