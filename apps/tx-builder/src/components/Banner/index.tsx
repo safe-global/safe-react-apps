@@ -1,5 +1,7 @@
-import { Button, IconButton, Link, Paper, Typography } from '@material-ui/core'
+import { IconButton, Paper } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
+import styled from 'styled-components'
+import { Button, Icon, Link, Text, Title } from '@gnosis.pm/safe-react-components'
 import { exportBatches } from '../../lib/batches'
 import { NEW_TX_BUILDER_URL, OLD_TX_BUILDER_URL, isOldDomain } from '../../utils'
 import { localItem } from '../../lib/local-storage/local'
@@ -8,23 +10,34 @@ import css from './styles.module.css'
 
 const LS_KEY = 'rememberExportedBatches'
 
-const NewDomainBody = () => (
-  <Typography variant="body1" className={css.description}>
-    Please migrate your transaction batches from the{' '}
-    <Link href={OLD_TX_BUILDER_URL}>old Tx Builder app</Link> until 1 September.
-  </Typography>
+const NewDomainBody = ({ onClose }: { onClose: () => void }) => (
+  <>
+    <Text size="xl" className={css.description}>
+      Please migrate your transaction batches from the{' '}
+      <Link href={OLD_TX_BUILDER_URL} size="xl">
+        old Transaction Builder app
+      </Link>{' '}
+      until <b>1 September</b>.
+    </Text>
+    <Button size="md" onClick={onClose}>
+      Got it
+    </Button>
+  </>
 )
 
 const OldDomainBody = () => (
   <>
-    <Typography variant="body1" className={css.description}>
+    <Text size="xl" className={css.description}>
       Please export your transaction batches until 1 September so you can import them in the new Tx
       Builder app domain.
-    </Typography>
-    <Typography variant="body1" className={css.description}>
-      Back to the <Link href={NEW_TX_BUILDER_URL}>new domain</Link>
-    </Typography>
-    <Button variant="contained" color="primary" onClick={exportBatches} disableElevation fullWidth>
+    </Text>
+    <Text size="xl" className={css.description}>
+      Back to the{' '}
+      <Link href={NEW_TX_BUILDER_URL} size="xl">
+        new domain
+      </Link>
+    </Text>
+    <Button size="md" onClick={exportBatches} style={{ width: '210px' }}>
       Export batches
     </Button>
   </>
@@ -40,16 +53,23 @@ const Banner = () => {
   }
 
   return showBanner ? (
-    <Paper className={css.wrapper}>
+    <Paper elevation={0} className={css.wrapper}>
       <div className={css.header}>
-        <Typography variant="h5">New Tx Builder domain</Typography>
+        <Icon size="md" type="info" color="primary" className={css.infoIcon} />
         <IconButton size="small" onClick={handleClose}>
-          <CloseIcon fontSize="medium" />
+          <CloseIcon fontSize="small" />
         </IconButton>
       </div>
-      {isOldDomain ? <OldDomainBody /> : <NewDomainBody />}
+      <StyledTitle size="xs" strong withoutMargin>
+        New Transaction Builder domain
+      </StyledTitle>
+      {isOldDomain ? <OldDomainBody /> : <NewDomainBody onClose={handleClose} />}
     </Paper>
   ) : null
 }
 
 export default Banner
+
+const StyledTitle = styled(Title)`
+  margin: 16px 0 8px;
+`
