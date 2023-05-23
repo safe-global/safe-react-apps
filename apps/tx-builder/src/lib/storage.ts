@@ -91,7 +91,7 @@ const isSingleBatchFile = (batchFile: any): batchFile is BatchFile => {
   return batchFile.meta && batchFile.transactions
 }
 
-const importFile = async (file: File): Promise<BatchFile> => {
+const importFile = async (file: File): Promise<BatchFile | undefined> => {
   return new Promise(resolve => {
     const reader = new FileReader()
     reader.readAsText(file)
@@ -109,6 +109,7 @@ const importFile = async (file: File): Promise<BatchFile> => {
 
       const data = batchFile.data
       importBatches(data)
+      resolve(undefined)
     }
   })
 }
