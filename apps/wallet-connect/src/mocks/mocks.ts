@@ -1,3 +1,13 @@
+import { Verify } from '@walletconnect/types'
+
+const verifyContext: Verify.Context = {
+  verified: {
+    verifyUrl: '',
+    validation: 'VALID',
+    origin: 'https://app.walletconnect.com',
+  },
+} as Verify.Context
+
 export const mockSafeInfo = {
   safeAddress: '0x57CB13cbef735FbDD65f5f2866638c546464E45F',
   chainId: '5',
@@ -73,6 +83,7 @@ export const mockSessionProposal = {
       },
     },
   },
+  verifyContext,
 }
 
 export const mockV2SessionObj = {
@@ -116,6 +127,7 @@ export const mockInvalidEVMSessionProposal = {
       },
     },
   },
+  verifyContext,
 }
 
 export const mockInvalidChainIdSessionProposal = {
@@ -153,6 +165,7 @@ export const mockInvalidChainIdSessionProposal = {
       },
     },
   },
+  verifyContext,
 }
 
 // v2 transaction request mock
@@ -179,6 +192,7 @@ export const mockValidTransactionRequest = {
     },
     chainId: 'eip155:5',
   },
+  verifyContext,
 }
 
 export const mockInvalidChainTransactionRequest = {
@@ -191,6 +205,7 @@ export const mockInvalidChainTransactionRequest = {
     },
     chainId: 'eip155:420',
   },
+  verifyContext,
 }
 
 // active v2 sessions
