@@ -69,14 +69,22 @@ const getBatches = async () => {
 }
 
 const downloadObjectAsJson = (batchFile: BatchFile) => {
-  const dataStr =
-    'data:text/json;charset=utf-8,' +
-    encodeURIComponent(JSON.stringify(batchFile, stringifyReplacer))
+  var blobURL = URL.createObjectURL(
+    new Blob([JSON.stringify(batchFile, stringifyReplacer)], { type: 'application/json' }),
+  )
+
+  if (
+    navigator.userAgent.indexOf('Firefox') !== -1 ||
+    (navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1)
+  ) {
+    return window.open(blobURL)
+  }
+
   const downloadAnchorNode = document.createElement('a')
 
-  downloadAnchorNode.setAttribute('href', dataStr)
+  downloadAnchorNode.setAttribute('href', blobURL)
   downloadAnchorNode.setAttribute('download', batchFile.meta.name + '.json')
-  document.body.appendChild(downloadAnchorNode) // required for firefox
+  document.body.appendChild(downloadAnchorNode)
   downloadAnchorNode.click()
   downloadAnchorNode.remove()
 }
