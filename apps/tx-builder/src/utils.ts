@@ -283,7 +283,7 @@ export const evalTemplate = (templateUri: string, data: Record<string, string>):
   return templateUri.replace(TEMPLATE_REGEX, (_: string, key: string) => data[key])
 }
 
-const OLD_BASE_URL = 'https://gnosis-safe.io'
+const OLD_BASE_URL = 'https://apps.gnosis-safe.io'
 export const OLD_TX_BUILDER_URL = `${OLD_BASE_URL}/tx-builder/`
 
 const NEW_BASE_URL = 'https://apps-portal.safe.global'
