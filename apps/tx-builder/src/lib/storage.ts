@@ -77,7 +77,7 @@ const downloadObjectAsJson = (batchFile: BatchFile) => {
   // https://bugzilla.mozilla.org/show_bug.cgi?id=1365502
   if (
     navigator.userAgent.includes('Firefox') ||
-    (navigator.userAgent.includes('Safari') && navigator.userAgent.includes('Chrome'))
+    (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome'))
   ) {
     return window.open(blobURL)
   }
