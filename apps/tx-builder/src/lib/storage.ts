@@ -76,8 +76,8 @@ const downloadObjectAsJson = (batchFile: BatchFile) => {
   // If Firefox or Safari open a new window to download the file
   // https://bugzilla.mozilla.org/show_bug.cgi?id=1365502
   if (
-    navigator.userAgent.indexOf('Firefox') !== -1 ||
-    (navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1)
+    navigator.userAgent.includes('Firefox') ||
+    (navigator.userAgent.includes('Safari') && navigator.userAgent.includes('Chrome'))
   ) {
     return window.open(blobURL)
   }
