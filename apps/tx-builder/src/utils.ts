@@ -284,9 +284,9 @@ export const evalTemplate = (templateUri: string, data: Record<string, string>):
 }
 
 const OLD_BASE_URL = 'https://apps.gnosis-safe.io'
-export const OLD_TX_BUILDER_URL = `${OLD_BASE_URL}/tx-builder/`
+export const OLD_TX_BUILDER_URL = `${OLD_BASE_URL}/tx-builder`
 
 const NEW_BASE_URL = 'https://apps-portal.safe.global'
-export const NEW_TX_BUILDER_URL = `${NEW_BASE_URL}/tx-builder/`
+export const NEW_TX_BUILDER_URL = `${NEW_BASE_URL}/tx-builder`
 
-export const isOldDomain = window.location.href === OLD_TX_BUILDER_URL
+export const isOldDomain = decodeURIComponent(window.location.href).includes(OLD_TX_BUILDER_URL)

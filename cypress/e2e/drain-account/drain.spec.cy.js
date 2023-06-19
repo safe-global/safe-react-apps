@@ -10,6 +10,10 @@ describe('Testing Drain Account safe app', { defaultCommandTimeout: 12000 }, () 
   })
 
   beforeEach(() => {
+    cy.intercept('**//v1/chains/5/safes/0x168ca275d1103cb0a30980813140053c7566932F/balances/**', {
+      fixture: 'balances.json',
+    })
+
     // Navigate to Safe App in TESTING SAFE
     cy.visitSafeApp(visitUrl)
 
@@ -75,8 +79,7 @@ describe('Testing Drain Account safe app', { defaultCommandTimeout: 12000 }, () 
     })
     cy.findByRole('button', { name: 'Cancel' }).click()
     cy.enter(iframeSelector).then(getBody => {
-      getBody()
-        .findAllByText('Transfer everything').should('be.visible')
+      getBody().findAllByText('Transfer everything').should('be.visible')
     })
   })
 

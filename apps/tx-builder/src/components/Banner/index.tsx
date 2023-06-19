@@ -7,14 +7,19 @@ import { OLD_TX_BUILDER_URL, NEW_TX_BUILDER_URL, isOldDomain } from '../../utils
 import { localItem } from '../../lib/local-storage/local'
 import { useState } from 'react'
 import css from './styles.module.css'
+import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 const LS_KEY = 'rememberExportedBatches'
 
-const NewDomainBody = ({ onClose }: { onClose: () => void }) => (
+const openSafeApp = (safe: string, safeAppUrl: string) => {
+  window.open(`https://app.safe.global/apps/open?safe=${safe}&appUrl=${safeAppUrl}`, '_blank')
+}
+
+const NewDomainBody = ({ safe, onClose }: { safe: string; onClose: () => void }) => (
   <>
     <Text size="xl" className={css.description}>
       Please make sure to migrate all transaction batches from the{' '}
-      <Link href={OLD_TX_BUILDER_URL} size="xl">
+      <Link onClick={() => openSafeApp(safe, OLD_TX_BUILDER_URL)} size="xl">
         old Transaction Builder
       </Link>{' '}
       before <b>1st September</b>.
@@ -25,12 +30,12 @@ const NewDomainBody = ({ onClose }: { onClose: () => void }) => (
   </>
 )
 
-const OldDomainBody = () => (
+const OldDomainBody = ({ safe }: { safe: string }) => (
   <>
     <Text size="xl" className={css.description}>
       Please make sure to export all transaction batches before 1st September in order to import
       them in the{' '}
-      <Link href={NEW_TX_BUILDER_URL} size="xl">
+      <Link onClick={() => openSafeApp(safe, NEW_TX_BUILDER_URL)} size="xl">
         new Transaction Builder
       </Link>
       .
@@ -42,6 +47,7 @@ const OldDomainBody = () => (
 )
 
 const Banner = () => {
+  const { safe } = useSafeAppsSDK()
   const storedValue = localItem<boolean>(LS_KEY).get()
   const [showBanner, setShowBanner] = useState<boolean>(storedValue ?? true)
 
@@ -61,7 +67,11 @@ const Banner = () => {
       <StyledTitle size="xs" strong withoutMargin>
         New Transaction Builder domain
       </StyledTitle>
-      {isOldDomain ? <OldDomainBody /> : <NewDomainBody onClose={handleClose} />}
+      {isOldDomain ? (
+        <OldDomainBody safe={safe.safeAddress} />
+      ) : (
+        <NewDomainBody safe={safe.safeAddress} onClose={handleClose} />
+      )}
     </Paper>
   ) : null
 }
