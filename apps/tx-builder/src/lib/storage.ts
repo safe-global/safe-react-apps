@@ -69,14 +69,24 @@ const getBatches = async () => {
 }
 
 const downloadObjectAsJson = (batchFile: BatchFile) => {
-  const dataStr =
-    'data:text/json;charset=utf-8,' +
-    encodeURIComponent(JSON.stringify(batchFile, stringifyReplacer))
+  const blobURL = URL.createObjectURL(
+    new Blob([JSON.stringify(batchFile, stringifyReplacer)], { type: 'application/json' }),
+  )
+
+  // If Firefox or Safari open a new window to download the file
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=1365502
+  if (
+    navigator.userAgent.includes('Firefox') ||
+    (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome'))
+  ) {
+    return window.open(blobURL)
+  }
+
   const downloadAnchorNode = document.createElement('a')
 
-  downloadAnchorNode.setAttribute('href', dataStr)
+  downloadAnchorNode.setAttribute('href', blobURL)
   downloadAnchorNode.setAttribute('download', batchFile.meta.name + '.json')
-  document.body.appendChild(downloadAnchorNode) // required for firefox
+  document.body.appendChild(downloadAnchorNode)
   downloadAnchorNode.click()
   downloadAnchorNode.remove()
 }
