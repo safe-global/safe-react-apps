@@ -9,7 +9,17 @@ export const exportBatches = async () => {
   const batchesRecords = await StorageManager.getBatches()
   const data = JSON.stringify({ data: batchesRecords })
 
-  const blob = new Blob([data], { type: 'text/json' })
+  const blob = new Blob([data], { type: 'application/json' })
+
+  if (
+    navigator.userAgent.includes('Firefox') ||
+    (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome'))
+  ) {
+    const blobURL = URL.createObjectURL(blob)
+
+    return window.open(blobURL)
+  }
+
   const link = document.createElement('a')
 
   link.download = getExportFileName()
