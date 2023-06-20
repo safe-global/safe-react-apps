@@ -236,18 +236,14 @@ const useWalletConnectV2 = (
           return
         }
 
-        const requiredCompatibleMethods =
-          requiredEIP155Namespace.methods.filter(method =>
-            compatibleSafeMethods.includes(method),
-          ) || []
-
+        // we accept the optional methods only if they are compatible with the Safe
         const optionalCompatibleMethods =
           optionalEIP155Namespace?.methods.filter(method =>
             compatibleSafeMethods.includes(method),
           ) || []
 
         const compatibleSafeAccountMethods = [
-          ...requiredCompatibleMethods,
+          ...requiredEIP155Namespace.methods, // we accept all required methods (even if they are not compatible with the Safe)
           ...optionalCompatibleMethods,
         ]
 
@@ -260,7 +256,7 @@ const useWalletConnectV2 = (
               eip155: {
                 accounts: safeAccount, // only the Safe Account
                 methods: compatibleSafeAccountMethods, // only compatible Safe Account Methods
-                events: [], // no events compatible with the Safe Account (chainChanged & accountsChanged)
+                events: requiredEIP155Namespace.events, // we accept all events like chainChanged & accountsChanged (even if they are not compatible with the Safe)
               },
             },
           })
