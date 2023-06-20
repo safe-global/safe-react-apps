@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react'
 import { SignClientTypes, SessionTypes, CoreTypes } from '@walletconnect/types'
 import { SafeAppProvider } from '@safe-global/safe-apps-provider'
 import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
-import { ChainInfo } from '@safe-global/safe-apps-sdk'
+import { ChainInfo, Methods } from '@safe-global/safe-apps-sdk'
 import { ethers } from 'ethers'
 import { Core } from '@walletconnect/core'
 import Web3WalletType, { Web3Wallet } from '@walletconnect/web3wallet'
@@ -15,7 +15,35 @@ import {
 } from '../utils/analytics'
 import { isProduction, SAFE_WALLET_METADATA, WALLETCONNECT_V2_PROJECT_ID } from '../constants'
 
-const EVMBasedNamespaces = 'eip155'
+const EVMBasedNamespaces: string = 'eip155'
+
+// see full list here: https://github.com/safe-global/safe-apps-sdk/blob/main/packages/safe-apps-provider/src/provider.ts#L35
+const compatibleSafeMethods: string[] = [
+  'eth_accounts',
+  'net_version',
+  'eth_chainId',
+  'personal_sign',
+  'eth_sign',
+  'eth_signTypedData',
+  'eth_signTypedData_v4',
+  'eth_sendTransaction',
+  'eth_blockNumber',
+  'eth_getBalance',
+  'eth_getCode',
+  'eth_getTransactionCount',
+  'eth_getStorageAt',
+  'eth_getBlockByNumber',
+  'eth_getBlockByHash',
+  'eth_getTransactionByHash',
+  'eth_getTransactionReceipt',
+  'eth_estimateGas',
+  'eth_call',
+  'eth_getLogs',
+  'eth_gasPrice',
+  'wallet_getPermissions',
+  'wallet_requestPermissions',
+  'safe_setSettings',
+]
 
 // see https://docs.walletconnect.com/2.0/specs/sign/error-codes
 const UNSUPPORTED_CHAIN_ERROR_CODE = 5100
@@ -89,7 +117,7 @@ const useWalletConnectV2 = (
     }
   }, [])
 
-  // session_request needs a separate Effect because a valid wcSession should be present
+  // session_request needs to be a separate Effect because a valid wcSession should be present
   useEffect(() => {
     if (isWallectConnectInitialized && web3wallet && wcSession) {
       web3wallet.on('session_request', async event => {
@@ -101,7 +129,7 @@ const useWalletConnectV2 = (
 
         // we only accept transactions from the Safe chain
         if (!isSafeChainId) {
-          const errorMessage = `Transaction rejected: the connected Dapp is not set to the correct chain. Make sure the Dapp uses ${chainInfo?.chainName} to interact with this Safe.`
+          const errorMessage = `Transaction rejected: the connected Dapp is not set to the correct chain. Make sure the Dapp only uses ${chainInfo?.chainName} to interact with this Safe.`
           setError(errorMessage)
           await web3wallet.respondSessionRequest({
             topic,
@@ -169,13 +197,14 @@ const useWalletConnectV2 = (
       web3wallet.on('session_proposal', async proposal => {
         const { id, params } = proposal
         const { requiredNamespaces, optionalNamespaces } = params
-        const EIP155Namespace = requiredNamespaces[EVMBasedNamespaces]
+
+        const requiredEIP155Namespace = requiredNamespaces[EVMBasedNamespaces]
         const optionalEIP155Namespace = optionalNamespaces[EVMBasedNamespaces]
 
-        // at least a EVM-based (eip155) namespace should be present
-        const isEIP155NamespacePresent = !!EIP155Namespace
+        // EVM-based (eip155) namespace should be present
+        const isEIP155NamespacePresent = !!requiredEIP155Namespace
 
-        const errorMessage = `Connection refused: Incompatible chain detected. Make sure the Dapp uses ${chainInfo?.chainName} to interact with this Safe.`
+        const errorMessage = `Connection refused: Incompatible chain detected. Make sure the Dapp only uses ${chainInfo?.chainName} to interact with this Safe.`
 
         if (!isEIP155NamespacePresent) {
           setError(errorMessage)
@@ -190,8 +219,8 @@ const useWalletConnectV2 = (
           return
         }
 
-        // chain Safe should be present
-        const isSafeChainIdPresent = EIP155Namespace.chains?.some(
+        // Safe chain should be present
+        const isSafeChainIdPresent = requiredEIP155Namespace.chains?.some(
           chain => chain === `${EVMBasedNamespaces}:${safe.chainId}`,
         )
 
@@ -207,34 +236,36 @@ const useWalletConnectV2 = (
           return
         }
 
-        // As a workaround we lie to the Dapp, accepting all EVM accounts, methods & events
-        const safeAccount = EIP155Namespace.chains?.map(chain => `${chain}:${safe.safeAddress}`)
+        const requiredCompatibleMethods =
+          requiredEIP155Namespace.methods.filter(method =>
+            compatibleSafeMethods.includes(method),
+          ) || []
+
+        const optionalCompatibleMethods =
+          optionalEIP155Namespace?.methods.filter(method =>
+            compatibleSafeMethods.includes(method),
+          ) || []
+
+        const compatibleSafeAccountMethods = [
+          ...requiredCompatibleMethods,
+          ...optionalCompatibleMethods,
+        ]
+
+        const safeAccount = [`${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`]
 
         try {
           const wcSession = await web3wallet.approveSession({
             id,
             namespaces: {
               eip155: {
-                accounts: safeAccount || [
-                  `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`,
-                ],
-                methods: [...EIP155Namespace.methods, ...(optionalEIP155Namespace?.methods || [])],
-                events: EIP155Namespace.events,
+                accounts: safeAccount, // only the Safe Account
+                methods: compatibleSafeAccountMethods, // only compatible Safe Account Methods
+                events: [], // no events compatible with the Safe Account (chainChanged & accountsChanged)
               },
             },
           })
 
           trackEvent(NEW_SESSION_ACTION, WALLET_CONNECT_VERSION_2, wcSession.peer.metadata)
-
-          // always emit a accountsChanged event to set the safe addres & chain
-          web3wallet.emitSessionEvent({
-            topic: wcSession.topic,
-            event: {
-              name: 'accountsChanged',
-              data: [safe.safeAddress],
-            },
-            chainId: `${EVMBasedNamespaces}:${safe.chainId}`,
-          })
 
           setWcSession(wcSession)
           setError(undefined)

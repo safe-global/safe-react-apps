@@ -56,15 +56,9 @@ export const mockSessionProposal = {
     expiry: 1669889398,
     requiredNamespaces: {
       eip155: {
-        methods: [
-          'eth_sendTransaction',
-          'eth_signTransaction',
-          'eth_sign',
-          'personal_sign',
-          'eth_signTypedData',
-        ],
+        methods: ['eth_sendTransaction', 'eth_sign', 'personal_sign', 'eth_signTypedData'],
         chains: ['eip155:5'],
-        events: ['chainChanged', 'accountsChanged'],
+        events: [],
       },
     },
     optionalNamespaces: {},
@@ -138,15 +132,9 @@ export const mockInvalidChainIdSessionProposal = {
     expiry: 1669889398,
     requiredNamespaces: {
       eip155: {
-        methods: [
-          'eth_sendTransaction',
-          'eth_signTransaction',
-          'eth_sign',
-          'personal_sign',
-          'eth_signTypedData',
-        ],
+        methods: ['eth_sendTransaction', 'eth_sign', 'personal_sign', 'eth_signTypedData'],
         chains: ['eip155:1'], // only an invalid chainId is present
-        events: ['chainChanged', 'accountsChanged'],
+        events: [],
       },
     },
     optionalNamespaces: {},
@@ -218,14 +206,8 @@ export const mockActiveSessions = {
     namespaces: {
       eip155: {
         accounts: ['eip155:5:0x57CB13cbef735FbDD65f5f2866638c546464E45F'],
-        methods: [
-          'eth_sendTransaction',
-          'eth_signTransaction',
-          'eth_sign',
-          'personal_sign',
-          'eth_signTypedData',
-        ],
-        events: ['accountsChanged', 'chainChanged'],
+        methods: ['eth_sendTransaction', 'eth_sign', 'personal_sign', 'eth_signTypedData'],
+        events: [],
       },
     },
     requiredNamespaces: {
@@ -238,7 +220,7 @@ export const mockActiveSessions = {
           'eth_signTypedData',
         ],
         chains: ['eip155:5'],
-        events: ['chainChanged', 'accountsChanged'],
+        events: [],
         rpcMap: {
           '5': 'https://rpc.goerli.test',
         },
