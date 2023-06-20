@@ -15,6 +15,9 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
     cy.frameLoaded(iframeSelector)
 
     cy.findByRole('button', { name: /accept selection/i }).click()
+    cy.iframe(iframeSelector)
+      .findByRole('button', { name: /got it/i })
+      .click()
   })
 
   it('should allow to create and send a simple batch', () => {
@@ -182,14 +185,12 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
       getBody()
         .findByText(/create batch/i)
         .click()
+      getBody().findByRole('button', { name: 'Cancel' }).click()
+      getBody().findByText(/Clear transaction list?/i)
       getBody()
-        .findByRole('button', { name: 'Cancel' }).click()
-      getBody()
-        .findByText(/Clear transaction list?/i)
-      getBody()
-        .findByRole('button', { name: /Yes, clear/i }).click()
-      getBody()
-        .findAllByText('choose a file').should('be.visible')
+        .findByRole('button', { name: /Yes, clear/i })
+        .click()
+      getBody().findAllByText('choose a file').should('be.visible')
     })
   })
 
@@ -209,14 +210,12 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
       getBody()
         .findByText(/create batch/i)
         .click()
+      getBody().findByRole('button', { name: 'Cancel' }).click()
+      getBody().findByText(/Clear transaction list?/i)
+      getBody().findByRole('button', { name: /Back/i }).click()
       getBody()
-        .findByRole('button', { name: 'Cancel' }).click()
-      getBody()
-        .findByText(/Clear transaction list?/i)
-      getBody()
-        .findByRole('button', { name: /Back/i }).click()
-      getBody()
-      .findByText(/Review and confirm/i).should('be.visible')
+        .findByText(/Review and confirm/i)
+        .should('be.visible')
     })
   })
 
@@ -237,7 +236,8 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
         .findByText(/create batch/i)
         .click()
       getBody()
-        .findByText(/Back to Transaction Creation/i).click()
+        .findByText(/Back to Transaction Creation/i)
+        .click()
       getBody()
         .findByLabelText(/enter address or ens name/i)
         .type('0x51A099ac1BF46D471110AA8974024Bfe518Fd6C4')
@@ -329,7 +329,7 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
         .attachFile('test-mainnet-batch.json', { subjectType: 'drag-n-drop' })
       getBody().findAllByText('Warning').should('be.visible')
       getBody().findAllByText('This batch is from another Chain (1)!').should('be.visible')
-    })    
+    })
   })
 
   it('should show an error when a modified batch is uploaded', () => {
@@ -337,9 +337,11 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
       getBody()
         .findAllByText('choose a file')
         .attachFile('test-modified-batch.json', { subjectType: 'drag-n-drop' })
-      getBody().findAllByText('This batch contains some changed properties since you saved or downloaded it')
+      getBody().findAllByText(
+        'This batch contains some changed properties since you saved or downloaded it',
+      )
       getBody().findAllByText('choose a file').should('be.visible')
-    })    
+    })
   })
 
   it('should not allow to upload an invalid batch', () => {
@@ -347,8 +349,9 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
       getBody()
         .findAllByText('choose a file')
         .attachFile('test-invalid-batch.json', { subjectType: 'drag-n-drop' })
-        .findAllByText('choose a file').should('be.visible')    
-    })    
+        .findAllByText('choose a file')
+        .should('be.visible')
+    })
   })
 
   it('should not allow to upload an empty batch', () => {
@@ -356,8 +359,9 @@ describe('Testing Tx-builder safe app', { defaultCommandTimeout: 12000 }, () => 
       getBody()
         .findAllByText('choose a file')
         .attachFile('test-empty-batch.json', { subjectType: 'drag-n-drop' })
-        .findAllByText('choose a file').should('be.visible')
-    })    
+        .findAllByText('choose a file')
+        .should('be.visible')
+    })
   })
 
   it('should simulate a valid batch as successful', () => {

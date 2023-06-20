@@ -44,6 +44,26 @@ const validateTransactionsInBatch = (batch: BatchFile) => {
 
 export const TransactionLibraryContext = createContext<TransactionLibraryContextProps | null>(null)
 
+const loadBatches = async (chainInfo: ChainInfo | undefined): Promise<Batch[]> => {
+  if (!chainInfo) return []
+
+  const batchesRecords = await StorageManager.getBatches()
+  const batches: Batch[] = Object.keys(batchesRecords)
+    .filter(key => batchesRecords[key].chainId === chainInfo.chainId) // batches filtered by chain
+    .reduce((batches: Batch[], key: string) => {
+      const batchFile = batchesRecords[key]
+      const batch = {
+        id: key,
+        name: batchFile.meta.name,
+        transactions: convertToProposedTransactions(batchFile, chainInfo),
+      }
+
+      return [...batches, batch]
+    }, [])
+
+  return batches
+}
+
 const TransactionLibraryProvider: React.FC = ({ children }) => {
   const [batches, setBatches] = useState<Batch[]>([])
   const [batch, setBatch] = useState<Batch>()
@@ -52,33 +72,14 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
   const { resetTransactions } = useTransactions()
   const { chainInfo, safe } = useNetwork()
 
-  const loadBatches = useCallback(async (): Promise<Batch[]> => {
-    if (chainInfo) {
-      const batchesRecords = await StorageManager.getBatches()
-      const batches: Batch[] = Object.keys(batchesRecords)
-        .filter(key => batchesRecords[key].chainId === chainInfo.chainId) // batches filtered by chain
-        .reduce((batches: Batch[], key: string) => {
-          const batchFile = batchesRecords[key]
-          const batch = {
-            id: key,
-            name: batchFile.meta.name,
-            transactions: convertToProposedTransactions(batchFile, chainInfo),
-          }
-
-          return [...batches, batch]
-        }, [])
-
-      setBatches(batches)
-
-      return batches
-    }
-    return []
-  }, [chainInfo])
-
   // on App init we load stored batches
   useEffect(() => {
-    loadBatches()
-  }, [loadBatches])
+    const initialLoadBatches = async () => {
+      const batches = await loadBatches(chainInfo)
+      setBatches(batches)
+    }
+    initialLoadBatches()
+  }, [chainInfo])
 
   useEffect(() => {
     let id: ReturnType<typeof setTimeout>
@@ -103,11 +104,12 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
           }),
         ),
       )
-      const batches = await loadBatches()
+      const batches = await loadBatches(chainInfo)
+      setBatches(batches)
       const batch = batches.find(batch => batch.id === batchId)
       setBatch(batch)
     },
-    [chainInfo, safe, loadBatches],
+    [chainInfo, safe],
   )
 
   const updateBatch = useCallback(
@@ -127,19 +129,21 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
           ),
         )
       }
-      const batches = await loadBatches()
+      const batches = await loadBatches(chainInfo)
+      setBatches(batches)
       setBatch(batches.find(batch => batch.id === batchId))
     },
-    [loadBatches, chainInfo, safe],
+    [chainInfo, safe],
   )
 
   const removeBatch = useCallback(
     async (batchId: string | number) => {
       await StorageManager.removeBatch(String(batchId))
-      await loadBatches()
+      const batches = await loadBatches(chainInfo)
+      setBatches(batches)
       setBatch(undefined)
     },
-    [loadBatches],
+    [chainInfo],
   )
 
   const renameBatch = useCallback(
@@ -150,10 +154,11 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
         batch.meta.name = trimmedName
         await StorageManager.updateBatch(String(batchId), batch)
       }
-      const batches = await loadBatches()
+      const batches = await loadBatches(chainInfo)
+      setBatches(batches)
       setBatch(batches.find(batch => batch.id === batchId))
     },
-    [loadBatches],
+    [chainInfo],
   )
 
   const downloadBatch = useCallback(
@@ -214,11 +219,17 @@ const TransactionLibraryProvider: React.FC = ({ children }) => {
 
   const importBatch: TransactionLibraryContextProps['importBatch'] = useCallback(
     async file => {
-      const batchFile = await initializeBatch(await StorageManager.importBatch(file))
+      const importedFile = await StorageManager.importFile(file)
+      if (importedFile) {
+        const batchFile = initializeBatch(importedFile)
+        return batchFile
+      }
 
-      return batchFile
+      // when it imports a file with more than one batch, it should load all batches
+      const batches = await loadBatches(chainInfo)
+      setBatches(batches)
     },
-    [initializeBatch],
+    [initializeBatch, chainInfo],
   )
 
   return (
