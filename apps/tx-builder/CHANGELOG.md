@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.16.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.15.0...tx-builder-1.16.0) (2023-06-20)
+
+
+### Bug Fixes
+
+* **tx-builder:** Open a window instead download batch for Safari and Firefox ([#707](https://github.com/safe-global/safe-react-apps/issues/707)) ([718cc53](https://github.com/safe-global/safe-react-apps/commit/718cc5316bbc383394c9f12635b748b97fc09c05))
+* **tx-builder:** Open required app in new window ([#708](https://github.com/safe-global/safe-react-apps/issues/708)) ([b4bfc2c](https://github.com/safe-global/safe-react-apps/commit/b4bfc2ca955d64964ce7de8ee4f145aebc04e09e))
+
+
+### Features
+
+* **tx-builder:** deployment in a new domain ([#698](https://github.com/safe-global/safe-react-apps/issues/698)) ([9cb1d59](https://github.com/safe-global/safe-react-apps/commit/9cb1d593acaafedaacfd9f11ac8384aeb37e3fe2))
+
+
+
 # [1.15.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.14.0...tx-builder-1.15.0) (2023-05-11)
 
 
