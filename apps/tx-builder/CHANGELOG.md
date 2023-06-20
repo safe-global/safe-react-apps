@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.16.1](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.16.0...tx-builder-1.16.1) (2023-06-20)
+
+
+### Bug Fixes
+
+* **tx-builder:** Migration Dialog ([#713](https://github.com/safe-global/safe-react-apps/issues/713)) ([cb6bdd4](https://github.com/safe-global/safe-react-apps/commit/cb6bdd453ef3e9ccb1c06eb469b84a402ec7d29c))
+
+
+
 # [1.16.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.15.0...tx-builder-1.16.0) (2023-06-20)
 
 
