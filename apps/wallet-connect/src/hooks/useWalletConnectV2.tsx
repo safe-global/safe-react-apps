@@ -204,9 +204,8 @@ const useWalletConnectV2 = (
         // EVM-based (eip155) namespace should be present
         const isEIP155NamespacePresent = !!requiredEIP155Namespace
 
-        const errorMessage = `Connection refused: Incompatible chain detected. Make sure the Dapp only uses ${chainInfo?.chainName} to interact with this Safe.`
-
         if (!isEIP155NamespacePresent) {
+          const errorMessage = getConnectionErrorMessage('chains error', chainInfo?.chainName)
           setError(errorMessage)
 
           await web3wallet.rejectSession({
@@ -225,7 +224,9 @@ const useWalletConnectV2 = (
         )
 
         if (!isSafeChainIdPresent) {
+          const errorMessage = getConnectionErrorMessage('chains error', chainInfo?.chainName)
           setError(errorMessage)
+
           await web3wallet.rejectSession({
             id: proposal.id,
             reason: {
@@ -271,8 +272,10 @@ const useWalletConnectV2 = (
 
           setWcSession(wcSession)
           setError(undefined)
-        } catch (error) {
+        } catch (error: any) {
           console.log('error: ', error)
+          console.log('error: ', error.message)
+          const errorMessage = getConnectionErrorMessage(error.message, chainInfo?.chainName)
           setError(errorMessage)
         }
       })
@@ -327,4 +330,20 @@ const rejectResponse = (id: number, code: number, message: string) => {
       message,
     },
   }
+}
+
+const getConnectionErrorMessage = (errorMessage = '', chainName = ''): string => {
+  const isChainError = errorMessage.includes('chains')
+
+  if (isChainError) {
+    return `Connection refused: Incompatible chain detected. Make sure the Dapp only uses ${chainName} to interact with this Safe.`
+  }
+
+  const isMethodError = errorMessage.includes('methods')
+
+  if (isMethodError) {
+    return 'Connection refused: Incompatible methods between the Dapp and the Safe Account detected.'
+  }
+
+  return errorMessage
 }
