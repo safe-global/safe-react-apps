@@ -183,10 +183,10 @@ const useWalletConnectV2 = (
       const activeSessions = web3wallet.getActiveSessions()
       const compatibleSession = Object.keys(activeSessions)
         .map(topic => activeSessions[topic])
-        .find(session =>
-          session.namespaces[EVMBasedNamespaces].accounts.includes(
-            `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`,
-          ),
+        .find(
+          session =>
+            session.namespaces[EVMBasedNamespaces].accounts[0] ===
+            `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`, // Safe Account
         )
 
       if (compatibleSession) {
@@ -236,26 +236,32 @@ const useWalletConnectV2 = (
           return
         }
 
-        // we accept the optional methods only if they are compatible with the Safe
+        // we only accept methods compatible with the Safe
+        const requiredCompatibleMethods =
+          requiredEIP155Namespace?.methods.filter(method =>
+            compatibleSafeMethods.includes(method),
+          ) || []
+
+        // we only accept methods compatible with the Safe
         const optionalCompatibleMethods =
           optionalEIP155Namespace?.methods.filter(method =>
             compatibleSafeMethods.includes(method),
           ) || []
 
         const compatibleSafeAccountMethods = [
-          ...requiredEIP155Namespace.methods, // we accept all required methods (even if they are not compatible with the Safe)
+          ...requiredCompatibleMethods,
           ...optionalCompatibleMethods,
         ]
 
-        const safeAccount = [`${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`]
+        const safeAccount = `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`
 
         try {
           const wcSession = await web3wallet.approveSession({
             id,
             namespaces: {
               eip155: {
-                accounts: safeAccount, // only the Safe Account
-                methods: compatibleSafeAccountMethods, // only compatible Safe Account Methods
+                accounts: [safeAccount], // only the Safe Account
+                methods: compatibleSafeAccountMethods, // only methods compatible with the Safe
                 events: requiredEIP155Namespace.events, // we accept all events like chainChanged & accountsChanged (even if they are not compatible with the Safe)
               },
             },
