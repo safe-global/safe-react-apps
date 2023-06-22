@@ -1,3 +1,13 @@
+import { Verify } from '@walletconnect/types'
+
+const verifyContext: Verify.Context = {
+  verified: {
+    verifyUrl: '',
+    validation: 'VALID',
+    origin: 'https://app.walletconnect.com',
+  },
+} as Verify.Context
+
 export const mockSafeInfo = {
   safeAddress: '0x57CB13cbef735FbDD65f5f2866638c546464E45F',
   chainId: '5',
@@ -46,15 +56,9 @@ export const mockSessionProposal = {
     expiry: 1669889398,
     requiredNamespaces: {
       eip155: {
-        methods: [
-          'eth_sendTransaction',
-          'eth_signTransaction',
-          'eth_sign',
-          'personal_sign',
-          'eth_signTypedData',
-        ],
+        methods: ['eth_sendTransaction', 'eth_sign', 'personal_sign', 'eth_signTypedData'],
         chains: ['eip155:5'],
-        events: ['chainChanged', 'accountsChanged'],
+        events: [],
       },
     },
     optionalNamespaces: {},
@@ -73,6 +77,7 @@ export const mockSessionProposal = {
       },
     },
   },
+  verifyContext,
 }
 
 export const mockV2SessionObj = {
@@ -116,6 +121,7 @@ export const mockInvalidEVMSessionProposal = {
       },
     },
   },
+  verifyContext,
 }
 
 export const mockInvalidChainIdSessionProposal = {
@@ -126,15 +132,9 @@ export const mockInvalidChainIdSessionProposal = {
     expiry: 1669889398,
     requiredNamespaces: {
       eip155: {
-        methods: [
-          'eth_sendTransaction',
-          'eth_signTransaction',
-          'eth_sign',
-          'personal_sign',
-          'eth_signTypedData',
-        ],
+        methods: ['eth_sendTransaction', 'eth_sign', 'personal_sign', 'eth_signTypedData'],
         chains: ['eip155:1'], // only an invalid chainId is present
-        events: ['chainChanged', 'accountsChanged'],
+        events: [],
       },
     },
     optionalNamespaces: {},
@@ -153,6 +153,7 @@ export const mockInvalidChainIdSessionProposal = {
       },
     },
   },
+  verifyContext,
 }
 
 // v2 transaction request mock
@@ -179,6 +180,7 @@ export const mockValidTransactionRequest = {
     },
     chainId: 'eip155:5',
   },
+  verifyContext,
 }
 
 export const mockInvalidChainTransactionRequest = {
@@ -191,6 +193,7 @@ export const mockInvalidChainTransactionRequest = {
     },
     chainId: 'eip155:420',
   },
+  verifyContext,
 }
 
 // active v2 sessions
@@ -203,14 +206,8 @@ export const mockActiveSessions = {
     namespaces: {
       eip155: {
         accounts: ['eip155:5:0x57CB13cbef735FbDD65f5f2866638c546464E45F'],
-        methods: [
-          'eth_sendTransaction',
-          'eth_signTransaction',
-          'eth_sign',
-          'personal_sign',
-          'eth_signTypedData',
-        ],
-        events: ['accountsChanged', 'chainChanged'],
+        methods: ['eth_sendTransaction', 'eth_sign', 'personal_sign', 'eth_signTypedData'],
+        events: [],
       },
     },
     requiredNamespaces: {
@@ -223,7 +220,7 @@ export const mockActiveSessions = {
           'eth_signTypedData',
         ],
         chains: ['eip155:5'],
-        events: ['chainChanged', 'accountsChanged'],
+        events: [],
         rpcMap: {
           '5': 'https://rpc.goerli.test',
         },
