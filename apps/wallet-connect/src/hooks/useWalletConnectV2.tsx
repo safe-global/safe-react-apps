@@ -201,6 +201,8 @@ const useWalletConnectV2 = (
         const requiredEIP155Namespace = requiredNamespaces[EVMBasedNamespaces]
         const optionalEIP155Namespace = optionalNamespaces[EVMBasedNamespaces]
 
+        console.log('Session proposal: ', proposal)
+
         // EVM-based (eip155) namespace should be present
         const isEIP155NamespacePresent = !!requiredEIP155Namespace
 
