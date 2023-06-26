@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.12.1](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.12.0...wallet-connect-1.12.1) (2023-06-26)
+
+
+### Bug Fixes
+
+* **wallet-connect:** Removed workaround of accepting all accounts, methods & events in V2 ([#706](https://github.com/safe-global/safe-react-apps/issues/706)) ([22e499e](https://github.com/safe-global/safe-react-apps/commit/22e499ef0a213f61e6629ae758160afa47e8d370))
+
+
+
 # [1.12.0](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.11.0...wallet-connect-1.12.0) (2023-05-11)
 
 
