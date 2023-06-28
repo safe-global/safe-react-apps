@@ -25,6 +25,7 @@ import {
   mockValidTransactionRequest,
 } from './mocks/mocks'
 import { renderWithProviders } from './utils/test-helpers'
+import { compatibleSafeMethods } from './hooks/useWalletConnectV2'
 
 const CONNECTION_INPUT_TEXT = 'QR code or connection link'
 const HELP_TITLE = 'How to connect to a Dapp?'
@@ -147,6 +148,20 @@ const mockQRcodeStub = jest.fn()
 jest.mock('jsqr', () => {
   return function () {
     return mockQRcodeStub()
+  }
+})
+
+// walletconnect utils
+jest.mock('@walletconnect/utils', () => {
+  return {
+    buildApprovedNamespaces: (namespaces: any) => ({
+      eip155: {
+        accounts: namespaces.supportedNamespaces.eip155.accounts,
+        chains: namespaces.supportedNamespaces.eip155.chains,
+        events: namespaces.supportedNamespaces.eip155.events,
+        methods: namespaces.supportedNamespaces.eip155.methods,
+      },
+    }),
   }
 })
 
@@ -384,6 +399,7 @@ describe('Walletconnect unit tests', () => {
         expect(screen.queryByText(invalidConnectionErrorLabel)).not.toBeInTheDocument()
 
         const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
+        const safeChain = [`eip155:${mockSafeInfo.chainId}`]
 
         // approved session is sent
         expect(mockApproveSession).toBeCalledWith({
@@ -391,8 +407,9 @@ describe('Walletconnect unit tests', () => {
           namespaces: {
             eip155: {
               accounts: safeAccount,
-              methods: mockSessionProposal.params.requiredNamespaces.eip155.methods,
+              methods: compatibleSafeMethods,
               events: mockSessionProposal.params.requiredNamespaces.eip155.events,
+              chains: safeChain,
             },
           },
         })
