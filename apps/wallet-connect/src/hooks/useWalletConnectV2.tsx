@@ -243,19 +243,19 @@ const useWalletConnectV2 = (
         const safeAccount = `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`
         const safeEvents = requiredEIP155Namespace.events // we accept all events like chainChanged & accountsChanged (even if they are not compatible with the Safe)
 
-        const approvedSafeNamespaces = buildApprovedNamespaces({
-          proposal: params,
-          supportedNamespaces: {
-            eip155: {
-              chains: [safeChain], // only the Safe chain
-              methods: compatibleSafeMethods, // only the Safe methods
-              events: safeEvents,
-              accounts: [safeAccount], // only the Safe account
-            },
-          },
-        })
-
         try {
+          const approvedSafeNamespaces = buildApprovedNamespaces({
+            proposal: params,
+            supportedNamespaces: {
+              eip155: {
+                chains: [safeChain], // only the Safe chain
+                methods: compatibleSafeMethods, // only the Safe methods
+                events: safeEvents,
+                accounts: [safeAccount], // only the Safe account
+              },
+            },
+          })
+
           const wcSession = await web3wallet.approveSession({
             id,
             namespaces: approvedSafeNamespaces,
