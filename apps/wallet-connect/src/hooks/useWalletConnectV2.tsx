@@ -14,11 +14,12 @@ import {
   WALLET_CONNECT_VERSION_2,
 } from '../utils/analytics'
 import { isProduction, SAFE_WALLET_METADATA, WALLETCONNECT_V2_PROJECT_ID } from '../constants'
+import { buildApprovedNamespaces } from '@walletconnect/utils'
 
 const EVMBasedNamespaces: string = 'eip155'
 
 // see full list here: https://github.com/safe-global/safe-apps-sdk/blob/main/packages/safe-apps-provider/src/provider.ts#L35
-const compatibleSafeMethods: string[] = [
+export const compatibleSafeMethods: string[] = [
   'eth_accounts',
   'net_version',
   'eth_chainId',
@@ -196,10 +197,9 @@ const useWalletConnectV2 = (
       // events
       web3wallet.on('session_proposal', async proposal => {
         const { id, params } = proposal
-        const { requiredNamespaces, optionalNamespaces } = params
+        const { requiredNamespaces } = params
 
         const requiredEIP155Namespace = requiredNamespaces[EVMBasedNamespaces]
-        const optionalEIP155Namespace = optionalNamespaces[EVMBasedNamespaces]
 
         console.log('Session proposal: ', proposal)
 
@@ -239,35 +239,26 @@ const useWalletConnectV2 = (
           return
         }
 
-        // we only accept methods compatible with the Safe
-        const requiredCompatibleMethods =
-          requiredEIP155Namespace?.methods.filter(method =>
-            compatibleSafeMethods.includes(method),
-          ) || []
-
-        // we only accept methods compatible with the Safe
-        const optionalCompatibleMethods =
-          optionalEIP155Namespace?.methods.filter(method =>
-            compatibleSafeMethods.includes(method),
-          ) || []
-
-        const compatibleSafeAccountMethods = [
-          ...requiredCompatibleMethods,
-          ...optionalCompatibleMethods,
-        ]
-
+        const safeChain = `${EVMBasedNamespaces}:${safe.chainId}`
         const safeAccount = `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`
+        const safeEvents = requiredEIP155Namespace.events // we accept all events like chainChanged & accountsChanged (even if they are not compatible with the Safe)
 
         try {
-          const wcSession = await web3wallet.approveSession({
-            id,
-            namespaces: {
+          const approvedSafeNamespaces = buildApprovedNamespaces({
+            proposal: params,
+            supportedNamespaces: {
               eip155: {
-                accounts: [safeAccount], // only the Safe Account
-                methods: compatibleSafeAccountMethods, // only methods compatible with the Safe
-                events: requiredEIP155Namespace.events, // we accept all events like chainChanged & accountsChanged (even if they are not compatible with the Safe)
+                chains: [safeChain], // only the Safe chain
+                methods: compatibleSafeMethods, // only the Safe methods
+                events: safeEvents,
+                accounts: [safeAccount], // only the Safe account
               },
             },
+          })
+
+          const wcSession = await web3wallet.approveSession({
+            id,
+            namespaces: approvedSafeNamespaces,
           })
 
           trackEvent(NEW_SESSION_ACTION, WALLET_CONNECT_VERSION_2, wcSession.peer.metadata)
