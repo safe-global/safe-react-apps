@@ -471,7 +471,9 @@ describe('Walletconnect unit tests', () => {
         })
 
         mockApproveSession.mockImplementation(() => {
-          return Promise.resolve(mockV2SessionObj)
+          return Promise.reject({
+            message: 'chains', // wallet connect rejects the connection now
+          })
         })
 
         renderWithProviders(<WalletconnectSafeApp />)
@@ -492,15 +494,8 @@ describe('Walletconnect unit tests', () => {
           expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
         )
 
-        expect(mockApproveSession).not.toBeCalled()
-        expect(mockRejectSession).toBeCalledWith({
-          id: mockInvalidEVMSessionProposal.id,
-          reason: {
-            code: 5100,
-            message:
-              'Unsupported chains. No Goerli (eip155:5) namespace present in the session proposal',
-          },
-        })
+        expect(mockApproveSession).toBeCalled()
+        expect(mockRejectSession).not.toBeCalled()
       })
     })
 

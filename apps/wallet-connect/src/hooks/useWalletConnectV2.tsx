@@ -220,25 +220,6 @@ const useWalletConnectV2 = (
           return
         }
 
-        // Safe chain should be present
-        const isSafeChainIdPresent = requiredEIP155Namespace.chains?.some(
-          chain => chain === `${EVMBasedNamespaces}:${safe.chainId}`,
-        )
-
-        if (!isSafeChainIdPresent) {
-          const errorMessage = getConnectionErrorMessage('chains error', chainInfo?.chainName)
-          setError(errorMessage)
-
-          await web3wallet.rejectSession({
-            id: proposal.id,
-            reason: {
-              code: UNSUPPORTED_CHAIN_ERROR_CODE,
-              message: `Unsupported chains. No ${chainInfo?.chainName} (${EVMBasedNamespaces}:${safe.chainId}) namespace present in the session proposal`,
-            },
-          })
-          return
-        }
-
         const safeChain = `${EVMBasedNamespaces}:${safe.chainId}`
         const safeAccount = `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`
         const safeEvents = requiredEIP155Namespace.events // we accept all events like chainChanged & accountsChanged (even if they are not compatible with the Safe)
