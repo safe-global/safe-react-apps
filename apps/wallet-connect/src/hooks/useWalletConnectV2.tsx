@@ -197,9 +197,10 @@ const useWalletConnectV2 = (
       // events
       web3wallet.on('session_proposal', async proposal => {
         const { id, params } = proposal
-        const { requiredNamespaces } = params
+        const { requiredNamespaces, optionalNamespaces } = params
 
-        const requiredEIP155Namespace = requiredNamespaces[EVMBasedNamespaces]
+        const requiredEIP155Namespace =
+          requiredNamespaces[EVMBasedNamespaces] || optionalNamespaces[EVMBasedNamespaces]
 
         console.log('Session proposal: ', proposal)
 
