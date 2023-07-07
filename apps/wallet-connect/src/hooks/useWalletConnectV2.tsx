@@ -197,9 +197,10 @@ const useWalletConnectV2 = (
       // events
       web3wallet.on('session_proposal', async proposal => {
         const { id, params } = proposal
-        const { requiredNamespaces } = params
+        const { requiredNamespaces, optionalNamespaces } = params
 
-        const requiredEIP155Namespace = requiredNamespaces[EVMBasedNamespaces]
+        const requiredEIP155Namespace =
+          requiredNamespaces[EVMBasedNamespaces] || optionalNamespaces[EVMBasedNamespaces]
 
         console.log('Session proposal: ', proposal)
 
@@ -220,12 +221,16 @@ const useWalletConnectV2 = (
           return
         }
 
-        // Safe chain should be present
-        const isSafeChainIdPresent = requiredEIP155Namespace.chains?.some(
-          chain => chain === `${EVMBasedNamespaces}:${safe.chainId}`,
+        const safeChain = `${EVMBasedNamespaces}:${safe.chainId}`
+        const safeAccount = `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`
+        const safeEvents = requiredEIP155Namespace.events // we accept all events like chainChanged & accountsChanged (even if they are not compatible with the Safe)
+
+        // The Safe chain should be present
+        const isSafeChainPresent = requiredEIP155Namespace?.chains?.some(
+          namespace => namespace === safeChain,
         )
 
-        if (!isSafeChainIdPresent) {
+        if (!isSafeChainPresent) {
           const errorMessage = getConnectionErrorMessage('chains error', chainInfo?.chainName)
           setError(errorMessage)
 
@@ -233,15 +238,11 @@ const useWalletConnectV2 = (
             id: proposal.id,
             reason: {
               code: UNSUPPORTED_CHAIN_ERROR_CODE,
-              message: `Unsupported chains. No ${chainInfo?.chainName} (${EVMBasedNamespaces}:${safe.chainId}) namespace present in the session proposal`,
+              message: `Wrong chains in proposal. The current Safe chain (${safeChain}) is not present in the session proposal`,
             },
           })
           return
         }
-
-        const safeChain = `${EVMBasedNamespaces}:${safe.chainId}`
-        const safeAccount = `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`
-        const safeEvents = requiredEIP155Namespace.events // we accept all events like chainChanged & accountsChanged (even if they are not compatible with the Safe)
 
         try {
           const approvedSafeNamespaces = buildApprovedNamespaces({
@@ -329,7 +330,7 @@ const getConnectionErrorMessage = (errorMessage = '', chainName = ''): string =>
   const isChainError = errorMessage.includes('chains')
 
   if (isChainError) {
-    return `Connection refused: Incompatible chain detected. Make sure the Dapp only uses ${chainName} to interact with this Safe.`
+    return `Connection refused: This Safe Account is in ${chainName} but the Wallet Connect session proposal is not valid because it contains: 1) A required chain different than ${chainName} 2) Does not include ${chainName} between the optional chains 3) No EVM compatible chain is included`
   }
 
   const isMethodError = errorMessage.includes('methods')
