@@ -330,7 +330,7 @@ const getConnectionErrorMessage = (errorMessage = '', chainName = ''): string =>
   const isChainError = errorMessage.includes('chains')
 
   if (isChainError) {
-    return `Connection refused: Incompatible chain detected. Make sure the Dapp uses ${chainName} to interact with this Safe.`
+    return `Connection refused: This Safe Account is in ${chainName} but the Wallet Connect session proposal is not valid because it contains: 1) A required chain different than ${chainName} 2) Does not include ${chainName} between the optional chains 3) No EVM compatible chain is included`
   }
 
   const isMethodError = errorMessage.includes('methods')
