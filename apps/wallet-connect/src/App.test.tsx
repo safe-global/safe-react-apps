@@ -37,7 +37,7 @@ const version2URI =
   'wc:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@2?relay-protocol=irn&symKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
 const invalidConnectionErrorLabel =
-  'Connection refused: Incompatible chain detected. Make sure the Dapp only uses Goerli to interact with this Safe.'
+  'Connection refused: This Safe Account is in Goerli but the Wallet Connect session proposal is not valid because it contains: 1) A required chain different than Goerli 2) Does not include Goerli between the optional chains 3) No EVM compatible chain is included'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => {
   return {
@@ -494,8 +494,8 @@ describe('Walletconnect unit tests', () => {
           expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
         )
 
-        expect(mockApproveSession).toBeCalled()
-        expect(mockRejectSession).not.toBeCalled()
+        expect(mockApproveSession).not.toBeCalled()
+        expect(mockRejectSession).toBeCalled()
       })
     })
 
