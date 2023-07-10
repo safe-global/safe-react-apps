@@ -37,7 +37,7 @@ const version2URI =
   'wc:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@2?relay-protocol=irn&symKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
 const invalidConnectionErrorLabel =
-  'Connection refused: the dApp you are using is sending an incompatible connection proposal with your Safe Account'
+  'Connection refused: the dApp you are using is sending a connection proposal that is incompatible with your Safe Account'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => {
   return {
