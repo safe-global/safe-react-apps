@@ -37,7 +37,7 @@ const version2URI =
   'wc:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@2?relay-protocol=irn&symKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
 const invalidConnectionErrorLabel =
-  'Connection refused: This Safe Account is in Goerli but the Wallet Connect session proposal is not valid because it contains: 1) A required chain different than Goerli 2) Does not include Goerli between the optional chains 3) No EVM compatible chain is included'
+  'Connection refused: the dApp you are using is sending an incompatible connection proposal with your Safe Account'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => {
   return {
@@ -148,20 +148,6 @@ const mockQRcodeStub = jest.fn()
 jest.mock('jsqr', () => {
   return function () {
     return mockQRcodeStub()
-  }
-})
-
-// walletconnect utils
-jest.mock('@walletconnect/utils', () => {
-  return {
-    buildApprovedNamespaces: (namespaces: any) => ({
-      eip155: {
-        accounts: namespaces.supportedNamespaces.eip155.accounts,
-        chains: namespaces.supportedNamespaces.eip155.chains,
-        events: namespaces.supportedNamespaces.eip155.events,
-        methods: namespaces.supportedNamespaces.eip155.methods,
-      },
-    }),
   }
 })
 
@@ -427,7 +413,7 @@ describe('Walletconnect unit tests', () => {
         })
 
         mockApproveSession.mockImplementation(() => {
-          return Promise.resolve(mockV2SessionObj)
+          return Promise.reject()
         })
 
         renderWithProviders(<WalletconnectSafeApp />)
@@ -448,15 +434,23 @@ describe('Walletconnect unit tests', () => {
           expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
         )
 
-        expect(mockApproveSession).not.toBeCalled()
-        expect(mockRejectSession).toBeCalledWith({
-          id: mockInvalidEVMSessionProposal.id,
-          reason: {
-            code: 5100,
-            message:
-              'Unsupported chains. No EVM-based (eip155) namespace present in the session proposal',
+        const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
+        const safeChain = [`eip155:${mockSafeInfo.chainId}`]
+
+        // we try to connect
+        expect(mockApproveSession).toHaveBeenCalledWith({
+          id: 1111111111111111,
+          namespaces: {
+            eip155: {
+              accounts: safeAccount,
+              chains: safeChain,
+              events: [],
+              methods: compatibleSafeMethods,
+            },
           },
         })
+
+        expect(mockRejectSession).toBeCalled()
       })
 
       it('rejects session proposals without Safe chain', async () => {
@@ -494,7 +488,22 @@ describe('Walletconnect unit tests', () => {
           expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
         )
 
-        expect(mockApproveSession).not.toBeCalled()
+        const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
+        const safeChain = [`eip155:${mockSafeInfo.chainId}`]
+
+        // we try to connect
+        expect(mockApproveSession).toHaveBeenCalledWith({
+          id: 1111111111111111,
+          namespaces: {
+            eip155: {
+              accounts: safeAccount,
+              chains: safeChain,
+              events: [],
+              methods: compatibleSafeMethods,
+            },
+          },
+        })
+
         expect(mockRejectSession).toBeCalled()
       })
     })
