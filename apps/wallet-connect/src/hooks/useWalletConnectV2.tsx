@@ -14,7 +14,6 @@ import {
   WALLET_CONNECT_VERSION_2,
 } from '../utils/analytics'
 import { isProduction, SAFE_WALLET_METADATA, WALLETCONNECT_V2_PROJECT_ID } from '../constants'
-import { buildApprovedNamespaces } from '@walletconnect/utils'
 
 const EVMBasedNamespaces: string = 'eip155'
 
@@ -53,6 +52,9 @@ const USER_REJECTED_REQUEST_CODE = 4001
 const USER_DISCONNECTED_CODE = 6000
 
 const logger = isProduction ? undefined : 'debug'
+
+export const errorLabel =
+  'Connection refused: the dApp you are using is sending a connection proposal that is incompatible with your Safe Account'
 
 export type wcConnectType = (uri: string) => Promise<void>
 export type wcDisconnectType = () => Promise<void>
@@ -197,69 +199,25 @@ const useWalletConnectV2 = (
       // events
       web3wallet.on('session_proposal', async proposal => {
         const { id, params } = proposal
-        const { requiredNamespaces, optionalNamespaces } = params
-
-        const requiredEIP155Namespace =
-          requiredNamespaces[EVMBasedNamespaces] || optionalNamespaces[EVMBasedNamespaces]
+        const { requiredNamespaces } = params
 
         console.log('Session proposal: ', proposal)
 
-        // EVM-based (eip155) namespace should be present
-        const isEIP155NamespacePresent = !!requiredEIP155Namespace
-
-        if (!isEIP155NamespacePresent) {
-          const errorMessage = getConnectionErrorMessage('chains error', chainInfo?.chainName)
-          setError(errorMessage)
-
-          await web3wallet.rejectSession({
-            id: proposal.id,
-            reason: {
-              code: UNSUPPORTED_CHAIN_ERROR_CODE,
-              message: `Unsupported chains. No EVM-based (${EVMBasedNamespaces}) namespace present in the session proposal`,
-            },
-          })
-          return
-        }
-
-        const safeChain = `${EVMBasedNamespaces}:${safe.chainId}`
         const safeAccount = `${EVMBasedNamespaces}:${safe.chainId}:${safe.safeAddress}`
-        const safeEvents = requiredEIP155Namespace.events // we accept all events like chainChanged & accountsChanged (even if they are not compatible with the Safe)
-
-        // The Safe chain should be present
-        const isSafeChainPresent = requiredEIP155Namespace?.chains?.some(
-          namespace => namespace === safeChain,
-        )
-
-        if (!isSafeChainPresent) {
-          const errorMessage = getConnectionErrorMessage('chains error', chainInfo?.chainName)
-          setError(errorMessage)
-
-          await web3wallet.rejectSession({
-            id: proposal.id,
-            reason: {
-              code: UNSUPPORTED_CHAIN_ERROR_CODE,
-              message: `Wrong chains in proposal. The current Safe chain (${safeChain}) is not present in the session proposal`,
-            },
-          })
-          return
-        }
+        const safeChain = `${EVMBasedNamespaces}:${safe.chainId}`
+        const safeEvents = requiredNamespaces[EVMBasedNamespaces]?.events || [] // we accept all events like chainChanged & accountsChanged (even if they are not compatible with the Safe)
 
         try {
-          const approvedSafeNamespaces = buildApprovedNamespaces({
-            proposal: params,
-            supportedNamespaces: {
+          const wcSession = await web3wallet.approveSession({
+            id,
+            namespaces: {
               eip155: {
+                accounts: [safeAccount], // only the Safe account
                 chains: [safeChain], // only the Safe chain
                 methods: compatibleSafeMethods, // only the Safe methods
                 events: safeEvents,
-                accounts: [safeAccount], // only the Safe account
               },
             },
-          })
-
-          const wcSession = await web3wallet.approveSession({
-            id,
-            namespaces: approvedSafeNamespaces,
           })
 
           trackEvent(NEW_SESSION_ACTION, WALLET_CONNECT_VERSION_2, wcSession.peer.metadata)
@@ -268,9 +226,19 @@ const useWalletConnectV2 = (
           setError(undefined)
         } catch (error: any) {
           console.log('error: ', error)
-          console.log('error: ', error.message)
-          const errorMessage = getConnectionErrorMessage(error.message, chainInfo?.chainName)
-          setError(errorMessage)
+
+          // human readeable error
+          setError(errorLabel)
+
+          const errorMessage = `Connection refused: This Safe Account is in ${chainInfo?.chainName} but the Wallet Connect session proposal is not valid because it contains: 1) A required chain different than ${chainInfo?.chainName} 2) Does not include ${chainInfo?.chainName} between the optional chains 3) No EVM compatible chain is included`
+          console.log(errorMessage)
+          await web3wallet.rejectSession({
+            id: proposal.id,
+            reason: {
+              code: UNSUPPORTED_CHAIN_ERROR_CODE,
+              message: errorMessage,
+            },
+          })
         }
       })
 
@@ -324,20 +292,4 @@ const rejectResponse = (id: number, code: number, message: string) => {
       message,
     },
   }
-}
-
-const getConnectionErrorMessage = (errorMessage = '', chainName = ''): string => {
-  const isChainError = errorMessage.includes('chains')
-
-  if (isChainError) {
-    return `Connection refused: This Safe Account is in ${chainName} but the Wallet Connect session proposal is not valid because it contains: 1) A required chain different than ${chainName} 2) Does not include ${chainName} between the optional chains 3) No EVM compatible chain is included`
-  }
-
-  const isMethodError = errorMessage.includes('methods')
-
-  if (isMethodError) {
-    return 'Connection refused: Incompatible methods between the Dapp and the Safe Account detected.'
-  }
-
-  return errorMessage
 }
