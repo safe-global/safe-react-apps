@@ -25,6 +25,7 @@ import {
   mockValidTransactionRequest,
 } from './mocks/mocks'
 import { renderWithProviders } from './utils/test-helpers'
+import { compatibleSafeMethods } from './hooks/useWalletConnectV2'
 
 const CONNECTION_INPUT_TEXT = 'QR code or connection link'
 const HELP_TITLE = 'How to connect to a Dapp?'
@@ -36,7 +37,7 @@ const version2URI =
   'wc:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@2?relay-protocol=irn&symKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
 const invalidConnectionErrorLabel =
-  'Connection refused: Incompatible chain detected. Make sure the Dapp only uses Goerli to interact with this Safe.'
+  'Connection refused: the dApp you are using is sending a connection proposal that is incompatible with your Safe Account'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => {
   return {
@@ -384,6 +385,7 @@ describe('Walletconnect unit tests', () => {
         expect(screen.queryByText(invalidConnectionErrorLabel)).not.toBeInTheDocument()
 
         const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
+        const safeChain = [`eip155:${mockSafeInfo.chainId}`]
 
         // approved session is sent
         expect(mockApproveSession).toBeCalledWith({
@@ -391,8 +393,9 @@ describe('Walletconnect unit tests', () => {
           namespaces: {
             eip155: {
               accounts: safeAccount,
-              methods: mockSessionProposal.params.requiredNamespaces.eip155.methods,
+              methods: compatibleSafeMethods,
               events: mockSessionProposal.params.requiredNamespaces.eip155.events,
+              chains: safeChain,
             },
           },
         })
@@ -410,7 +413,7 @@ describe('Walletconnect unit tests', () => {
         })
 
         mockApproveSession.mockImplementation(() => {
-          return Promise.resolve(mockV2SessionObj)
+          return Promise.reject()
         })
 
         renderWithProviders(<WalletconnectSafeApp />)
@@ -431,15 +434,23 @@ describe('Walletconnect unit tests', () => {
           expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
         )
 
-        expect(mockApproveSession).not.toBeCalled()
-        expect(mockRejectSession).toBeCalledWith({
-          id: mockInvalidEVMSessionProposal.id,
-          reason: {
-            code: 5100,
-            message:
-              'Unsupported chains. No EVM-based (eip155) namespace present in the session proposal',
+        const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
+        const safeChain = [`eip155:${mockSafeInfo.chainId}`]
+
+        // we try to connect
+        expect(mockApproveSession).toHaveBeenCalledWith({
+          id: 1111111111111111,
+          namespaces: {
+            eip155: {
+              accounts: safeAccount,
+              chains: safeChain,
+              events: [],
+              methods: compatibleSafeMethods,
+            },
           },
         })
+
+        expect(mockRejectSession).toBeCalled()
       })
 
       it('rejects session proposals without Safe chain', async () => {
@@ -454,7 +465,9 @@ describe('Walletconnect unit tests', () => {
         })
 
         mockApproveSession.mockImplementation(() => {
-          return Promise.resolve(mockV2SessionObj)
+          return Promise.reject({
+            message: 'chains', // wallet connect rejects the connection now
+          })
         })
 
         renderWithProviders(<WalletconnectSafeApp />)
@@ -475,15 +488,23 @@ describe('Walletconnect unit tests', () => {
           expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
         )
 
-        expect(mockApproveSession).not.toBeCalled()
-        expect(mockRejectSession).toBeCalledWith({
-          id: mockInvalidEVMSessionProposal.id,
-          reason: {
-            code: 5100,
-            message:
-              'Unsupported chains. No Goerli (eip155:5) namespace present in the session proposal',
+        const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
+        const safeChain = [`eip155:${mockSafeInfo.chainId}`]
+
+        // we try to connect
+        expect(mockApproveSession).toHaveBeenCalledWith({
+          id: 1111111111111111,
+          namespaces: {
+            eip155: {
+              accounts: safeAccount,
+              chains: safeChain,
+              events: [],
+              methods: compatibleSafeMethods,
+            },
           },
         })
+
+        expect(mockRejectSession).toBeCalled()
       })
     })
 

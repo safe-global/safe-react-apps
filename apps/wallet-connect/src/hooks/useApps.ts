@@ -36,7 +36,10 @@ export function useApps(): UseAppsResponse {
   const openSafeApp = useCallback(
     (url: string) => {
       if (origin?.length) {
-        window.open(`${origin}/${networkPrefix}:${safe.safeAddress}/apps?appUrl=${url}`, '_blank')
+        window.open(
+          `${origin}/apps/open?safe=${networkPrefix}:${safe.safeAddress}&appUrl=${url}`,
+          '_blank',
+        )
       }
     },
     [networkPrefix, origin, safe],
