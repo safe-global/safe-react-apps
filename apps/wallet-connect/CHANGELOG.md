@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.12.2](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.12.1...wallet-connect-1.12.2) (2023-07-10)
+
+
+### Bug Fixes
+
+* **wallet-connect:** Enable dApps to use optional chains and avoid session rejection ([#727](https://github.com/safe-global/safe-react-apps/issues/727)) ([6e79a23](https://github.com/safe-global/safe-react-apps/commit/6e79a23599a64e9917eb8bc4fd990a12970f2f08))
+* **wallet-connect:** Improved Walletconnect rejection messages to dApps ([#729](https://github.com/safe-global/safe-react-apps/issues/729)) ([e7b8b2c](https://github.com/safe-global/safe-react-apps/commit/e7b8b2c18c3af1dc829e0ec49e7726cc22370fe9))
+
+
+
 ## [1.12.1](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.12.0...wallet-connect-1.12.1) (2023-06-26)
 
 
