@@ -25,7 +25,7 @@ import {
   mockValidTransactionRequest,
 } from './mocks/mocks'
 import { renderWithProviders } from './utils/test-helpers'
-import { compatibleSafeMethods } from './hooks/useWalletConnectV2'
+import { compatibleSafeMethods, errorLabel } from './hooks/useWalletConnectV2'
 
 const CONNECTION_INPUT_TEXT = 'QR code or connection link'
 const HELP_TITLE = 'How to connect to a Dapp?'
@@ -35,9 +35,6 @@ const version1URI =
 
 const version2URI =
   'wc:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@2?relay-protocol=irn&symKey=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-
-const invalidConnectionErrorLabel =
-  'Connection refused: the dApp you are using is sending a connection proposal that is incompatible with your Safe Account'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => {
   return {
@@ -382,7 +379,7 @@ describe('Walletconnect unit tests', () => {
         expect(mockRejectSession).not.toBeCalled()
 
         // No error label is present
-        expect(screen.queryByText(invalidConnectionErrorLabel)).not.toBeInTheDocument()
+        expect(screen.queryByText(errorLabel)).not.toBeInTheDocument()
 
         const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
         const safeChain = [`eip155:${mockSafeInfo.chainId}`]
@@ -430,9 +427,7 @@ describe('Walletconnect unit tests', () => {
         })
 
         // error label to provide feedback to the user
-        await waitFor(() =>
-          expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
-        )
+        await waitFor(() => expect(screen.getByText(errorLabel)).toBeInTheDocument())
 
         const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
         const safeChain = [`eip155:${mockSafeInfo.chainId}`]
@@ -484,9 +479,7 @@ describe('Walletconnect unit tests', () => {
         })
 
         // error label to provide feedback to the user
-        await waitFor(() =>
-          expect(screen.getByText(invalidConnectionErrorLabel)).toBeInTheDocument(),
-        )
+        await waitFor(() => expect(screen.getByText(errorLabel)).toBeInTheDocument())
 
         const safeAccount = [`eip155:${mockSafeInfo.chainId}:${mockSafeInfo.safeAddress}`]
         const safeChain = [`eip155:${mockSafeInfo.chainId}`]
