@@ -54,7 +54,7 @@ const USER_DISCONNECTED_CODE = 6000
 const logger = isProduction ? undefined : 'debug'
 
 export const errorLabel =
-  'Connection refused: the dApp you are using is sending a connection proposal that is incompatible with your Safe Account'
+  'We were unable to create a connection due to compatibility issues with the latest WalletConnect v2 upgrade. We are actively working with the WalletConnect team and the dApps to get these issues resolved. Use Safe Apps instead wherever possible.'
 
 export type wcConnectType = (uri: string) => Promise<void>
 export type wcDisconnectType = () => Promise<void>
