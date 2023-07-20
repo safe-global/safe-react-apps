@@ -38,6 +38,6 @@
   },
   "devDependencies": {
     "@walletconnect/legacy-types": "^2.0.0",
-    "@walletconnect/types": "^2.8.0"
+    "@walletconnect/types": "^2.9.0"
   }
 }

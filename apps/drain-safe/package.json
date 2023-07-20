@@ -7,7 +7,7 @@
     "@material-ui/core": "^4.12.4",
     "@mui/x-data-grid": "4.0.2",
     "@safe-global/safe-apps-provider": "^0.17.1",
-    "bignumber.js": "^9.1.0",
+    "bignumber.js": "^9.1.1",
     "web3-eth-abi": "~1.8.1"
   },
   "scripts": {
