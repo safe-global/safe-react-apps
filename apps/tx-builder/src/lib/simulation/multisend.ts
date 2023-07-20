@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 import { BaseTransaction } from '@safe-global/safe-apps-sdk'
-import { getMultiSendCallOnlyDeployment } from '@gnosis.pm/safe-deployments'
+import { getMultiSendCallOnlyDeployment } from '@safe-global/safe-deployments'
 
 const getMultiSendCallOnlyAddress = (chainId: string): string => {
   const deployment = getMultiSendCallOnlyDeployment({ network: chainId })

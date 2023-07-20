@@ -4,12 +4,12 @@
   "private": true,
   "homepage": "/tx-builder",
   "dependencies": {
-    "@gnosis.pm/safe-deployments": "^1.19.0",
     "@gnosis.pm/safe-react-components": "1.1.5",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@safe-global/safe-apps-provider": "0.17.0",
+    "@safe-global/safe-deployments": "^1.26.0",
     "axios": "^0.27.2",
     "evm-proxy-detection": "1.0.0",
     "localforage": "^1.10.0",
