@@ -7,6 +7,14 @@ import SolidityForm, {
   TO_ADDRESS_FIELD_NAME,
 } from './SolidityForm'
 
+// Axios is bundled as ESM module which is not directly compatible with Jest
+// https://jestjs.io/docs/ecmascript-modules
+jest.mock('axios', () => ({
+  get: jest.fn(),
+  post: jest.fn(),
+  delete: jest.fn(),
+}))
+
 const testAddressMethod = {
   inputs: [{ internalType: 'address', name: 'newValue', type: 'address' }],
   name: 'testAddressValue',

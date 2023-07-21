@@ -1,6 +1,14 @@
 import { encodeTxData, tokenToTx } from '../utils/sdk-helpers'
 import erc20 from '../abis/erc20'
 
+// Axios is bundled as ESM module which is not directly compatible with Jest
+// https://jestjs.io/docs/ecmascript-modules
+jest.mock('axios', () => ({
+  get: jest.fn(),
+  post: jest.fn(),
+  delete: jest.fn(),
+}))
+
 describe('Safe SDK helpers', () => {
   describe('encodeTxData', () => {
     it('encodes a simple transfer call', () => {
