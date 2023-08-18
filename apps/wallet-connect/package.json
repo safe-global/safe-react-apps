@@ -5,7 +5,7 @@
   "homepage": "./",
   "dependencies": {
     "@gnosis.pm/safe-react-components": "^0.9.7",
-    "@safe-global/safe-apps-provider": "^0.17.1",
+    "@safe-global/safe-apps-provider": "^0.18.0",
     "@safe-global/safe-gateway-typescript-sdk": "^3.7.3",
     "@walletconnect/client": "^1.8.0",
     "@walletconnect/web3wallet": "^1.8.6",
