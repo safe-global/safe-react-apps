@@ -1,6 +1,6 @@
 # Safe Apps
 
-[![Logo](https://raw.githubusercontent.com/safe-global/safe-react-apps/main/assets/logo.png)](https://safe.global/)
+[![Logo](https://raw.githubusercontent.com/safe-global/safe-react-apps/main/assets/logo.svg)](https://safe.global/)
 
 ![license](https://img.shields.io/github/license/safe-global/safe-react-apps)
 ![build](https://img.shields.io/github/actions/workflow/status/safe-global/safe-react-apps/deployment.yml?branch=main)
@@ -62,11 +62,11 @@ In `./apps` you can find one folder per each integration app Gnosis develops.
 
 Also, each app must expose a `manifest.json` in order to be accepted by the Safe, you can find it in their `./public` folder. Besides the `manifest.json` file we also include the app Icon.
 
-This will allow the Safe to consume these resources like so: `https://apps.gnosis-safe.io/tx-builder/manifest.json`
+This will allow the Safe to consume these resources like so: `https://apps-portal.safe.global/tx-builder/manifest.json`
 
 ## How to Develop a third-party App
 
-Documentation about how to develop and integrate your third-party app can be found [here](https://docs.gnosis-safe.io/build/sdks/safe-apps).
+Documentation about how to develop and integrate your third-party app can be found [here](https://docs.safe.global/safe-core-aa-sdk/safe-apps).
 
 ## For developers
 
@@ -98,12 +98,12 @@ These apps are deployed in the following environments.
   | [Transaction Builder](https://safe-apps.staging.5afe.dev/tx-builder)
   | [WalletConnect](https://safe-apps.staging.5afe.dev/wallet-connect)
 
-- When the code is released: https://apps.gnosis-safe.io
+- When the code is released: https://apps-portal.safe.global
 
-  [Drain Account](https://apps.gnosis-safe.io/drain-safe)
-  | [Ramp Network](https://apps.gnosis-safe.io/ramp-network)
-  | [Transaction Builder](https://apps.gnosis-safe.io/tx-builder)
-  | [WalletConnect](https://apps.gnosis-safe.io/wallet-connect)
+  [Drain Account](https://apps-portal.safe.global/drain-safe)
+  | [Ramp Network](https://apps-portal.safe.global/ramp-network)
+  | [Transaction Builder](https://apps-portal.safe.global/tx-builder)
+  | [WalletConnect](https://apps-portal.safe.global/wallet-connect)
 
 ## Run e2e tests
 
