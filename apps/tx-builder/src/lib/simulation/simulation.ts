@@ -17,14 +17,16 @@ const TENDERLY_ORG_NAME = process.env.REACT_APP_TENDERLY_ORG_NAME || ''
 const NON_SUPPORTED_CHAINS = [
   // Energy web chain
   '246',
-  // Base
-  '8453',
+  // zkSync Era Testnet
+  '280',
+  //zkSync Era Mainnet
+  '324',
+  // Polygon zkEVM
+  '1101',
   // Celo
   '42220',
   // Volta
   '73799',
-  // Base Goerli
-  '84531',
   // Aurora
   '1313161554',
 ]
