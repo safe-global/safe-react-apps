@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.13.1](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.13.0...wallet-connect-1.13.1) (2023-08-23)
+
+
+
 # [1.13.0](https://github.com/safe-global/safe-react-apps/compare/wallet-connect-1.12.2...wallet-connect-1.13.0) (2023-07-12)
 
 
