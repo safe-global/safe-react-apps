@@ -14,7 +14,6 @@ import {
   SAVE_BATCH_PATH,
   TRANSACTION_LIBRARY_PATH,
 } from './routes/routes'
-import Banner from './components/Banner'
 
 const App = () => {
   return (
@@ -41,9 +40,6 @@ const App = () => {
         {/* Transaction Library Screen */}
         <Route path={TRANSACTION_LIBRARY_PATH} element={<TransactionLibrary />} />
       </Routes>
-
-      {/* Banner */}
-      <Banner />
     </>
   )
 }

@@ -61,7 +61,7 @@ jobs:
 
       - name: Set main Safe Apps base URL
         run: |
-          echo "SAFE_APPS_BASE_URL=https://apps.gnosis-safe.io" >> $GITHUB_ENV
+          echo "SAFE_APPS_BASE_URL=https://apps-portal.safe.global" >> $GITHUB_ENV
         if: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 9 * * 1-5' }}
 
       - name: Checkout safe-react-apps
