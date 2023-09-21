@@ -15,7 +15,6 @@ if (drainSafeUrl && drainSafeUrl.includes('safereactapps.review-react-hr.5afe.de
   warningCheckedCustomApps.push(new URL(drainSafeUrl).origin)
 } else {
   warningCheckedCustomApps = [
-    'https://apps.gnosis-safe.io',
     'https://safe-apps.dev.5afe.dev',
     'https://apps-portal.safe.global',
   ]

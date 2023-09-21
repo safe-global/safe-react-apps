@@ -33,6 +33,9 @@ inputs:
   react-app-mmi-environment:
     description: MMI environment
     required: true
+  react-app-walletconnect-project-id:
+    description: WalletConnect Project ID
+    required: true
 
 runs:
   using: composite
