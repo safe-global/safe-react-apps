@@ -1,5 +1,6 @@
 import { ChainInfo } from '@safe-global/safe-apps-sdk'
 import { RampInstantEvent, RampInstantSDK } from '@ramp-network/ramp-instant-sdk'
+import { RAMP_API_KEY } from './constants'
 
 const RINKEBY_STAGING_URL = 'https://ri-widget-staging.firebaseapp.com/'
 const WIDGET_CLOSE_EVENT = 'WIDGET_CLOSE'
@@ -32,6 +33,7 @@ export const initializeRampWidget = ({ url, assets, address, onClose }: RampWidg
     hostLogoUrl: 'https://docs.ramp.network/img/logo-1.svg',
     swapAsset: assets,
     userAddress: address,
+    hostApiKey: RAMP_API_KEY,
   })
     .on('*', (event: RampInstantEvent) => {
       if (event.type === WIDGET_CLOSE_EVENT) {

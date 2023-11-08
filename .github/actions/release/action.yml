@@ -63,6 +63,7 @@ runs:
         REACT_APP_MMI_BACKEND_BASE_URL: ${{ inputs.react-app-mmi-backend-base-url }}
         REACT_APP_MMI_ENVIRONMENT: ${{ inputs.react-app-mmi-environment }}
         REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ inputs.react-app-walletconnect-project-id }}
+        REACT_APP_RAMP_APIKEY: ${{ secrets.REACT_APP_RAMP_APIKEY }}
 
     - name: Push changes
       uses: ad-m/github-push-action@8407731efefc0d8f72af254c74276b7a90be36e1
