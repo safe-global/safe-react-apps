@@ -36,6 +36,9 @@ inputs:
   react-app-walletconnect-project-id:
     description: WalletConnect Project ID
     required: true
+  react-app-ramp-api:
+    description: Ramp network API Key
+    required: true
 
 runs:
   using: composite
