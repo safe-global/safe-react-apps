@@ -10,7 +10,7 @@
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@safe-global/safe-apps-provider": "^0.18.0",
     "@safe-global/safe-deployments": "^1.26.0",
-    "axios": "^1.4.0",
+    "axios": "^1.6.0",
     "evm-proxy-detection": "1.0.0",
     "localforage": "^1.10.0",
     "react-beautiful-dnd": "^13.1.1",
