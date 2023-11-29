@@ -3,7 +3,7 @@ import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 import { Title, Loader, Text } from '@gnosis.pm/safe-react-components'
 import { ChainInfo } from '@safe-global/safe-apps-sdk'
 import { goBack } from './utils'
-import { ASSETS_BY_CHAIN, getRampWidgetUrl, initializeRampWidget } from './ramp'
+import { ASSETS_BY_CHAIN, initializeRampWidget } from './ramp'
 import styled from 'styled-components'
 
 const Container = styled.div`
@@ -45,7 +45,6 @@ const SafeApp = (): React.ReactElement | null => {
   useEffect(() => {
     if (chainInfo && safe && isChainSupported) {
       initializeRampWidget({
-        url: getRampWidgetUrl(chainInfo),
         address: safe.safeAddress,
         assets: ASSETS_BY_CHAIN[chainInfo.chainId],
         onClose: goBack,

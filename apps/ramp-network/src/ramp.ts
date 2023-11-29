@@ -20,15 +20,13 @@ export const getRampWidgetUrl = (chainInfo: ChainInfo) => {
 }
 
 type RampWidgetInitializer = {
-  url?: string
   assets: string
   address: string
   onClose?: () => void
 }
 
-export const initializeRampWidget = ({ url, assets, address, onClose }: RampWidgetInitializer) => {
+export const initializeRampWidget = ({ assets, address, onClose }: RampWidgetInitializer) => {
   return new RampInstantSDK({
-    url,
     hostAppName: 'Ramp Network Safe App',
     hostLogoUrl: 'https://docs.ramp.network/img/logo-1.svg',
     swapAsset: assets,
