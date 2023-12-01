@@ -23,8 +23,8 @@ on:
         required: true
         default: 'https://safe-client.safe.global'
   schedule:
-    # At 9:00 on every day-of-week from Monday through Friday
-    - cron: '0 9 * * 1-5'
+    # At 4:00 on every day-of-week from Monday through Friday
+    - cron: '0 4 * * 1-5'
 
 jobs:
   e2e:
