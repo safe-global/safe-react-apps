@@ -13,6 +13,11 @@ export const ASSETS_BY_CHAIN: { [key: string]: string } = {
   '137': 'MATIC_*',
   '100': 'XDAI_*',
   '43114': 'AVAX_*',
+  '8453': 'ETH_*,ERC20_*', // Base
+  '42161': 'ETH_*,ERC20_*', //Arbitrum
+  '324': 'ETH_*,ERC20_*', // zkSync
+  '1101': 'ETH_*,ERC20_*', // Polygon zkEvm
+  '42220': 'CELO_*',
 }
 
 export const getRampWidgetUrl = (chainInfo: ChainInfo) => {
