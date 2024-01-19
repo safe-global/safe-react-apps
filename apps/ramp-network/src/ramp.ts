@@ -16,7 +16,7 @@ export const ASSETS_BY_CHAIN: { [key: string]: string } = {
   '8453': 'ETH_*,ERC20_*', // Base
   '324': 'ETH_*,ERC20_*', // zkSync
   '1101': 'ETH_*,ERC20_*', // Polygon zkEvm
-  '42161': 'ARBITRUM_*,ETH_*,ERC20_*', //Arbitrum
+  '42161': 'ARBITRUM_*',
   '42220': 'CELO_*',
 }
 
