@@ -13,6 +13,11 @@ export const ASSETS_BY_CHAIN: { [key: string]: string } = {
   '137': 'MATIC_*',
   '100': 'XDAI_*',
   '43114': 'AVAX_*',
+  '8453': 'BASE_*',
+  '324': 'ZKSYNCERA_*',
+  '1101': 'POLYGONZKEVM_*',
+  '42161': 'ARBITRUM_*',
+  '42220': 'CELO_*',
 }
 
 export const getRampWidgetUrl = (chainInfo: ChainInfo) => {
