@@ -2,6 +2,20 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [0.2.0](https://github.com/safe-global/safe-react-apps/compare/ramp-network-0.1.4...ramp-network-0.2.0) (2024-01-25)
+
+
+### Bug Fixes
+
+* **ramp-network:** upgrade SDK to 4.0.4 ([#778](https://github.com/safe-global/safe-react-apps/issues/778)) ([87fd5eb](https://github.com/safe-global/safe-react-apps/commit/87fd5eb1c277d87fec8c3b8f5b157f44b2e7ec82))
+
+
+### Features
+
+* add support for additional chains on ramp ([#786](https://github.com/safe-global/safe-react-apps/issues/786)) ([da6ed53](https://github.com/safe-global/safe-react-apps/commit/da6ed53acb2e4a961d9735474ca85d259aab38c4))
+
+
+
 ## [0.1.5](https://github.com/safe-global/safe-react-apps/compare/ramp-network-0.1.4...ramp-network-0.1.5) (2023-11-29)
 
 
