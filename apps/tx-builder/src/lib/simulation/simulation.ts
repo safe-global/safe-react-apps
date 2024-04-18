@@ -3,6 +3,7 @@ import Web3 from 'web3'
 import { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { TenderlySimulatePayload, TenderlySimulation, StateObject } from './types'
 import { encodeMultiSendCall, getMultiSendCallOnlyAddress } from './multisend'
+import { getChainConfig, FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 
 type OptionalExceptFor<T, TRequired extends keyof T = keyof T> = Partial<
   Pick<T, Exclude<keyof T, TRequired>>
@@ -14,24 +15,10 @@ const TENDERLY_SIMULATE_ENDPOINT_URL = process.env.REACT_APP_TENDERLY_SIMULATE_E
 const TENDERLY_PROJECT_NAME = process.env.REACT_APP_TENDERLY_PROJECT_NAME || ''
 const TENDERLY_ORG_NAME = process.env.REACT_APP_TENDERLY_ORG_NAME || ''
 
-const NON_SUPPORTED_CHAINS = [
-  // Energy web chain
-  '246',
-  // zkSync Era Testnet
-  '280',
-  //zkSync Era Mainnet
-  '324',
-  // Polygon zkEVM
-  '1101',
-  // Celo
-  '42220',
-  // Volta
-  '73799',
-  // Aurora
-  '1313161554',
-]
-
-const isSimulationSupported = (chainId: string) => !NON_SUPPORTED_CHAINS.includes(chainId)
+const isSimulationSupported = async (chainId: string) => {
+  const config = await getChainConfig(chainId)
+  return config.features.includes(FEATURES.TX_SIMULATION)
+}
 
 const getSimulation = async (tx: TenderlySimulatePayload): Promise<TenderlySimulation> => {
   const response = await axios.post<TenderlySimulation>(TENDERLY_SIMULATE_ENDPOINT_URL, tx)

@@ -10,6 +10,7 @@ import {
 import { useNetwork } from '../store/networkContext'
 import { useTransactions } from '../store'
 import { FETCH_STATUS } from '../utils'
+import useAsync from './useAsync'
 
 type UseSimulationReturn =
   | {
@@ -38,7 +39,10 @@ const useSimulation = (): UseSimulationReturn => {
     [simulation],
   )
   const { safe, web3 } = useNetwork()
-  const simulationSupported = useMemo(() => isSimulationSupported(safe.chainId.toString()), [safe])
+  const [simulationSupported = false] = useAsync(
+    () => isSimulationSupported(safe.chainId.toString()),
+    [safe.chainId],
+  )
 
   const simulateTransaction = useCallback(async () => {
     if (!web3) return
