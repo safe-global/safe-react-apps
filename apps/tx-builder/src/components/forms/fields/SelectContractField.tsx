@@ -1,5 +1,7 @@
-import { Select } from '@gnosis.pm/safe-react-components'
+import Autocomplete from '@mui/material/Autocomplete'
+import { TextFieldInput } from '@gnosis.pm/safe-react-components'
 import { SelectItem } from '@gnosis.pm/safe-react-components/dist/inputs/Select'
+import { type SyntheticEvent, useCallback, useMemo } from 'react'
 
 type SelectContractFieldTypes = {
   options: SelectItem[]
@@ -18,21 +20,36 @@ const SelectContractField = ({
   name,
   id,
 }: SelectContractFieldTypes) => {
+  const selectedValue = useMemo(() => options.find(opt => opt.id === value), [options, value])
+
+  const onValueChange = useCallback(
+    (e: SyntheticEvent, value: SelectItem | null) => {
+      if (value) {
+        onChange(value.id)
+      }
+    },
+    [onChange],
+  )
+
   return (
-    <Select
+    <Autocomplete
+      disablePortal
       id={id}
-      inputProps={{
-        id: `${id}-input`,
-      }}
-      name={name}
+      options={options}
+      value={selectedValue}
+      onChange={onValueChange}
       disabled={options.length === 1}
-      label={label}
-      items={options}
-      fullWidth
-      activeItemId={value}
-      onItemClick={(id: string) => {
-        onChange(id)
-      }}
+      renderInput={params => (
+        <TextFieldInput
+          {...params}
+          label={label}
+          name={name}
+          InputProps={{
+            ...params.InputProps,
+            id: `${id}-input`,
+          }}
+        />
+      )}
     />
   )
 }
