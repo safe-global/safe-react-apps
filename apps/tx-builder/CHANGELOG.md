@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.17.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.16.5...tx-builder-1.17.0) (2024-08-20)
+
+
+### Features
+
+* **tx builder:** use cgw for simulation configs ([#801](https://github.com/safe-global/safe-react-apps/issues/801)) ([cbf139e](https://github.com/safe-global/safe-react-apps/commit/cbf139e48a64fe79dbf11dc5aab17982142e1060))
+* **tx-builder:** autocomplete for contract method ([#809](https://github.com/safe-global/safe-react-apps/issues/809)) ([012f1f7](https://github.com/safe-global/safe-react-apps/commit/012f1f73988f82cd2f1784e2b6b062ee30b20b5e))
+
+
+
 # [1.17.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.16.5...tx-builder-1.17.0) (2024-04-18)
 
 
