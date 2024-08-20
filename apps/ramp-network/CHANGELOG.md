@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [0.3.0](https://github.com/safe-global/safe-react-apps/compare/ramp-network-0.2.0...ramp-network-0.3.0) (2024-08-20)
+
+
+### Features
+
+* **ramp:** add Optimism and Linea ([#814](https://github.com/safe-global/safe-react-apps/issues/814)) ([3e63b26](https://github.com/safe-global/safe-react-apps/commit/3e63b26ca9eb9844cfc0de942ef88d5c132202da))
+
+
+
 # [0.2.0](https://github.com/safe-global/safe-react-apps/compare/ramp-network-0.1.4...ramp-network-0.2.0) (2024-01-25)
 
 
