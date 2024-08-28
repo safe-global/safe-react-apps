@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.17.1](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.17.0...tx-builder-1.17.1) (2024-08-28)
+
+
+### Bug Fixes
+
+* **tx-builder:** fix contract method filtering ([#816](https://github.com/safe-global/safe-react-apps/issues/816)) ([9cbefc5](https://github.com/safe-global/safe-react-apps/commit/9cbefc5b2daa4a897641115eafa7fe7d14faeb64))
+
+
+
 # [1.17.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.16.5...tx-builder-1.17.0) (2024-08-20)
 
 
