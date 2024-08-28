@@ -54,6 +54,10 @@ class InterfaceRepository {
           return false
         }
 
+        if (e?.type?.toLowerCase() === 'error') {
+          return false
+        }
+
         return !e.constant
       })
       .filter((m: any) => m.type !== 'constructor')
