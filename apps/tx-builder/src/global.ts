@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components'
-import avertaFont from '@gnosis.pm/safe-react-components/dist/fonts/averta-normal.woff2'
-import avertaBoldFont from '@gnosis.pm/safe-react-components/dist/fonts/averta-bold.woff2'
+import DMSansFont from './assets/fonts/DMSansRegular.woff2'
+import DMSansBoldFont from './assets/fonts/DMSans700.woff2'
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -17,12 +17,19 @@ const GlobalStyle = createGlobalStyle`
     #root {
         height: 100%;
     }
+    
+    @font-face {
+        font-family: 'DM Sans';
+        font-display: swap;
+        font-weight: 400;
+        src: url(${DMSansFont}) format('woff2');
+    }
 
     @font-face {
-        font-family: 'Averta';
-        src: local('Averta'), local('Averta Bold'),
-        url(${avertaFont}) format('woff2'),
-        url(${avertaBoldFont}) format('woff');
+        font-family: 'DM Sans';
+        font-display: swap;
+        font-weight: bold;
+        src: url(${DMSansBoldFont}) format('woff2');
     }
 
     input:-webkit-autofill,
