@@ -1,6 +1,4 @@
-import React from 'react'
-
-export default {
+const TermsOfUse = {
   sm: (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
       <g fill="none" fillRule="evenodd">
@@ -24,3 +22,5 @@ export default {
     </svg>
   ),
 }
+
+export default TermsOfUse

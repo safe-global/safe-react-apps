@@ -1,6 +1,4 @@
-import React from 'react'
-
-export default {
+const Import = {
   sm: (
     <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -34,3 +32,5 @@ export default {
     </svg>
   ),
 }
+
+export default Import
