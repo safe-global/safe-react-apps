@@ -1,5 +1,4 @@
 import { useRef } from 'react'
-import { ButtonLink, Icon, Text } from '@gnosis.pm/safe-react-components'
 import { alpha } from '@material-ui/core'
 import Hidden from '@material-ui/core/Hidden'
 import styled from 'styled-components'
@@ -8,6 +7,9 @@ import { useTheme } from '@material-ui/core/styles'
 import { ReactComponent as CreateNewBatchSVG } from '../assets/add-new-batch.svg'
 import useDropZone from '../hooks/useDropZone'
 import { useMediaQuery } from '@material-ui/core'
+import { Icon } from './Icon'
+import Text from './Text'
+import ButtonLink from './buttons/ButtonLink'
 
 type CreateNewBatchCardProps = {
   onFileSelected: (file: File | null) => void
@@ -47,14 +49,14 @@ const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
         error={isAcceptError}
       >
         {isAcceptError ? (
-          <StyledText size={'xl'} error={isAcceptError}>
+          <StyledText variant="body1" error={isAcceptError}>
             The uploaded file is not a valid JSON file
           </StyledText>
         ) : (
           <>
             <Icon type="termsOfUse" size="sm" />
-            <StyledText size={'xl'}>Drag and drop a JSON file or</StyledText>
-            <StyledButtonLink color="primary" onClick={handleBrowse}>
+            <StyledText variant="body1">Drag and drop a JSON file or</StyledText>
+            <StyledButtonLink color="secondary" onClick={handleBrowse}>
               choose a file
             </StyledButtonLink>
           </>
@@ -85,9 +87,11 @@ const StyledDragAndDropFileContainer = styled.div<{
 }>`
   box-sizing: border-box;
   max-width: ${({ fullWidth }) => (fullWidth ? '100%' : '420px')};
-  border: 2px dashed ${({ theme, error }) => (error ? theme.colors.error : '#008c73')};
+  border: 2px dashed
+    ${({ theme, error }) => (error ? theme.palette.error.main : theme.palette.secondary.dark)};
   border-radius: 8px;
-  background-color: ${({ theme, error }) => (error ? alpha(theme.colors.error, 0.7) : '#eaf7f4')};
+  background-color: ${({ theme, error }) =>
+    error ? alpha(theme.palette.error.main, 0.7) : theme.palette.secondary.background};
   padding: 24px;
   margin: 24px auto 0 auto;
 
@@ -104,22 +108,28 @@ const StyledDragAndDropFileContainer = styled.div<{
     }
 
     return `
-      border-color: ${error ? theme.colors.error : '#008c73'};
-      background-color: ${error ? alpha(theme.colors.error, 0.7) : '#eaf7f4'};
+      border-color: ${error ? theme.palette.error.main : theme.palette.secondary.dark};
+      background-color: ${
+        error ? alpha(theme.palette.error.main, 0.7) : theme.palette.secondary.background
+      };
     `
   }}
 `
 
 const StyledText = styled(Text)<{ error?: Boolean }>`
-  margin-left: 4px;
-  color: ${({ error }) => (error ? '#FFF' : '#566976')};
+  && {
+    margin-left: 4px;
+    color: ${({ error, theme }) =>
+      error ? theme.palette.common.white : theme.palette.text.secondary};
+  }
 `
 
 const StyledButtonLink = styled(ButtonLink)`
+  margin-left: 0.3rem;
   padding: 0;
   text-decoration: none;
 
   && > p {
-    font-size: 16px;
+    color: ${({ theme }) => theme.palette.secondary.dark};
   }
 `

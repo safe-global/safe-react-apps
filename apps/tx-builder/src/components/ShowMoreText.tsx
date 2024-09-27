@@ -1,5 +1,5 @@
 import { useState, SyntheticEvent } from 'react'
-import { Link } from '@gnosis.pm/safe-react-components'
+import Link from './Link'
 
 type ShowMoreTextProps = {
   children: string

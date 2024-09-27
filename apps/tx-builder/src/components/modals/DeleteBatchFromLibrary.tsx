@@ -1,8 +1,11 @@
-import { Dot, Text, Button, GenericModal } from '@gnosis.pm/safe-react-components'
 import Box from '@material-ui/core/Box'
 
 import styled from 'styled-components'
 import { Batch } from '../../typings/models'
+import GenericModal from '../GenericModal'
+import Text from '../Text'
+import Button from '../Button'
+import Dot from '../Dot'
 
 type DeleteBatchFromLibraryProps = {
   batch: Batch
@@ -17,28 +20,21 @@ const DeleteBatchFromLibrary = ({ batch, onClick, onClose }: DeleteBatchFromLibr
       withoutBodyPadding
       body={
         <StyledModalBodyWrapper>
-          <StyledModalDot color="tag">
-            <Text size="xl" color="white">
-              {batch.transactions.length}
-            </Text>
+          <StyledModalDot color="primary">
+            <Text color="white">{batch.transactions.length}</Text>
           </StyledModalDot>
 
-          <StyledModalText size="xl">{`${batch.name} batch will be permanently deleted`}</StyledModalText>
+          <StyledModalText>{`${batch.name} batch will be permanently deleted`}</StyledModalText>
           <StyledModalButtonsWrapper
             display="flex"
             alignItems="center"
             justifyContent="center"
             maxWidth={'450px'}
           >
-            <Button size="md" variant="bordered" onClick={onClose}>
+            <Button variant="bordered" onClick={onClose}>
               Back
             </Button>
-            <Button
-              size="md"
-              style={{ marginLeft: 16 }}
-              color="error"
-              onClick={() => onClick(batch)}
-            >
+            <Button style={{ marginLeft: 16 }} color="error" onClick={() => onClick(batch)}>
               Yes, delete
             </Button>
           </StyledModalButtonsWrapper>
@@ -58,13 +54,15 @@ const StyledModalBodyWrapper = styled.div`
 `
 
 const StyledModalDot = styled(Dot)`
-  height: 24px;
-  width: 24px;
-  min-width: 24px;
-  background-color: #566976;
+  && {
+    height: 24px;
+    width: 24px;
+    min-width: 24px;
+    background-color: #566976;
 
-  position: absolute;
-  top: 22px;
+    position: absolute;
+    top: 22px;
+  }
 `
 
 const StyledModalText = styled(Text)`

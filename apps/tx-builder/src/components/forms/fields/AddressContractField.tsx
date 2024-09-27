@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { AddressInput } from '@gnosis.pm/safe-react-components'
+import AddressInput from './AddressInput'
 
 const AddressContractField = ({
   id,

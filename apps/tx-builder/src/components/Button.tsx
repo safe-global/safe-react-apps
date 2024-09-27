@@ -3,7 +3,7 @@ import ButtonMUI, { ButtonProps as ButtonMUIProps } from '@material-ui/core/Butt
 import { alpha } from '@material-ui/core/styles'
 
 import styled, { css, DefaultTheme, FlattenInterpolation, ThemeProps } from 'styled-components'
-import { Icon, IconProps, IconTypes } from './Icon'
+import { Icon, IconProps } from './Icon'
 
 type Colors = 'primary' | 'secondary' | 'error'
 type Variations = 'bordered' | 'contained' | 'outlined'

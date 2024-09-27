@@ -1,6 +1,9 @@
-import { Button, GenericModal, Icon, Text } from '@gnosis.pm/safe-react-components'
 import Box from '@material-ui/core/Box'
 import styled from 'styled-components'
+import GenericModal from '../GenericModal'
+import { Icon } from '../Icon'
+import Text from '../Text'
+import Button from '../Button'
 
 type WrongChainBatchModalProps = {
   onClick: () => void
@@ -25,7 +28,7 @@ const WrongChainBatchModal = ({ onClick, onClose, fileChainId }: WrongChainBatch
       withoutBodyPadding
       body={
         <StyledModalBodyWrapper>
-          <Text size={'xl'} center>
+          <Text center>
             This batch is from another Chain
             {fileChainId ? ` (${fileChainId})` : ''}!
           </Text>
@@ -35,7 +38,7 @@ const WrongChainBatchModal = ({ onClick, onClose, fileChainId }: WrongChainBatch
             justifyContent="center"
             maxWidth={'450px'}
           >
-            <Button size="md" type="button" onClick={onClick}>
+            <Button type="button" onClick={onClick}>
               Ok, I understand
             </Button>
           </StyleButtonContainer>

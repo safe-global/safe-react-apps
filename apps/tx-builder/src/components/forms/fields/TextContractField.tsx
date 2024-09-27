@@ -1,6 +1,5 @@
-import { TextFieldInput } from '@gnosis.pm/safe-react-components'
-import { TextFieldInputProps } from '@gnosis.pm/safe-react-components/dist/inputs/TextFieldInput'
 import styled from 'styled-components'
+import TextFieldInput, { TextFieldInputProps } from './TextFieldInput'
 
 type TextContractFieldTypes = TextFieldInputProps & {
   networkPrefix?: undefined | string

@@ -6,8 +6,10 @@ import { Tooltip } from '../Tooltip'
 
 import alert from './images/alert'
 import bookmark from './images/bookmark'
+import bookmarkFilled from './images/bookmarkFilled'
 import check from './images/check'
 import code from './images/code'
+import copy from './images/copy'
 import cross from './images/cross'
 import deleteIcon from './images/delete'
 import edit from './images/edit'
@@ -31,7 +33,9 @@ const StyledIcon = styled.span<{ color?: keyof Theme['palette'] }>`
 const icons = {
   alert,
   bookmark,
+  bookmarkFilled,
   check,
+  copy,
   code,
   cross,
   delete: deleteIcon,

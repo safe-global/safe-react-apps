@@ -1,6 +1,9 @@
-import { Dot, Text, Button, GenericModal } from '@gnosis.pm/safe-react-components'
 import Box from '@material-ui/core/Box'
 import styled from 'styled-components'
+import GenericModal from '../GenericModal'
+import Text from '../Text'
+import Button from '../Button'
+import Dot from '../Dot'
 
 type DeleteTransactionModalProps = {
   txIndex: number
@@ -22,23 +25,21 @@ const DeleteTransactionModal = ({
       withoutBodyPadding
       body={
         <StyledModalBodyWrapper>
-          <StyledModalDot color="tag">
-            <Text size="xl" color="white">
-              {positionLabel}
-            </Text>
+          <StyledModalDot color="primary">
+            <Text color="white">{positionLabel}</Text>
           </StyledModalDot>
 
-          <StyledModalText size="xl">{`${txDescription} will be permanently deleted from the batch`}</StyledModalText>
+          <StyledModalText>{`${txDescription} will be permanently deleted from the batch`}</StyledModalText>
           <StyledModalButtonsWrapper
             display="flex"
             alignItems="center"
             justifyContent="center"
             maxWidth={'450px'}
           >
-            <Button size="md" variant="bordered" onClick={onClose}>
+            <Button variant="bordered" onClick={onClose}>
               Back
             </Button>
-            <Button size="md" style={{ marginLeft: 16 }} color="error" onClick={onClick}>
+            <Button style={{ marginLeft: 16 }} color="error" onClick={onClick}>
               Yes, delete
             </Button>
           </StyledModalButtonsWrapper>
