@@ -45,8 +45,7 @@ const isValidAddress = (address?: string): boolean => {
 
 // Based on https://docs.ens.domains/dapp-developer-guide/resolving-names
 // [...] a correct integration of ENS treats any dot-separated name as a potential ENS name [...]
-/* tslint:disable-next-line */
-const validENSRegex = new RegExp(/[^\[\]]+\.[^\[\]]/)
+const validENSRegex = new RegExp(/[^[\]]+\.[^[\]]/)
 const isValidEnsName = (name: string): boolean => validENSRegex.test(name)
 
 export {
