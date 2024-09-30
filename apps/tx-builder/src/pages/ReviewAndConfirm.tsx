@@ -108,7 +108,6 @@ const ReviewAndConfirm = () => {
           <Button
             type="button"
             disabled={!transactions.length}
-            variant="bordered"
             color="error"
             onClick={openDeleteBatchModal}
           >
@@ -159,12 +158,7 @@ const ReviewAndConfirm = () => {
                       <b>{simulation.transaction.error_message}</b> in the contract at{' '}
                       <b>{simulation.transaction.error_info?.address}</b>. Full simulation report is
                       available{' '}
-                      <Link
-                        color="secondary"
-                        href={simulationLink}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
+                      <Link href={simulationLink} target="_blank" rel="noreferrer">
                         <b>on Tenderly</b>
                       </Link>
                       .

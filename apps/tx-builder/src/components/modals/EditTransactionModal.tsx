@@ -79,7 +79,7 @@ const EditTransactionModal = ({
           >
             <ButtonContainer>
               {/* Remove transaction btn */}
-              <Button type="button" color="error" variant="bordered" onClick={onDeleteTx}>
+              <Button type="button" color="error" onClick={onDeleteTx}>
                 Delete
               </Button>
 

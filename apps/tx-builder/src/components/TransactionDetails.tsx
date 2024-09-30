@@ -48,7 +48,7 @@ const TransactionDetails = ({ transaction }: TransactionDetailsProp) => {
 
       <TxSummaryContainer>
         {/* to address */}
-        <Text color="grey">to (address)</Text>
+        <StyledText color="grey">to (address)</StyledText>
         <StyledEthHashInfo
           shortName={networkPrefix || ''}
           hash={to}
@@ -58,17 +58,17 @@ const TransactionDetails = ({ transaction }: TransactionDetailsProp) => {
         />
 
         {/* value */}
-        <Text color="grey">value:</Text>
+        <StyledText color="grey">value:</StyledText>
         <TxValueLabel>{`${weiToEther(value)} ${nativeCurrencySymbol}`}</TxValueLabel>
 
         {/* data */}
-        <Text color="grey">data:</Text>
+        <StyledText color="grey">data:</StyledText>
         <TxValueLabel>{data}</TxValueLabel>
 
         {isContractInteractionTx && (
           <>
             {/* method */}
-            <Text color="grey">method:</Text>
+            <StyledText color="grey">method:</StyledText>
             <StyledTxValueLabel>{contractMethod.name}</StyledTxValueLabel>
 
             {/* method inputs */}
@@ -116,6 +116,12 @@ const StyledTxTitle = styled(Typography)`
     margin: 8px 0;
     font-weight: bold;
     line-height: initial;
+  }
+`
+const StyledText = styled(Text)`
+  && {
+    color: ${({ theme }) => theme.palette.text.secondary};
+    font-weight: 400;
   }
 `
 

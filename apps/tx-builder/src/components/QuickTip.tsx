@@ -25,7 +25,7 @@ const StyledAlert = styled(MuiAlert)`
     font-size: 14px;
     padding: 24px;
     background: ${({ theme }) => theme.palette.secondary.background};
-    color: #566976;
+    color: ${({ theme }) => theme.palette.text.primary};
     border-radius: 8px;
 
     .MuiAlert-action {

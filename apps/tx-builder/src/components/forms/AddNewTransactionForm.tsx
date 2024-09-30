@@ -11,6 +11,7 @@ import SolidityForm, {
 import { useTransactions, useNetwork } from '../../store'
 import { Typography } from '@material-ui/core'
 import Button from '../Button'
+import FixedIcon from '../FixedIcon'
 
 type AddNewTransactionFormProps = {
   contract: ContractInterface | null
@@ -61,7 +62,8 @@ const AddNewTransactionForm = ({
         <ButtonContainer>
           {/* Add transaction btn */}
           <Button variant="contained" color="primary" type="submit">
-            Add transaction
+            <FixedIcon type={'plus'} />
+            <StyledButtonLabel>Add new transaction</StyledButtonLabel>
           </Button>
         </ButtonContainer>
       </SolidityForm>
@@ -71,8 +73,19 @@ const AddNewTransactionForm = ({
 
 export default AddNewTransactionForm
 
+const StyledButtonLabel = styled.span`
+  margin-left: 8px;
+`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
+
+  .MuiButton-root {
+    padding-left: 10px;
+  }
+
+  span {
+    display: flex;
+  }
 `

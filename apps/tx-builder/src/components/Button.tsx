@@ -68,6 +68,10 @@ const customStyles: {
       &.Mui-disabled {
         color: ${({ theme }) => theme.palette.primary.main};
       }
+
+      &:hover {
+        background: ${({ theme }) => theme.palette.background.light};
+      }
     `,
   },
   secondary: {
@@ -114,12 +118,12 @@ const customStyles: {
   },
   error: {
     contained: css`
-      color: ${({ theme }) => theme.palette.common.white};
-      background-color: ${({ theme }) => theme.palette.error.main};
-      box-shadow: 1px 2px 10px ${alpha('#28363D', 0.18)};
+      color: ${({ theme }) => theme.palette.error.main};
+      background-color: ${({ theme }) => theme.palette.error.background};
 
       &:hover {
-        background-color: ${({ theme }) => theme.palette.error.dark};
+        background-color: ${({ theme }) => theme.palette.error.light};
+        color: ${({ theme }) => theme.palette.error.dark};
       }
     `,
     outlined: css`

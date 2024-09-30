@@ -239,8 +239,7 @@ const PositionDot = styled(Dot).withConfig({
   height: 24px;
   width: 24px;
   min-width: 24px;
-  background-color: ${({ isDragging, theme }) =>
-    isDragging ? theme.palette.primary.light : ' #e2e3e3'};
+  background-color: #e2e3e3;
   transition: background-color 0.5s linear;
 `
 
@@ -286,26 +285,35 @@ const StyledAccordion = styled(Accordion).withConfig({
 
   &.MuiAccordion-root {
     margin-bottom: 0;
-    border-color: #e8e7e6;
+    border-width: 1px;
+    border-color: ${({ isDragging, expanded, theme }) =>
+      isDragging || expanded ? theme.palette.secondary.light : theme.palette.common.white};
     transition: border-color 0.5s linear;
+
+    &:hover {
+      border-color: ${({ theme }) => theme.palette.secondary.light};
+
+      .MuiAccordionSummary-root {
+        background-color: ${({ theme }) => theme.palette.secondary.background};
+      }
+    }
   }
 
   .MuiAccordionSummary-root {
     height: 52px;
     padding: 0px 8px;
-
-    background-color: #ffffff;
-
-    &:hover {
-      background-color: #ffffff;
-    }
+    background-color: ${({ isDragging, theme }) =>
+      isDragging ? theme.palette.secondary.background : theme.palette.common.white};
 
     .MuiIconButton-root {
       padding: 8px;
     }
 
     &.Mui-expanded {
-      background-color: #fff;
+      border-width: 1px;
+      background-color: ${({ theme }) => theme.palette.secondary.background};
+      border-color: ${({ isDragging, expanded, theme }) =>
+        isDragging || expanded ? theme.palette.secondary.light : '#e8e7e6'};
     }
   }
 
