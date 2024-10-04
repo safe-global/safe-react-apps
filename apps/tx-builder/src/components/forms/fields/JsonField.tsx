@@ -1,17 +1,12 @@
 import { useState, useCallback, ClipboardEvent } from 'react'
 import styled from 'styled-components'
-import {
-  Icon,
-  TextFieldInput,
-  Tooltip,
-  GenericModal,
-  Text,
-  Button,
-  IconTypes,
-} from '@gnosis.pm/safe-react-components'
 import IconButton from '@material-ui/core/IconButton'
-import { Box } from '@material-ui/core'
+import { Box, Button, Tooltip } from '@material-ui/core'
 import useModal from '../../../hooks/useModal/useModal'
+import { Icon, IconTypes } from '../../Icon'
+import Text from '../../Text'
+import GenericModal from '../../GenericModal'
+import TextFieldInput from './TextFieldInput'
 
 const DEFAULT_ROWS = 4
 
@@ -113,17 +108,17 @@ const JsonField = ({ id, name, label, value, onChange }: Props) => {
         <GenericModal
           body={
             <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
-              <Text size="lg">Do you want to replace the current ABI?</Text>
+              <Text variant="body1">Do you want to replace the current ABI?</Text>
             </Box>
           }
           onClose={toggleModal}
           title="Replace ABI"
           footer={
             <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
-              <Button size="md" color="secondary" onClick={toggleModal}>
+              <Button variant="outlined" onClick={toggleModal}>
                 Cancel
               </Button>
-              <Button size="md" color="primary" onClick={changeAbi}>
+              <Button variant="contained" onClick={changeAbi}>
                 Accept
               </Button>
             </Box>
@@ -159,7 +154,7 @@ const IconContainerButton = ({
 }) => (
   <Tooltip title={tooltipLabel}>
     <StyledButton size="small" color="primary" onClick={onClick}>
-      <Icon size="sm" color={error ? 'error' : 'inputDefault'} type={iconType} />
+      <Icon size="sm" color={error ? 'error' : 'primary'} type={iconType} />
     </StyledButton>
   </Tooltip>
 )
@@ -173,7 +168,7 @@ const IconContainer = styled.div<{ error: boolean }>`
   top: -10px;
   right: 15px;
   border: 1px solid
-    ${({ theme, error }) => (error ? theme.colors.error : theme.colors.inputDefault)};
+    ${({ theme, error }) => (error ? theme.palette.error.main : theme.palette.primary.main)};
   border-radius: 50%;
   background-color: #fff;
 `

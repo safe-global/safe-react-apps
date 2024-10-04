@@ -1,5 +1,5 @@
-import { TextFieldInputProps } from '@gnosis.pm/safe-react-components/dist/inputs/TextFieldInput'
 import TextContractField from './TextContractField'
+import { TextFieldInputProps } from './TextFieldInput'
 
 const DEFAULT_ROWS = 4
 

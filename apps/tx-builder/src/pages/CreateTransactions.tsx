@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { Button, Tooltip } from '@gnosis.pm/safe-react-components'
 import Grid from '@material-ui/core/Grid'
 
-import TransactionsBatchList from '../components/TransactionsBatchList'
-import CreateNewBatchCard from '../components/CreateNewBatchCard'
 import { CREATE_BATCH_PATH, REVIEW_AND_CONFIRM_PATH } from '../routes/routes'
 import QuickTip from '../components/QuickTip'
 import { useNetwork, useTransactionLibrary, useTransactions } from '../store'
 import useModal from '../hooks/useModal/useModal'
+import Button from '../components/Button'
+import { Tooltip } from '../components/Tooltip'
+import CreateNewBatchCard from '../components/CreateNewBatchCard'
+import TransactionsBatchList from '../components/TransactionsBatchList'
 import WrongChainBatchModal from '../components/modals/WrongChainBatchModal'
 
 const CreateTransactions = () => {
@@ -56,7 +57,6 @@ const CreateTransactions = () => {
             />
             {/* Go to Review Screen button */}
             <Button
-              size="md"
               type="button"
               disabled={!transactions.length}
               style={{ marginLeft: 35 }}

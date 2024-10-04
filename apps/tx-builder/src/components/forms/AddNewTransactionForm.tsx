@@ -1,4 +1,3 @@
-import { Title, Button } from '@gnosis.pm/safe-react-components'
 import styled from 'styled-components'
 
 import { ContractInterface } from '../../typings/models'
@@ -10,6 +9,9 @@ import SolidityForm, {
   parseFormToProposedTransaction,
 } from './SolidityForm'
 import { useTransactions, useNetwork } from '../../store'
+import { Typography } from '@material-ui/core'
+import Button from '../Button'
+import FixedIcon from '../FixedIcon'
 
 type AddNewTransactionFormProps = {
   contract: ContractInterface | null
@@ -43,7 +45,9 @@ const AddNewTransactionForm = ({
 
   return (
     <>
-      <Title size="xs">Transaction information</Title>
+      <Typography variant="body1" paragraph>
+        Transaction information
+      </Typography>
 
       <SolidityForm
         id="solidity-contract-form"
@@ -57,8 +61,9 @@ const AddNewTransactionForm = ({
       >
         <ButtonContainer>
           {/* Add transaction btn */}
-          <Button size="md" color="primary" type="submit">
-            Add transaction
+          <Button variant="contained" color="primary" type="submit">
+            <FixedIcon type={'plus'} />
+            <StyledButtonLabel>Add new transaction</StyledButtonLabel>
           </Button>
         </ButtonContainer>
       </SolidityForm>
@@ -68,8 +73,19 @@ const AddNewTransactionForm = ({
 
 export default AddNewTransactionForm
 
+const StyledButtonLabel = styled.span`
+  margin-left: 8px;
+`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
+
+  .MuiButton-root {
+    padding-left: 10px;
+  }
+
+  span {
+    display: flex;
+  }
 `

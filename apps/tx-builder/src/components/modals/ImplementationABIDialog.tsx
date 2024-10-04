@@ -1,7 +1,10 @@
 import React from 'react'
-import { Text, Button, GenericModal, EthHashInfo } from '@gnosis.pm/safe-react-components'
 import Box from '@material-ui/core/Box'
 import styled from 'styled-components'
+import Text from '../Text'
+import Button from '../Button'
+import EthHashInfo from '../ETHHashInfo'
+import GenericModal from '../GenericModal'
 
 type Props = {
   networkPrefix: string
@@ -24,9 +27,7 @@ const ImplementationABIDialog: React.FC<Props> = ({
       withoutBodyPadding
       body={
         <StyledModalBodyWrapper>
-          <Text size="xl">
-            The contract looks like a proxy. Do you want to use the Implementation ABI?
-          </Text>
+          <Text>The contract looks like a proxy. Do you want to use the Implementation ABI?</Text>
 
           <StyledEthHashInfo
             shortName={networkPrefix || ''}
@@ -42,10 +43,15 @@ const ImplementationABIDialog: React.FC<Props> = ({
             justifyContent="center"
             maxWidth="470px"
           >
-            <Button size="md" variant="bordered" onClick={onCancel}>
+            <Button variant="bordered" onClick={onCancel}>
               Keep Proxy ABI
             </Button>
-            <Button size="md" style={{ marginLeft: 16 }} color="primary" onClick={onConfirm}>
+            <Button
+              style={{ marginLeft: 16 }}
+              variant="contained"
+              color="primary"
+              onClick={onConfirm}
+            >
               Use Implementation ABI
             </Button>
           </StyledModalButtonsWrapper>

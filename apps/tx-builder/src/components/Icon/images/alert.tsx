@@ -1,6 +1,4 @@
-import React from 'react'
-
-export default {
+const Alert = {
   sm: (
     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16">
       <g fill="none" fillRule="evenodd">
@@ -32,3 +30,5 @@ export default {
     </svg>
   ),
 }
+
+export default Alert

@@ -1,7 +1,7 @@
 import Autocomplete from '@mui/material/Autocomplete'
-import { TextFieldInput } from '@gnosis.pm/safe-react-components'
 import { SelectItem } from '@gnosis.pm/safe-react-components/dist/inputs/Select'
 import { type SyntheticEvent, useCallback, useMemo } from 'react'
+import TextFieldInput from './TextFieldInput'
 
 type SelectContractFieldTypes = {
   options: SelectItem[]

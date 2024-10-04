@@ -2,12 +2,12 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
 import styled from 'styled-components'
-import { Button } from '@gnosis.pm/safe-react-components'
 
 import TransactionsBatchList from '../components/TransactionsBatchList'
 import { useTransactionLibrary, useTransactions } from '../store'
 import { CREATE_BATCH_PATH, REVIEW_AND_CONFIRM_PATH, SAVE_BATCH_PATH } from '../routes/routes'
 import EditableLabel from '../components/EditableLabel'
+import Button from '../components/Button'
 
 const SaveTransactionLibrary = () => {
   const {
@@ -52,7 +52,6 @@ const SaveTransactionLibrary = () => {
       />
       {/* Go to Review Screen button */}
       <Button
-        size="md"
         type="button"
         disabled={!transactions.length}
         style={{ marginLeft: 35 }}

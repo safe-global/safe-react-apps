@@ -1,4 +1,3 @@
-import { FixedIcon, Icon, Text, Title, Tooltip } from '@gnosis.pm/safe-react-components'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -12,6 +11,11 @@ import {
 import { useTransactionLibrary } from '../store'
 import ChecksumWarning from './ChecksumWarning'
 import ErrorAlert from './ErrorAlert'
+import { Tooltip } from './Tooltip'
+import { Icon } from './Icon'
+import FixedIcon from './FixedIcon'
+import { Typography } from '@material-ui/core'
+import Text from './Text'
 
 const HELP_ARTICLE_LINK = 'https://help.safe.global/en/articles/40841-transaction-builder'
 
@@ -51,31 +55,25 @@ const Header = () => {
         {showTitle ? (
           <>
             {/* Transaction Builder Title */}
-            <StyledTitle size="xl">Transaction Builder</StyledTitle>
-            <Tooltip
-              placement="top"
-              title="Help Article"
-              backgroundColor="primary"
-              textColor="white"
-              arrow
-            >
-              <a href={HELP_ARTICLE_LINK} target="_blank" rel="noreferrer">
+            <StyledTitle>Transaction Builder</StyledTitle>
+            <Tooltip placement="top" title="Help Article" backgroundColor="primary" arrow>
+              <StyledIconLink href={HELP_ARTICLE_LINK} target="_blank" rel="noreferrer">
                 <Icon size="md" type="info" />
-              </a>
+              </StyledIconLink>
             </Tooltip>
           </>
         ) : (
           <StyledLink to={HOME_PATH} onClick={goBack}>
             {/* Go Back link */}
             <FixedIcon type={'chevronLeft'} />
-            <StyledLeftLinkLabel size="xl">{goBackLabel[previousUrl]}</StyledLeftLinkLabel>
+            <StyledLeftLinkLabel>{goBackLabel[previousUrl]}</StyledLeftLinkLabel>
           </StyledLink>
         )}
 
         {showLinkToLibrary && (
           <RigthLinkWrapper>
             <StyledLink to={TRANSACTION_LIBRARY_PATH}>
-              <StyledRightLinkLabel size="xl">{`(${batches.length}) Your transaction library`}</StyledRightLinkLabel>
+              <StyledRightLinkLabel>{`(${batches.length}) Your transaction library`}</StyledRightLinkLabel>
               <FixedIcon type={'chevronRight'} />
             </StyledLink>
           </RigthLinkWrapper>
@@ -102,21 +100,35 @@ const HeaderWrapper = styled.header`
   box-sizing: border-box;
 `
 
-const StyledTitle = styled(Title)`
-  font-size: 20px;
-  margin: 0 10px 0 0;
+const StyledTitle = styled(Typography)`
+  && {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 10px 0 0;
+  }
 `
 
 const StyledLink = styled(Link)`
   display: flex;
   align-items: center;
-  color: #000000;
+  color: ${({ theme }) => theme.palette.common.black};
   font-size: 16px;
   text-decoration: none;
+
+  > span {
+    padding-top: 3px;
+
+    path {
+      fill: ${({ theme }) => theme.palette.common.black};
+    }
+  }
 `
 
 const StyledLeftLinkLabel = styled(Text)`
-  margin-left: 8px;
+  && {
+    margin-left: 8px;
+    font-weight: 700;
+  }
 `
 
 const RigthLinkWrapper = styled.div`
@@ -126,5 +138,13 @@ const RigthLinkWrapper = styled.div`
 `
 
 const StyledRightLinkLabel = styled(Text)`
-  margin-right: 8px;
+  && {
+    font-weight: 700;
+    margin-right: 8px;
+  }
+`
+
+const StyledIconLink = styled.a`
+  display: flex;
+  align-items: center;
 `
