@@ -1,6 +1,9 @@
-import { Dot, Text, Button, GenericModal } from '@gnosis.pm/safe-react-components'
 import Box from '@material-ui/core/Box'
 import styled from 'styled-components'
+import GenericModal from '../GenericModal'
+import Text from '../Text'
+import Button from '../Button'
+import Dot from '../Dot'
 
 type DeleteBatchModalProps = {
   count: number
@@ -15,25 +18,21 @@ const DeleteBatchModal = ({ count, onClick, onClose }: DeleteBatchModalProps) =>
       withoutBodyPadding
       body={
         <StyledModalBodyWrapper>
-          <StyledModalDot color="tag">
-            <Text size="xl" color="white">
-              {count}
-            </Text>
+          <StyledModalDot color="primary">
+            <Text color="white">{count}</Text>
           </StyledModalDot>
 
-          <StyledModalText size="xl">
-            {`transaction${count > 1 ? 's' : ''}`} will be cleared
-          </StyledModalText>
+          <StyledModalText>{`transaction${count > 1 ? 's' : ''}`} will be cleared</StyledModalText>
           <StyledModalButtonsWrapper
             display="flex"
             alignItems="center"
             justifyContent="center"
             maxWidth={'450px'}
           >
-            <Button size="md" variant="bordered" onClick={onClose}>
+            <Button variant="bordered" onClick={onClose}>
               Back
             </Button>
-            <Button size="md" style={{ marginLeft: 16 }} color="error" onClick={onClick}>
+            <Button style={{ marginLeft: 16 }} color="error" onClick={onClick}>
               Yes, clear
             </Button>
           </StyledModalButtonsWrapper>

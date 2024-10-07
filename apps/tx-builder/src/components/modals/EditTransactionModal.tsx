@@ -1,4 +1,3 @@
-import { GenericModal, Button } from '@gnosis.pm/safe-react-components'
 import styled from 'styled-components'
 import { ProposedTransaction } from '../../typings/models'
 import SolidityForm, {
@@ -11,6 +10,8 @@ import SolidityForm, {
   TO_ADDRESS_FIELD_NAME,
 } from '../forms/SolidityForm'
 import { weiToEther } from '../../utils'
+import GenericModal from '../GenericModal'
+import Button from '../Button'
 
 type EditTransactionModalProps = {
   txIndex: number
@@ -78,12 +79,12 @@ const EditTransactionModal = ({
           >
             <ButtonContainer>
               {/* Remove transaction btn */}
-              <Button type="button" size="md" color="error" variant="bordered" onClick={onDeleteTx}>
+              <Button type="button" color="error" onClick={onDeleteTx}>
                 Delete
               </Button>
 
               {/* Add transaction btn */}
-              <Button size="md" color="primary" type="submit">
+              <Button color="primary" type="submit">
                 Save transaction
               </Button>
             </ButtonContainer>

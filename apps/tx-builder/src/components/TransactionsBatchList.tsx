@@ -1,5 +1,4 @@
 import { isValidElement, useMemo, useState } from 'react'
-import { Dot, Text, Title, Icon, Tooltip } from '@gnosis.pm/safe-react-components'
 
 import IconButton from '@material-ui/core/IconButton'
 import styled from 'styled-components'
@@ -25,6 +24,11 @@ import Item from './TransactionBatchListItem'
 import VirtualizedList from './VirtualizedList'
 import { getTransactionText } from '../utils'
 import { EditableLabelProps } from './EditableLabel'
+import Text from './Text'
+import { Tooltip } from './Tooltip'
+import { Icon } from './Icon'
+import { Typography } from '@material-ui/core'
+import Dot from './Dot'
 
 type TransactionsBatchListProps = {
   transactions: ProposedTransaction[]
@@ -142,28 +146,16 @@ const TransactionsBatchList = ({
         {showBatchHeader && (
           <TransactionHeader>
             {/* Transactions Batch Counter */}
-            <TransactionCounterDot color="tag">
-              <Text size="xl" color="white">
-                {transactions.length}
-              </Text>
+            <TransactionCounterDot color="primary">
+              <Text color="white">{transactions.length}</Text>
             </TransactionCounterDot>
 
             {/* Transactions Batch Title */}
-            {batchTitle && (
-              <TransactionsTitle withoutMargin size="lg">
-                {batchTitle}
-              </TransactionsTitle>
-            )}
+            {batchTitle && <TransactionsTitle>{batchTitle}</TransactionsTitle>}
 
             {/* Transactions Batch Actions */}
             {saveBatch && (
-              <Tooltip
-                placement="top"
-                title="Save to Library"
-                backgroundColor="primary"
-                textColor="white"
-                arrow
-              >
+              <Tooltip placement="top" title="Save to Library" backgroundColor="primary" arrow>
                 <StyledHeaderIconButton onClick={openSaveBatchModal}>
                   <Icon
                     size="sm"
@@ -175,13 +167,7 @@ const TransactionsBatchList = ({
               </Tooltip>
             )}
             {downloadBatch && (
-              <Tooltip
-                placement="top"
-                title="Download"
-                backgroundColor="primary"
-                textColor="white"
-                arrow
-              >
+              <Tooltip placement="top" title="Download" backgroundColor="primary" arrow>
                 <StyledHeaderIconButton onClick={() => downloadBatch(fileName, transactions)}>
                   <Icon size="sm" type="importImg" color="primary" aria-label="Download" />
                 </StyledHeaderIconButton>
@@ -189,13 +175,7 @@ const TransactionsBatchList = ({
             )}
 
             {removeAllTransactions && (
-              <Tooltip
-                placement="top"
-                title="Clear transactions"
-                backgroundColor="primary"
-                textColor="white"
-                arrow
-              >
+              <Tooltip placement="top" title="Clear transactions" backgroundColor="primary" arrow>
                 <StyledHeaderIconButton onClick={openClearTransactions}>
                   <Icon size="sm" type="delete" color="error" aria-label="Clear transactions" />
                 </StyledHeaderIconButton>
@@ -402,7 +382,6 @@ const TransactionsBatchWrapper = styled.section`
 // batch header styles
 
 const TransactionHeader = styled.header`
-  margin-top: 24px;
   display: flex;
   align-items: center;
 `
@@ -411,18 +390,19 @@ const TransactionCounterDot = styled(Dot)`
   height: 24px;
   width: 24px;
   min-width: 24px;
-  background-color: #566976;
 `
 
-const TransactionsTitle = styled(Title)`
-  flex-grow: 1;
-  margin-left: 14px;
-  min-width: 0;
+const TransactionsTitle = styled(Typography)`
+  && {
+    flex-grow: 1;
+    margin-left: 14px;
+    min-width: 0;
 
-  font-size: 16px;
-  line-height: normal;
-  display: flex;
-  align-items: center;
+    font-size: 16px;
+    line-height: normal;
+    display: flex;
+    align-items: center;
+  }
 `
 
 const StyledHeaderIconButton = styled(IconButton)`

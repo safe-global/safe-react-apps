@@ -2,13 +2,13 @@ import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
 import styled from 'styled-components'
-import { Button } from '@gnosis.pm/safe-react-components'
 
 import TransactionsBatchList from '../components/TransactionsBatchList'
 import { CREATE_BATCH_PATH, EDIT_BATCH_PATH, TRANSACTION_LIBRARY_PATH } from '../routes/routes'
 
 import { useTransactionLibrary, useTransactions } from '../store'
 import EditableLabel from '../components/EditableLabel'
+import Button from '../components/Button'
 
 const EditTransactionLibrary = () => {
   const {
@@ -56,7 +56,6 @@ const EditTransactionLibrary = () => {
       {/* Save Batch and redirect to Transaction library */}
       {batch && batchId && (
         <Button
-          size="md"
           type="button"
           disabled={!transactions.length}
           style={{ marginLeft: 35 }}

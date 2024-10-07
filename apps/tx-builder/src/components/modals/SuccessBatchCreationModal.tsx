@@ -1,8 +1,12 @@
-import { Dot, Text, Button, GenericModal, Title } from '@gnosis.pm/safe-react-components'
 import Box from '@material-ui/core/Box'
 import styled from 'styled-components'
 
 import { ReactComponent as SuccessBatchSVG } from '../../assets/success-batch.svg'
+import GenericModal from '../GenericModal'
+import Text from '../Text'
+import Button from '../Button'
+import { Typography } from '@material-ui/core'
+import Dot from '../Dot'
 
 type SuccessBatchCreationModalProps = {
   count: number
@@ -26,25 +30,21 @@ const SuccessBatchCreationModal = ({ count, onClick, onClose }: SuccessBatchCrea
           <SuccessBatchSVG />
 
           {/* Title */}
-          <StyledBodyTitle size="md">Success!</StyledBodyTitle>
+          <StyledBodyTitle>Success!</StyledBodyTitle>
 
           {/* Text */}
           <StyledTextWrapper>
-            <StyledModalDot color="tag">
-              <Text size="xl" color="white">
-                {count}
-              </Text>
+            <StyledModalDot color="primary">
+              <Text color="white">{count}</Text>
             </StyledModalDot>
 
-            <StyledModalText size="xl">Transaction Batch in the queue.</StyledModalText>
+            <StyledModalText>Transaction Batch in the queue.</StyledModalText>
 
-            <Text size="xl">You can now sign and execute it.</Text>
+            <Text>You can now sign and execute it.</Text>
           </StyledTextWrapper>
 
           {/* Button */}
-          <Button size="md" onClick={onClick}>
-            Back to Tx Creation
-          </Button>
+          <Button onClick={onClick}>Back to Tx Creation</Button>
         </StyledBodyWrapper>
       }
       onClose={onClose}
@@ -58,9 +58,11 @@ const StyledBodyWrapper = styled(Box)`
   padding: 50px;
 `
 
-const StyledBodyTitle = styled(Title)`
-  font-size: 32px;
-  margin: 16px 0;
+const StyledBodyTitle = styled(Typography)`
+  && {
+    font-size: 32px;
+    margin: 16px 0;
+  }
 `
 
 const StyledTextWrapper = styled.div`

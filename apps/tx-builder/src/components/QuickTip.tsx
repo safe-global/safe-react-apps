@@ -1,8 +1,7 @@
-import { Icon } from '@gnosis.pm/safe-react-components'
 import MuiAlert from '@material-ui/lab/Alert'
 import MuiAlertTitle from '@material-ui/lab/AlertTitle'
-import React from 'react'
 import styled from 'styled-components'
+import { Icon } from './Icon'
 
 type QuickTipProps = {
   onClose: () => void
@@ -23,11 +22,10 @@ const QuickTip = ({ onClose }: QuickTipProps) => {
 
 const StyledAlert = styled(MuiAlert)`
   && {
-    font-family: 'Averta';
     font-size: 14px;
     padding: 24px;
-    background: #eaf7f4;
-    color: #566976;
+    background: ${({ theme }) => theme.palette.secondary.background};
+    color: ${({ theme }) => theme.palette.text.primary};
     border-radius: 8px;
 
     .MuiAlert-action {

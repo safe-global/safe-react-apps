@@ -1,4 +1,3 @@
-import { Button, GenericModal } from '@gnosis.pm/safe-react-components'
 import Box from '@material-ui/core/Box'
 import { useForm, ValidateResult } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -9,6 +8,8 @@ import { useTransactionLibrary } from '../../store'
 import { Batch } from '../../typings/models'
 import Field from '../forms/fields/Field'
 import { TEXT_FIELD_TYPE } from '../forms/fields/fields'
+import GenericModal from '../GenericModal'
+import Button from '../Button'
 
 type SaveBatchModalProps = {
   onClick: (name: string) => void
@@ -53,8 +54,8 @@ const SaveBatchModal = ({ onClick, onClose }: SaveBatchModalProps) => {
               control={control}
               showErrorsInTheLabel={false}
             />
-            <Box display="flex" alignItems="center" justifyContent="center" maxWidth={'450px'}>
-              <Button size="md" type="submit">
+            <Box margin="0 auto" maxWidth={'150px'}>
+              <Button fullWidth type="submit">
                 Create
               </Button>
             </Box>
