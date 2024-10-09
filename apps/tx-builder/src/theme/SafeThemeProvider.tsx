@@ -23,10 +23,10 @@ const SafeThemeProvider: FC<SafeThemeProviderProps> = ({ children }) => {
       '*',
     )
 
-    window.addEventListener('message', function (event) {
-      if (!event.data?.data.hasOwnProperty('darkMode')) return
+    window.addEventListener('message', function ({ data: eventData }) {
+      if (!eventData?.data.hasOwnProperty('darkMode')) return
 
-      setDarkMode(event.data?.data.darkMode)
+      setDarkMode(eventData?.data.darkMode)
     })
   }, [])
 
