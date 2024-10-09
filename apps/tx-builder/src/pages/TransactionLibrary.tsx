@@ -50,10 +50,10 @@ const TransactionLibrary = () => {
       {batches.length > 0 ? (
         batches.map(batch => (
           <StyledAccordion key={batch.id} compact TransitionProps={{ unmountOnExit: true }}>
-            <StyledAccordionSummary style={{ backgroundColor: 'white' }}>
+            <StyledAccordionSummary>
               {/* transactions count  */}
               <TransactionCounterDot color="primary">
-                <Text color="white">{batch.transactions.length}</Text>
+                <Text>{batch.transactions.length}</Text>
               </TransactionCounterDot>
 
               {/* editable batch name */}
@@ -249,7 +249,6 @@ const StyledIconButton = styled(IconButton)`
   &.MuiIconButton-root {
     border-radius: 4px;
     margin-left: 8px;
-    background-color: #f6f7f8;
   }
 `
 
