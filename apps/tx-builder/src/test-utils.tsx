@@ -8,7 +8,7 @@ import SafeThemeProvider from './theme/SafeThemeProvider'
 
 const renderWithProviders = (Components: ReactElement): RenderResult => {
   return render(
-    <SafeThemeProvider mode="light">
+    <SafeThemeProvider>
       {theme => (
         <ThemeProvider theme={theme}>
           <SafeProvider>

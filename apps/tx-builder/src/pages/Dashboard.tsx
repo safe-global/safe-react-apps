@@ -18,6 +18,7 @@ import Switch from '../components/Switch'
 import { Typography } from '@material-ui/core'
 import Divider from '../components/Divider'
 import AddressInput from '../components/forms/fields/AddressInput'
+import Wrapper from '../components/Wrapper'
 
 const Dashboard = (): ReactElement => {
   const [abiAddress, setAbiAddress] = useState('')
@@ -191,12 +192,20 @@ const Dashboard = (): ReactElement => {
           onCancel={() => {
             setAbiAddress(implementationABIDialog.proxyAddress)
             setTransactionRecipientAddress(implementationABIDialog.proxyAddress)
-            setImplementationABIDialog({ open: false, implementationAddress: '', proxyAddress: '' })
+            setImplementationABIDialog({
+              open: false,
+              implementationAddress: '',
+              proxyAddress: '',
+            })
           }}
           onConfirm={() => {
             setAbiAddress(implementationABIDialog.implementationAddress)
             setTransactionRecipientAddress(implementationABIDialog.proxyAddress)
-            setImplementationABIDialog({ open: false, implementationAddress: '', proxyAddress: '' })
+            setImplementationABIDialog({
+              open: false,
+              implementationAddress: '',
+              proxyAddress: '',
+            })
           }}
         />
       )}
@@ -206,17 +215,10 @@ const Dashboard = (): ReactElement => {
 
 export default Dashboard
 
-const Wrapper = styled.main`
-  && {
-    padding: 120px 48px 48px;
-    max-width: 1024px;
-    margin: 0 auto;
-  }
-`
-
 const AddNewTransactionFormWrapper = styled(Grid)`
   border-radius: 8px;
-  background-color: white;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  color: ${({ theme }) => theme.palette.text.primary};
 `
 
 const StyledTitle = styled(Typography)`
@@ -239,8 +241,10 @@ const StyledWarningText = styled(Text)`
 `
 
 const CheckIconAddressAdornment = styled(CheckCircle)`
-  color: #03ae60;
-  height: 20px;
+  && path {
+    color: ${({ theme }) => theme.palette.secondary.dark};
+    height: 20px;
+  }
 `
 
 const StyledDivider = styled(Divider)`

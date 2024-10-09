@@ -92,9 +92,10 @@ const HeaderWrapper = styled.header`
   width: 100%;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #e2e3e3;
+  border-bottom: 1px solid ${({ theme }) => theme.palette.border.light};
   z-index: 10;
-  background-color: white;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  color: ${({ theme }) => theme.palette.text.primary};
   height: 70px;
   padding: 0 40px;
   box-sizing: border-box;

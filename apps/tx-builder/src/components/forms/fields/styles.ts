@@ -5,7 +5,6 @@ export const inputLabelStyles = css<TextFieldProps>`
   &:hover {
     .MuiInputLabel-root {
       &.MuiInputLabel-shrink:not(.Mui-focused):not(.Mui-disabled) {
-        color: ${({ theme }) => theme.palette.primary.main};
         &.Mui-error {
           color: ${({ theme }) => theme.palette.error.main};
         }
@@ -20,7 +19,7 @@ export const inputLabelStyles = css<TextFieldProps>`
     font-size: 16px;
 
     &.MuiInputLabel-shrink {
-      color: #162d45;
+      color: ${({ theme }) => theme.palette.border.main};
 
       &.Mui-error {
         color: ${({ theme }) => theme.palette.error.main};
@@ -49,6 +48,12 @@ export const inputLabelStyles = css<TextFieldProps>`
 export const inputStyles = css<TextFieldProps>`
   .MuiOutlinedInput-input:-webkit-autofill {
     -webkit-text-fill-color: ${({ theme }) => theme.palette.text.primary};
+    /* needs to use important because we have important styles being injected in this component */
+    box-shadow: inset 0 0 0 100px ${({ theme }) => theme.palette.background.paper} !important;
+  }
+
+  .MuiSvgIcon-root {
+    color: ${({ theme }) => theme.palette.text.primary};
   }
 
   .MuiOutlinedInput-root {
@@ -67,7 +72,8 @@ export const inputStyles = css<TextFieldProps>`
     .MuiOutlinedInput-notchedOutline {
       ${({ hiddenLabel }) => (hiddenLabel ? 'top: 0' : '')};
       transition: border-color 0.2s ease-in-out;
-      border: 1px solid ${({ theme, value }) => (value ? theme.palette.border.main : '#DADADA')};
+      border: 1px solid
+        ${({ theme, value }) => (value ? theme.palette.border.main : theme.palette.border.light)};
       border-radius: 6px;
       legend {
         display: ${({ hiddenLabel }) => (hiddenLabel ? 'none' : 'block')};
@@ -76,13 +82,13 @@ export const inputStyles = css<TextFieldProps>`
 
     &:hover {
       .MuiOutlinedInput-notchedOutline {
-        border-color: ${({ theme }) => theme.palette.primary.main};
+        border-color: ${({ theme }) => theme.palette.border.light};
       }
     }
 
     &.Mui-focused {
       .MuiOutlinedInput-notchedOutline {
-        border-color: #566976;
+        border-color: ${({ theme }) => theme.palette.border.light};
       }
       &.Mui-error {
         .MuiOutlinedInput-notchedOutline {
@@ -99,7 +105,8 @@ export const inputStyles = css<TextFieldProps>`
   .MuiFormLabel-filled
     + .MuiOutlinedInput-root:not(:hover):not(.Mui-disabled)
     .MuiOutlinedInput-notchedOutline {
-    border-color: ${({ theme, error }) => (error ? theme.palette.error.main : '#566976')};
+    border-color: ${({ theme, error }) =>
+      error ? theme.palette.error.main : theme.palette.border.light};
   }
 `
 

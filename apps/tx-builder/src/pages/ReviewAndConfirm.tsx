@@ -19,6 +19,7 @@ import { Typography } from '@material-ui/core'
 import Loader from '../components/Loader'
 import IconText from '../components/IconText'
 import Card from '../components/Card'
+import Wrapper from '../components/Wrapper'
 
 const ReviewAndConfirm = () => {
   const {
@@ -236,18 +237,11 @@ const StyledButton = styled(ButtonLink)`
 const SimulationContainer = styled(Card)`
   box-shadow: none;
   margin: 24px 0 0 34px;
+  background: ${({ theme }) => theme.palette.background.paper};
 
   // last child is the status result
   & > :last-child {
     margin-top: 11px;
-  }
-`
-
-const Wrapper = styled.main`
-  && {
-    padding: 120px 48px 48px;
-    max-width: 650px;
-    margin: 0 auto;
   }
 `
 

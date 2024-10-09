@@ -34,7 +34,7 @@ const StyledTypography = styled(Typography)<{ $color?: keyof Theme['palette'] | 
       ? $color === 'white'
         ? theme.palette.common.white
         : theme.palette[$color].main
-      : theme.palette.primary.main};
+      : theme.palette.text.primary};
 
   ${({ center }) => center && 'text-align: center;'}
 

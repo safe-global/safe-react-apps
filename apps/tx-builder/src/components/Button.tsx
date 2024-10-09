@@ -33,12 +33,12 @@ const customStyles: {
 } = {
   primary: {
     contained: css`
-      color: ${({ theme }) => theme.palette.common.white};
+      color: ${({ theme }) => theme.palette.background.main};
       background-color: ${({ theme }) => theme.palette.primary.main};
       box-shadow: 1px 2px 10px ${alpha('#28363D', 0.18)};
 
       &:hover {
-        color: ${({ theme }) => theme.palette.common.white};
+        color: ${({ theme }) => theme.palette.background.main};
         background-color: ${({ theme }) => theme.palette.primary.dark};
       }
     `,
@@ -165,11 +165,11 @@ const StyledButton = styled(ButtonMUI)<{ $localProps: LocalProps }>`
     }
 
     &.Mui-disabled {
-      color: ${({ theme }) => theme.palette.common.white};
+      color: ${({ theme }) => theme.palette.background.main};
     }
 
     path.icon-color {
-      fill: ${({ theme }) => theme.palette.common.white};
+      fill: ${({ theme }) => theme.palette.background.main};
     }
 
     &:disabled {

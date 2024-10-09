@@ -8,7 +8,7 @@ type Props = {
 
 const HorizontalDivider = styled.div`
   margin: 16px -1.6rem;
-  border-top: solid 1px #dcdee0;
+  border-top: solid 1px ${({ theme }) => theme.palette.border.light};
   width: calc(100% + 3.2rem);
 `
 

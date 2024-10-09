@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import { alpha } from '@material-ui/core/styles'
 import styled from 'styled-components'
 import Media from 'react-media'
-import { defaultTheme } from '../theme/safeTheme'
 import { Typography } from '@material-ui/core'
 import { Icon } from './Icon'
 
@@ -50,6 +49,11 @@ const FooterSection = styled.div`
   padding: 16px 24px;
 `
 
+const ModalPaper = styled.div`
+  background: ${({ theme }) => theme.palette.background.main};
+  color: ${({ theme }) => theme.palette.text.primary};
+`
+
 export type GenericModalProps = {
   title: string | React.ReactNode
   body: React.ReactNode
@@ -72,7 +76,6 @@ const useStyles = makeStyles({
     top: (props: { smallHeight: boolean }) => (props.smallHeight ? 'unset' : '121px'),
     minWidth: '500px',
     width: (props: { smallHeight: boolean }) => (props.smallHeight ? '500px' : 'inherit'),
-    backgroundColor: defaultTheme.palette.common.white,
     borderRadius: '8px',
     boxShadow: `0 0 0.75 0 #28363D`,
 
@@ -94,7 +97,7 @@ const GenericModalComponent = ({
 
   return (
     <Modal open className={classes.modal}>
-      <div className={classes.paper}>
+      <ModalPaper className={classes.paper}>
         <TitleSection>
           <Typography variant="h6">{title}</Typography>
           <StyledButton onClick={onClose}>
@@ -107,7 +110,7 @@ const GenericModalComponent = ({
         </BodySection>
 
         {footer && <FooterSection>{footer}</FooterSection>}
-      </div>
+      </ModalPaper>
     </Modal>
   )
 }

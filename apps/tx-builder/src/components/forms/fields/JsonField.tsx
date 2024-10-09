@@ -170,7 +170,7 @@ const IconContainer = styled.div<{ error: boolean }>`
   border: 1px solid
     ${({ theme, error }) => (error ? theme.palette.error.main : theme.palette.primary.main)};
   border-radius: 50%;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.palette.code.main};
 `
 
 const StyledTextField = styled(TextFieldInput)`

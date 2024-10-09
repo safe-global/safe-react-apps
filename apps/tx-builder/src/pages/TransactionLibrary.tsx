@@ -25,6 +25,7 @@ import FixedIcon from '../components/FixedIcon'
 import { Icon } from '../components/Icon'
 import { Accordion, AccordionSummary } from '../components/Accordion'
 import Link from '../components/Link'
+import Wrapper from '../components/Wrapper'
 
 const TransactionLibrary = () => {
   const { batches, removeBatch, executeBatch, downloadBatch, renameBatch } = useTransactionLibrary()
@@ -179,15 +180,6 @@ const TransactionLibrary = () => {
 }
 
 export default TransactionLibrary
-
-const Wrapper = styled.main`
-  && {
-    padding: 48px;
-    padding-top: 120px;
-    max-width: 650px;
-    margin: 0 auto;
-  }
-`
 
 const StyledTitle = styled(Typography)`
   && {
