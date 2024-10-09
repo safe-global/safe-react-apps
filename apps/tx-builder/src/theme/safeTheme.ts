@@ -4,6 +4,7 @@ import type { Shadows } from '@mui/material/styles'
 import { createTheme } from '@mui/material/styles'
 
 import palette from './lightPalette'
+import darkPalette from './darkPalette'
 import typography from './typography'
 
 export const base = 8
@@ -67,12 +68,13 @@ declare module '@mui/material/IconButton' {
 
 const createSafeTheme = (mode: PaletteMode): Theme => {
   const isDarkMode = mode === 'dark'
-  const shadowColor = palette.primary.light
+  const colors = isDarkMode ? darkPalette : palette
+  const shadowColor = colors.primary.light
 
   return createTheme({
     palette: {
       mode: isDarkMode ? 'dark' : 'light',
-      ...palette,
+      ...colors,
     },
     spacing: base,
     shape: {
@@ -514,7 +516,5 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
     },
   })
 }
-
-export const defaultTheme = createSafeTheme('light')
 
 export default createSafeTheme
