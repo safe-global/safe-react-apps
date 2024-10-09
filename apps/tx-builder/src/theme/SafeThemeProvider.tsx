@@ -24,7 +24,7 @@ const SafeThemeProvider: FC<SafeThemeProviderProps> = ({ children }) => {
     )
 
     window.addEventListener('message', function ({ data: eventData }) {
-      if (!eventData?.data.hasOwnProperty('darkMode')) return
+      if (!eventData?.data?.hasOwnProperty('darkMode')) return
 
       setDarkMode(eventData?.data.darkMode)
     })
