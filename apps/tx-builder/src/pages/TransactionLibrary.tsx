@@ -53,7 +53,7 @@ const TransactionLibrary = () => {
             <StyledAccordionSummary>
               {/* transactions count  */}
               <TransactionCounterDot color="primary">
-                <Text>{batch.transactions.length}</Text>
+                <StyledDotText>{batch.transactions.length}</StyledDotText>
               </TransactionCounterDot>
 
               {/* editable batch name */}
@@ -202,6 +202,12 @@ const StyledAccordion = styled(Accordion)`
 const StyledAccordionSummary = styled(AccordionSummary)`
   height: 64px;
 
+  &.MuiAccordionSummary-root,
+  &.MuiAccordionSummary-root.Mui-expanded,
+  &.MuiAccordionSummary-root:hover {
+    background-color: ${({ theme }) => theme.palette.background.paper};
+  }
+
   & > .MuiAccordionSummary-content {
     display: flex;
     align-items: center;
@@ -219,6 +225,10 @@ const TransactionCounterDot = styled(Dot)`
   width: 24px;
   min-width: 24px;
   flex-shrink: 0;
+`
+
+const StyledDotText = styled(Text)`
+  color: ${({ theme }) => theme.palette.background.paper};
 `
 
 const StyledBatchTitle = styled.div`

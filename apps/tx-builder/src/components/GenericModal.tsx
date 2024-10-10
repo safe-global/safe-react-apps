@@ -50,7 +50,7 @@ const FooterSection = styled.div`
 `
 
 const ModalPaper = styled.div`
-  background: ${({ theme }) => theme.palette.background.main};
+  background: ${({ theme }) => theme.palette.background.paper};
   color: ${({ theme }) => theme.palette.text.primary};
 `
 
