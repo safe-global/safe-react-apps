@@ -64,9 +64,7 @@ const customTooltip = ({ backgroundColor, textColor, size = 'md' }: TooltipProps
       border: getBorderBySize(size),
       color: textColor
         ? (theme.palette[textColor] as PaletteColor).main
-        : backgroundColor === 'primary'
-        ? theme.palette.common.white
-        : theme.palette.text.primary,
+        : theme.palette.background.default,
       borderRadius: '4px',
       fontFamily: theme.typography.fontFamily,
       padding: getPaddingBySize(size),

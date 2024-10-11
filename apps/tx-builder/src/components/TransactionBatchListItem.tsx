@@ -239,13 +239,13 @@ const PositionDot = styled(Dot).withConfig({
   height: 24px;
   width: 24px;
   min-width: 24px;
-  background-color: #e2e3e3;
+  background-color: ${({ theme }) => theme.palette.border.light};
   transition: background-color 0.5s linear;
 `
 
 const ArrowAdornment = styled.div`
   position: relative;
-  border-left: 1px solid #e2e3e3;
+  border-left: 1px solid ${({ theme }) => theme.palette.border.light};
   flex-grow: 1;
   margin-top: 8px;
 
@@ -253,7 +253,7 @@ const ArrowAdornment = styled.div`
     content: ' ';
     display: inline-block;
     position: absolute;
-    border-left: 1px solid #e2e3e3;
+    border-left: 1px solid ${({ theme }) => theme.palette.border.light};
 
     height: ${minArrowSize}px;
     bottom: -${minArrowSize}px;
@@ -269,7 +269,7 @@ const ArrowAdornment = styled.div`
 
     border-width: 0 1px 1px 0;
     border-style: solid;
-    border-color: #e2e3e3;
+    border-color: ${({ theme }) => theme.palette.border.light};
     padding: 3px;
 
     transform: rotate(45deg);
@@ -287,7 +287,7 @@ const StyledAccordion = styled(Accordion).withConfig({
     margin-bottom: 0;
     border-width: 1px;
     border-color: ${({ isDragging, expanded, theme }) =>
-      isDragging || expanded ? theme.palette.secondary.light : theme.palette.common.white};
+      isDragging || expanded ? theme.palette.secondary.light : theme.palette.background.paper};
     transition: border-color 0.5s linear;
 
     &:hover {
@@ -303,7 +303,7 @@ const StyledAccordion = styled(Accordion).withConfig({
     height: 52px;
     padding: 0px 8px;
     background-color: ${({ isDragging, theme }) =>
-      isDragging ? theme.palette.secondary.background : theme.palette.common.white};
+      isDragging ? theme.palette.secondary.background : theme.palette.background.paper};
 
     .MuiIconButton-root {
       padding: 8px;

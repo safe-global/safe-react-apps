@@ -13,7 +13,7 @@ import { ThemeProvider } from 'styled-components'
 ReactDOM.render(
   <>
     <GlobalStyles />
-    <SafeThemeProvider mode="light">
+    <SafeThemeProvider>
       {theme => (
         <ThemeProvider theme={theme}>
           <SafeProvider>

@@ -147,7 +147,7 @@ const TransactionsBatchList = ({
           <TransactionHeader>
             {/* Transactions Batch Counter */}
             <TransactionCounterDot color="primary">
-              <Text color="white">{transactions.length}</Text>
+              <Text>{transactions.length}</Text>
             </TransactionCounterDot>
 
             {/* Transactions Batch Title */}
@@ -390,6 +390,10 @@ const TransactionCounterDot = styled(Dot)`
   height: 24px;
   width: 24px;
   min-width: 24px;
+
+  p {
+    color: ${({ theme }) => theme.palette.background.main};
+  }
 `
 
 const TransactionsTitle = styled(Typography)`
@@ -408,7 +412,7 @@ const TransactionsTitle = styled(Typography)`
 const StyledHeaderIconButton = styled(IconButton)`
   &.MuiIconButton-root {
     border-radius: 4px;
-    background-color: white;
+    background-color: ${({ theme }) => theme.palette.code.main};
     margin-left: 8px;
   }
 `

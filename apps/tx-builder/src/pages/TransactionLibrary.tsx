@@ -25,6 +25,7 @@ import FixedIcon from '../components/FixedIcon'
 import { Icon } from '../components/Icon'
 import { Accordion, AccordionSummary } from '../components/Accordion'
 import Link from '../components/Link'
+import Wrapper from '../components/Wrapper'
 
 const TransactionLibrary = () => {
   const { batches, removeBatch, executeBatch, downloadBatch, renameBatch } = useTransactionLibrary()
@@ -49,10 +50,10 @@ const TransactionLibrary = () => {
       {batches.length > 0 ? (
         batches.map(batch => (
           <StyledAccordion key={batch.id} compact TransitionProps={{ unmountOnExit: true }}>
-            <StyledAccordionSummary style={{ backgroundColor: 'white' }}>
+            <StyledAccordionSummary>
               {/* transactions count  */}
               <TransactionCounterDot color="primary">
-                <Text color="white">{batch.transactions.length}</Text>
+                <StyledDotText>{batch.transactions.length}</StyledDotText>
               </TransactionCounterDot>
 
               {/* editable batch name */}
@@ -180,15 +181,6 @@ const TransactionLibrary = () => {
 
 export default TransactionLibrary
 
-const Wrapper = styled.main`
-  && {
-    padding: 48px;
-    padding-top: 120px;
-    max-width: 650px;
-    margin: 0 auto;
-  }
-`
-
 const StyledTitle = styled(Typography)`
   && {
     margin-top: 0px;
@@ -210,6 +202,12 @@ const StyledAccordion = styled(Accordion)`
 const StyledAccordionSummary = styled(AccordionSummary)`
   height: 64px;
 
+  &.MuiAccordionSummary-root,
+  &.MuiAccordionSummary-root.Mui-expanded,
+  &.MuiAccordionSummary-root:hover {
+    background-color: ${({ theme }) => theme.palette.background.paper};
+  }
+
   & > .MuiAccordionSummary-content {
     display: flex;
     align-items: center;
@@ -227,6 +225,10 @@ const TransactionCounterDot = styled(Dot)`
   width: 24px;
   min-width: 24px;
   flex-shrink: 0;
+`
+
+const StyledDotText = styled(Text)`
+  color: ${({ theme }) => theme.palette.background.paper};
 `
 
 const StyledBatchTitle = styled.div`
@@ -257,7 +259,6 @@ const StyledIconButton = styled(IconButton)`
   &.MuiIconButton-root {
     border-radius: 4px;
     margin-left: 8px;
-    background-color: #f6f7f8;
   }
 `
 

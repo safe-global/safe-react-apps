@@ -21,7 +21,17 @@ import creatingInProgress from './images/creatingInProgress'
 import notOwner from './images/notOwner'
 import notConnected from './images/notConnected'
 import networkError from './images/networkError'
+import styled from 'styled-components'
 
+const StyledIcon = styled.span`
+  .icon-color {
+    fill: ${({ theme }) => theme.palette.text.primary};
+  }
+
+  .icon-stroke {
+    fill: ${({ theme }) => theme.palette.text.primary};
+  }
+`
 const icons = {
   arrowSort,
   connectedRinkeby,
@@ -57,7 +67,7 @@ type Props = {
  * The `FixedIcon` renders an icon
  */
 function FixedIcon({ type }: Props): React.ReactElement {
-  return <span>{icons[type]}</span>
+  return <StyledIcon>{icons[type]}</StyledIcon>
 }
 
 export default FixedIcon
