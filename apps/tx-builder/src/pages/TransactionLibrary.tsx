@@ -151,12 +151,7 @@ const TransactionLibrary = () => {
             <StyledEmptyLibraryText>You don't have any saved batches.</StyledEmptyLibraryText>
             <StyledEmptyLibraryText>
               Safe a batch by{' '}
-              <StyledLinkIcon
-                size="sm"
-                type="bookmark"
-                color="primary"
-                aria-label="go to transaction list view"
-              />
+              <StyledLinkIcon size="sm" type="bookmark" aria-label="go to transaction list view" />
               in transaction list view.
             </StyledEmptyLibraryText>
           </Box>
@@ -274,4 +269,8 @@ const StyledEmptyLibraryText = styled(Text)`
 const StyledLinkIcon = styled(Icon)`
   vertical-align: middle;
   margin-right: 2px;
+
+  .icon-color {
+    fill: ${({ theme }) => theme.palette.text.secondary};
+  }
 `
