@@ -77,7 +77,7 @@ const ReviewAndConfirm = () => {
 
   return (
     <>
-      <Wrapper>
+      <Wrapper centered>
         <StyledTitle>Review and Confirm</StyledTitle>
 
         <TransactionsBatchList

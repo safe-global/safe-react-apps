@@ -172,7 +172,7 @@ const TransactionBatchListItem = memo(
                     size="medium"
                     aria-label="Expand transaction details"
                   >
-                    <FixedIcon type={'chevronDown'} />
+                    <StyledArrow isTxExpanded={isTxExpanded} type={'chevronDown'} />
                   </TransactionActionButton>
                 </Tooltip>
               )}
@@ -224,7 +224,17 @@ const TransactionListItem = styled.li`
   margin-bottom: 8px;
 `
 
-// transaction postion dot styles
+const StyledArrow = styled(FixedIcon)<{ isTxExpanded: boolean }>`
+  .icon-color {
+    fill: #b2b5b2;
+  }
+  ${({ isTxExpanded }) =>
+    isTxExpanded &&
+    `
+    transform: rotateZ(180deg);
+
+  `}
+`
 
 const PositionWrapper = styled.div`
   display: flex;

@@ -40,7 +40,7 @@ const CreateTransactions = () => {
 
   return (
     <>
-      <TransactionsSectionWrapper item xs={12} md={6}>
+      <TransactionsSectionWrapper sticky={!!transactions.length} item xs={12} md={6}>
         {transactions.length > 0 ? (
           <>
             <TransactionsBatchList
@@ -110,9 +110,9 @@ const CreateTransactions = () => {
 
 export default CreateTransactions
 
-const TransactionsSectionWrapper = styled(Grid)`
+const TransactionsSectionWrapper = styled(Grid)<{ sticky?: boolean }>`
   position: sticky;
-  top: 40px;
+  top: 80px;
   align-self: flex-start;
 `
 

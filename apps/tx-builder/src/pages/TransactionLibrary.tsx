@@ -1,15 +1,15 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import IconButton from '@material-ui/core/IconButton'
-import { useHref, useLinkClickHandler, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { ReactComponent as EmptyLibrary } from '../assets/empty-library.svg'
+import { ReactComponent as EmptyLibraryDark } from '../assets/empty-library-dark.svg'
+import { ReactComponent as EmptyLibraryLight } from '../assets/empty-library-light.svg'
 import DeleteBatchFromLibrary from '../components/modals/DeleteBatchFromLibrary'
 import TransactionsBatchList from '../components/TransactionsBatchList'
 import useModal from '../hooks/useModal/useModal'
 import {
   getEditBatchUrl,
-  HOME_PATH,
   REVIEW_AND_CONFIRM_PATH,
   TRANSACTION_LIBRARY_PATH,
 } from '../routes/routes'
@@ -24,12 +24,13 @@ import Button from '../components/Button'
 import FixedIcon from '../components/FixedIcon'
 import { Icon } from '../components/Icon'
 import { Accordion, AccordionSummary } from '../components/Accordion'
-import Link from '../components/Link'
 import Wrapper from '../components/Wrapper'
+import { EModes, ThemeModeContext } from '../theme/SafeThemeProvider'
 
 const TransactionLibrary = () => {
   const { batches, removeBatch, executeBatch, downloadBatch, renameBatch } = useTransactionLibrary()
   const navigate = useNavigate()
+  const mode = useContext(ThemeModeContext)
   const {
     open: showDeleteBatchModal,
     openModal: openDeleteBatchModal,
@@ -37,14 +38,8 @@ const TransactionLibrary = () => {
   } = useModal()
   const [batchToRemove, setBatchToRemove] = useState<Batch>()
 
-  const hrefToHome = useHref(HOME_PATH)
-  const internalOnClick = useLinkClickHandler(HOME_PATH)
-  const redirectToHome = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    internalOnClick(event)
-  }
-
   return (
-    <Wrapper>
+    <Wrapper centered>
       <StyledTitle>Your transaction library</StyledTitle>
 
       {batches.length > 0 ? (
@@ -143,22 +138,23 @@ const TransactionLibrary = () => {
           </StyledAccordion>
         ))
       ) : (
-        <Box display="flex" flexDirection={'column'} alignItems={'center'} paddingTop={'128px'}>
+        <Box
+          display="flex"
+          flexDirection={'column'}
+          alignItems={'center'}
+          height={'100%'}
+          justifyContent="center"
+        >
           {/* Empty library Screen */}
-          <EmptyLibrary />
-          <StyledEmptyLibraryText>You don't have any saved batches.</StyledEmptyLibraryText>
-          <StyledEmptyLibraryTextLink>
-            Safe a batch by{' '}
-            <StyledEmptyLibraryLink href={hrefToHome} onClick={redirectToHome}>
-              <StyledLinkIcon
-                size="sm"
-                type="bookmark"
-                color="primary"
-                aria-label="go to transaction list view"
-              />
+          {mode === EModes.DARK ? <EmptyLibraryDark /> : <EmptyLibraryLight />}
+          <Box marginTop={4} textAlign="center">
+            <StyledEmptyLibraryText>You don't have any saved batches.</StyledEmptyLibraryText>
+            <StyledEmptyLibraryText>
+              Safe a batch by{' '}
+              <StyledLinkIcon size="sm" type="bookmark" aria-label="go to transaction list view" />
               in transaction list view.
-            </StyledEmptyLibraryLink>
-          </StyledEmptyLibraryTextLink>
+            </StyledEmptyLibraryText>
+          </Box>
         </Box>
       )}
       {showDeleteBatchModal && batchToRemove && (
@@ -265,27 +261,16 @@ const StyledIconButton = styled(IconButton)`
 const StyledEmptyLibraryText = styled(Text)`
   && {
     max-width: 320px;
-    margin-top: 32px;
-    font-size: 20px;
-    color: #566976;
-  }
-`
-
-const StyledEmptyLibraryTextLink = styled(Text)`
-  && {
-    margin-top: 8px;
-    color: #566976;
-    text-decoration: none;
+    margin-bottom: 8px;
+    color: ${({ theme }) => theme.palette.text.secondary};
   }
 `
 
 const StyledLinkIcon = styled(Icon)`
   vertical-align: middle;
   margin-right: 2px;
-`
 
-const StyledEmptyLibraryLink = styled(Link)`
-  && {
-    text-decoration: none;
+  .icon-color {
+    fill: ${({ theme }) => theme.palette.text.secondary};
   }
 `

@@ -1,25 +1,27 @@
 import React from 'react'
 import styled from 'styled-components'
 
-function Wrapper({ children }: { children: React.ReactNode }) {
+function Wrapper({ children, centered }: { children: React.ReactNode; centered?: boolean }) {
   return (
-    <StyledWrapper>
+    <StyledWrapper centered={centered}>
       <section>{children}</section>
     </StyledWrapper>
   )
 }
 
-const StyledWrapper = styled.main`
+const StyledWrapper = styled.main<{ centered?: boolean }>`
   width: 100%;
   min-height: 100%;
+  display: flex;
   background: ${({ theme }) => theme.palette.background.main};
   color: ${({ theme }) => theme.palette.text.primary};
 
   > section {
-    padding: 120px 48px 48px;
+    width: 100%;
+    padding: 120px 4rem 48px;
     box-sizing: border-box;
-    max-width: 1024px;
     margin: 0 auto;
+    max-width: ${({ centered }) => (centered ? '1000px' : '1500px')};
   }
 `
 

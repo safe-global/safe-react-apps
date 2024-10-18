@@ -26,7 +26,7 @@ const DeleteTransactionModal = ({
       body={
         <StyledModalBodyWrapper>
           <StyledModalDot color="primary">
-            <Text color="white">{positionLabel}</Text>
+            <Text color="background">{positionLabel}</Text>
           </StyledModalDot>
 
           <StyledModalText>{`${txDescription} will be permanently deleted from the batch`}</StyledModalText>
@@ -62,7 +62,6 @@ const StyledModalDot = styled(Dot)`
   height: 24px;
   width: 24px;
   min-width: 24px;
-  background-color: #566976;
 
   position: absolute;
   top: 22px;

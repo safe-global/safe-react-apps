@@ -1,17 +1,24 @@
-import { useEffect, useMemo, useState, type FC } from 'react'
+import React, { useEffect, useMemo, useState, type FC } from 'react'
 import { type Theme } from '@mui/material'
 import { ThemeProvider } from '@material-ui/core'
 import createSafeTheme from './safeTheme'
 import { getSDKVersion } from '@safe-global/safe-apps-sdk'
 
+export enum EModes {
+  DARK = 'dark',
+  LIGHT = 'light',
+}
+
 type SafeThemeProviderProps = {
   children: (theme: Theme) => React.ReactNode
 }
 
-const SafeThemeProvider: FC<SafeThemeProviderProps> = ({ children }) => {
-  const [isDarkMode, setDarkMode] = useState(false)
+export const ThemeModeContext = React.createContext<string>(EModes.LIGHT)
 
-  const theme = useMemo(() => createSafeTheme(isDarkMode ? 'dark' : 'light'), [isDarkMode])
+const SafeThemeProvider: FC<SafeThemeProviderProps> = ({ children }) => {
+  const [mode, setMode] = useState(EModes.LIGHT)
+
+  const theme = useMemo(() => createSafeTheme(mode), [mode])
 
   useEffect(() => {
     window.parent.postMessage(
@@ -26,11 +33,15 @@ const SafeThemeProvider: FC<SafeThemeProviderProps> = ({ children }) => {
     window.addEventListener('message', function ({ data: eventData }) {
       if (!eventData?.data?.hasOwnProperty('darkMode')) return
 
-      setDarkMode(eventData?.data.darkMode)
+      setMode(eventData?.data.darkMode ? EModes.DARK : EModes.LIGHT)
     })
   }, [])
 
-  return <ThemeProvider theme={theme}>{children(theme)}</ThemeProvider>
+  return (
+    <ThemeModeContext.Provider value={mode}>
+      <ThemeProvider theme={theme}>{children(theme)}</ThemeProvider>
+    </ThemeModeContext.Provider>
+  )
 }
 
 export default SafeThemeProvider
