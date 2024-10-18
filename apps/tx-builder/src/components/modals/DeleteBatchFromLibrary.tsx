@@ -21,7 +21,7 @@ const DeleteBatchFromLibrary = ({ batch, onClick, onClose }: DeleteBatchFromLibr
       body={
         <StyledModalBodyWrapper>
           <StyledModalDot color="primary">
-            <Text color="white">{batch.transactions.length}</Text>
+            <Text color="background">{batch.transactions.length}</Text>
           </StyledModalDot>
 
           <StyledModalText>{`${batch.name} batch will be permanently deleted`}</StyledModalText>
@@ -58,7 +58,6 @@ const StyledModalDot = styled(Dot)`
     height: 24px;
     width: 24px;
     min-width: 24px;
-    background-color: #566976;
 
     position: absolute;
     top: 22px;
