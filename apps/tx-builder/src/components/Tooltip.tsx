@@ -59,7 +59,7 @@ const customTooltip = ({ backgroundColor, textColor, size = 'md' }: TooltipProps
       backgroundColor:
         backgroundColor && theme.palette[backgroundColor]
           ? (theme.palette[backgroundColor] as PaletteColor).main
-          : '#E8E7E6',
+          : theme.palette.primary.main,
       boxShadow: `1px 2px 10px ${alpha('#28363D', 0.18)}`,
       border: getBorderBySize(size),
       color: textColor
