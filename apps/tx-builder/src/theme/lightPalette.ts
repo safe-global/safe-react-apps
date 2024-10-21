@@ -57,6 +57,9 @@ const lightPalette = {
     main: '#121312',
     background: '#EEEFF0',
   },
+  upload: {
+    primary: '#12FF80',
+  },
   static: {
     main: '#121312',
   },

@@ -156,9 +156,13 @@ const StyledText = styled(Text)<{ error?: Boolean }>`
 const StyledButtonLink = styled(ButtonLink)`
   margin-left: 0.3rem;
   padding: 0;
-  text-decoration: none;
 
   && > p {
-    color: ${({ theme }) => theme.palette.secondary.dark};
+    color: ${({ theme }) => theme.palette.upload.primary};
+    text-decoration: underline;
+
+    &:hover {
+      color: ${({ theme }) => theme.palette.backdrop.main};
+    }
   }
 `

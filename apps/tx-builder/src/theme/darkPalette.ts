@@ -57,6 +57,9 @@ const darkPalette = {
     main: '#FFFFFF',
     background: '#303033',
   },
+  upload: {
+    primary: '#fff',
+  },
   static: {
     main: '#121312',
   },
