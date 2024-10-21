@@ -106,7 +106,7 @@ const Dashboard = (): ReactElement => {
 
   return (
     <Wrapper>
-      <Grid container justifyContent="center" alignItems="center" spacing={6}>
+      <Grid container justifyContent="center" alignItems="flex-start" spacing={6}>
         <AddNewTransactionFormWrapper item xs={12} md={6}>
           <Grid container alignItems="center">
             <Grid item xs={6}>
