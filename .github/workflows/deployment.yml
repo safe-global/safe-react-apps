@@ -17,7 +17,7 @@ env:
 jobs:
   pr:
     name: Pull Request
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@v3
