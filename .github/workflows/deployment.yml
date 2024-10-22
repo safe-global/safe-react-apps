@@ -17,7 +17,7 @@ env:
 jobs:
   pr:
     name: Pull Request
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@v3
@@ -68,7 +68,7 @@ jobs:
 
   deploy:
     name: Deploy Dev/Staging
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: github.event_name != 'pull_request' && github.event_name != 'workflow_dispatch'
 
     steps:
@@ -114,7 +114,7 @@ jobs:
 
   release:
     name: Production release
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
 
     steps:
