@@ -1,6 +1,6 @@
 {
   "name": "tx-builder",
-  "version": "1.17.1",
+  "version": "1.18.0",
   "private": true,
   "homepage": "/tx-builder",
   "dependencies": {

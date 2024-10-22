@@ -2,6 +2,37 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.18.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.17.1...tx-builder-1.18.0) (2024-10-22)
+
+
+### Bug Fixes
+
+* **empty-library-screen:** adjust empty library screen to be according to  figmadesign ([d2c865b](https://github.com/safe-global/safe-react-apps/commit/d2c865b151e69b3d08fd7f1a82cd7b2fff22fadb))
+* **icons-alginment:** adjust general icons colors and screens alignment ([009b9c2](https://github.com/safe-global/safe-react-apps/commit/009b9c2857a4e6144f348b98d7c105fffcf0e4e9))
+* **library-icon-color:** change icon color in your transactions library page ([5fd16ae](https://github.com/safe-global/safe-react-apps/commit/5fd16aef8f952aee438b2218456c21958f3398d3))
+* **remove-unused-code:** remove stick parameter definition from the TransactionSectionWrapper ([e35bf4c](https://github.com/safe-global/safe-react-apps/commit/e35bf4ca18c938018c6c1539f2a81f608dc5bde2))
+* **safe-deployments-version:** update safe-deployments version in order to fix issues on Linea ([ffdbbb7](https://github.com/safe-global/safe-react-apps/commit/ffdbbb7a39adc0c320cdd3708659f537b3052730))
+* **tx-builder-alignment:** put the TxBuilder form aligned on top ([067bd9d](https://github.com/safe-global/safe-react-apps/commit/067bd9dd5142f1516432b0dc4975d3bd800bbbae))
+* **tx-builder-colors:** adjust transaction library colors across all theme modes ([8e60f03](https://github.com/safe-global/safe-react-apps/commit/8e60f031266707403d3747fc16c6945a3c80c57d))
+* **tx-builder-dark-mode:** remove hard coded colors values ([a812f11](https://github.com/safe-global/safe-react-apps/commit/a812f1107620d84db969e89856701902eda7f437))
+* **tx-builder-tooltips:** fix tooltip background on generic modal ([5b6014c](https://github.com/safe-global/safe-react-apps/commit/5b6014c20467fabe0f42e9b59c2264ced6a6ffa8))
+* **tx-builder-upload:** change upload file text color ([7611fa5](https://github.com/safe-global/safe-react-apps/commit/7611fa54fed89b350f6270f335213dfa13e7c06e))
+* **tx-builder:** remove unused icons and components ([fc937ba](https://github.com/safe-global/safe-react-apps/commit/fc937bae6eca7977d1f1b3e29414328e6620b012))
+* unit tests ([8878fc2](https://github.com/safe-global/safe-react-apps/commit/8878fc26ffba2a3fa2375ca553e1cb6de684693e))
+
+
+### Features
+
+* **dark-mode:** add dark mode theme support in the theme provider ([bc238d6](https://github.com/safe-global/safe-react-apps/commit/bc238d62868df8bec7f6bb40864289156aed9942))
+* **dark-mode:** adjust components to support dark mode ([8f85da9](https://github.com/safe-global/safe-react-apps/commit/8f85da9c3afbaf3cce6eb86413ef4f1cd4475591))
+* **mode-in-context:** add theme mode in the context in ([ef7df39](https://github.com/safe-global/safe-react-apps/commit/ef7df3941c7f3362efa38e36edbaf7f0db75b6b0))
+* **replace-icons:** replace old images the correct ones from figma ([9220ac1](https://github.com/safe-global/safe-react-apps/commit/9220ac1ac9f1a5c4647e74d8da3f20dfe75b2bb9))
+* **tx-builder-components:** move necessary components from react-component library to tx-builder ([a8d98d6](https://github.com/safe-global/safe-react-apps/commit/a8d98d693594bc52019accfcfa05f14986ad1444))
+* **tx-builder-theme:** update tx-builder theme ([6c43cbd](https://github.com/safe-global/safe-react-apps/commit/6c43cbd2ff69f32f1a3776161ec320d7ddd0fa80))
+* **tx-builder:** move necessary icons to transaction builder ([8e83db8](https://github.com/safe-global/safe-react-apps/commit/8e83db885328ce09a2d05017daf3f2b098a29a82))
+
+
+
 ## [1.17.1](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.17.0...tx-builder-1.17.1) (2024-08-28)
 
 
