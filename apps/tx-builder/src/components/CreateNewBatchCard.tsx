@@ -1,15 +1,18 @@
-import { useRef } from 'react'
+import { useContext, useRef } from 'react'
 import { alpha } from '@material-ui/core'
 import Hidden from '@material-ui/core/Hidden'
 import styled from 'styled-components'
 import { useTheme } from '@material-ui/core/styles'
 
-import { ReactComponent as CreateNewBatchSVG } from '../assets/add-new-batch.svg'
+import { ReactComponent as CreateNewBatchLightSvg } from '../assets/new-batch-light.svg'
+import { ReactComponent as CreateNewBatchDarkSvg } from '../assets/new-batch-dark.svg'
+import { ReactComponent as ArrowBlock } from '../assets/arrowtotheblock.svg'
 import useDropZone from '../hooks/useDropZone'
 import { useMediaQuery } from '@material-ui/core'
 import { Icon } from './Icon'
 import Text from './Text'
 import ButtonLink from './buttons/ButtonLink'
+import { EModes, ThemeModeContext } from '../theme/SafeThemeProvider'
 
 type CreateNewBatchCardProps = {
   onFileSelected: (file: File | null) => void
@@ -17,6 +20,7 @@ type CreateNewBatchCardProps = {
 
 const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
   const theme = useTheme()
+  const mode = useContext(ThemeModeContext)
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   const fileRef = useRef<HTMLInputElement | null>(null)
@@ -40,36 +44,42 @@ const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
   return (
     <Wrapper isSmallScreen={isSmallScreen}>
       <Hidden smDown>
-        <CreateNewBatchSVG />
+        {mode === EModes.DARK ? <CreateNewBatchDarkSvg /> : <CreateNewBatchLightSvg />}
+        <StyledArrowBlock />
       </Hidden>
-      <StyledDragAndDropFileContainer
-        {...dropHandlers}
-        dragOver={isOverDropZone}
-        fullWidth={isSmallScreen}
-        error={isAcceptError}
-      >
-        {isAcceptError ? (
-          <StyledText variant="body1" error={isAcceptError}>
-            The uploaded file is not a valid JSON file
-          </StyledText>
-        ) : (
-          <>
-            <Icon type="termsOfUse" size="sm" />
-            <StyledText variant="body1">Drag and drop a JSON file or</StyledText>
-            <StyledButtonLink color="secondary" onClick={handleBrowse}>
-              choose a file
-            </StyledButtonLink>
-          </>
-        )}
-      </StyledDragAndDropFileContainer>
-      <input
-        ref={fileRef}
-        id="logo-input"
-        type="file"
-        onChange={handleFileSelected}
-        accept=".json"
-        hidden
-      />
+
+      <StyledCreateBatchContent>
+        <StyledText variant="body1">Start creating a new batch </StyledText>
+        <StyledText variant="body1">or</StyledText>
+        <StyledDragAndDropFileContainer
+          {...dropHandlers}
+          dragOver={isOverDropZone}
+          fullWidth={isSmallScreen}
+          error={isAcceptError}
+        >
+          {isAcceptError ? (
+            <StyledText variant="body1" error={isAcceptError}>
+              The uploaded file is not a valid JSON file
+            </StyledText>
+          ) : (
+            <>
+              <Icon type="termsOfUse" size="sm" />
+              <StyledText variant="body1">Drag and drop a JSON file or</StyledText>
+              <StyledButtonLink color="secondary" onClick={handleBrowse}>
+                choose a file
+              </StyledButtonLink>
+            </>
+          )}
+        </StyledDragAndDropFileContainer>
+        <input
+          ref={fileRef}
+          id="logo-input"
+          type="file"
+          onChange={handleFileSelected}
+          accept=".json"
+          hidden
+        />
+      </StyledCreateBatchContent>
     </Wrapper>
   )
 }
@@ -77,7 +87,22 @@ const CreateNewBatchCard = ({ onFileSelected }: CreateNewBatchCardProps) => {
 export default CreateNewBatchCard
 
 const Wrapper = styled.div<{ isSmallScreen: boolean }>`
+  text-align: center;
+  position: relative;
   margin-top: ${({ isSmallScreen }) => (isSmallScreen ? '0' : '64px')};
+`
+
+const StyledArrowBlock = styled(ArrowBlock)`
+  position: absolute;
+  left: -2px;
+  top: 7rem;
+`
+
+const StyledCreateBatchContent = styled.div`
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `
 
 const StyledDragAndDropFileContainer = styled.div<{
@@ -86,18 +111,23 @@ const StyledDragAndDropFileContainer = styled.div<{
   error: Boolean
 }>`
   box-sizing: border-box;
-  max-width: ${({ fullWidth }) => (fullWidth ? '100%' : '420px')};
+  max-width: ${({ fullWidth }) => (fullWidth ? '100%' : '430px')};
+  width: 100%;
   border: 2px dashed
     ${({ theme, error }) => (error ? theme.palette.error.main : theme.palette.secondary.dark)};
   border-radius: 8px;
   background-color: ${({ theme, error }) =>
     error ? alpha(theme.palette.error.main, 0.7) : theme.palette.secondary.background};
   padding: 24px;
-  margin: 24px auto 0 auto;
+  margin: 6px auto;
 
   display: flex;
   justify-content: center;
   align-items: center;
+
+  svg {
+    margin-right: 4px;
+  }
 
   ${({ dragOver, error, theme }) => {
     if (dragOver) {
@@ -118,7 +148,6 @@ const StyledDragAndDropFileContainer = styled.div<{
 
 const StyledText = styled(Text)<{ error?: Boolean }>`
   && {
-    margin-left: 4px;
     color: ${({ error, theme }) =>
       error ? theme.palette.common.white : theme.palette.text.secondary};
   }
@@ -127,9 +156,13 @@ const StyledText = styled(Text)<{ error?: Boolean }>`
 const StyledButtonLink = styled(ButtonLink)`
   margin-left: 0.3rem;
   padding: 0;
-  text-decoration: none;
 
   && > p {
-    color: ${({ theme }) => theme.palette.secondary.dark};
+    color: ${({ theme }) => theme.palette.upload.primary};
+    text-decoration: underline;
+
+    &:hover {
+      color: ${({ theme }) => theme.palette.backdrop.main};
+    }
   }
 `

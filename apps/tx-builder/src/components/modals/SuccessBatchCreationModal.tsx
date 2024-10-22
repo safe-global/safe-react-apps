@@ -35,7 +35,7 @@ const SuccessBatchCreationModal = ({ count, onClick, onClose }: SuccessBatchCrea
           {/* Text */}
           <StyledTextWrapper>
             <StyledModalDot color="primary">
-              <Text color="white">{count}</Text>
+              <Text color="background">{count}</Text>
             </StyledModalDot>
 
             <StyledModalText>Transaction Batch in the queue.</StyledModalText>
@@ -76,8 +76,6 @@ const StyledModalDot = styled(Dot)`
   width: 24px;
   min-width: 24px;
   top: -1px;
-
-  background-color: #566976;
 `
 
 const StyledModalText = styled(Text)`

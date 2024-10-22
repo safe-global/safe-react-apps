@@ -112,7 +112,7 @@ export default CreateTransactions
 
 const TransactionsSectionWrapper = styled(Grid)`
   position: sticky;
-  top: 40px;
+  top: 80px;
   align-self: flex-start;
 `
 

@@ -19,7 +19,7 @@ const DeleteBatchModal = ({ count, onClick, onClose }: DeleteBatchModalProps) =>
       body={
         <StyledModalBodyWrapper>
           <StyledModalDot color="primary">
-            <Text color="white">{count}</Text>
+            <Text color="background">{count}</Text>
           </StyledModalDot>
 
           <StyledModalText>{`transaction${count > 1 ? 's' : ''}`} will be cleared</StyledModalText>
@@ -55,7 +55,6 @@ const StyledModalDot = styled(Dot)`
   height: 24px;
   width: 24px;
   min-width: 24px;
-  background-color: #566976;
 
   position: absolute;
   top: 22px;

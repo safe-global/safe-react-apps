@@ -61,13 +61,14 @@ export type IconTypes = keyof IconType
 
 type Props = {
   type: IconTypes
+  className?: string
 }
 
 /**
  * The `FixedIcon` renders an icon
  */
-function FixedIcon({ type }: Props): React.ReactElement {
-  return <StyledIcon>{icons[type]}</StyledIcon>
+function FixedIcon({ type, className }: Props): React.ReactElement {
+  return <StyledIcon className={className}>{icons[type]}</StyledIcon>
 }
 
 export default FixedIcon
