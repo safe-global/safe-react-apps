@@ -6,7 +6,7 @@ inputs:
   node-version:
     description: Node.js version
     required: false
-    default: '16'
+    default: 18
   aws-secret-access-key:
     description: AWS secret access key
     required: true
