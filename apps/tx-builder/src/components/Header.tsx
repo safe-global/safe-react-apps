@@ -17,7 +17,7 @@ import FixedIcon from './FixedIcon'
 import { Typography } from '@material-ui/core'
 import Text from './Text'
 
-const HELP_ARTICLE_LINK = 'https://help.safe.global/en/articles/40841-transaction-builder'
+const HELP_ARTICLE_LINK = 'https://help.safe.global/en/articles/234052-transaction-builder'
 
 const goBackLabel: Record<string, string> = {
   [CREATE_BATCH_PATH]: 'Back to Transaction Creation',
