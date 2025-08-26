@@ -9,7 +9,7 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@safe-global/safe-apps-provider": "^0.18.0",
-    "@safe-global/safe-deployments": "^1.37.30",
+    "@safe-global/safe-deployments": "^1.37.42",
     "@safe-global/safe-gateway-typescript-sdk": "^3.19.0",
     "axios": "^1.8.2",
     "evm-proxy-detection": "1.0.0",
