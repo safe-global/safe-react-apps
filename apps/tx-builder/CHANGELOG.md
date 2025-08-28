@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.18.2](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.18.1...tx-builder-1.18.2) (2025-08-28)
+
+
+### Bug Fixes
+
+* error: Can't resolve 'process/browser' in axios ([#860](https://github.com/safe-global/safe-react-apps/issues/860)) ([354a4b7](https://github.com/safe-global/safe-react-apps/commit/354a4b725ca4cb27d6935eed20022ee721719cd1))
+* **tx-builder:** update help article link ([#849](https://github.com/safe-global/safe-react-apps/issues/849)) ([2bbc198](https://github.com/safe-global/safe-react-apps/commit/2bbc198c090c81eb784f4a8a646382520e338056))
+
+
+
 ## [1.18.1](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.18.0...tx-builder-1.18.1) (2025-01-22)
 
 
