@@ -26,6 +26,8 @@ module.exports = {
       }),
     ])
 
+    config.module.rules.push({ test: /\.m?js/, resolve: { fullySpecified: false } })
+
     // https://github.com/facebook/create-react-app/issues/11924
     config.ignoreWarnings = [/to parse source map/i]
 
