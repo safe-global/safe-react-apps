@@ -2922,10 +2922,10 @@
     "@safe-global/safe-gateway-typescript-sdk" "^3.5.3"
     viem "^1.0.0"
 
-"@safe-global/safe-deployments@^1.37.42":
-  version "1.37.42"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.42.tgz#dea932a447fe2c76d894df8de4f0aed72ed7fcef"
-  integrity sha512-hu/GEQhO5lmHsSeVJavtVysdqy16VAumd3pgILN9bTj82ImlHWgkFNYXyeOSbjPvmizdnVVEUzH49yBmoM6oMQ==
+"@safe-global/safe-deployments@^1.37.45":
+  version "1.37.45"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.45.tgz#1e017a5a6a237772b93255ac8cb6ac9ad2024d23"
+  integrity sha512-HLH8nJSVbDlx/p3Yzhspyz9q9pITSGvw2UqlmXfAyrz6VSM8zc9xUWlBeqaUEzvmgon9YUgfstUMz2MElRUCfQ==
   dependencies:
     semver "^7.6.2"
 
