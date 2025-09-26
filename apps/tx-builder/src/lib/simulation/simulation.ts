@@ -30,13 +30,18 @@ const getSimulationLink = (simulationId: string): string => {
   return `https://dashboard.tenderly.co/public/${TENDERLY_ORG_NAME}/${TENDERLY_PROJECT_NAME}/simulator/${simulationId}`
 }
 
+const GUARD_STORAGE_POSITION = '0x4a204f620c8c5ccdca3fd54d003badd85ba500436a431f0cbda4f558c93c34c8'
+
 /* We need to overwrite the threshold stored in smart contract storage to 1
  to do a proper simulation that takes transaction guards into account.
  The threshold is stored in storage slot 4 and uses full 32 bytes slot
  Safe storage layout can be found here:
- https://github.com/gnosis/safe-contracts/blob/main/contracts/libraries/GnosisSafeStorage.sol */
-const THRESHOLD_ONE_STORAGE_OVERRIDE = {
+ https://github.com/safe-global/safe-smart-account/blob/main/contracts/libraries/SafeStorage.sol */
+const STORAGE_OVERRIDE = {
+  // Threshold: 1
   [`0x${'4'.padStart(64, '0')}`]: `0x${'1'.padStart(64, '0')}`,
+  // Guard: 0x0000000000000000000000000000000000000000000000000000000000000000
+  [GUARD_STORAGE_POSITION]: `0x${'0'.padStart(64, '0')}`,
 }
 
 const getStateOverride = (
@@ -197,7 +202,7 @@ const getSimulationPayload = (tx: SimulationTxParams): TenderlySimulatePayload =
     tx.safeAddress,
     undefined,
     undefined,
-    THRESHOLD_ONE_STORAGE_OVERRIDE,
+    STORAGE_OVERRIDE,
   )
 
   return {
