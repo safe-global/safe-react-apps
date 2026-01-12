@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.19.0](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.18.3...tx-builder-1.19.0) (2026-01-12)
+
+
+### Features
+
+* added cosigner guard state override for transaction simulation ([5ec3f70](https://github.com/safe-global/safe-react-apps/commit/5ec3f703c62ea0f5acae47d7bf563a7966271d6f))
+
+
+
 ## [1.18.3](https://github.com/safe-global/safe-react-apps/compare/tx-builder-1.18.2...tx-builder-1.18.3) (2025-09-25)
 
 
