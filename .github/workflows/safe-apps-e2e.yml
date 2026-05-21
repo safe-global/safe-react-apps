@@ -6,6 +6,10 @@ on:
       - development
       - main
 
+permissions:
+  actions: write
+  contents: read
+
 jobs:
   e2e:
     runs-on: ubuntu-latest
