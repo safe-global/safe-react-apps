@@ -7,21 +7,12 @@ inputs:
     description: Node.js version
     required: false
     default: 18
-  aws-secret-access-key:
-    description: AWS secret access key
-    required: true
-  aws-access-key-id:
-    description: AWS access key id
-    required: true
-  aws-region:
-    description: AWS region
-    required: true
 
 runs:
   using: 'composite'
   steps:
     - name: Node.js setup
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
@@ -39,9 +30,3 @@ runs:
       shell: bash
       run: yarn install --frozen-lockfile
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ inputs.aws-access-key-id }}
-        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
-        aws-region: ${{ inputs.aws-region }}

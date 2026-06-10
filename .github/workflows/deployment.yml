@@ -10,6 +10,11 @@ on:
       - development
   # Run manually to version/production deployment/github releases
   workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
 env:
   REPO_NAME_ALPHANUMERIC: safereactapps
   HUSKY: 0
@@ -20,19 +25,21 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
       - uses: ./.github/actions/setup-env
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_STAGING }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v4
+        uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
 
       - name: Test, Build, Deploy PR
         run: |
@@ -52,7 +59,7 @@ jobs:
 
       - name: 'PRaul: Comment PR with app URLs'
         if: success() && github.event.number
-        uses: mshick/add-pr-comment@v1
+        uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2
         with:
           message: |
             * [Drain Account App](${{ env.REVIEW_FEATURE_URL }}/drain-safe/)
@@ -72,18 +79,20 @@ jobs:
     if: github.event_name != 'pull_request' && github.event_name != 'workflow_dispatch'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 
       - uses: ./.github/actions/setup-env
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_STAGING }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v4
+        uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
 
       - name: Test and Build
         run: |
@@ -118,15 +127,17 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
           ref: main
 
       - uses: ./.github/actions/setup-env
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_STAGING }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: 'Deploy production'
