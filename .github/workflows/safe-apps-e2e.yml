@@ -12,12 +12,12 @@ jobs:
     name: Execute E2E tests
     steps:
       - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.8.0
+        uses: styfle/cancel-workflow-action@85880fa0301c86cca9da44039ee3bb12d3bedbfa # 0.12.1
         with:
           access_token: ${{ github.token }}
 
       - name: Checkout web-core
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: safe-global/web-core
           ref: main
@@ -28,7 +28,7 @@ jobs:
         run: yarn install
 
       - name: Yarn cache web-core modules
-        uses: actions/cache@v3
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: 'web-core/**/node_modules'
           key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
@@ -65,13 +65,13 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 9 * * 1-5' }}
 
       - name: Checkout safe-react-apps
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: safe-global/safe-react-apps
           path: apps
 
       - name: Execute E2E tests
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@948d67d3074f1bbb6379c8bdbb04e95d2f8e593f # v7.4.0
         with:
           browser: chrome
           record: true
