@@ -140,12 +140,26 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_STAGING }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
+      # Minted here because composite-action steps cannot read secrets directly.
+      # Installation tokens live 60 minutes and the dispatch is the last nx target;
+      # historical release runs complete in 3-9 minutes, so expiry is not a
+      # practical concern.
+      - name: Generate promotions repo token
+        id: promotions_token
+        continue-on-error: true
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.PROMOTIONS_APP_ID }}
+          private-key: ${{ secrets.PROMOTIONS_APP_PRIVATE_KEY }}
+          repositories: ${{ secrets.PROMOTIONS_REPO }}
+          permission-actions: write
+
       - name: 'Deploy production'
         uses: ./.github/actions/release
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          prod-deployment-hook-token: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
-          prod-deployment-hook-url: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
+          promotions-token: ${{ steps.promotions_token.outputs.token }}
+          promotions-repo: ${{ github.repository_owner }}/${{ secrets.PROMOTIONS_REPO }}
           bucket-name: ${{ secrets.STAGING_BUCKET_NAME }}/releases
           react-app-tenderly-org-name: ${{ secrets.REACT_APP_TENDERLY_ORG_NAME }}
           react-app-tenderly-project-name: ${{ secrets.REACT_APP_TENDERLY_PROJECT_NAME }}
