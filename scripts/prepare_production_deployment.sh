@@ -3,17 +3,25 @@
 set -ev
 
 # Only:
-# - Security env variables are available.
-if [ -n "$PROD_DEPLOYMENT_HOOK_TOKEN" ] && [ -n "$PROD_DEPLOYMENT_HOOK_URL" ]
+# - GH_TOKEN and PROMOTIONS_REPO are available.
+if [ -n "$GH_TOKEN" ] && [ -n "$PROMOTIONS_REPO" ]
 then
   APP_NAME="$(basename $(pwd))"
   PACKAGE_VERSION=$(sed -nr 's/^\s*\"version": "([0-9]{1,}\.[0-9]{1,}.*)",$/\1/p' package.json)
-  curl --silent --output /dev/null --write-out "%{http_code}" -X POST \
-     -F token="$PROD_DEPLOYMENT_HOOK_TOKEN" \
-     -F ref=master \
-     -F "variables[TRIGGER_RELEASE_APP_NAME]=$APP_NAME" \
-     -F "variables[TRIGGER_RELEASE_COMMIT_TAG]=$PACKAGE_VERSION" \
-      $PROD_DEPLOYMENT_HOOK_URL
+  # --ref is required: without it gh resolves the default branch via GraphQL,
+  # which the app token (actions:write, metadata:read only) is not allowed to do.
+  # A failed dispatch must not fail this script: it runs mid nx-chain, before
+  # `git tag -f last-release`, and a hard exit would leave the release half-done.
+  # The error annotation stays visible on the run; the promotion can be
+  # dispatched manually from safe-production-promotions.
+  if ! gh workflow run react-apps-production.yml \
+    --repo "$PROMOTIONS_REPO" \
+    --ref main \
+    -f "app=$APP_NAME" \
+    -f "tag=$PACKAGE_VERSION"
+  then
+    echo "::error::Failed to dispatch production deployment for $APP_NAME $PACKAGE_VERSION"
+  fi
 else
-  echo "[ERROR] Production deployment could not be prepared"
+  echo "::warning::Production deployment could not be prepared: GH_TOKEN or PROMOTIONS_REPO missing"
 fi

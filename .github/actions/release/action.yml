@@ -9,14 +9,11 @@ inputs:
   bucket-name:
     description: S3 bucket name
     required: true
-  prod-deployment-hook-token:
-    description: Token for the webhook that triggers the deployment to production
+  promotions-token:
+    description: GitHub App token used to dispatch the production promotion workflow
     required: true
-  prod-deployment-hook-url:
-    description: URL of the webhook that triggers the deployment to production
-    required: true
-  react-app-rpc-token:
-    description: Infura RPC API token
+  promotions-repo:
+    description: Repository hosting the gated production promotion workflows (owner/name)
     required: true
   react-app-tenderly-org-name:
     description: Tenderly simulation organization name
@@ -59,8 +56,8 @@ runs:
         git tag -f last-release
       shell: bash
       env:
-        PROD_DEPLOYMENT_HOOK_TOKEN: ${{ inputs.prod-deployment-hook-token }}
-        PROD_DEPLOYMENT_HOOK_URL: ${{ inputs.prod-deployment-hook-url }}
+        GH_TOKEN: ${{ inputs.promotions-token }}
+        PROMOTIONS_REPO: ${{ inputs.promotions-repo }}
         BUCKET_NAME: ${{ inputs.bucket-name }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
         REACT_APP_TENDERLY_ORG_NAME: ${{ inputs.react-app-tenderly-org-name }}
