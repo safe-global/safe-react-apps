@@ -140,6 +140,10 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_STAGING }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
+      # Minted here because composite-action steps cannot read secrets directly.
+      # Installation tokens live 60 minutes and the dispatch is the last nx target;
+      # historical release runs complete in 3-9 minutes, so expiry is not a
+      # practical concern.
       - name: Generate promotions repo token
         id: promotions_token
         continue-on-error: true

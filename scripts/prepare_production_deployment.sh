@@ -8,6 +8,14 @@ if [ -n "$GH_TOKEN" ] && [ -n "$PROMOTIONS_REPO" ]
 then
   APP_NAME="$(basename $(pwd))"
   PACKAGE_VERSION=$(sed -nr 's/^\s*\"version": "([0-9]{1,}\.[0-9]{1,}.*)",$/\1/p' package.json)
+  # tx-builder promotes via safe-tx-builder-tf (built from safe-wallet-monorepo
+  # releases) since 2026-03; dispatching it here would only trip the promotion
+  # workflow's app guard.
+  if [ "$APP_NAME" = "tx-builder" ]
+  then
+    echo "Skipping tx-builder: it deploys via safe-tx-builder-tf"
+    exit 0
+  fi
   # --ref is required: without it gh resolves the default branch via GraphQL,
   # which the app token (actions:write, metadata:read only) is not allowed to do.
   # A failed dispatch must not fail this script: it runs mid nx-chain, before
